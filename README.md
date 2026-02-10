@@ -259,13 +259,14 @@ Safe and recommended:
 - `p.wave(...)` in instance mode.
 
 Unsafe and collision-prone:
-- Global `wave(...)` in global mode.
-- The optional `wave` alias added to `window` when no `wave` function exists.
+- Global `wave(...)` in global mode if another script also defines it.
 
 Why this matters:
 Global mode places many functions on `window`.
 Any other script can overwrite them or be overwritten.
 Using `Waves.wave(...)` or `p.wave(...)` avoids that collision risk.
+This library does not define `window.wave`.
+In global mode, p5 itself exposes `wave(...)` from `p5.prototype`.
 
 **Usage Patterns**
 Global mode (explicit and safe):

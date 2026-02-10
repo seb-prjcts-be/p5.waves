@@ -586,8 +586,4 @@
   }
 
   global.Waves = api;
-  // Provide a top-level wave() helper for direct access (non-p5 usage).
-  if (typeof global.wave !== 'function') {
-    global.wave = api.wave;
-  }
 })(typeof window !== 'undefined' ? window : this);
