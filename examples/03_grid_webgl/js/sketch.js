@@ -1,5 +1,5 @@
 const SELECT = 'triangle';
-const SCALE = 60;
+const AMPLITUDE = 60;
 const STEP = 30;
 const SPEED = 0.02;
 const SIZE = 8;
@@ -20,7 +20,7 @@ function draw() {
     for (let x = -150; x <= 150; x += STEP) {
       const o = Waves.wave(y + t, SELECT, null, {
         axis: 'xz',
-        scale: SCALE,
+        amplitude: AMPLITUDE,
         vars: { t }
       });
       push();
