@@ -171,7 +171,7 @@
   const SIMPLE_CACHE = { key: null, sampler: null };
   const WAVE_DEFAULTS = {
     axis: 'x',
-    scale: 1,
+    amplitude: 1,
     refresh: 0,
     select: null,
     seconds: 0,
@@ -418,7 +418,11 @@
     const opts = options || {};
     const refresh = opts.refresh ?? 0;
     const axis = opts.axis || 'xz';
-    const scale = typeof opts.scale === 'number' ? opts.scale : 1;
+    const amplitude = (
+      (typeof opts.amplitude === 'number' ? opts.amplitude : undefined) ??
+      (typeof opts.scale === 'number' ? opts.scale : undefined) ??
+      1
+    );
     const normalize = opts.normalize ?? WAVE_DEFAULTS.normalize;
     const range = toRange(opts.range ?? WAVE_DEFAULTS.range, [-1, 1]);
     const domain = toDomain(opts.domain ?? WAVE_DEFAULTS.domain, [-100, 100]);
@@ -444,7 +448,8 @@
     return {
       refresh,
       axis,
-      scale,
+      amplitude,
+      scale: amplitude,
       normalize,
       range,
       domain,
@@ -459,12 +464,12 @@
         if (axis === 'x' || axis === 'xz') {
           let val = evaluate(xFn, y, vars, seed);
           if (normalize) val = normalizeValue(val, xStats, range);
-          out.x = val * scale;
+          out.x = val * amplitude;
         }
         if (axis === 'z' || axis === 'xz') {
           let val = evaluate(zFn, y, vars, seed + 1);
           if (normalize) val = normalizeValue(val, zStats, range);
-          out.z = val * scale;
+          out.z = val * amplitude;
         }
         return out;
       }
@@ -473,10 +478,15 @@
 
   function getSimpleSampler(options) {
     const opts = options || {};
+    const amplitude = (
+      (typeof opts.amplitude === 'number' ? opts.amplitude : undefined) ??
+      (typeof opts.scale === 'number' ? opts.scale : undefined) ??
+      1
+    );
     const key = [
       opts.refresh ?? 0,
       opts.axis || 'x',
-      typeof opts.scale === 'number' ? opts.scale : 1,
+      amplitude,
       opts.normalize ?? WAVE_DEFAULTS.normalize,
       JSON.stringify(opts.range ?? WAVE_DEFAULTS.range),
       JSON.stringify(opts.domain ?? WAVE_DEFAULTS.domain),
@@ -488,7 +498,7 @@
     ].join('|');
     if (SIMPLE_CACHE.key !== key) {
       SIMPLE_CACHE.key = key;
-      SIMPLE_CACHE.sampler = createSampler(opts);
+      SIMPLE_CACHE.sampler = createSampler({ ...opts, amplitude });
     }
     return SIMPLE_CACHE.sampler;
   }
@@ -501,7 +511,9 @@
   function setWaveParams(options) {
     const opts = options || {};
     if (opts.axis !== undefined) WAVE_DEFAULTS.axis = opts.axis;
-    if (opts.scale !== undefined) WAVE_DEFAULTS.scale = opts.scale;
+    if (opts.amplitude !== undefined || opts.scale !== undefined) {
+      WAVE_DEFAULTS.amplitude = opts.amplitude ?? opts.scale ?? WAVE_DEFAULTS.amplitude;
+    }
     if (opts.refresh !== undefined) WAVE_DEFAULTS.refresh = opts.refresh;
     if (opts.select !== undefined) WAVE_DEFAULTS.select = opts.select;
     if (opts.seconds !== undefined) WAVE_DEFAULTS.seconds = opts.seconds;
@@ -511,13 +523,17 @@
     if (opts.domain !== undefined) WAVE_DEFAULTS.domain = toDomain(opts.domain, WAVE_DEFAULTS.domain);
     if (opts.samples !== undefined) WAVE_DEFAULTS.samples = opts.samples;
     if (opts.normalizeVars !== undefined) WAVE_DEFAULTS.normalizeVars = opts.normalizeVars;
-    return { ...WAVE_DEFAULTS };
+    return { ...WAVE_DEFAULTS, scale: WAVE_DEFAULTS.amplitude };
   }
 
   function wave(y, select, seconds, axisOrOptions) {
     const opts = typeof axisOrOptions === 'string' ? { axis: axisOrOptions } : (axisOrOptions || {});
     const axis = (opts.axis ?? WAVE_DEFAULTS.axis) || 'x';
-    const scale = typeof opts.scale === 'number' ? opts.scale : WAVE_DEFAULTS.scale;
+    const amplitude = (
+      (typeof opts.amplitude === 'number' ? opts.amplitude : undefined) ??
+      (typeof opts.scale === 'number' ? opts.scale : undefined) ??
+      WAVE_DEFAULTS.amplitude
+    );
     const baseRefresh = opts.refresh ?? WAVE_DEFAULTS.refresh ?? 0;
     const inlineSeconds = seconds !== undefined ? seconds : opts.seconds;
     const resolvedSeconds = inlineSeconds !== undefined ? inlineSeconds : WAVE_DEFAULTS.seconds;
@@ -534,7 +550,7 @@
 
     let samplerOptions = {
       axis,
-      scale,
+      amplitude,
       normalize,
       range,
       domain,
@@ -580,7 +596,7 @@
     global.p5.prototype.setWaveParams = function (options) {
       return setWaveParams(options);
     };
-    global.p5.prototype.wave = function (y, select, seconds, axisOrOptions) {
+    global.p5.prototype.waves = function (y, select, seconds, axisOrOptions) {
       return wave(y, select, seconds, axisOrOptions);
     };
   }

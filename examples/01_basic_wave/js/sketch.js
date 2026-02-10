@@ -1,5 +1,5 @@
 const SELECT = 'classic sine';
-const SCALE = 80;
+const AMPLITUDE = 80;
 const STEP = 4;
 const SPEED = 0.5;
 
@@ -15,7 +15,7 @@ function draw() {
   for (let y = 0; y <= height; y += STEP) {
     const x = width / 2 + Waves.wave(y + frameCount * SPEED, SELECT, null, {
       axis: 'x',
-      scale: SCALE
+      amplitude: AMPLITUDE
     });
     vertex(x, y);
   }
