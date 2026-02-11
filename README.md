@@ -2,6 +2,10 @@
 
 Wave sampling helpers for p5.js.
 
+**Version Note**
+As of v2.0.0, wave names are camelCase (for example `classicSine`).
+Legacy spaced or shape names still resolve.
+
 **What This Library Does**
 This library adds wave sampling functions to p5.js and exposes a global `Waves` object.
 You pass a single number (named `y` in the API).
@@ -11,7 +15,7 @@ It solves the problem of generating repeatable offsets for lines, grids, or 3D p
 **What This Library Does NOT Do**
 - It does not draw anything or create a canvas.
 - It does not animate by itself.
-- It does not change p5's `random()` or `noise()` functions.
+- It does not change p5's `random()` or `()` functions.
 - It does not provide an API to add or edit wave formulas.
 - It does not return arrays or paths, only numbers or `{ x, z }`.
 
@@ -32,7 +36,7 @@ Script tag (local file):
 Script tag (CDN-style link):
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v1.1.0/p5.waves.min.js"></script>
+<script src="p5.waves.min.js"></script>
 <script src="sketch.js"></script>
 ```
 
@@ -73,13 +77,13 @@ Parameters
 Expected ranges
 - Any non-empty string.
 - Matching is case-insensitive and checks both `wave` and `shape`.
-- Shape names in `Waves.data` are camelCase.
-- For shapes, spaces and hyphens in the input are ignored.
+- `wave` and `shape` names in `Waves.data` are camelCase.
+- For `wave` and `shape`, spaces and hyphens in the input are ignored.
 Return value
 - `{ index, wave }` or `null`.
 Example
 ```js
-const entry = Waves.getWaveByName('triangle');
+const entry = Waves.getWaveByName('');
 ```
 
 **`Waves.createSampler(options)`**
@@ -114,8 +118,8 @@ const sampler = Waves.createSampler({ refresh: 2, axis: 'xz' });
 **`sampler.sample(y, vars)`**
 Parameters
 - `y` (number).
-- `vars` (object). Optional.
-- `vars.y`, `vars.z`, `vars.t`, `vars.dis` (numbers). Optional.
+- `vars` (object). Optional. Advanced usage for extra formula inputs.
+- `vars.y`, `vars.z`, `vars.dis` (numbers). Optional.
 Expected ranges
 - `y` should be a finite number.
 - `vars` values should be finite numbers.
@@ -123,7 +127,7 @@ Return value
 - Object with `x` and/or `z` depending on `options.axis`.
 Example
 ```js
-const out = sampler.sample(10, { t: frameCount * 0.01 });
+const out = sampler.sample(10);
 ```
 
 **`Waves.sample(y, refresh, axisOrOptions)`**
@@ -140,7 +144,7 @@ Return value
 - Object with `x` and/or `z`.
 Example
 ```js
-const out = Waves.sample(50, 3, { axis: 'x', wave: 'classic sine' });
+const out = Waves.sample(50, 3, { axis: 'x', wave: 'classicSine' });
 ```
 
 **`Waves.setWaveParams(options)`**
@@ -187,7 +191,7 @@ Return value
 - An object `{ x, z }` when the axis is `'xz'`.
 Example
 ```js
-const x = Waves.wave(40, 'classic sine');
+const x = Waves.wave(40, 'classicSine');
 ```
 
 **`Waves.seedFrom(value)`**
@@ -217,7 +221,7 @@ Return value
 - Same as `Waves.wave(...)`.
 Example
 ```js
-const x = p.waves(40, 'classic sine');
+const x = p.waves(40, 'classicSine');
 ```
 
 **`p5.prototype.waveSample(y, refresh, axisOrOptions)`**
@@ -271,6 +275,10 @@ Any other script can overwrite them or be overwritten.
 Using `Waves.wave(...)` or `p.waves(...)` avoids that collision risk.
 This library does not define `window.wave`.
 
+**Time / Animation**
+Time is not a built-in parameter.
+To animate a wave, modify the input value over time (for example by adding `t`).
+
 **Usage Patterns**
 Global mode (explicit and safe):
 ```js
@@ -284,7 +292,7 @@ function draw() {
   background(240);
   beginShape();
   for (let y = 0; y <= height; y += 4) {
-    const x = Waves.wave(y, 'classic sine');
+    const x = Waves.wave(y, 'classicSine');
     vertex(width / 2 + x, y);
   }
   endShape();
@@ -303,7 +311,7 @@ new p5(function (p) {
     p.background(240);
     p.beginShape();
     for (let y = 0; y <= p.height; y += 4) {
-      const x = p.waves(y, 'triangle', null, { amplitude: 80 });
+      const x = p.waves(y, '', null, { amplitude: 80 });
       p.vertex(p.width / 2 + x, y);
     }
     p.endShape();
@@ -324,9 +332,10 @@ function setup() {
 function draw() {
   background(240);
   rotateY(frameCount * 0.01);
+  const t = frameCount * 0.02;
   for (let y = -180; y <= 180; y += 30) {
     for (let x = -180; x <= 180; x += 30) {
-      const offset = sampler.sample(y, { t: frameCount * 0.02 });
+      const offset = sampler.sample(y + t);
       push();
       translate(x + offset.x, 0, y + offset.z);
       sphere(4);
@@ -345,5 +354,9 @@ Major releases may change outputs or remove or rename functions.
 **Makers and Contributors**
 - `tw@GenerativePunk` (wave formula contributor in the original dataset).
 - `gh@ffd8` (wave formula contributor in the original dataset).
-- Reference for rectangular and pulse formulas: https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0
-- Reference for the triangle formula: https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg
+- Reference for  and  formulas: https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0
+- Reference for the  formula: https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg
+
+
+
+

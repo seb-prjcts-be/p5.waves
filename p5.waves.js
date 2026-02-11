@@ -1,7 +1,7 @@
 /*!
  * p5.waves
  * Samples x/z offsets from a y input using a fixed set of wave formulas.
- * Version 1.1.0
+ * Version 2.0.0
  * Author: seb@prjcts
  * License: MIT
  */
@@ -17,7 +17,7 @@
     {
       algo: "sin(x*.1)*.4",
       shape: "ellipse",
-      wave: "classic sine",    },
+      wave: "classicSine",    },
     {
       algo: "sin(x*.2)*.25",
       shape: "infinity",
@@ -25,11 +25,11 @@
     {
       algo: "abs(sin(x*.1))*.5",
       shape: "pendulum",
-      wave: "sharp peaks sine",    },
+      wave: "sharpPeaksSine",    },
     {
       algo: "abs(sin(x*.01 + x*.1))*.5",
       shape: "phasingPendulum",
-      wave: "sharp peaks sine",    },
+      wave: "sharpPeaksSine",    },
     {
       algo: "(x*.025)%1 < .5 ? -.5 : .5",
       shape: "topBottom",
@@ -41,11 +41,11 @@
     {
       algo: "ceil(sin(x*.1))*.25",
       shape: "leftRight",
-      wave: "rectangular sine",    },
+      wave: "rectangularSine",    },
     {
       algo: "abs(cos(x*.1))*.35 + sin(x*.1)*.25",
       shape: "invertedHeart",
-      wave: "mountain peaks",    },
+      wave: "mountainPeaks",    },
     {
       algo: "abs(cos(x*.1))*-.35 + sin(x*.1)*.25",
       shape: "heart",
@@ -53,7 +53,7 @@
     {
       algo: "sin(x*.1)*.25 % .15",
       shape: "spaceShip",
-      wave: "zig-zag sine",    },
+      wave: "zigZagSine",    },
     {
       algo: "sin(x*.1)*.7 % .4",
       shape: "starfighter",
@@ -61,15 +61,15 @@
     {
       algo: "sin(x*.1)*.25 - cos(x*.1)*.25 % .15",
       shape: "solarSystem",
-      wave: "zig-zag sine",    },
+      wave: "zigZagSine",    },
     {
       algo: "ceil(cos(x*.1))*.25 - sin(x*.1)*.25",
       shape: "cSection",
-      wave: "offset sine",    },
+      wave: "offsetSine",    },
     {
       algo: "ceil(tan(x*.1))*.25",
       shape: "hive",
-      wave: "steps down",    },
+      wave: "stepsDown",    },
     {
       algo: "round(sin(-x*.1))*.25",
       shape: "hexagon",
@@ -77,27 +77,27 @@
     {
       algo: "sq(sin(PI/2+x*.1))*.25",
       shape: "invertedPendulum",
-      wave: "class sine",    },
+      wave: "classSine",    },
     {
       algo: "sq(sin(x*.1))*.25",
       shape: "pendulum",
-      wave: "classic sine",    },
+      wave: "classicSine",    },
     {
       algo: "sin(x*.1)*.25 + sin(x*.5)*.1",
       shape: "depthIllusion",
-      wave: "bumpy sine",    },
+      wave: "bumpySine",    },
     {
       algo: "sin(x*.1)*cos(x*.2)*.5",
       shape: "headWithEars",
-      wave: "bumpy sine",    },
+      wave: "bumpySine",    },
     {
       algo: "x*sin(x*.1) % .5",
       shape: "upDownScatter",
-      wave: "up down noise",    },
+      wave: "upDownNoise",    },
     {
       algo: "sin(x*.45 + radians(x))*cos(x*.4)*.5",
       shape: "upDownScatter",
-      wave: "meta sine",    },
+      wave: "metaSine",    },
     {
       algo: "abs((x*.03) % (.5*2) - .5)",
       shape: "phasingSharpSine",
@@ -105,24 +105,24 @@
     {
       algo: "-1*(x*.02%1)/1 + 0.5",
       shape: "spiral",
-      wave: "ramp with period height"
+      wave: "rampWithPeriodHeight"
     },
     {
       algo: "x*.03 % .5",
       shape: "crissCross",
-      wave: "ramp down saw",    },
+      wave: "rampDownSaw",    },
     {
       algo: "-x*.03 % .5",
       shape: "crissCross",
-      wave: "ramp up saw",    },
+      wave: "rampUpSaw",    },
     {
       algo: "log(x)*.1",
       shape: "snake",
-      wave: "fade out",    },
+      wave: "fadeOut",    },
     {
       algo: "random(x*.003)",
       shape: "scatterDown",
-      wave: "grow random",    },
+      wave: "growRandom",    },
     {
       algo: "noise(x*.1) - .5",
       shape: "noise",
@@ -130,39 +130,39 @@
     {
       algo: "tan(x*20)*.05",
       shape: "fuzzyCenter",
-      wave: "fuzzy pulse",    },
+      wave: "fuzzyPulse",    },
     {
       algo: "tan(x*.1)*.05",
       shape: "spinningTop",
-      wave: "up down pulse",    },
+      wave: "upDownPulse",    },
     {
       algo: "sq(x*.05) % .5",
       shape: "scatter",
-      wave: "bald patch",    },
+      wave: "baldPatch",    },
     {
       algo: "sin(x*.1) < 0 ? random(-.2, .2) : sin(x*.1)*.5",
       shape: "foamingBowl",
-      wave: "fuzzy peak sine",    },
+      wave: "fuzzyPeakSine",    },
     {
       algo: "sin(x)*(x*.01%.5)",
       shape: "scatter",
-      wave: "ramp up sine",    },
+      wave: "rampUpSine",    },
     {
       algo: "sin(x)*(x*.01%1-.5)",
       shape: "scatter",
-      wave: "triangle sine",    },
+      wave: "triangleSine",    },
     {
       algo: "sin(x*.1)*cos(x*1)*.5",
       shape: "scatterSphere",
-      wave: "round linked sine",    },
+      wave: "roundLinkedSine",    },
     {
       algo: "sin(x*.05)*(x*.1%.5)",
       shape: "crissCrossUpDown",
-      wave: "half & half sine",    },
+      wave: "halfAndHalfSine",    },
     {
       algo: "sin(x*3.1)*.25",
       shape: "dna",
-      wave: "smooth solid sine"
+      wave: "smoothSolidSine"
     }
   ];
 
@@ -199,6 +199,8 @@
       const waveName = normalizeName(WAVES[i].wave);
       const shapeName = normalizeName(WAVES[i].shape);
       if (waveName === key || shapeName === key) return i;
+      const waveCompact = normalizeCompact(WAVES[i].wave);
+      if (waveCompact && keyCompact && waveCompact === keyCompact) return i;
       if (shapeName && keyCompact && normalizeCompact(shapeName) === keyCompact) return i;
     }
     return -1;
@@ -603,3 +605,7 @@
 
   global.Waves = api;
 })(typeof window !== 'undefined' ? window : this);
+
+
+
+
