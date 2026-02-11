@@ -4,8 +4,8 @@ Gentle wave sampling helpers for p5.js.
 
 Use it to turn a single input (`y`) into stable offsets (`x`, `z`, or both). This is great for lines, grids, ribbons, and subtle motion. It does **not** draw anything for you.
 
-**Version note (v2)**
-Wave names are camelCase (for example `classicSine`). Legacy spaced names and shape names still resolve.
+**Signature**
+`Waves.wave(y, select, seconds, axisOrOptions)`
 
 ## Quick Start
 
