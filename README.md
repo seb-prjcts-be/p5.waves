@@ -1,362 +1,238 @@
 # p5.waves
 
-Wave sampling helpers for p5.js.
+Gentle wave sampling helpers for p5.js.
 
-**Version Note**
-As of v2.0.0, wave names are camelCase (for example `classicSine`).
-Legacy spaced or shape names still resolve.
+Use it to turn a single input (`y`) into stable offsets (`x`, `z`, or both). This is great for lines, grids, ribbons, and subtle motion. It does **not** draw anything for you.
 
-**What This Library Does**
-This library adds wave sampling functions to p5.js and exposes a global `Waves` object.
-You pass a single number (named `y` in the API).
-It evaluates one or two built-in wave formulas and returns an `x` value, a `z` value, or both.
-It solves the problem of generating repeatable offsets for lines, grids, or 3D positions.
+**Version note (v2)**
+Wave names are camelCase (for example `classicSine`). Legacy spaced names and shape names still resolve.
 
-**What This Library Does NOT Do**
-- It does not draw anything or create a canvas.
-- It does not animate by itself.
-- It does not change p5's `random()` or `()` functions.
-- It does not provide an API to add or edit wave formulas.
-- It does not return arrays or paths, only numbers or `{ x, z }`.
+## Quick Start
 
-**Mental Model**
-Think of this library as a list of wave formulas you can sample.
-Each formula is a small math expression that takes an input called `x`.
-The library treats your `y` input as that `x`.
-If you ask for both axes, it samples two formulas and returns `{ x, z }`.
-
-**Installation**
-Script tag (local file):
-```html
-<script src="p5.js"></script>
-<script src="p5.waves.js"></script>
-<script src="sketch.js"></script>
-```
-
-Script tag (CDN-style link):
+**1) Include scripts**
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
 <script src="p5.waves.min.js"></script>
-<script src="sketch.js"></script>
 ```
 
-Load order matters.
-`p5.js` must load before `p5.waves.js` or `p5.waves.min.js`.
-
-**Core API**
-All functions below are available on the global `Waves` object.
-
-**`Waves.data`**
-Parameters
-- None.
-Expected ranges
-- Not applicable.
-Return value
-- Array of wave objects with fields `wave`, `shape`, and `algo`.
-Example
-```js
-const count = Waves.data.length;
-```
-
-**`Waves.getWaveByIndex(index)`**
-Parameters
-- `index` (number).
-Expected ranges
-- Any finite number.
-- The index wraps around the list length.
-Return value
-- `{ index, wave }` or `null`.
-Example
-```js
-const entry = Waves.getWaveByIndex(0);
-```
-
-**`Waves.getWaveByName(name)`**
-Parameters
-- `name` (string).
-Expected ranges
-- Any non-empty string.
-- Matching is case-insensitive and checks both `wave` and `shape`.
-- `wave` and `shape` names in `Waves.data` are camelCase.
-- For `wave` and `shape`, spaces and hyphens in the input are ignored.
-Return value
-- `{ index, wave }` or `null`.
-Example
-```js
-const entry = Waves.getWaveByName('');
-```
-
-**`Waves.createSampler(options)`**
-Parameters
-- `options` (object).
-- `options.refresh` (number). Default `0`.
-- `options.axis` (`'x'`, `'z'`, or `'xz'`). Default `'xz'`.
-- `options.amplitude` (number). Default `1`. Final output multiplier in pixels.
-- `options.wave` (wave reference). Sets both axes.
-- `options.xWave` (wave reference). Sets only `x`.
-- `options.zWave` (wave reference). Sets only `z`.
-- `options.normalize` (boolean). Default `false`.
-- `options.range` (array). Default `[-1, 1]`.
-- `options.domain` (array). Default `[-100, 100]`.
-- `options.samples` (number). Default `512`.
-- `options.normalizeVars` (object). Default `null`.
-
-`amplitude` is preferred.
-`scale` is supported for backward compatibility.
-Expected ranges
-- `options.axis` must be `'x'`, `'z'`, or `'xz'`.
-- `options.range` and `options.domain` must be `[min, max]` with `min !== max`.
-- `options.samples` should be an integer `>= 2`.
-- A wave reference is a number index, a name string, or an object with `index`, `wave`, or `name`.
-Return value
-- Sampler object with a `sample(y, vars)` method.
-Example
-```js
-const sampler = Waves.createSampler({ refresh: 2, axis: 'xz' });
-```
-
-**`sampler.sample(y, vars)`**
-Parameters
-- `y` (number).
-- `vars` (object). Optional. Advanced usage for extra formula inputs.
-- `vars.y`, `vars.z`, `vars.dis` (numbers). Optional.
-Expected ranges
-- `y` should be a finite number.
-- `vars` values should be finite numbers.
-Return value
-- Object with `x` and/or `z` depending on `options.axis`.
-Example
-```js
-const out = sampler.sample(10);
-```
-
-**`Waves.sample(y, refresh, axisOrOptions)`**
-Parameters
-- `y` (number).
-- `refresh` (number).
-- `axisOrOptions` (string or object). Optional.
-- If `axisOrOptions` is a string, it is the axis.
-- If it is an object, it accepts the same fields as `Waves.createSampler` plus `vars`.
-Expected ranges
-- `refresh` can be any finite number.
-- `axis` must be `'x'`, `'z'`, or `'xz'` when provided.
-Return value
-- Object with `x` and/or `z`.
-Example
-```js
-const out = Waves.sample(50, 3, { axis: 'x', wave: 'classicSine' });
-```
-
-**`Waves.setWaveParams(options)`**
-Parameters
-- `options` (object).
-- `options.axis` (`'x'`, `'z'`, or `'xz'`).
-- `options.amplitude` (number). Final output multiplier in pixels.
-- `options.refresh` (number).
-- `options.select` (wave reference).
-- `options.seconds` (number).
-- `options.vars` (object).
-- `options.normalize` (boolean).
-- `options.range` (array).
-- `options.domain` (array).
-- `options.samples` (number).
-- `options.normalizeVars` (object).
-Expected ranges
-- `options.axis` must be `'x'`, `'z'`, or `'xz'` when provided.
-- `options.seconds` must be `> 0` to auto-advance.
-- `options.range` and `options.domain` must be `[min, max]` with `min !== max`.
-Return value
-- A copy of the current defaults.
-Example
-```js
-Waves.setWaveParams({ axis: 'x', amplitude: 120, normalize: true });
-```
-These defaults are used by `Waves.wave()` on every call.
-`Waves.createSampler()` only uses the `normalize`, `range`, `domain`, `samples`, and `normalizeVars` defaults when you omit them.
-
-**`Waves.wave(y, select, seconds, axisOrOptions)`**
-Parameters
-- `y` (number).
-- `select` (wave reference). Optional.
-- `seconds` (number). Optional.
-- `axisOrOptions` (string or object). Optional.
-- If `axisOrOptions` is a string, it is the axis.
-- If it is an object, it accepts `axis`, `amplitude`, `refresh`, `select`, `seconds`, `vars`, `normalize`, `range`, `domain`, `samples`, and `normalizeVars`.
-Expected ranges
-- `select` can be a number index, a name string, or an object with `index`, `wave`, or `name`.
-- `seconds` must be `> 0` to auto-advance.
-- `axis` must be `'x'`, `'z'`, or `'xz'` when provided.
-Return value
-- A number when the axis is `'x'` or `'z'`.
-- An object `{ x, z }` when the axis is `'xz'`.
-Example
-```js
-const x = Waves.wave(40, 'classicSine');
-```
-
-**`Waves.seedFrom(value)`**
-Parameters
-- `value` (any type).
-Expected ranges
-- Any value is accepted.
-Return value
-- A 32-bit unsigned integer seed.
-Example
-```js
-const seed = Waves.seedFrom('demo');
-```
-
-**p5 Methods (Aliases)**
-These functions are added to `p5.prototype` when p5.js is loaded.
-In global mode, they also appear as globals.
-They behave the same as the `Waves` versions.
-`Waves.wave(...)` is the stable API.
-
-**`p5.prototype.waves(y, select, seconds, axisOrOptions)`**
-Parameters
-- Same as `Waves.wave(...)`.
-Expected ranges
-- Same as `Waves.wave(...)`.
-Return value
-- Same as `Waves.wave(...)`.
-Example
-```js
-const x = p.waves(40, 'classicSine');
-```
-
-**`p5.prototype.waveSample(y, refresh, axisOrOptions)`**
-Parameters
-- Same as `Waves.sample(...)`.
-Expected ranges
-- Same as `Waves.sample(...)`.
-Return value
-- Same as `Waves.sample(...)`.
-Example
-```js
-const out = p.waveSample(40, 3, 'xz');
-```
-
-**`p5.prototype.createWaveSampler(refresh, options)`**
-Parameters
-- `refresh` (number).
-- `options` (object). Same fields as `Waves.createSampler(...)`.
-Expected ranges
-- Same as `Waves.createSampler(...)`.
-Return value
-- Sampler object with a `sample(y, vars)` method.
-Example
-```js
-const sampler = p.createWaveSampler(2, { axis: 'xz' });
-```
-
-**`p5.prototype.setWaveParams(options)`**
-Parameters
-- Same as `Waves.setWaveParams(...)`.
-Expected ranges
-- Same as `Waves.setWaveParams(...)`.
-Return value
-- Same as `Waves.setWaveParams(...)`.
-Example
-```js
-p.setWaveParams({ axis: 'x', amplitude: 80 });
-```
-
-**Safe Usage vs Unsafe Usage**
-Safe and recommended:
-- `Waves.wave(...)` in any mode.
-- `p.waves(...)` in instance mode.
-
-Unsafe and collision-prone:
-- Relying on a global `wave(...)` function.
-
-Why this matters:
-Global mode places many functions on `window`.
-Any other script can overwrite them or be overwritten.
-Using `Waves.wave(...)` or `p.waves(...)` avoids that collision risk.
-This library does not define `window.wave`.
-
-**Time / Animation**
-Time is not a built-in parameter.
-To animate a wave, modify the input value over time (for example by adding `t`).
-
-**Usage Patterns**
-Global mode (explicit and safe):
+**2) Minimal sketch (global mode)**
 ```js
 function setup() {
   createCanvas(400, 200);
   noFill();
-  Waves.setWaveParams({ axis: 'x', amplitude: 80 });
+  stroke(20);
 }
 
 function draw() {
   background(240);
   beginShape();
   for (let y = 0; y <= height; y += 4) {
-    const x = Waves.wave(y, 'classicSine');
+    const x = Waves.wave(y + frameCount * 0.02, 'classicSine', null, { amplitude: 80 });
     vertex(width / 2 + x, y);
   }
   endShape();
 }
 ```
 
-Instance mode:
+## Basic Usage
+
+**Global mode (recommended)**
+```js
+const x = Waves.wave(40, 'classicSine');
+```
+
+**Instance mode**
 ```js
 new p5(function (p) {
   p.setup = function () {
     p.createCanvas(400, 200);
-    p.noFill();
   };
 
   p.draw = function () {
-    p.background(240);
-    p.beginShape();
-    for (let y = 0; y <= p.height; y += 4) {
-      const x = p.waves(y, '', null, { amplitude: 80 });
-      p.vertex(p.width / 2 + x, y);
-    }
-    p.endShape();
+    const x = p.waves(40, 'classicSine');
+    p.circle(p.width / 2 + x, 50, 6);
   };
 });
 ```
 
-Grid / matrix / WEBGL-style usage:
-```js
-let sampler;
+## Customization
 
+### 1) Choose a wave
+A wave reference can be:
+- index (number)
+- `wave` name (string)
+- `shape` name (string)
+Matching is case-insensitive, and spaces/hyphens are ignored.
+
+```js
+Waves.wave(20, 'classicSine');
+Waves.wave(20, 'Classic Sine');   // alias (case-insensitive)
+Waves.wave(20, 'ellipse');        // old shape alias
+Waves.wave(20, 0);                // index
+```
+
+### Preset Browser
+Use any `wave` or `shape` below as the `select` value.
+
+| index | wave | shape |
+| --- | --- | --- |
+| 0 | classicSine | ellipse |
+| 1 | sine | infinity |
+| 2 | sharpPeaksSine | pendulum |
+| 3 | sharpPeaksSine | phasingPendulum |
+| 4 | rectangular | topBottom |
+| 5 | pulse | bottomTop |
+| 6 | rectangularSine | leftRight |
+| 7 | mountainPeaks | invertedHeart |
+| 8 | valleys | heart |
+| 9 | zigZagSine | spaceShip |
+| 10 | batman | starfighter |
+| 11 | zigZagSine | solarSystem |
+| 12 | offsetSine | cSection |
+| 13 | stepsDown | hive |
+| 14 | steps | hexagon |
+| 15 | classSine | invertedPendulum |
+| 16 | classicSine | pendulum |
+| 17 | bumpySine | depthIllusion |
+| 18 | bumpySine | headWithEars |
+| 19 | upDownNoise | upDownScatter |
+| 20 | metaSine | upDownScatter |
+| 21 | triangle | phasingSharpSine |
+| 22 | rampWithPeriodHeight | spiral |
+| 23 | rampDownSaw | crissCross |
+| 24 | rampUpSaw | crissCross |
+| 25 | fadeOut | snake |
+| 26 | growRandom | scatterDown |
+| 27 | noise | noise |
+| 28 | fuzzyPulse | fuzzyCenter |
+| 29 | upDownPulse | spinningTop |
+| 30 | baldPatch | scatter |
+| 31 | fuzzyPeakSine | foamingBowl |
+| 32 | rampUpSine | scatter |
+| 33 | triangleSine | scatter |
+| 34 | roundLinkedSine | scatterSphere |
+| 35 | halfAndHalfSine | crissCrossUpDown |
+| 36 | smoothSolidSine | dna |
+
+### 2) Adjust output size (amplitude)
+```js
+const x = Waves.wave(y, 'classicSine', null, { amplitude: 120 });
+```
+
+### 3) Sample both axes (x and z)
+```js
+const o = Waves.wave(y, 'classicSine', null, { axis: 'xz', amplitude: 60 });
+// o = { x, z }
+```
+
+### 4) Smooth or normalize
+```js
+const x = Waves.wave(y, 'classicSine', null, {
+  normalize: true,
+  range: [-1, 1]
+});
+```
+
+### 5) Use defaults (set once)
+```js
+function setup() {
+  createCanvas(400, 200);
+  Waves.setWaveParams({
+    axis: 'x',
+    amplitude: 80,
+    select: 'classicSine',
+    normalize: true
+  });
+}
+
+function draw() {
+  const x = Waves.wave(40 + frameCount * 0.02);
+}
+```
+
+## Sampling Patterns
+
+**Animate a wave**
+```js
+let t = 0;
+function draw() {
+  const x = Waves.wave(40 + t, 'classicSine');
+  t += 0.02;
+}
+```
+
+**Grid / WEBGL**
+```js
+let t = 0;
 function setup() {
   createCanvas(400, 400, WEBGL);
-  sampler = Waves.createSampler({ refresh: 1, axis: 'xz', amplitude: 60 });
   noStroke();
 }
 
 function draw() {
   background(240);
   rotateY(frameCount * 0.01);
-  const t = frameCount * 0.02;
-  for (let y = -180; y <= 180; y += 30) {
-    for (let x = -180; x <= 180; x += 30) {
-      const offset = sampler.sample(y + t);
+  for (let y = -150; y <= 150; y += 30) {
+    for (let x = -150; x <= 150; x += 30) {
+      const o = Waves.wave(y + t, 'classicSine', null, { axis: 'xz', amplitude: 60 });
       push();
-      translate(x + offset.x, 0, y + offset.z);
-      sphere(4);
+      translate(x + o.x, 0, y + o.z);
+      box(6);
       pop();
     }
   }
+  t += 0.02;
 }
 ```
 
-**Versioning Philosophy**
-This library follows semantic versioning.
-Patch releases fix bugs or docs without changing outputs.
-Minor releases add new waves or options without breaking existing calls.
-Major releases may change outputs or remove or rename functions.
+## Reference (Short)
 
-**Makers and Contributors**
-- `tw@GenerativePunk` (wave formula contributor in the original dataset).
-- `gh@ffd8` (wave formula contributor in the original dataset).
-- Reference for  and  formulas: https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0
-- Reference for the  formula: https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg
+### `Waves.wave(y, select, seconds, axisOrOptions)`
+- `y` number (input)
+- `select` wave reference (optional)
+- `seconds` number (optional, auto-advance)
+- `axisOrOptions` string or options object
 
+Options:
+- `axis`: `'x' | 'z' | 'xz'`
+- `amplitude`: number
+- `refresh`: number
+- `select`: wave ref
+- `seconds`: number
+- `normalize`: boolean
+- `range`: `[min, max]`
+- `domain`: `[min, max]`
+- `samples`: number
 
+Returns:
+- number (`x` or `z`) or `{ x, z }` if `axis: 'xz'`
 
+### `Waves.createSampler(options)`
+Use when you want a reusable sampler.
+```js
+const sampler = Waves.createSampler({ axis: 'xz', amplitude: 60 });
+const out = sampler.sample(10);
+```
 
+### `Waves.sample(y, refresh, axisOrOptions)`
+Lower-level helper if you prefer explicit refresh.
+
+### `Waves.setWaveParams(options)`
+Sets defaults used by `Waves.wave()`.
+
+### `Waves.data`
+Array of preset definitions.
+
+## UI Guidance
+- Show a friendly label (for example title-case the wave name).
+- Store the `wave` string in saved projects. Use index only if you control the list order.
+
+## Notes
+- `amplitude` is preferred. `scale` is supported for backward compatibility.
+- Time is not built in. Add it yourself by changing the input `y` over time.
+- Safe usage: `Waves.wave(...)` or `p.waves(...)`. Avoid relying on a global `wave(...)`.
+
+## Versioning
+- Patch: fixes/docs only.
+- Minor: new waves/options (non-breaking).
+- Major: breaking changes or renamed identifiers.
