@@ -6,9 +6,6 @@ Use it to turn a single input (`y`) into stable offsets (`x`, `z`, or both). Thi
 
 **Signature**
 `Waves.wave(y, select, seconds, axisOrOptions)`
-```js
-const waveNames = ['classicSine', 'sine', 'sharpPeaksSine', 'rectangular', 'pulse', 'rectangularSine', 'mountainPeaks', 'valleys', 'zigZagSine', 'batman', 'offsetSine', 'stepsDown', 'steps', 'classSine', 'bumpySine', 'upDownNoise', 'metaSine', 'triangle', 'rampWithPeriodHeight', 'rampDownSaw', 'rampUpSaw', 'fadeOut', 'growRandom', 'noise', 'fuzzyPulse', 'upDownPulse', 'baldPatch', 'fuzzyPeakSine', 'rampUpSine', 'triangleSine', 'roundLinkedSine', 'halfAndHalfSine', 'smoothSolidSine'];
-```
 
 ## Quick Start
 
@@ -119,6 +116,10 @@ Use any `wave` or `shape` below as the `select` value.
 | 34 | roundLinkedSine | scatterSphere |
 | 35 | halfAndHalfSine | crissCrossUpDown |
 | 36 | smoothSolidSine | dna |
+
+```js
+const waveNames = ['classicSine', 'sine', 'sharpPeaksSine', 'rectangular', 'pulse', 'rectangularSine', 'mountainPeaks', 'valleys', 'zigZagSine', 'batman', 'offsetSine', 'stepsDown', 'steps', 'classSine', 'bumpySine', 'upDownNoise', 'metaSine', 'triangle', 'rampWithPeriodHeight', 'rampDownSaw', 'rampUpSaw', 'fadeOut', 'growRandom', 'noise', 'fuzzyPulse', 'upDownPulse', 'baldPatch', 'fuzzyPeakSine', 'rampUpSine', 'triangleSine', 'roundLinkedSine', 'halfAndHalfSine', 'smoothSolidSine'];
+```
 
 ### 2) Adjust output size (amplitude)
 ```js
