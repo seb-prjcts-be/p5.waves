@@ -67,7 +67,6 @@ Matching is case-insensitive, and spaces/hyphens are ignored.
 ```js
 Waves.wave(20, 'classicSine');
 Waves.wave(20, 'Classic Sine');   // alias (case-insensitive)
-Waves.wave(20, 'ellipse');        // old shape alias
 Waves.wave(20, 0);                // index
 ```
 
