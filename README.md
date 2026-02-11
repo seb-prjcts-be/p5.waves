@@ -188,6 +188,39 @@ function draw() {
 }
 ```
 
+## Example 2: Seconds Parameter
+
+```js
+let t = 0;
+
+function setup() {
+  createCanvas(600, 600);
+
+  Waves.setWaveParams({
+    axis: 'x',
+    amplitude: 120,
+    seconds: 1,
+    normalize: true,
+    range: [-1, 1],
+    domain: [0, 600],
+    samples: 512
+  });
+}
+
+function draw() {
+  background(245, 30);
+
+  for (let y = 0; y < height; y += 10) {
+    const x = Waves.wave(y + t);
+    circle(width / 2 + x, y, 5);
+  }
+
+  t += 0.01;
+}
+```
+
+`seconds` (or the third argument to `Waves.wave`) auto-advances the wave selection/refresh on a real-time interval. Every `seconds` interval, the wave index/refresh ticks forward using `millis()` (or `performance.now()` if p5 is not present). Set it to `0` or omit it to disable the auto-advance.
+
 ## Reference (Short)
 
 ### `Waves.wave(y, select, seconds, axisOrOptions)`
