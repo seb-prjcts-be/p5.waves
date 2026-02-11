@@ -16,7 +16,7 @@ Wave names are camelCase (for example `classicSine`). Legacy spaced names and sh
 ```
 **CDN (jsDelivr GitHub)**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/user/repo@version/file"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.0.0/p5.waves.min.js"></script>
 ```
 
 **2) Minimal sketch (global mode)**
