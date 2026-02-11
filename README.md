@@ -6,6 +6,9 @@ Use it to turn a single input (`y`) into stable offsets (`x`, `z`, or both). Thi
 
 **Signature**
 `Waves.wave(y, select, seconds, axisOrOptions)`
+```js
+const modes = ['global', 'instance'];
+```
 
 ## Quick Start
 
