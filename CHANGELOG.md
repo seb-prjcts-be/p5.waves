@@ -6,6 +6,8 @@
 - Added soft-clipping safety for explosive sculptural formulas before normalization.
 - Implemented stable per-wave normalization with RMS energy matching for more predictable dynamics.
 - Rebuilt `createSampler()` around the new architecture, including optional modulation.
+- Added `mode: 'stable' | 'wild'` and `unpredictability` controls for controlled chaos on top of the stable core.
+- Added `createGridSampler()` / `grid()` for binary matrix workflows (14x14 style) with thresholding and pair stepping.
 - Replaced preset set with 5 rewritten examples: `classicSine`, `triangle`, `sawRise`, `squarePulse`, `tangentBloom`.
 
 ## 2.0.0

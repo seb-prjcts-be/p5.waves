@@ -2,12 +2,18 @@ let t = 0;
 
 function setup() {
   createCanvas(600, 600);
+  noStroke();
+  fill(0);
 
   Waves.setWaveParams({
     axis: 'x',
-    amplitude: 80,
-    select: 13,
-    normalize: false
+    amplitude: 90,
+    frequency: 0.02,
+    select: 4,
+    mode: 'wild',
+    unpredictability: 0.35,
+    normalize: true,
+    range: [-1, 1]
   });
 }
 
@@ -21,5 +27,3 @@ function draw() {
 
   t += 0.01;
 }
-
-

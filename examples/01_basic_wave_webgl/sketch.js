@@ -5,7 +5,7 @@ const SIZE = 8;
 function setup() {
   createCanvas(600, 600, WEBGL);
   noStroke();
-  fill(20);
+  fill(0);
 }
 
 function draw() {
@@ -15,7 +15,12 @@ function draw() {
 
   for (let y = -200; y <= 200; y += STEP) {
     for (let x = -200; x <= 200; x += STEP) {
-      const o = Waves.wave(y + t, 'classicSine', null, { axis: 'xz', amplitude: 80 });
+      const o = Waves.wave(y + t, 'classicSine', null, {
+        axis: 'xz',
+        amplitude: 80,
+        frequency: 0.012,
+        normalize: true
+      });
       push();
       translate(x + o.x, 0, y + o.z);
       box(SIZE);
@@ -25,5 +30,3 @@ function draw() {
 
   t += 0.01;
 }
-
-

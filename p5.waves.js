@@ -21,6 +21,8 @@
     amplitude: 1,
     frequency: 0.01,
     phase: 0,
+    mode: 'stable',
+    unpredictability: 0,
     refresh: 0,
     select: null,
     seconds: 0,
@@ -64,6 +66,15 @@
     const b = toNumber(value[1], def[1]);
     if (!Number.isFinite(a) || !Number.isFinite(b) || a === b) return def;
     return [a, b];
+  }
+
+  function toUnit(value, fallback) {
+    return clamp(toNumber(value, fallback ?? 0), 0, 1);
+  }
+
+  function resolveMode(value) {
+    const m = normalizeName(value || 'stable');
+    return m === 'wild' ? 'wild' : 'stable';
   }
 
   function mapUnitToRange(value, range) {
@@ -119,6 +130,10 @@
     const v0 = hash01(xi + seed * 0.07);
     const v1 = hash01(xi + 1 + seed * 0.07);
     return lerp(v0, v1, fade(xf));
+  }
+
+  function noiseSigned(x, seed) {
+    return noise1D(x, seed) * 2 - 1;
   }
 
   function shapeSine(u) {
@@ -347,7 +362,24 @@
     const inputShift = toNumber(v.t, 0);
     const phaseShift = toNumber(v.phase, 0);
     const resolvedInput = input + inputShift;
-    const basePhase = resolvedInput * settings.frequency + settings.phase + phaseShift;
+    const mode = resolveMode(settings.mode);
+    const unpredictability = toUnit(settings.unpredictability, 0);
+
+    let phaseNoise = 0;
+    let frequencyScale = 1;
+    let amplitudeNoise = 1;
+    let wildMix = 0;
+    if (mode === 'wild' && unpredictability > 0) {
+      frequencyScale += noiseSigned(resolvedInput * 0.17 + settings.phase * 0.31, axisSeed + 17) * unpredictability * 0.7;
+      frequencyScale = Math.max(0.05, frequencyScale);
+      phaseNoise = noiseSigned(resolvedInput * 0.09 + settings.frequency * 13.7, axisSeed + 29) * unpredictability * 0.75;
+      amplitudeNoise += noiseSigned(resolvedInput * 0.23 + settings.phase * 0.5, axisSeed + 41) * unpredictability * 0.45;
+      amplitudeNoise = Math.max(0.05, amplitudeNoise);
+      wildMix = unpredictability * 0.25;
+    }
+
+    const effectiveFrequency = settings.frequency * frequencyScale;
+    const basePhase = resolvedInput * effectiveFrequency + settings.phase + phaseShift + phaseNoise;
 
     let modSignal = 0;
     let modAmp = 1;
@@ -355,16 +387,20 @@
 
     if (settings.modulation) {
       const mod = settings.modulation;
-      const modPhase = resolvedInput * mod.frequency + mod.phase;
+      const modPhase = resolvedInput * mod.frequency + mod.phase + phaseNoise * 0.25;
       modSignal = modulationShapeSignal(mod.shape, modPhase, axisSeed);
       phase = basePhase + modSignal * mod.phaseDepth;
       modAmp = Math.max(0, 1 + modSignal * mod.amplitudeDepth);
     }
 
-    const raw = evaluateWave(def, phase, axisSeed);
+    let raw = evaluateWave(def, phase, axisSeed);
+    if (wildMix > 0) {
+      const wildCarrier = noiseSigned(resolvedInput * (effectiveFrequency * 18 + 0.37) + phaseNoise, axisSeed + 101);
+      raw = lerp(raw, wildCarrier, wildMix);
+    }
     const norm = settings.normalize ? normalizeWaveValue(raw, settings.norm) : clamp(raw, -1, 1);
     const ranged = mapUnitToRange(norm, settings.range);
-    return ranged * settings.amplitude * modAmp;
+    return ranged * settings.amplitude * modAmp * amplitudeNoise;
   }
 
   function nowSeconds() {
@@ -385,6 +421,8 @@
     );
     const frequency = toNumber(opts.frequency ?? WAVE_DEFAULTS.frequency, WAVE_DEFAULTS.frequency);
     const phase = toNumber(opts.phase ?? WAVE_DEFAULTS.phase, WAVE_DEFAULTS.phase);
+    const mode = resolveMode(opts.mode ?? WAVE_DEFAULTS.mode);
+    const unpredictability = toUnit(opts.unpredictability ?? WAVE_DEFAULTS.unpredictability, WAVE_DEFAULTS.unpredictability);
     const normalize = opts.normalize ?? WAVE_DEFAULTS.normalize;
     const range = toRange(opts.range ?? WAVE_DEFAULTS.range, [-1, 1]);
     const modulation = resolveModulation(opts.modulation ?? WAVE_DEFAULTS.modulation);
@@ -411,6 +449,8 @@
       scale: amplitude,
       frequency,
       phase,
+      mode,
+      unpredictability,
       normalize,
       range,
       modulation,
@@ -427,6 +467,8 @@
             amplitude,
             frequency,
             phase,
+            mode,
+            unpredictability,
             normalize,
             range,
             modulation,
@@ -439,6 +481,8 @@
             amplitude,
             frequency,
             phase,
+            mode,
+            unpredictability,
             normalize,
             range,
             modulation,
@@ -465,6 +509,8 @@
       amplitude,
       toNumber(opts.frequency ?? WAVE_DEFAULTS.frequency, WAVE_DEFAULTS.frequency),
       toNumber(opts.phase ?? WAVE_DEFAULTS.phase, WAVE_DEFAULTS.phase),
+      resolveMode(opts.mode ?? WAVE_DEFAULTS.mode),
+      toUnit(opts.unpredictability ?? WAVE_DEFAULTS.unpredictability, WAVE_DEFAULTS.unpredictability),
       opts.normalize ?? WAVE_DEFAULTS.normalize,
       JSON.stringify(opts.range ?? WAVE_DEFAULTS.range),
       JSON.stringify(opts.modulation ?? WAVE_DEFAULTS.modulation),
@@ -494,6 +540,8 @@
     }
     if (opts.frequency !== undefined) WAVE_DEFAULTS.frequency = toNumber(opts.frequency, WAVE_DEFAULTS.frequency);
     if (opts.phase !== undefined) WAVE_DEFAULTS.phase = toNumber(opts.phase, WAVE_DEFAULTS.phase);
+    if (opts.mode !== undefined) WAVE_DEFAULTS.mode = resolveMode(opts.mode);
+    if (opts.unpredictability !== undefined) WAVE_DEFAULTS.unpredictability = toUnit(opts.unpredictability, WAVE_DEFAULTS.unpredictability);
     if (opts.refresh !== undefined) WAVE_DEFAULTS.refresh = opts.refresh;
     if (opts.select !== undefined) WAVE_DEFAULTS.select = opts.select;
     if (opts.seconds !== undefined) WAVE_DEFAULTS.seconds = opts.seconds;
@@ -515,6 +563,8 @@
     );
     const frequency = toNumber(opts.frequency ?? WAVE_DEFAULTS.frequency, WAVE_DEFAULTS.frequency);
     const phase = toNumber(opts.phase ?? WAVE_DEFAULTS.phase, WAVE_DEFAULTS.phase);
+    const mode = resolveMode(opts.mode ?? WAVE_DEFAULTS.mode);
+    const unpredictability = toUnit(opts.unpredictability ?? WAVE_DEFAULTS.unpredictability, WAVE_DEFAULTS.unpredictability);
 
     const baseRefresh = opts.refresh ?? WAVE_DEFAULTS.refresh ?? 0;
     const inlineSeconds = seconds !== undefined ? seconds : opts.seconds;
@@ -538,6 +588,8 @@
       amplitude,
       frequency,
       phase,
+      mode,
+      unpredictability,
       normalize,
       range,
       modulation
@@ -566,6 +618,251 @@
     return out;
   }
 
+  function scalarFromAxisSample(sample, axis) {
+    if (axis === 'x') return toNumber(sample && sample.x, 0);
+    if (axis === 'z') return toNumber(sample && sample.z, 0);
+    const x = toNumber(sample && sample.x, 0);
+    const z = toNumber(sample && sample.z, 0);
+    return (x + z) * 0.5;
+  }
+
+  function combineGridValues(a, b, mode) {
+    const m = normalizeName(mode || 'add');
+    if (m === 'subtract' || m === 'sub') return a - b;
+    if (m === 'multiply' || m === 'mul') return a * b;
+    if (m === 'max') return Math.max(a, b);
+    if (m === 'min') return Math.min(a, b);
+    if (m === 'avg' || m === 'average') return (a + b) * 0.5;
+    return a + b;
+  }
+
+  function createGridSampler(options) {
+    const opts = options || {};
+    const cols = Math.max(1, Math.floor(toNumber(opts.cols ?? opts.grid ?? 14, 14)));
+    const rows = Math.max(1, Math.floor(toNumber(opts.rows ?? opts.grid ?? 14, 14)));
+    const inputScale = toNumber(opts.inputScale, TAU);
+    const threshold = toNumber(opts.threshold, 0);
+    const mode = resolveMode(opts.mode ?? WAVE_DEFAULTS.mode);
+    const unpredictability = toUnit(opts.unpredictability ?? WAVE_DEFAULTS.unpredictability, WAVE_DEFAULTS.unpredictability);
+    const thresholdJitter = toNumber(opts.thresholdJitter, 0.35);
+    const high = toNumber(opts.high ?? 1, 1);
+    const low = toNumber(opts.low ?? 0, 0);
+    const invert = !!opts.invert;
+    const combine = normalizeName(opts.combine || 'add');
+    const timeScaleA = toNumber(opts.timeScaleA ?? opts.speedA, 1);
+    const timeScaleB = toNumber(opts.timeScaleB ?? opts.speedB, -1);
+    const phaseA = toNumber(opts.phaseA, 0);
+    const phaseB = toNumber(opts.phaseB, 0);
+    const varsA = opts.varsA ?? opts.vars ?? null;
+    const varsB = opts.varsB ?? opts.vars ?? null;
+    const axisA = toAxis(opts.axisA ?? 'x', 'x');
+    const axisB = toAxis(opts.axisB ?? 'x', 'x');
+    const autoStepOnUniform = !!opts.autoStepOnUniform;
+    const autoStepA = Math.floor(toNumber(opts.autoStepA, 1));
+    const autoGap = Math.floor(toNumber(opts.autoGap, 10));
+    const cellsSize = cols * rows;
+
+    const baseAmplitude = toNumber(opts.amplitude ?? 1, 1);
+    const baseFrequency = toNumber(opts.frequency ?? 1, 1);
+    const basePhase = toNumber(opts.phase ?? 0, 0);
+    const baseNormalize = opts.normalize ?? true;
+    const baseRange = toRange(opts.range ?? [-1, 1], [-1, 1]);
+    const baseModulation = opts.modulation ?? null;
+    const baseRefresh = opts.refresh ?? 0;
+    const gridSeed = seedFrom(`${baseRefresh}|${cols}|${rows}|${mode}|${unpredictability}`);
+
+    const aChoice = resolveWaveRef(opts.waveA ?? opts.algoA ?? opts.xWave ?? opts.wave);
+    const bChoice = resolveWaveRef(opts.waveB ?? opts.algoB ?? opts.zWave ?? opts.wave);
+    const picked = pickIndices(seedFrom(baseRefresh));
+    let waveAIndex = aChoice ? aChoice.index : picked.xIndex;
+    let waveBIndex = bChoice ? bChoice.index : picked.zIndex;
+
+    const paramsA = {
+      axis: axisA,
+      amplitude: toNumber(opts.amplitudeA ?? baseAmplitude, baseAmplitude),
+      frequency: toNumber(opts.frequencyA ?? baseFrequency, baseFrequency),
+      phase: toNumber(opts.phaseWaveA ?? basePhase, basePhase),
+      mode: resolveMode(opts.modeA ?? mode),
+      unpredictability: toUnit(opts.unpredictabilityA ?? unpredictability, unpredictability),
+      normalize: opts.normalizeA ?? baseNormalize,
+      range: toRange(opts.rangeA ?? baseRange, baseRange),
+      refresh: opts.refreshA ?? baseRefresh,
+      modulation: opts.modulationA ?? baseModulation
+    };
+
+    const paramsB = {
+      axis: axisB,
+      amplitude: toNumber(opts.amplitudeB ?? baseAmplitude, baseAmplitude),
+      frequency: toNumber(opts.frequencyB ?? baseFrequency, baseFrequency),
+      phase: toNumber(opts.phaseWaveB ?? basePhase, basePhase),
+      mode: resolveMode(opts.modeB ?? mode),
+      unpredictability: toUnit(opts.unpredictabilityB ?? unpredictability, unpredictability),
+      normalize: opts.normalizeB ?? baseNormalize,
+      range: toRange(opts.rangeB ?? baseRange, baseRange),
+      refresh: opts.refreshB ?? (baseRefresh + 1),
+      modulation: opts.modulationB ?? baseModulation
+    };
+
+    let samplerA = null;
+    let samplerB = null;
+    let lastWildJumpTick = -1;
+
+    function wrapIndex(i) {
+      const len = WAVES.length;
+      return ((Math.floor(i) % len) + len) % len;
+    }
+
+    function rebuildSamplers() {
+      samplerA = createSampler({ ...paramsA, wave: waveAIndex });
+      samplerB = createSampler({ ...paramsB, wave: waveBIndex });
+    }
+
+    function setWaves(nextA, nextB) {
+      const resolvedA = resolveWaveRef(nextA);
+      const resolvedB = resolveWaveRef(nextB);
+      if (resolvedA) waveAIndex = resolvedA.index;
+      if (resolvedB) waveBIndex = resolvedB.index;
+      rebuildSamplers();
+      return {
+        waveAIndex,
+        waveBIndex,
+        waveA: WAVES[waveAIndex],
+        waveB: WAVES[waveBIndex]
+      };
+    }
+
+    function nextPair(stepA, gap) {
+      const aStep = Math.floor(toNumber(stepA, autoStepA || 1));
+      const bGap = Math.floor(toNumber(gap, autoGap || 10));
+      waveAIndex = wrapIndex(waveAIndex + aStep);
+      waveBIndex = wrapIndex(waveAIndex + bGap);
+      rebuildSamplers();
+      return {
+        waveAIndex,
+        waveBIndex,
+        waveA: WAVES[waveAIndex],
+        waveB: WAVES[waveBIndex]
+      };
+    }
+
+    rebuildSamplers();
+
+    return {
+      cols,
+      rows,
+      threshold,
+      mode,
+      unpredictability,
+      combine,
+      high,
+      low,
+      invert,
+      inputScale,
+      sample(time, out) {
+        const timeValue = toNumber(time, 0);
+        const cells = out && out.cells && out.cells.length >= cellsSize
+          ? out.cells
+          : new Uint8Array(cellsSize);
+        const values = out && out.values && out.values.length >= cellsSize
+          ? out.values
+          : new Float32Array(cellsSize);
+
+        let black = 0;
+        let white = 0;
+        let idx = 0;
+        const colDiv = cols || 1;
+        const rowDiv = rows || 1;
+        let frameThreshold = threshold;
+        let timeJitterA = 1;
+        let timeJitterB = 1;
+
+        if (mode === 'wild' && unpredictability > 0) {
+          frameThreshold += noiseSigned(timeValue * 0.19 + 1.7, gridSeed + 3) * unpredictability * thresholdJitter;
+          timeJitterA += noiseSigned(timeValue * 0.07 + 5.2, gridSeed + 9) * unpredictability * 0.55;
+          timeJitterB += noiseSigned(timeValue * 0.05 + 9.8, gridSeed + 11) * unpredictability * 0.55;
+          timeJitterA = Math.max(0.2, timeJitterA);
+          timeJitterB = Math.max(0.2, timeJitterB);
+
+          if (unpredictability > 0.35) {
+            const jumpTick = Math.floor(timeValue * (0.7 + unpredictability * 2.2));
+            if (jumpTick !== lastWildJumpTick) {
+              const jumpPulse = noiseSigned(jumpTick * 0.73 + 3.1, gridSeed + 47);
+              if (jumpPulse > 0.82 - unpredictability * 0.3) {
+                const jump = 1 + Math.floor(unpredictability * 2);
+                const gapJitter = autoGap + Math.floor(noiseSigned(jumpTick * 0.31 + 8.4, gridSeed + 53) * (2 + unpredictability * 3));
+                nextPair(jump, gapJitter);
+              }
+              lastWildJumpTick = jumpTick;
+            }
+          }
+        }
+
+        for (let row = 0; row < rows; row++) {
+          const ny = (row / rowDiv) * inputScale;
+          for (let col = 0; col < cols; col++) {
+            const nx = (col / colDiv) * inputScale;
+            const aIn = nx + timeValue * timeScaleA * timeJitterA + phaseA;
+            const bIn = ny + timeValue * timeScaleB * timeJitterB + phaseB;
+            const a = scalarFromAxisSample(samplerA.sample(aIn, varsA), axisA);
+            const b = scalarFromAxisSample(samplerB.sample(bIn, varsB), axisB);
+            const v = combineGridValues(a, b, combine);
+            const on = invert ? v <= frameThreshold : v > frameThreshold;
+            const cellVal = on ? high : low;
+            cells[idx] = on ? 1 : 0;
+            values[idx] = cellVal;
+            idx++;
+            if (on) black++;
+            else white++;
+          }
+        }
+
+        const uniform = black === cellsSize || white === cellsSize;
+        if (autoStepOnUniform && uniform) {
+          nextPair(autoStepA, autoGap);
+        }
+
+        return {
+          cols,
+          rows,
+          cells,
+          values,
+          black,
+          white,
+          uniform,
+          threshold: frameThreshold,
+          mode,
+          unpredictability,
+          combine,
+          waveAIndex,
+          waveBIndex,
+          waveA: WAVES[waveAIndex],
+          waveB: WAVES[waveBIndex]
+        };
+      },
+      setWaves,
+      nextPair,
+      getState() {
+        return {
+          cols,
+          rows,
+          waveAIndex,
+          waveBIndex,
+          waveA: WAVES[waveAIndex],
+          waveB: WAVES[waveBIndex],
+          threshold,
+          mode,
+          unpredictability,
+          combine,
+          inputScale
+        };
+      }
+    };
+  }
+
+  function grid(time, options) {
+    return createGridSampler(options).sample(time);
+  }
+
   const api = {
     data: WAVES,
     families: {
@@ -575,7 +872,9 @@
     getWaveByIndex,
     getWaveByName,
     createSampler,
+    createGridSampler,
     sample,
+    grid,
     setWaveParams,
     wave,
     seedFrom
@@ -588,8 +887,14 @@
     global.p5.prototype.createWaveSampler = function (refresh, options) {
       return createSampler({ ...(options || {}), refresh });
     };
+    global.p5.prototype.createWaveGridSampler = function (options) {
+      return createGridSampler(options);
+    };
     global.p5.prototype.setWaveParams = function (options) {
       return setWaveParams(options);
+    };
+    global.p5.prototype.waveGrid = function (time, options) {
+      return grid(time, options);
     };
     global.p5.prototype.waves = function (y, select, seconds, axisOrOptions) {
       return wave(y, select, seconds, axisOrOptions);

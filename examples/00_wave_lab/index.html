@@ -18,6 +18,17 @@
         <p class="subtitle">Main playground for tuning p5.waves v2.1.0</p>
 
         <section class="control-group">
+          <h2>Preview</h2>
+          <label>
+            Preview Mode
+            <select id="preview-mode">
+              <option value="line" selected>Line Field</option>
+              <option value="matrix14">Matrix 14x14</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="control-group">
           <h2>Wave Selection</h2>
           <label>
             Axis
@@ -56,6 +67,9 @@
             <input id="seconds" type="range" min="0" max="8" step="0.25" value="0" />
             <span id="seconds-value" class="value"></span>
           </label>
+          <p id="autoadvance-note" class="mode-note hidden">
+            Auto-advance active: advanced controls are locked for stability.
+          </p>
         </section>
 
         <section class="control-group">
@@ -74,6 +88,18 @@
             Phase
             <input id="phase" type="range" min="-2" max="2" step="0.01" value="0" />
             <span id="phase-value" class="value"></span>
+          </label>
+          <label>
+            Mode
+            <select id="mode">
+              <option value="stable" selected>stable</option>
+              <option value="wild">wild</option>
+            </select>
+          </label>
+          <label id="unpredictability-row">
+            Unpredictability
+            <input id="unpredictability" type="range" min="0" max="1" step="0.01" value="0.45" />
+            <span id="unpredictability-value" class="value"></span>
           </label>
           <label class="inline">
             <input id="normalize" type="checkbox" checked />
@@ -133,13 +159,6 @@
 
         <section class="control-group">
           <h2>Render Controls</h2>
-          <label>
-            Preview Mode
-            <select id="preview-mode">
-              <option value="line" selected>Line Field</option>
-              <option value="matrix14">Matrix 14x14</option>
-            </select>
-          </label>
           <label>
             Time Speed
             <input id="time-speed" type="range" min="0" max="0.2" step="0.001" value="0.02" />
