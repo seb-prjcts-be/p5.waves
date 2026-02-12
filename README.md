@@ -43,6 +43,76 @@ function draw() {
 }
 ```
 
+### If You See `ReferenceError: Waves is not defined`
+
+`Waves` exists only after `p5.waves.min.js` is loaded.
+In p5.js Editor, add this to `index.html` (not only `sketch.js`):
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js"></script>
+<script src="sketch.js"></script>
+```
+
+### p5.js Editor (No `index.html` edits, paste only in `sketch.js`)
+
+Use this when you want a guaranteed start from `sketch.js` only:
+
+```js
+let grid = null;
+let t = 0;
+let wavesReady = false;
+
+function loadWaves(url) {
+  return new Promise((resolve, reject) => {
+    if (window.Waves) return resolve();
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('Could not load p5.waves from CDN'));
+    document.head.appendChild(s);
+  });
+}
+
+async function setup() {
+  createCanvas(560, 560);
+  noStroke();
+
+  try {
+    await loadWaves('https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js');
+    grid = Waves.createGridSampler({
+      grid: 14,
+      waveA: 'classicSine',
+      waveB: 'tangentBloom'
+    });
+    wavesReady = true;
+  } catch (err) {
+    console.error(err);
+    noLoop();
+  }
+}
+
+function draw() {
+  background(245);
+  if (!wavesReady || !grid) return;
+
+  const frame = grid.sample(t);
+  const cols = 14;
+  const rows = 14;
+  const cell = min(width / cols, height / rows);
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      fill(frame.cells[idx] ? 0 : 255);
+      rect(c * cell, r * cell, cell, cell);
+    }
+  }
+
+  t += 0.02;
+}
+```
+
 ## Core Model
 
 - `shape`: pure wave form (`classicSine`, `triangle`, ...)
@@ -82,8 +152,94 @@ new p5(function (p) {
 });
 ```
 
-## Main Options
+## Simple Recipes
 
+### 1) Adjust output size (`amplitude`)
+```js
+const x = Waves.wave(y, 'classicSine', null, { amplitude: 120 });
+```
+
+### 2) Sample both axes (`x` and `z`)
+```js
+const o = Waves.wave(y, 'classicSine', null, { axis: 'xz', amplitude: 60 });
+// o = { x, z }
+```
+
+### 3) Smooth / normalize output
+```js
+const x = Waves.wave(y, 'classicSine', null, {
+  normalize: true,
+  range: [-1, 1]
+});
+```
+
+### 4) Set defaults once
+```js
+function setup() {
+  createCanvas(400, 200);
+  Waves.setWaveParams({
+    axis: 'x',
+    amplitude: 80,
+    frequency: 0.012,
+    select: 'classicSine',
+    normalize: true
+  });
+}
+
+function draw() {
+  const x = Waves.wave(40 + frameCount * 0.02);
+}
+```
+
+## Sampling Patterns
+
+### Animate a wave
+```js
+let t = 0;
+function draw() {
+  const x = Waves.wave(40 + t, 'classicSine');
+  t += 0.02;
+}
+```
+
+### Grid / WEBGL style
+```js
+let t = 0;
+function setup() {
+  createCanvas(400, 400, WEBGL);
+  noStroke();
+}
+
+function draw() {
+  background(240);
+  rotateY(frameCount * 0.01);
+  for (let y = -150; y <= 150; y += 30) {
+    for (let x = -150; x <= 150; x += 30) {
+      const o = Waves.wave(y + t, 'classicSine', null, {
+        axis: 'xz',
+        amplitude: 60,
+        frequency: 0.012,
+        normalize: true
+      });
+      push();
+      translate(x + o.x, 0, y + o.z);
+      box(6);
+      pop();
+    }
+  }
+  t += 0.02;
+}
+```
+
+## Short Reference
+
+### `Waves.wave(y, select, seconds, axisOrOptions)`
+- `y`: number input
+- `select`: wave reference (optional)
+- `seconds`: number (optional, auto-advance)
+- `axisOrOptions`: string axis or options object
+
+Options:
 - `axis`: `'x' | 'z' | 'xz'`
 - `amplitude`: number
 - `frequency`: number
@@ -91,13 +247,16 @@ new p5(function (p) {
 - `mode`: `'stable' | 'wild'`
 - `unpredictability`: `0..1`
 - `refresh`: number
-- `seconds`: auto-advance interval in seconds
+- `seconds`: number
+- `select`: wave reference
 - `normalize`: boolean
 - `range`: `[min, max]`
 - `modulation`: `{ shape, frequency, phase, phaseDepth, amplitudeDepth }`
 
-## Reusable Sampler
+Returns:
+- number (`x` or `z`) or `{ x, z }` when `axis: 'xz'`
 
+### `Waves.createSampler(options)`
 ```js
 const sampler = Waves.createSampler({
   axis: 'xz',
@@ -110,31 +269,45 @@ const sampler = Waves.createSampler({
 const out = sampler.sample(12.5); // { x, z }
 ```
 
-## Binary Grid Sampling (14x14)
+## Binary Grid Sampling (14x14, copy-paste ready)
+
+Paste the whole block as a sketch (not only the `createGridSampler(...)` lines).
 
 ```js
-const grid = Waves.createGridSampler({
-  cols: 14,
-  rows: 14,
-  waveA: 'classicSine',
-  waveB: 'tangentBloom',
-  mode: 'wild',
-  unpredictability: 0.6,
-  frequencyA: 0.22,
-  frequencyB: 0.22,
-  normalizeA: true,
-  normalizeB: true,
-  inputScale: TWO_PI,
-  combine: 'add',
-  threshold: 0,
-  timeScaleA: 1,
-  timeScaleB: -1
-});
+let grid;
+let t = 0;
 
-const frame = grid.sample(t);
-// frame.cells -> Uint8Array(14 * 14) with 0/1 values
-if (frame.uniform) grid.nextPair(1, 2);
+function setup() {
+  createCanvas(560, 560);
+  noStroke();
+  grid = Waves.createGridSampler({
+    grid: 14,
+    waveA: 'classicSine',
+    waveB: 'tangentBloom'
+  });
+}
+
+function draw() {
+  background(245);
+  const frame = grid.sample(t); // frame.cells => Uint8Array(14*14) with 0/1
+  const cols = 14;
+  const rows = 14;
+  const cell = min(width / cols, height / rows);
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      fill(frame.cells[idx] ? 0 : 255);
+      rect(c * cell, r * cell, cell, cell);
+    }
+  }
+
+  if (frame.uniform) grid.nextPair(1, 2);
+  t += 0.02;
+}
 ```
+
+For full control (`mode`, `unpredictability`, `frequencyA/B`, thresholds, combine modes), see `examples/00_wave_lab`.
 
 ## Examples
 
