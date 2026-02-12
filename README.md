@@ -276,3 +276,40 @@ Array of preset definitions.
 - Patch: fixes/docs only.
 - Minor: new waves/options (non-breaking).
 - Major: breaking changes or renamed identifiers.
+
+## Makers and Contributors
+Wave formula contributors in the original dataset: `tw@GenerativePunk` and `gh@ffd8`.
+
+🙏 Thanks & Credits
+
+This wave collection grew out of experiments shared across generative art communities.
+Many of the formulas in this dataset were inspired by, adapted from, or directly attributed to the following handles:
+
+tw@GenerativePunk
+
+gh@ffd8
+
+Some entries reference external explorations and educational material, including:
+
+TitanWolf article on waveform construction
+
+Jeremy Douglass (p5.js Editor sketch reference)
+
+Where a handle or source is included in the dataset, it reflects the best available attribution at the time of compilation.
+
+If you recognize your work here and would like:
+
+clearer attribution
+
+a link added
+
+your handle updated
+
+or removal
+
+please open an issue or contact the maintainer.
+
+This library exists as a living archive of playful math, community tinkering, and waveform aesthetics.
+Every sine, pulse, noise field, and ramp here stands on shared curiosity.
+
+Thank you to everyone who bends math into drawing.
