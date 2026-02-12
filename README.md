@@ -17,7 +17,7 @@ Energy-consistent wave sampling for p5.js.
 
 ### CDN (jsDelivr GitHub)
 ```html
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@main/p5.waves.min.js"></script>
 ```
 
 ### 2) Minimal sketch (global mode)
@@ -186,7 +186,7 @@ async function setup() {
   noStroke();
 
   try {
-    await loadWaves('https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js');
+    await loadWaves('https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@main/p5.waves.min.js');
     grid = Waves.createGridSampler({
       grid: 14,
       waveA: 'classicSine',
