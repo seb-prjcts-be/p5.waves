@@ -5,6 +5,8 @@ const waveNames = [];
 let t = 0;
 let matrixSampler = null;
 let matrixSamplerKey = '';
+let codeOutputEl = null;
+let copyButtonResetTimer = 0;
 const matrixBuffers = {
   cells: new Uint8Array(14 * 14),
   values: new Float32Array(14 * 14)
@@ -15,7 +17,7 @@ const ids = [
   'refresh', 'seconds', 'amplitude', 'frequency', 'phase', 'mode', 'unpredictability',
   'normalize', 'range-min', 'range-max',
   'mod-enable', 'mod-shape', 'mod-frequency', 'mod-phase', 'mod-phase-depth', 'mod-amp-depth',
-  'preview-mode', 'time-speed', 'step', 'show-points', 'show-grid', 'surprise'
+  'preview-mode', 'time-speed', 'step', 'show-points', 'show-grid', 'surprise', 'copy-code'
 ];
 
 const valueIds = [
@@ -40,6 +42,7 @@ function fmt(num, digits) {
 function setup() {
   for (let i = 0; i < ids.length; i++) controls[ids[i]] = document.getElementById(ids[i]);
   for (let i = 0; i < valueIds.length; i++) valueTargets[valueIds[i]] = document.getElementById(valueIds[i]);
+  codeOutputEl = document.getElementById('code-output');
 
   const defs = Array.isArray(Waves.data) ? Waves.data : [];
   for (let i = 0; i < defs.length; i++) {
@@ -92,6 +95,7 @@ function bindControls() {
     allInputs[i].addEventListener('change', updateUiState);
   }
   controls.surprise.addEventListener('click', randomizeControls);
+  controls['copy-code'].addEventListener('click', copyCodeSnippet);
 }
 
 function enforceRangeOrder() {
@@ -163,6 +167,8 @@ function updateUiState() {
 
   const isWild = controls.mode.value === 'wild';
   setControlDisabled('unpredictability', !isWild);
+
+  updateCodeSnippet(readOptions());
 }
 
 function readOptions() {
@@ -235,6 +241,223 @@ function resolveMatrixWaves(state) {
     waveA: selected,
     waveB: selected
   };
+}
+
+function codeNum(value, digits) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '0';
+  if (Number.isInteger(n)) return String(n);
+  return String(Number(n.toFixed(digits ?? 4)));
+}
+
+function codeStr(value) {
+  return `'${String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+}
+
+function buildWaveOptionsLiteral(state, indent) {
+  const sp = indent || '  ';
+  const opts = state.opts;
+  const lines = [
+    `${sp}axis: ${codeStr(opts.axis)}`,
+    `${sp}amplitude: ${codeNum(opts.amplitude, 4)}`,
+    `${sp}frequency: ${codeNum(opts.frequency, 4)}`,
+    `${sp}phase: ${codeNum(opts.phase, 4)}`,
+    `${sp}mode: ${codeStr(opts.mode)}`,
+    `${sp}unpredictability: ${codeNum(opts.unpredictability, 4)}`,
+    `${sp}refresh: ${codeNum(opts.refresh, 4)}`,
+    `${sp}normalize: ${opts.normalize ? 'true' : 'false'}`,
+    `${sp}range: [${codeNum(opts.range[0], 4)}, ${codeNum(opts.range[1], 4)}]`
+  ];
+
+  if (opts.xWave) lines.push(`${sp}xWave: ${codeStr(opts.xWave)}`);
+  if (opts.zWave) lines.push(`${sp}zWave: ${codeStr(opts.zWave)}`);
+
+  if (opts.modulation) {
+    lines.push(
+      `${sp}modulation: {\n` +
+      `${sp}  shape: ${codeStr(opts.modulation.shape)},\n` +
+      `${sp}  frequency: ${codeNum(opts.modulation.frequency, 4)},\n` +
+      `${sp}  phase: ${codeNum(opts.modulation.phase, 4)},\n` +
+      `${sp}  phaseDepth: ${codeNum(opts.modulation.phaseDepth, 4)},\n` +
+      `${sp}  amplitudeDepth: ${codeNum(opts.modulation.amplitudeDepth, 4)}\n` +
+      `${sp}}`
+    );
+  }
+
+  return lines.join(',\n');
+}
+
+function buildLineSnippet(state) {
+  const waveSelect = state.select ? codeStr(state.select) : 'null';
+  const waveSeconds = state.seconds > 0 ? codeNum(state.seconds, 3) : 'null';
+  const step = Math.max(1, state.step);
+  const speed = codeNum(state.speed, 4);
+
+  return `// Library input settings (exact preset from Wave Lab)
+const waveSelect = ${waveSelect};
+const waveSeconds = ${waveSeconds};
+const waveOptions = {
+${buildWaveOptionsLiteral(state, '  ')}
+};
+
+// Full core usage (line field)
+let t = 0;
+
+function setup() {
+  createCanvas(800, 520);
+  noFill();
+}
+
+function draw() {
+  background(245);
+  const centerX = width * 0.5;
+  const step = ${step};
+
+  beginShape();
+  stroke(0);
+  strokeWeight(2);
+  for (let y = 0; y <= height; y += step) {
+    const sample = Waves.wave(y + t, waveSelect, waveSeconds, waveOptions);
+    let xOffset = 0;
+    if (waveOptions.axis === 'x') xOffset = sample;
+    else if (waveOptions.axis === 'xz') xOffset = sample.x;
+
+    const x = centerX + xOffset;
+    vertex(x, y);
+${state.showPoints ? `    noStroke();
+    fill(255, 0, 0);
+    circle(x, y, 4);
+    noFill();
+    stroke(0);` : ''}
+  }
+  endShape();
+
+  t += ${speed};
+}`;
+}
+
+function buildMatrixSnippet(state) {
+  const waves = resolveMatrixWaves(state);
+  const freq = Math.max(0.001, state.opts.frequency * 18);
+  const speed = codeNum(state.speed, 4);
+
+  return `// Library input settings (exact preset from Wave Lab)
+const matrixSettings = {
+  cols: 14,
+  rows: 14,
+  waveA: ${codeStr(waves.waveA)},
+  waveB: ${codeStr(waves.waveB)},
+  axisA: 'x',
+  axisB: 'x',
+  frequencyA: ${codeNum(freq, 4)},
+  frequencyB: ${codeNum(freq, 4)},
+  amplitudeA: 1,
+  amplitudeB: 1,
+  phaseWaveA: ${codeNum(state.opts.phase, 4)},
+  phaseWaveB: ${codeNum(state.opts.phase, 4)},
+  mode: ${codeStr(state.opts.mode)},
+  unpredictability: ${codeNum(state.opts.unpredictability, 4)},
+  normalizeA: ${state.opts.normalize ? 'true' : 'false'},
+  normalizeB: ${state.opts.normalize ? 'true' : 'false'},
+  rangeA: [${codeNum(state.opts.range[0], 4)}, ${codeNum(state.opts.range[1], 4)}],
+  rangeB: [${codeNum(state.opts.range[0], 4)}, ${codeNum(state.opts.range[1], 4)}],
+  modulationA: ${state.opts.modulation ? JSON.stringify(state.opts.modulation) : 'null'},
+  modulationB: ${state.opts.modulation ? JSON.stringify(state.opts.modulation) : 'null'},
+  refreshA: ${codeNum(state.opts.refresh, 4)},
+  refreshB: ${codeNum(state.opts.refresh + 1, 4)},
+  combine: 'add',
+  threshold: 0,
+  inputScale: TWO_PI,
+  timeScaleA: 1,
+  timeScaleB: -1
+};
+
+// Full core usage (14x14 matrix)
+let t = 0;
+let matrixSampler;
+const matrixBuffers = {
+  cells: new Uint8Array(14 * 14),
+  values: new Float32Array(14 * 14)
+};
+
+function setup() {
+  createCanvas(560, 560);
+  noStroke();
+  matrixSampler = Waves.createGridSampler(matrixSettings);
+}
+
+function draw() {
+  background(245);
+  const frame = matrixSampler.sample(t * 8, matrixBuffers);
+  const cols = 14;
+  const rows = 14;
+  const cell = min(width / cols, height / rows);
+  const ox = (width - cols * cell) * 0.5;
+  const oy = (height - rows * cell) * 0.5;
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      fill(frame.cells[idx] === 1 ? 0 : 255);
+      rect(ox + c * cell, oy + r * cell, cell, cell);
+    }
+  }
+
+  t += ${speed};
+}`;
+}
+
+function buildCodeSnippet(state) {
+  const title = state.previewMode === 'matrix14'
+    ? '// Wave Lab export: Matrix 14x14 preset'
+    : '// Wave Lab export: Line field preset';
+  const body = state.previewMode === 'matrix14'
+    ? buildMatrixSnippet(state)
+    : buildLineSnippet(state);
+  return `${title}\n${body}`;
+}
+
+function updateCodeSnippet(state) {
+  if (!codeOutputEl) return;
+  codeOutputEl.value = buildCodeSnippet(state);
+}
+
+function fallbackCopyText(text) {
+  const ghost = document.createElement('textarea');
+  ghost.value = text;
+  ghost.setAttribute('readonly', 'readonly');
+  ghost.style.position = 'fixed';
+  ghost.style.opacity = '0';
+  ghost.style.pointerEvents = 'none';
+  document.body.appendChild(ghost);
+  ghost.select();
+  document.execCommand('copy');
+  document.body.removeChild(ghost);
+}
+
+function setCopyButtonText(label) {
+  if (!controls['copy-code']) return;
+  controls['copy-code'].textContent = label;
+}
+
+async function copyCodeSnippet() {
+  if (!codeOutputEl) return;
+  const snippet = codeOutputEl.value || '';
+  if (!snippet) return;
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(snippet);
+    } else {
+      fallbackCopyText(snippet);
+    }
+    setCopyButtonText('Copied');
+  } catch (err) {
+    setCopyButtonText('Copy Failed');
+  }
+
+  if (copyButtonResetTimer) window.clearTimeout(copyButtonResetTimer);
+  copyButtonResetTimer = window.setTimeout(() => setCopyButtonText('Copy Snippet'), 1400);
 }
 
 function getMatrixSampler(state) {
