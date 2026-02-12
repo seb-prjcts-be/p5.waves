@@ -43,76 +43,6 @@ function draw() {
 }
 ```
 
-### If You See `ReferenceError: Waves is not defined`
-
-`Waves` exists only after `p5.waves.min.js` is loaded.
-In p5.js Editor, add this to `index.html` (not only `sketch.js`):
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js"></script>
-<script src="sketch.js"></script>
-```
-
-### p5.js Editor (No `index.html` edits, paste only in `sketch.js`)
-
-Use this when you want a guaranteed start from `sketch.js` only:
-
-```js
-let grid = null;
-let t = 0;
-let wavesReady = false;
-
-function loadWaves(url) {
-  return new Promise((resolve, reject) => {
-    if (window.Waves) return resolve();
-    const s = document.createElement('script');
-    s.src = url;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error('Could not load p5.waves from CDN'));
-    document.head.appendChild(s);
-  });
-}
-
-async function setup() {
-  createCanvas(560, 560);
-  noStroke();
-
-  try {
-    await loadWaves('https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js');
-    grid = Waves.createGridSampler({
-      grid: 14,
-      waveA: 'classicSine',
-      waveB: 'tangentBloom'
-    });
-    wavesReady = true;
-  } catch (err) {
-    console.error(err);
-    noLoop();
-  }
-}
-
-function draw() {
-  background(245);
-  if (!wavesReady || !grid) return;
-
-  const frame = grid.sample(t);
-  const cols = 14;
-  const rows = 14;
-  const cell = min(width / cols, height / rows);
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const idx = r * cols + c;
-      fill(frame.cells[idx] ? 0 : 255);
-      rect(c * cell, r * cell, cell, cell);
-    }
-  }
-
-  t += 0.02;
-}
-```
-
 ## Core Model
 
 - `shape`: pure wave form (`classicSine`, `triangle`, ...)
@@ -227,6 +157,65 @@ function draw() {
       pop();
     }
   }
+  t += 0.02;
+}
+```
+
+### p5.js Editor (No `index.html` edits, paste only in `sketch.js`)
+
+Use this when you want a guaranteed start from `sketch.js` only:
+
+```js
+let grid = null;
+let t = 0;
+let wavesReady = false;
+
+function loadWaves(url) {
+  return new Promise((resolve, reject) => {
+    if (window.Waves) return resolve();
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('Could not load p5.waves from CDN'));
+    document.head.appendChild(s);
+  });
+}
+
+async function setup() {
+  createCanvas(560, 560);
+  noStroke();
+
+  try {
+    await loadWaves('https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js');
+    grid = Waves.createGridSampler({
+      grid: 14,
+      waveA: 'classicSine',
+      waveB: 'tangentBloom'
+    });
+    wavesReady = true;
+  } catch (err) {
+    console.error(err);
+    noLoop();
+  }
+}
+
+function draw() {
+  background(245);
+  if (!wavesReady || !grid) return;
+
+  const frame = grid.sample(t);
+  const cols = 14;
+  const rows = 14;
+  const cell = min(width / cols, height / rows);
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = r * cols + c;
+      fill(frame.cells[idx] ? 0 : 255);
+      rect(c * cell, r * cell, cell, cell);
+    }
+  }
+
   t += 0.02;
 }
 ```
