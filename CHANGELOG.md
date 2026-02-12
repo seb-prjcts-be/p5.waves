@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0
+- Reworked wave engine to an energy-consistent architecture with external `frequency` and `amplitude`.
+- Added normalized unit-phase wave definitions grouped by family (`classic` and `sculptural`).
+- Added soft-clipping safety for explosive sculptural formulas before normalization.
+- Implemented stable per-wave normalization with RMS energy matching for more predictable dynamics.
+- Rebuilt `createSampler()` around the new architecture, including optional modulation.
+- Replaced preset set with 5 rewritten examples: `classicSine`, `triangle`, `sawRise`, `squarePulse`, `tangentBloom`.
+
 ## 2.0.0
 - Breaking: wave name strings are now camelCase (legacy spaced or shape names still resolve).
 - Synced examples and documentation to use camelCase names.

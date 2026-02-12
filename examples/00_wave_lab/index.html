@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>p5.waves Wave Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+    <script src="p5.waves.min.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="control-panel">
+        <h1>Wave Lab</h1>
+        <p class="subtitle">Main playground for tuning p5.waves v2.1.0</p>
+
+        <section class="control-group">
+          <h2>Wave Selection</h2>
+          <label>
+            Axis
+            <select id="axis">
+              <option value="x">x</option>
+              <option value="z">z</option>
+              <option value="xz" selected>xz</option>
+            </select>
+          </label>
+          <label>
+            Selection Mode
+            <select id="select-mode">
+              <option value="single" selected>Single wave</option>
+              <option value="split">Split x/z waves</option>
+            </select>
+          </label>
+          <label id="single-wave-row">
+            Wave
+            <select id="wave"></select>
+          </label>
+          <label id="x-wave-row" class="hidden">
+            xWave
+            <select id="x-wave"></select>
+          </label>
+          <label id="z-wave-row" class="hidden">
+            zWave
+            <select id="z-wave"></select>
+          </label>
+          <label>
+            Refresh
+            <input id="refresh" type="range" min="0" max="120" step="1" value="12" />
+            <span id="refresh-value" class="value"></span>
+          </label>
+          <label>
+            Seconds (auto-advance)
+            <input id="seconds" type="range" min="0" max="8" step="0.25" value="0" />
+            <span id="seconds-value" class="value"></span>
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>Core Energy Controls</h2>
+          <label>
+            Amplitude
+            <input id="amplitude" type="range" min="0" max="220" step="1" value="88" />
+            <span id="amplitude-value" class="value"></span>
+          </label>
+          <label>
+            Frequency
+            <input id="frequency" type="range" min="0.001" max="0.08" step="0.001" value="0.012" />
+            <span id="frequency-value" class="value"></span>
+          </label>
+          <label>
+            Phase
+            <input id="phase" type="range" min="-2" max="2" step="0.01" value="0" />
+            <span id="phase-value" class="value"></span>
+          </label>
+          <label class="inline">
+            <input id="normalize" type="checkbox" checked />
+            Normalize output
+          </label>
+          <label>
+            Range Min
+            <input id="range-min" type="range" min="-2" max="1.5" step="0.05" value="-1" />
+            <span id="range-min-value" class="value"></span>
+          </label>
+          <label>
+            Range Max
+            <input id="range-max" type="range" min="-1.5" max="2" step="0.05" value="1" />
+            <span id="range-max-value" class="value"></span>
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>Modulation Layer</h2>
+          <label class="inline">
+            <input id="mod-enable" type="checkbox" />
+            Enable modulation
+          </label>
+          <div id="mod-fields" class="hidden">
+            <label>
+              Shape
+              <select id="mod-shape">
+                <option value="sine" selected>sine</option>
+                <option value="triangle">triangle</option>
+                <option value="saw">saw</option>
+                <option value="square">square</option>
+                <option value="noise">noise</option>
+              </select>
+            </label>
+            <label>
+              Mod Frequency
+              <input id="mod-frequency" type="range" min="0.01" max="0.8" step="0.01" value="0.12" />
+              <span id="mod-frequency-value" class="value"></span>
+            </label>
+            <label>
+              Mod Phase
+              <input id="mod-phase" type="range" min="-2" max="2" step="0.01" value="0" />
+              <span id="mod-phase-value" class="value"></span>
+            </label>
+            <label>
+              Phase Depth
+              <input id="mod-phase-depth" type="range" min="0" max="1" step="0.01" value="0.28" />
+              <span id="mod-phase-depth-value" class="value"></span>
+            </label>
+            <label>
+              Amplitude Depth
+              <input id="mod-amp-depth" type="range" min="-1" max="1" step="0.01" value="0.18" />
+              <span id="mod-amp-depth-value" class="value"></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="control-group">
+          <h2>Render Controls</h2>
+          <label>
+            Preview Mode
+            <select id="preview-mode">
+              <option value="line" selected>Line Field</option>
+              <option value="matrix14">Matrix 14x14</option>
+            </select>
+          </label>
+          <label>
+            Time Speed
+            <input id="time-speed" type="range" min="0" max="0.2" step="0.001" value="0.02" />
+            <span id="time-speed-value" class="value"></span>
+          </label>
+          <label>
+            Point Step
+            <input id="step" type="range" min="2" max="24" step="1" value="7" />
+            <span id="step-value" class="value"></span>
+          </label>
+          <label class="inline">
+            <input id="show-points" type="checkbox" checked />
+            Show points
+          </label>
+          <label class="inline">
+            <input id="show-grid" type="checkbox" checked />
+            Show grid
+          </label>
+          <button id="surprise" type="button">Surprise Me</button>
+        </section>
+      </aside>
+
+      <main class="stage">
+        <div class="stage-bar">
+          <span class="badge" id="active-family">family: classic</span>
+          <span class="badge" id="active-wave">wave: classicSine</span>
+          <span class="badge" id="active-energy">energy: normalized</span>
+        </div>
+        <div id="canvas-wrap"></div>
+        <p class="hint">
+          Tip: switch between <code>Line Field</code> and <code>Matrix 14x14</code> to compare the same preset behavior in two visual modes.
+        </p>
+      </main>
+    </div>
+
+    <script src="sketch.js"></script>
+  </body>
+</html>
