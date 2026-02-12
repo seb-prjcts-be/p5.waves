@@ -1,40 +1,64 @@
 # p5.waves Guide (v2.0.0)
 
-A gentle, practical guide from basics to full play mode.
+A practical guide written in plain language, from first call to more playful sketches.
 
-## Overview
+## Welcome
 
-`p5.waves` is a tiny math helper. You give it a single input (`y`) and it gives you a stable offset (`x`, `z`, or both). It does not draw. It does not animate. It simply returns numbers you can use anywhere in your sketch.
+If you are still learning, this is the right place to start.
 
-### What It's Good For
+`p5.waves` is intentionally small:
+
+- You give it one input number (`y`).
+- It gives you back an offset (`x`, `z`, or both).
+- You decide what to do with that number (move points, rotate shapes, change color, etc.).
+
+That is it. No hidden magic. No scene management. No drawing engine.
+
+## In One Sentence
+
+`Waves.wave(y, select, seconds, axisOrOptions)` returns a wave-based value you can plug into your own drawing code.
+
+## What This Library Is Good For
 
 - Wavy lines and ribbons
 - Grids and flow fields
-- Subtle motion (breathing, bobbing, swaying)
-- Reproducible offsets for layout and generative art
+- Gentle motion (breathing, bobbing, swaying)
+- Repeatable offsets for generative layouts
 - 3D motion in WEBGL
-- Mapping numbers to color, size, rotation, and alpha
+- Mapping values to color, size, alpha, and rotation
 
-### What It Does Not Do
+## What This Library Does Not Do
 
-- It does not manage time. You control time by changing the input.
-- It does not edit or add new formulas at runtime.
-- It does not draw shapes or manage sprites.
+- It does not draw anything by itself.
+- It does not manage animation time for you.
+- It does not edit or add formulas at runtime.
 
-### Mental Model
+If your sketch is static, `p5.waves` is static too. If you animate your input over time, your output moves.
 
-Think of a wave preset as a tiny formula: `algo(x) -> number`. You pass `y`, the library treats it as `x`, and returns a number. You decide how to use it: shift a point, rotate a shape, drive color, or build a flow field.
+## Mental Model (Simple)
+
+Think of each wave as a small formula:
+
+`algo(input) -> number`
+
+You pass an input (`y`), and the library returns a number.
+You then use that number however you want:
+
+- Add it to `x`
+- Add it to `z`
+- Turn it into an angle
+- Turn it into color/brightness/size
 
 ## Quick Start (Global Mode)
 
-### HTML
+### 1) Include scripts
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
 <script src="p5.waves.min.js"></script>
 ```
 
-### Sketch
+### 2) Minimal sketch
 
 ```js
 function setup() {
@@ -54,21 +78,25 @@ function draw() {
 }
 ```
 
-## Basics
+If this runs, your setup is correct.
 
-1. The simplest call:
+## First Five Experiments
+
+These are safe first steps. Try one at a time.
+
+### 1) The simplest call
 
 ```js
 const x = Waves.wave(40, 'classicSine');
 ```
 
-2. Make it bigger (amplitude):
+### 2) Make the effect larger (`amplitude`)
 
 ```js
 const x = Waves.wave(40, 'classicSine', null, { amplitude: 120 });
 ```
 
-3. Animate it:
+### 3) Animate by changing input
 
 ```js
 let t = 0;
@@ -76,14 +104,14 @@ const x = Waves.wave(40 + t, 'classicSine');
 t += 0.02;
 ```
 
-4. Return both axes (`x` and `z`):
+### 4) Return both axes (`x` and `z`)
 
 ```js
 const o = Waves.wave(40, 'classicSine', null, { axis: 'xz', amplitude: 60 });
 // o = { x, z }
 ```
 
-5. Instance mode:
+### 5) Instance mode (`p5` instance)
 
 ```js
 new p5(function (p) {
@@ -93,7 +121,7 @@ new p5(function (p) {
 });
 ```
 
-## Choosing Waves
+## Choosing Waves (Without Stress)
 
 You can select a wave by:
 
@@ -103,8 +131,6 @@ You can select a wave by:
 
 Matching is case-insensitive, and spaces/hyphens are ignored.
 
-### Examples
-
 ```js
 Waves.wave(20, 'classicSine');
 Waves.wave(20, 'Classic Sine');
@@ -112,13 +138,24 @@ Waves.wave(20, 'ellipse');
 Waves.wave(20, 0);
 ```
 
-Tip: if you want to avoid breaking changes in saved projects, store the wave string, not the index.
+Recommendation: store the wave string in saved projects, not the index.
+That makes projects less fragile if order changes later.
 
-## Workflows
+## Gentle Defaults
 
-### 1) Simple Line
+If you are unsure where to start, these values are usually friendly:
 
-Use the wave output as an X offset for a vertical line:
+- `select: 'classicSine'`
+- `axis: 'x'`
+- `amplitude: 60` to `120`
+- `normalize: false`
+- Add time with a small increment like `t += 0.01` or `t += 0.02`
+
+## Practical Workflows
+
+### 1) Simple line
+
+Use wave output as an X offset for a vertical line.
 
 ```js
 for (let y = 0; y < height; y += 6) {
@@ -129,16 +166,16 @@ for (let y = 0; y < height; y += 6) {
 
 ### 2) Grid / WEBGL
 
-Use the wave output as XZ offsets for a 3D grid:
+Use wave output as XZ offsets in 3D.
 
 ```js
 const o = Waves.wave(y + t, 'classicSine', null, { axis: 'xz', amplitude: 60 });
 translate(x + o.x, 0, y + o.z);
 ```
 
-### 3) Color Pattern
+### 3) Color pattern
 
-Map the wave output into color values:
+Map wave output into color values.
 
 ```js
 const w = Waves.wave(y + t, 'classicSine', null, {
@@ -150,9 +187,9 @@ const hue = 200 + w * 120;
 stroke(hue, 80, 90);
 ```
 
-### 4) Flow Field (Direction Map)
+### 4) Flow field (direction map)
 
-Use the wave as an angle that turns a vector field:
+Use wave output as an angle.
 
 ```js
 const angle = Waves.wave(x + y + t, 'classicSine', null, { amplitude: TWO_PI });
@@ -160,18 +197,18 @@ const v = p5.Vector.fromAngle(angle);
 line(x, y, x + v.x * 10, y + v.y * 10);
 ```
 
-### 5) Rotation / Oscillation
+### 5) Rotation / oscillation
 
-Rotate shapes using the wave output:
+Use wave output to rotate shapes.
 
 ```js
 const r = Waves.wave(y + t, 'classicSine', null, { amplitude: PI / 6 });
 rotate(r);
 ```
 
-### 6) Motion Path
+### 6) Motion path
 
-Use wave output as a path offset:
+Use wave output as a path offset.
 
 ```js
 const rowY = i * 10;
@@ -181,16 +218,16 @@ circle(x, rowY, 4);
 
 ### 7) Particles
 
-Use wave output as a force or drift:
+Use wave output as drift or force.
 
 ```js
 const drift = Waves.wave(p.y + t, 'classicSine', null, { amplitude: 0.6 });
 p.vx += drift;
 ```
 
-### 8) Ribbon / Strip
+### 8) Ribbon / strip
 
-Use wave output to offset a polyline, then draw as a strip:
+Offset a polyline and draw it as a strip.
 
 ```js
 beginShape(TRIANGLE_STRIP);
@@ -202,36 +239,36 @@ for (let y = 0; y <= height; y += 8) {
 endShape();
 ```
 
-### 9) Terrain / Height Map
+### 9) Terrain / height map
 
-Use wave output as a height:
+Use wave output as height.
 
 ```js
 const h = Waves.wave(x + t, 'classicSine', null, { amplitude: 40 });
 vertex(x, h, y);
 ```
 
-### 10) Typography / Baseline Wave
+### 10) Typography / baseline wave
 
-Shift text positions by a wave:
+Shift text positions with a wave.
 
 ```js
 const offset = Waves.wave(i * 20 + t, 'classicSine', null, { amplitude: 12 });
 text(char, x, y + offset);
 ```
 
-### 11) Audio-Reactive (Optional)
+### 11) Audio-reactive (optional)
 
-If you use `p5.sound`, you can modulate amplitude by volume:
+If you use `p5.sound`, map mic level to amplitude.
 
 ```js
 const amp = mic.getLevel() * 200 + 20;
 const x = Waves.wave(y + t, 'classicSine', null, { amplitude: amp });
 ```
 
-### 12) Full Play Mode (Interactive Sketch)
+### 12) Full play mode (interactive sketch)
 
-Use mouse or keyboard to control wave choice and amplitude:
+Use mouse/keyboard to switch wave behavior live.
 
 ```js
 let waveName = 'classicSine';
@@ -249,11 +286,11 @@ function draw() {
 }
 ```
 
-## Advanced Options
+## Advanced Options (When You Need More Control)
 
-### 1) Normalize + Range
+### 1) Normalize + range
 
-Normalize keeps outputs within a consistent range:
+Normalize for a stable output range.
 
 ```js
 const x = Waves.wave(y, 'classicSine', null, {
@@ -262,9 +299,9 @@ const x = Waves.wave(y, 'classicSine', null, {
 });
 ```
 
-### 2) Domain and Samples
+### 2) Domain and samples
 
-Domain and samples control internal sampling and normalization:
+Tune how sampling/normalization is evaluated.
 
 ```js
 const x = Waves.wave(y, 'classicSine', null, {
@@ -274,23 +311,23 @@ const x = Waves.wave(y, 'classicSine', null, {
 });
 ```
 
-### 3) Auto-Advance with Seconds
+### 3) Auto-advance with seconds
 
-Every `N` seconds, the wave changes based on refresh:
+Change refresh/wave automatically every `N` seconds.
 
 ```js
 const x = Waves.wave(y, 'classicSine', 2, { amplitude: 80 });
 ```
 
-### 4) Refresh (Deterministic Shifts)
+### 4) Refresh (deterministic shifts)
 
-Refresh lets you change the phase or pick different waves:
+Use `refresh` when you need repeatable variation.
 
 ```js
 const x = Waves.wave(y, 'classicSine', null, { refresh: 5 });
 ```
 
-### 5) Use a Sampler for Speed
+### 5) Use a sampler for speed/reuse
 
 ```js
 const sampler = Waves.createSampler({ axis: 'xz', amplitude: 60 });
@@ -299,15 +336,30 @@ const o = sampler.sample(y);
 
 ## Troubleshooting
 
-- If outputs look too small, increase amplitude.
-- If outputs explode, reduce amplitude or normalize.
-- If a name does not match, try a different alias or index.
-- If you want deterministic results across sessions, fix `refresh`.
+- Output too small: increase `amplitude`.
+- Output too strong: reduce `amplitude` or use `normalize`.
+- A wave name does not match: try another alias or use index.
+- Motion looks random between sessions: set a fixed `refresh`.
+- Nothing moves: remember to animate input (`y + t`) and increment `t`.
+
+## A Calm Learning Path
+
+If you are new, this order works well:
+
+1. Draw one static line with `Waves.wave()`.
+2. Add `t` and animate slowly.
+3. Try `amplitude` from `40` to `120`.
+4. Switch one wave name.
+5. Then try `axis: 'xz'` in WEBGL.
+
+Do one change at a time and keep a working version. Small steps make debugging much easier.
 
 ## Recap
 
-- Use `Waves.wave()` for simple sampling.
-- Animate by changing the input.
-- Use `axis: 'xz'` for WEBGL grids and flow fields.
-- Map outputs to color, rotation, size, or position.
-- Store wave names (strings) in saved projects.
+- `Waves.wave()` gives you numbers, not drawings.
+- You control time by changing input values.
+- `amplitude` controls strength.
+- `axis: 'xz'` returns `{ x, z }` for 3D-style motion.
+- Store wave names (strings) when saving presets/projects.
+
+You can build a lot with this library by combining one idea at a time.
