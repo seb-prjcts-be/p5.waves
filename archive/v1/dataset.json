@@ -1,0 +1,193 @@
+{
+  "archive": "p5.waves legacy dataset",
+  "sourceTag": "v1.1.0",
+  "sourceFile": "p5.waves.v1.js",
+  "preservedAt": "2026-02-12T13:19:35.310Z",
+  "waves": [
+    {
+      "algo": "sin(x*.1)*.4",
+      "shape": "ellipse",
+      "wave": "classic sine"
+    },
+    {
+      "algo": "sin(x*.2)*.25",
+      "shape": "infinity",
+      "wave": "sine"
+    },
+    {
+      "algo": "abs(sin(x*.1))*.5",
+      "shape": "pendulum",
+      "wave": "sharp peaks sine"
+    },
+    {
+      "algo": "abs(sin(x*.01 + x*.1))*.5",
+      "shape": "phasingPendulum",
+      "wave": "sharp peaks sine"
+    },
+    {
+      "algo": "(x*.025)%1 < .5 ? -.5 : .5",
+      "shape": "topBottom",
+      "wave": "rectangular"
+    },
+    {
+      "algo": "(x*.5)%20 < 1 ? -.5 : .5",
+      "shape": "bottomTop",
+      "wave": "pulse"
+    },
+    {
+      "algo": "ceil(sin(x*.1))*.25",
+      "shape": "leftRight",
+      "wave": "rectangular sine"
+    },
+    {
+      "algo": "abs(cos(x*.1))*.35 + sin(x*.1)*.25",
+      "shape": "invertedHeart",
+      "wave": "mountain peaks"
+    },
+    {
+      "algo": "abs(cos(x*.1))*-.35 + sin(x*.1)*.25",
+      "shape": "heart",
+      "wave": "valleys"
+    },
+    {
+      "algo": "sin(x*.1)*.25 % .15",
+      "shape": "spaceShip",
+      "wave": "zig-zag sine"
+    },
+    {
+      "algo": "sin(x*.1)*.7 % .4",
+      "shape": "starfighter",
+      "wave": "batman"
+    },
+    {
+      "algo": "sin(x*.1)*.25 - cos(x*.1)*.25 % .15",
+      "shape": "solarSystem",
+      "wave": "zig-zag sine"
+    },
+    {
+      "algo": "ceil(cos(x*.1))*.25 - sin(x*.1)*.25",
+      "shape": "cSection",
+      "wave": "offset sine"
+    },
+    {
+      "algo": "ceil(tan(x*.1))*.25",
+      "shape": "hive",
+      "wave": "steps down"
+    },
+    {
+      "algo": "round(sin(-x*.1))*.25",
+      "shape": "hexagon",
+      "wave": "steps"
+    },
+    {
+      "algo": "sq(sin(PI/2+x*.1))*.25",
+      "shape": "invertedPendulum",
+      "wave": "class sine"
+    },
+    {
+      "algo": "sq(sin(x*.1))*.25",
+      "shape": "pendulum",
+      "wave": "classic sine"
+    },
+    {
+      "algo": "sin(x*.1)*.25 + sin(x*.5)*.1",
+      "shape": "depthIllusion",
+      "wave": "bumpy sine"
+    },
+    {
+      "algo": "sin(x*.1)*cos(x*.2)*.5",
+      "shape": "headWithEars",
+      "wave": "bumpy sine"
+    },
+    {
+      "algo": "x*sin(x*.1) % .5",
+      "shape": "upDownScatter",
+      "wave": "up down noise"
+    },
+    {
+      "algo": "sin(x*.45 + radians(x))*cos(x*.4)*.5",
+      "shape": "upDownScatter",
+      "wave": "meta sine"
+    },
+    {
+      "algo": "abs((x*.03) % (.5*2) - .5)",
+      "shape": "phasingSharpSine",
+      "wave": "triangle"
+    },
+    {
+      "algo": "-1*(x*.02%1)/1 + 0.5",
+      "shape": "spiral",
+      "wave": "ramp with period height"
+    },
+    {
+      "algo": "x*.03 % .5",
+      "shape": "crissCross",
+      "wave": "ramp down saw"
+    },
+    {
+      "algo": "-x*.03 % .5",
+      "shape": "crissCross",
+      "wave": "ramp up saw"
+    },
+    {
+      "algo": "log(x)*.1",
+      "shape": "snake",
+      "wave": "fade out"
+    },
+    {
+      "algo": "random(x*.003)",
+      "shape": "scatterDown",
+      "wave": "grow random"
+    },
+    {
+      "algo": "noise(x*.1) - .5",
+      "shape": "noise",
+      "wave": "noise"
+    },
+    {
+      "algo": "tan(x*20)*.05",
+      "shape": "fuzzyCenter",
+      "wave": "fuzzy pulse"
+    },
+    {
+      "algo": "tan(x*.1)*.05",
+      "shape": "spinningTop",
+      "wave": "up down pulse"
+    },
+    {
+      "algo": "sq(x*.05) % .5",
+      "shape": "scatter",
+      "wave": "bald patch"
+    },
+    {
+      "algo": "sin(x*.1) < 0 ? random(-.2, .2) : sin(x*.1)*.5",
+      "shape": "foamingBowl",
+      "wave": "fuzzy peak sine"
+    },
+    {
+      "algo": "sin(x)*(x*.01%.5)",
+      "shape": "scatter",
+      "wave": "ramp up sine"
+    },
+    {
+      "algo": "sin(x)*(x*.01%1-.5)",
+      "shape": "scatter",
+      "wave": "triangle sine"
+    },
+    {
+      "algo": "sin(x*.1)*cos(x*1)*.5",
+      "shape": "scatterSphere",
+      "wave": "round linked sine"
+    },
+    {
+      "algo": "sin(x*.05)*(x*.1%.5)",
+      "shape": "crissCrossUpDown",
+      "wave": "half & half sine"
+    },
+    {
+      "algo": "sin(x*3.1)*.25",
+      "shape": "dna",
+      "wave": "smooth solid sine"
+    }
+  ]
+}
