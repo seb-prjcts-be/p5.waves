@@ -45,6 +45,11 @@ function draw() {
 const x = Waves.wave(40, 'classicSine');
 ```
 
+## Examples
+
+- Main interactive playground: `examples/00_wave_lab`
+- This lab exposes key controls (`wave`, `xWave/zWave`, `axis`, `frequency`, `amplitude`, `normalize`, `range`, `modulation`, `refresh`, `seconds`) with live sliders/dropdowns/checkboxes.
+
 **Instance mode**
 ```js
 new p5(function (p) {
