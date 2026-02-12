@@ -2,15 +2,16 @@ let t = 0;
 
 function setup() {
   createCanvas(600, 600);
+  noStroke();
+  fill(0);
 
   Waves.setWaveParams({
     axis: 'x',
-    amplitude: 240,
+    amplitude: 1,
+    frequency: 0.012,
     select: 'classicSine',
     normalize: true,
-    range: [0, 1],
-    domain: [0, 600],
-    samples: 512
+    range: [0, 1]
   });
 }
 
@@ -19,11 +20,8 @@ function draw() {
 
   for (let y = 0; y < height; y += 10) {
     const x01 = Waves.wave(y + t);
-    circle(x01, y, 5);
+    circle(x01 * width, y, 5);
   }
 
   t += 0.01;
 }
-
-
-

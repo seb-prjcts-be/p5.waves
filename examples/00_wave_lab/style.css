@@ -2,7 +2,7 @@
   --black: #000000;
   --white: #ffffff;
   --soft: rgb(245, 245, 245);
-  --red: #ff0000;
+  --red: rgb(255, 0, 0);
   --mono: "IBM Plex Mono", "Courier New", monospace;
   --title: "Oswald", "Arial Narrow", sans-serif;
   --sans: "Segoe UI", Arial, sans-serif;
@@ -91,6 +91,31 @@ label.inline {
   gap: 8px;
 }
 
+label.disabled-control {
+  opacity: 0.4;
+}
+
+label.disabled-control input,
+label.disabled-control select {
+  cursor: not-allowed;
+}
+
+button.disabled-control {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--black);
+  border-color: var(--black);
+  transform: none;
+  box-shadow: none;
+}
+
+button.disabled-control:hover {
+  background: var(--black);
+  border-color: var(--black);
+  transform: none;
+  box-shadow: none;
+}
+
 select,
 input[type="range"],
 button {
@@ -120,6 +145,16 @@ input[type="checkbox"] {
   font-family: var(--mono);
   font-size: 0.8rem;
   color: rgba(0, 0, 0, 0.75);
+}
+
+.mode-note {
+  margin: 2px 0 0;
+  padding: 6px 8px;
+  border-left: 3px solid var(--red);
+  background: var(--soft);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--black);
 }
 
 button {
