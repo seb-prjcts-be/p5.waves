@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.2.0
+- Added `archive/v1` preservation layer with historical legacy build files:
+  - `archive/v1/p5.waves.v1.js`
+  - `archive/v1/p5.waves.v1.min.js`
+  - `archive/v1/dataset.json` (37-wave snapshot)
+  - `archive/v1/README_ARCHIVE.md`
+- Added `examples/07_archive_comparison` to visualize stable v2.1 core vs legacy archive personality.
+- Updated README with an `Archive & Legacy Builds` section and clear positioning of archive vs default engine.
+
 ## 2.1.0
 - Reworked wave engine to an energy-consistent architecture with external `frequency` and `amplitude`.
 - Added normalized unit-phase wave definitions grouped by family (`classic` and `sculptural`).

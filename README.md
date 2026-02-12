@@ -147,6 +147,28 @@ if (frame.uniform) grid.nextPair(1, 2);
 - `examples/04_triangle_domain`
 - `examples/05_range_0_1`
 - `examples/06_wave_override`
+- `examples/07_archive_comparison`: side-by-side stable core vs legacy archive behavior
+
+## Archive & Legacy Builds
+
+`p5.waves` keeps two layers on purpose:
+
+- **v2.x core (default)**: energy-consistent architecture with external `frequency` and `amplitude`, normalization, and stable/wild controls.
+- **v1 archive (optional)**: preserved historical formulas with raw, uneven behavior.
+
+Legacy assets live in `archive/v1`:
+
+- `archive/v1/p5.waves.v1.js`
+- `archive/v1/p5.waves.v1.min.js`
+- `archive/v1/dataset.json`
+- `archive/v1/README_ARCHIVE.md`
+
+The archive is discoverable but not dominant:
+
+- it is not auto-loaded
+- it is not the default engine
+- it does not replace the v2 core
+- it exists for historical continuity and attribution
 
 ## Notes
 
