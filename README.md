@@ -12,6 +12,12 @@ Energy-consistent wave sampling for p5.js.
 Active feature development continues on `main` (`v2+`).
 See `BRANCH_POLICY.md`.
 
+**Version Guide**
+- New projects: use `main` (latest v2+ behavior).
+- Reproducing legacy behavior: use tag `v1.2.0`.
+- Historical snapshot data: use `archive/v1`.
+- `v2.0.0` is transitional history, not the recommended starting point.
+
 ## Quick Start
 
 ### 1) Include scripts
