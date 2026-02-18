@@ -2,6 +2,10 @@
 
 Wave sampling helpers for p5.js.
 
+**Legacy 1.2.0 Target**
+This legacy line keeps the original formulas and aims to normalize them into simple, usable variations.
+The goal is to improve consistency and practical use without removing the formula character.
+
 **What This Library Does**
 This library adds wave sampling functions to p5.js and exposes a global `Waves` object.
 You pass a single number (named `y` in the API).
