@@ -9,6 +9,7 @@
 - Added `examples/07_archive_comparison` to visualize stable v2.1 core vs legacy archive personality.
 - Updated README with an `Archive & Legacy Builds` section and clear positioning of archive vs default engine.
 - Policy: `v1.2.x` is legacy maintenance-only. Active feature development continues on `main` (`v2+`).
+- Guidance: `v2.0.0` is transitional history; start from current `main` for new work.
 
 ## 2.1.0
 - Reworked wave engine to an energy-consistent architecture with external `frequency` and `amplitude`.
