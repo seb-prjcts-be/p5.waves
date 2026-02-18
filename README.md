@@ -25,6 +25,12 @@ Each formula is a small math expression that takes an input called `x`.
 The library treats your `y` input as that `x`.
 If you ask for both axes, it samples two formulas and returns `{ x, z }`.
 
+**Normalization Terms**
+- `inputDomain`: where the formula is scanned to estimate min/max.
+- `outputRange`: where normalized output is mapped after scanning.
+- `amplitude`: final multiplier in pixels/units after normalization.
+- `domain` and `range` still work as aliases; if both are set, `inputDomain`/`outputRange` win.
+
 **Installation**
 Script tag (local file):
 ```html
@@ -96,30 +102,38 @@ Parameters
 - `options.xWave` (wave reference). Sets only `x`.
 - `options.zWave` (wave reference). Sets only `z`.
 - `options.normalize` (boolean). Default `false`.
-- `options.range` (array). Default `[-1, 1]`.
-- `options.domain` (array). Default `[-100, 100]`.
+- `options.outputRange` (array). Default `[-1, 1]`. Alias: `range`.
+- `options.inputDomain` (array). Default `[-100, 100]`. Alias: `domain`.
 - `options.samples` (number). Default `512`.
 - `options.normalizeVars` (object). Default `null`.
+- `options.normalizeMode` (`'minmax'` or `'clamp'`). Default `'minmax'`.
+- `options.clampRange` (array). Optional source clamp range for `normalizeMode:'clamp'`.
+- `options.formulaVars` (object). Alias: `params`.
+- `options.allowRandomInFormula` (boolean). Default `true`.
+- `options.allowNoiseInFormula` (boolean). Default `true`.
 
 `amplitude` is preferred.
 `scale` is supported for backward compatibility.
 Expected ranges
 - `options.axis` must be `'x'`, `'z'`, or `'xz'`.
-- `options.range` and `options.domain` must be `[min, max]` with `min !== max`.
+- `options.outputRange` and `options.inputDomain` must be `[min, max]` with `min !== max`.
 - `options.samples` should be an integer `>= 2`.
 - A wave reference is a number index, a name string, or an object with `index`, `wave`, or `name`.
 Return value
-- Sampler object with a `sample(y, vars)` method.
+- Sampler object with:
+- `sample(y, vars, formulaVars)`
+- `stats(axis?)`
 Example
 ```js
 const sampler = Waves.createSampler({ refresh: 2, axis: 'xz' });
 ```
 
-**`sampler.sample(y, vars)`**
+**`sampler.sample(y, vars, formulaVars)`**
 Parameters
 - `y` (number).
 - `vars` (object). Optional.
 - `vars.y`, `vars.z`, `vars.t`, `vars.dis` (numbers). Optional.
+- `formulaVars` (object). Optional. Alias-compatible with `params`.
 Expected ranges
 - `y` should be a finite number.
 - `vars` values should be finite numbers.
@@ -130,22 +144,34 @@ Example
 const out = sampler.sample(10, { t: frameCount * 0.01 });
 ```
 
-**`Waves.sample(y, refresh, axisOrOptions)`**
+**`Waves.sample(y, options)` (primary)**
 Parameters
 - `y` (number).
-- `refresh` (number).
-- `axisOrOptions` (string or object). Optional.
-- If `axisOrOptions` is a string, it is the axis.
-- If it is an object, it accepts the same fields as `Waves.createSampler` plus `vars`.
+- `options` (object). Optional.
+- Supports sampler fields plus:
+- `select` (wave reference), `step`, `order`, `orderSeed`, `noRepeat`, `vars`, `formulaVars`.
+- `step.seconds` for time-based stepping.
+- `step.frames` for frame-based stepping (uses `frameCount` when available).
 Expected ranges
-- `refresh` can be any finite number.
 - `axis` must be `'x'`, `'z'`, or `'xz'` when provided.
+- `order` can be `'sequential'`, `'shuffle'`, or `'random'`.
 Return value
 - Object with `x` and/or `z`.
 Example
 ```js
-const out = Waves.sample(50, 3, { axis: 'x', wave: 'classic sine' });
+const out = Waves.sample(50, {
+  axis: 'x',
+  normalize: true,
+  inputDomain: [-200, 200],
+  outputRange: [-1, 1],
+  order: 'shuffle',
+  orderSeed: 42,
+  step: { frames: 120 }
+});
 ```
+
+**`Waves.sample(y, refresh, axisOrOptions)` (legacy signature)**
+- Still supported for backward compatibility.
 
 **`Waves.setWaveParams(options)`**
 Parameters
@@ -155,16 +181,21 @@ Parameters
 - `options.refresh` (number).
 - `options.select` (wave reference).
 - `options.seconds` (number).
+- `options.step` (object). Supports `{ seconds }` and/or `{ frames }`.
 - `options.vars` (object).
+- `options.formulaVars` (object). Alias: `params`.
 - `options.normalize` (boolean).
-- `options.range` (array).
-- `options.domain` (array).
+- `options.outputRange` (array). Alias: `range`.
+- `options.inputDomain` (array). Alias: `domain`.
 - `options.samples` (number).
 - `options.normalizeVars` (object).
+- `options.order`, `options.orderSeed`, `options.noRepeat`.
+- `options.allowRandomInFormula`, `options.allowNoiseInFormula`.
 Expected ranges
 - `options.axis` must be `'x'`, `'z'`, or `'xz'` when provided.
-- `options.seconds` must be `> 0` to auto-advance.
-- `options.range` and `options.domain` must be `[min, max]` with `min !== max`.
+- `options.seconds` or `options.step.seconds` must be `> 0` to time-advance.
+- `options.step.frames` must be `> 0` to frame-advance.
+- `options.outputRange` and `options.inputDomain` must be `[min, max]` with `min !== max`.
 Return value
 - A copy of the current defaults.
 Example
@@ -181,7 +212,7 @@ Parameters
 - `seconds` (number). Optional.
 - `axisOrOptions` (string or object). Optional.
 - If `axisOrOptions` is a string, it is the axis.
-- If it is an object, it accepts `axis`, `amplitude`, `refresh`, `select`, `seconds`, `vars`, `normalize`, `range`, `domain`, `samples`, and `normalizeVars`.
+- If it is an object, it accepts `axis`, `amplitude`, `refresh`, `select`, `seconds`, `step`, `vars`, `formulaVars`, `normalize`, `outputRange`, `inputDomain`, `samples`, `normalizeVars`, `order`, `orderSeed`, and `noRepeat`.
 Expected ranges
 - `select` can be a number index, a name string, or an object with `index`, `wave`, or `name`.
 - `seconds` must be `> 0` to auto-advance.
@@ -205,6 +236,21 @@ Example
 ```js
 const seed = Waves.seedFrom('demo');
 ```
+
+**`Waves.stats(waveRef, options)`**
+- Returns min/max stats for one wave over an `inputDomain`.
+
+**`Waves.analyze(options)`**
+- Returns per-wave diagnostics:
+- `min`, `max`, `mean`, `std`
+- `finiteRatio`, `spikeRatio`, `zeroFlatRatio`, `discontinuityScore`
+- `suggestedOutputRange`, `suggestedAmplitude`, `tags`
+
+**`Waves.flagOutliers(report, rules)`**
+- Filters `Waves.analyze()` output using thresholds (finite ratio, max abs, discontinuity, flatness, spikes).
+
+**`Waves.migrateAlgo(algoString, mapping)`**
+- Helper to replace fixed constants with `v.*` style formula vars.
 
 **p5 Methods (Aliases)**
 These functions are added to `p5.prototype` when p5.js is loaded.
