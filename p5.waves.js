@@ -1,7 +1,7 @@
 /*!
  * p5.waves
  * Samples x/z offsets from a y input using a fixed set of wave formulas.
- * Version 1.1.0
+ * Version 1.2.0
  * Author: seb@prjcts
  * License: MIT
  */
