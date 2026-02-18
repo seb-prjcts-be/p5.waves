@@ -7,6 +7,11 @@ Energy-consistent wave sampling for p5.js.
 **Signature**
 `Waves.wave(y, select, seconds, axisOrOptions)`
 
+**Maintenance Status**
+`v1.2.x` is legacy maintenance-only.
+Active feature development continues on `main` (`v2+`).
+See `BRANCH_POLICY.md`.
+
 ## Quick Start
 
 ### 1) Include scripts
