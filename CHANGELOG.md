@@ -10,6 +10,7 @@
 - Added formula variable support via `v` plus `formulaVars`/`params` merging.
 - Added diagnostics tooling: `Waves.stats`, `Waves.analyze`, and `Waves.flagOutliers`.
 - Added `Waves.migrateAlgo` helper for replacing fixed constants with `v.*` style params.
+- Declared `v1.2.x` maintenance-only; feature development continues on `main` (`v2+`).
 
 ## 1.1.0
 - Added `amplitude` as the preferred option; `scale` remains supported.
