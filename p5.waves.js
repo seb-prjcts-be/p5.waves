@@ -601,9 +601,6 @@
     global.p5.prototype.waves = function (y, select, seconds, axisOrOptions) {
       return wave(y, select, seconds, axisOrOptions);
     };
-    global.p5.prototype.wave = function (y, select, seconds, axisOrOptions) {
-      return wave(y, select, seconds, axisOrOptions);
-    };
   }
 
   global.Waves = api;
