@@ -88,6 +88,14 @@ Script tag (CDN-style link):
 Load order matters.
 `p5.js` must load before `p5.waves.js` or `p5.waves.min.js`.
 
+**Legacy Examples (minimal set)**
+This repository intentionally keeps a smaller example set during the legacy phase.
+
+- `examples/01_basic_wave`
+- `examples/02_instance_mode`
+
+For the larger v2 example suite, use `p5.easywaves`.
+
 **Core API**
 All functions below are available on the global `Waves` object.
 
