@@ -115,6 +115,29 @@ The repository now includes a broader set of examples covering base usage and 1.
 - `examples/08_triangle_domain`
 - `examples/09_range_0_1`
 - `examples/10_wave_override`
+- `examples/11_tick_time_mode`
+
+**Time Management (Clock vs Tick)**
+`Waves.wave(...)` can run from two time sources:
+- `clock` mode (default): real time from `millis()`/clock, keeps existing behavior.
+- `tick` mode: internal time only, advanced by `Waves.tick(dtSeconds)`.
+
+This solves low-fps recording/export cases where you want deterministic timing.
+
+CLOCK (default):
+```js
+Waves.setTimeMode("clock");
+```
+
+TICK (deterministic):
+```js
+Waves.setTimeMode("tick");
+function draw() {
+  Waves.tick(deltaTime / 1000); // live
+  // or for recording:
+  // Waves.tick(1 / targetFps);
+}
+```
 
 **Core API**
 All functions below are available on the global `Waves` object.
@@ -265,6 +288,33 @@ Example
 const out = Waves.sample(50, 3, { axis: 'x', wave: 'classic sine' });
 ```
 
+**`Waves.setTimeMode(mode, options)`**
+Parameters
+- `mode` (`'clock'` or `'tick'`).
+- `options` (object). Optional, reserved for future extensions.
+Expected ranges
+- `mode` should be `'clock'` or `'tick'`.
+- Default mode is `'clock'`.
+Return value
+- The active mode string (`'clock'` or `'tick'`).
+Example
+```js
+Waves.setTimeMode('tick');
+```
+
+**`Waves.tick(dtSeconds)`**
+Parameters
+- `dtSeconds` (number).
+Expected ranges
+- In `tick` mode, pass a finite positive delta in seconds.
+- In `clock` mode, this does not change switching behavior.
+Return value
+- Current internal time in seconds.
+Example
+```js
+Waves.tick(1 / 30);
+```
+
 **`Waves.setWaveParams(options)`**
 Parameters
 - `options` (object).
@@ -314,8 +364,11 @@ Expected ranges
 - `xWave` and `zWave` can use the same wave reference formats as `select`.
 - `mode` must be `'stable'` or `'wild'` when provided.
 - `unpredictability` should be in `[0, 1]` when provided.
-- `seconds` must be `> 0` to auto-advance.
+- `seconds === 0` disables auto-advance.
+- `seconds > 0` auto-advances on the active time source (`clock` or `tick` mode).
 - `axis` must be `'x'`, `'z'`, or `'xz'` when provided.
+- If `vars.t` is not provided, `Waves.wave(...)` injects time from the active time source.
+- If `vars.t` is explicitly provided, it overrides internal time.
 Return value
 - A number when the axis is `'x'` or `'z'`.
 - An object `{ x, z }` when the axis is `'xz'`.
