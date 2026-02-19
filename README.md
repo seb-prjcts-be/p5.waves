@@ -2,18 +2,33 @@
 
 Wave sampling helpers for p5.js.
 
+**Quick Install**
+Script tag (CDN):
+```html
+<script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@archive/v1.2.0/p5.waves.min.js"></script>
+<script src="sketch.js"></script>
+```
+
+Script tag (local file):
+```html
+<script src="p5.js"></script>
+<script src="p5.waves.js"></script>
+<script src="sketch.js"></script>
+```
+
+Load order matters.
+`p5.js` must load before `p5.waves.js` or `p5.waves.min.js`.
+
 **What This Library Does**
 This library adds wave sampling functions to p5.js and exposes a global `Waves` object.
 You pass a single number (named `y` in the API).
 It evaluates one or two built-in wave formulas and returns an `x` value, a `z` value, or both.
 It solves the problem of generating repeatable offsets for lines, grids, or 3D positions.
 
-**What This Library Does NOT Do**
-- It does not draw anything or create a canvas.
-- It does not animate by itself.
-- It does not change p5's `random()` or `noise()` functions.
-- It does not provide an API to add or edit wave formulas.
-- It does not return arrays or paths, only numbers or `{ x, z }`.
+**Scope**
+`p5.waves` focuses on numeric wave sampling.
+Drawing and animation stay in your p5.js sketch code.
 
 **Mental Model**
 Think of this library as a list of wave formulas you can sample.
@@ -69,24 +84,6 @@ The current `Waves.data` list has `37` entries:
 | 34 | round linked sine | scatterSphere |
 | 35 | half & half sine | crissCrossUpDown |
 | 36 | smooth solid sine | dna |
-
-**Installation**
-Script tag (local file):
-```html
-<script src="p5.js"></script>
-<script src="p5.waves.js"></script>
-<script src="sketch.js"></script>
-```
-
-Script tag (CDN-style link):
-```html
-<script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/YOUR_USER/YOUR_REPO@YOUR_TAG/p5.waves.min.js"></script>
-<script src="sketch.js"></script>
-```
-
-Load order matters.
-`p5.js` must load before `p5.waves.js` or `p5.waves.min.js`.
 
 **Legacy Examples (minimal set)**
 This repository intentionally keeps a smaller example set during the legacy phase.
