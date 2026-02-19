@@ -36,11 +36,9 @@ Each formula is a small math expression that takes an input called `x`.
 The library treats your `y` input as that `x`.
 If you ask for both axes, it samples two formulas and returns `{ x, z }`.
 
-**Repository Split (v1 vs v2)**
+**Repository Scope**
 - `p5.waves` is the v1 formula library with a broad legacy dataset: `37` usable wave entries (around 40).
-- `p5.easywaves` is the v2 line with a smaller curated set: `4` wave types.
 - Use `p5.waves` when you want maximum variety and legacy-compatible behavior.
-- Use `p5.easywaves` when you want a minimal, constrained wave set.
 
 **Usable Waves In `p5.waves` (v1 dataset)**
 The current `Waves.data` list has `37` entries:
@@ -91,7 +89,7 @@ This repository intentionally keeps a smaller example set during the legacy phas
 - `examples/01_basic_wave`
 - `examples/02_instance_mode`
 
-For the larger v2 example suite, use `p5.easywaves`.
+This repository keeps the examples minimal by design.
 
 **Core API**
 All functions below are available on the global `Waves` object.
