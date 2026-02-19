@@ -220,9 +220,6 @@ Example
 const x = p.waves(40, 'classic sine');
 ```
 
-**`p5.prototype.wave(y, select, seconds, axisOrOptions)`**
-- Legacy alias kept for backward compatibility.
-
 **`p5.prototype.waveSample(y, refresh, axisOrOptions)`**
 Parameters
 - Same as `Waves.sample(...)`.
