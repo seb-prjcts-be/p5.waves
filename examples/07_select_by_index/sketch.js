@@ -1,0 +1,27 @@
+let t = 0;
+
+function setup() {
+  createCanvas(600, 600);
+  noStroke();
+  fill(0);
+
+  Waves.setWaveParams({
+    axis: 'x',
+    amplitude: 90,
+    select: 4,
+    normalize: true,
+    range: [-1, 1],
+    refresh: 8
+  });
+}
+
+function draw() {
+  background(245);
+
+  for (let y = 0; y < height; y += 10) {
+    const x = Waves.wave(y + t);
+    circle(width / 2 + x, y, 5);
+  }
+
+  t += 0.01;
+}

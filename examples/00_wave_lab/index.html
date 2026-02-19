@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>p5.waves Wave Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@main/p5.waves.min.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="control-panel">
+        <h1>Wave Lab</h1>
+        <p class="subtitle">Main playground for tuning p5.waves</p>
+
+        <section class="control-group">
+          <h2>Preview</h2>
+          <label>
+            Preview Mode
+            <select id="preview-mode">
+              <option value="line" selected>Line Field</option>
+              <option value="matrix14">Matrix 14x14</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>Wave Selection</h2>
+          <label>
+            Axis
+            <select id="axis">
+              <option value="x">x</option>
+              <option value="z">z</option>
+              <option value="xz" selected>xz</option>
+            </select>
+          </label>
+          <label>
+            Wave
+            <select id="wave"></select>
+          </label>
+          <label>
+            Refresh
+            <input id="refresh" type="range" min="0" max="120" step="1" value="12" />
+            <span id="refresh-value" class="value"></span>
+          </label>
+          <label>
+            Seconds (auto-advance)
+            <input id="seconds" type="range" min="0" max="4" step="0.25" value="1" />
+            <span id="seconds-value" class="value"></span>
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>Sampler Controls</h2>
+          <label>
+            Amplitude
+            <input id="amplitude" type="range" min="0" max="220" step="1" value="88" />
+            <span id="amplitude-value" class="value"></span>
+          </label>
+          <label>
+            Frequency
+            <input id="frequency" type="range" min="0.1" max="4" step="0.01" value="1" />
+            <span id="frequency-value" class="value"></span>
+          </label>
+          <label>
+            Phase
+            <input id="phase" type="range" min="-8" max="8" step="0.05" value="0" />
+            <span id="phase-value" class="value"></span>
+          </label>
+          <label>
+            Mode
+            <select id="mode">
+              <option value="stable" selected>stable</option>
+              <option value="wild">wild</option>
+            </select>
+          </label>
+          <label>
+            Unpredictability
+            <input id="unpredictability" type="range" min="0" max="1" step="0.01" value="0.35" />
+            <span id="unpredictability-value" class="value"></span>
+          </label>
+          <label class="inline">
+            <input id="normalize" type="checkbox" checked />
+            Normalize output
+          </label>
+          <label>
+            Range Min
+            <input id="range-min" type="range" min="-2" max="1.5" step="0.05" value="-1" />
+            <span id="range-min-value" class="value"></span>
+          </label>
+          <label>
+            Range Max
+            <input id="range-max" type="range" min="-1.5" max="2" step="0.05" value="1" />
+            <span id="range-max-value" class="value"></span>
+          </label>
+          <label>
+            Domain Min
+            <input id="domain-min" type="range" min="-300" max="-1" step="1" value="-100" />
+            <span id="domain-min-value" class="value"></span>
+          </label>
+          <label>
+            Domain Max
+            <input id="domain-max" type="range" min="1" max="300" step="1" value="100" />
+            <span id="domain-max-value" class="value"></span>
+          </label>
+          <label>
+            Samples
+            <input id="samples" type="range" min="64" max="2048" step="64" value="512" />
+            <span id="samples-value" class="value"></span>
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>Modulation (1.3)</h2>
+          <label class="inline">
+            <input id="mod-enable" type="checkbox" />
+            Enable modulation
+          </label>
+          <div id="mod-fields" class="hidden">
+            <label>
+              Shape
+              <select id="mod-shape">
+                <option value="sine" selected>sine</option>
+                <option value="triangle">triangle</option>
+                <option value="saw">saw</option>
+                <option value="square">square</option>
+                <option value="noise">noise</option>
+              </select>
+            </label>
+            <label>
+              Mod Frequency
+              <input id="mod-frequency" type="range" min="0.01" max="1.25" step="0.01" value="0.2" />
+              <span id="mod-frequency-value" class="value"></span>
+            </label>
+            <label>
+              Mod Phase
+              <input id="mod-phase" type="range" min="-4" max="4" step="0.05" value="0" />
+              <span id="mod-phase-value" class="value"></span>
+            </label>
+            <label>
+              Phase Depth
+              <input id="mod-phase-depth" type="range" min="0" max="1" step="0.01" value="0.1" />
+              <span id="mod-phase-depth-value" class="value"></span>
+            </label>
+            <label>
+              Amp Depth
+              <input id="mod-amp-depth" type="range" min="-1" max="1" step="0.01" value="0.2" />
+              <span id="mod-amp-depth-value" class="value"></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="control-group">
+          <h2>Grid Controls</h2>
+          <label>
+            Wave B Gap
+            <input id="wave-b-gap" type="range" min="1" max="20" step="1" value="10" />
+            <span id="wave-b-gap-value" class="value"></span>
+          </label>
+          <label>
+            Combine
+            <select id="combine">
+              <option value="add" selected>add</option>
+              <option value="subtract">subtract</option>
+              <option value="multiply">multiply</option>
+              <option value="max">max</option>
+              <option value="min">min</option>
+              <option value="avg">avg</option>
+            </select>
+          </label>
+          <label>
+            Threshold
+            <input id="threshold" type="range" min="-2" max="2" step="0.01" value="0" />
+            <span id="threshold-value" class="value"></span>
+          </label>
+          <label>
+            Grid Mode
+            <select id="grid-mode">
+              <option value="stable" selected>stable</option>
+              <option value="wild">wild</option>
+            </select>
+          </label>
+          <label>
+            Grid Unpredictability
+            <input id="grid-unpredictability" type="range" min="0" max="1" step="0.01" value="0.35" />
+            <span id="grid-unpredictability-value" class="value"></span>
+          </label>
+          <label class="inline">
+            <input id="auto-step-on-uniform" type="checkbox" />
+            Auto-step on uniform frame
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>Render Controls</h2>
+          <label>
+            Time Speed
+            <input id="time-speed" type="range" min="0" max="0.2" step="0.001" value="0.02" />
+            <span id="time-speed-value" class="value"></span>
+          </label>
+          <label>
+            Point Step
+            <input id="step" type="range" min="2" max="24" step="1" value="7" />
+            <span id="step-value" class="value"></span>
+          </label>
+          <label class="inline">
+            <input id="show-points" type="checkbox" checked />
+            Show points
+          </label>
+          <label class="inline">
+            <input id="connect-line" type="checkbox" checked />
+            Connect with vertex line
+          </label>
+          <label class="inline">
+            <input id="show-grid" type="checkbox" checked />
+            Show grid
+          </label>
+          <button id="surprise" type="button">Surprise Me</button>
+        </section>
+
+        <section class="control-group">
+          <h2>Copy This Sample</h2>
+          <p class="code-note">
+            Live export of your current `Waves.wave(...)` and `Waves.createGridSampler(...)` setup.
+          </p>
+          <textarea id="code-output" class="code-output" readonly spellcheck="false"></textarea>
+          <button id="copy-code" type="button">Copy Snippet</button>
+        </section>
+      </aside>
+
+      <main class="stage">
+        <div class="stage-bar">
+          <span class="badge" id="active-wave">wave: 0</span>
+          <span class="badge" id="active-settings">axis: xz | refresh: 12 | seconds: 1.00s</span>
+          <span class="badge" id="active-normalize">normalize: on</span>
+          <span class="badge" id="active-behavior">mode: stable | mod: off | combine: add</span>
+        </div>
+        <div id="canvas-wrap"></div>
+        <p class="hint">
+          Tip: combine <code>seconds</code>, <code>mode=wild</code>, <code>modulation</code> and <code>Grid Mode</code> to stress-test 1.3 behavior.
+        </p>
+      </main>
+    </div>
+
+    <script src="sketch.js"></script>
+  </body>
+</html>
+
