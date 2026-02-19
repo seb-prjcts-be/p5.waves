@@ -8,7 +8,7 @@ new p5(function (p) {
   p.setup = function () {
     p.createCanvas(400, 200);
     p.noFill();
-    p.stroke(20);
+    p.stroke(0);
   };
 
   p.draw = function () {

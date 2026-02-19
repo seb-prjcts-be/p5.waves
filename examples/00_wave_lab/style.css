@@ -1,11 +1,11 @@
 :root {
   --black: #000000;
   --white: #ffffff;
-  --soft: rgb(245, 245, 245);
-  --red: rgb(255, 0, 0);
-  --mono: "IBM Plex Mono", "Courier New", monospace;
-  --title: "Oswald", "Arial Narrow", sans-serif;
-  --sans: "Segoe UI", Arial, sans-serif;
+  --gray-245: #f5f5f5;
+  --red: #ff0000;
+  --title: "Oswald", sans-serif;
+  --text: "Alegreya", serif;
+  --code: "IBM Plex Mono", monospace;
 }
 
 * {
@@ -18,9 +18,8 @@ body {
   padding: 0;
   min-height: 100%;
   color: var(--black);
-  font-family: var(--sans);
-  background:
-    linear-gradient(135deg, var(--white), var(--soft));
+  font-family: var(--text);
+  background: var(--gray-245);
 }
 
 .page-shell {
@@ -35,14 +34,12 @@ body {
 
 .control-panel {
   background: var(--white);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 18px;
-  padding: 18px 16px 18px;
+  border: 1px solid var(--black);
+  border-radius: 16px;
+  padding: 18px 16px;
   display: grid;
   align-content: start;
   gap: 14px;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
-  animation: panel-in 260ms ease-out;
 }
 
 .control-panel h1 {
@@ -56,17 +53,17 @@ body {
 
 .subtitle {
   margin: 0;
-  font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.78);
+  font-size: 0.94rem;
+  line-height: 1.35;
 }
 
 .control-group {
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  border: 1px solid var(--black);
   border-radius: 12px;
   padding: 10px;
   display: grid;
   gap: 9px;
-  background: var(--soft);
+  background: var(--gray-245);
 }
 
 .control-group h2 {
@@ -74,9 +71,8 @@ body {
   font-family: var(--title);
   font-weight: 300;
   font-size: 0.94rem;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--black);
 }
 
 label {
@@ -96,33 +92,27 @@ label.inline {
   gap: 9px;
 }
 
-#mod-fields.hidden {
+#mod-fields.hidden,
+.hidden {
   display: none;
 }
 
 label.disabled-control {
-  opacity: 0.4;
+  opacity: 0.45;
 }
 
 label.disabled-control input,
-label.disabled-control select {
-  cursor: not-allowed;
-}
-
+label.disabled-control select,
 button.disabled-control {
-  opacity: 0.4;
   cursor: not-allowed;
-  background: var(--black);
-  border-color: var(--black);
-  transform: none;
-  box-shadow: none;
 }
 
+button.disabled-control,
 button.disabled-control:hover {
+  opacity: 0.45;
   background: var(--black);
   border-color: var(--black);
-  transform: none;
-  box-shadow: none;
+  color: var(--white);
 }
 
 select,
@@ -133,62 +123,56 @@ button {
 
 select {
   appearance: none;
-  font-family: var(--sans);
+  font-family: var(--text);
   font-size: 0.9rem;
   color: var(--black);
   padding: 7px 10px;
   border-radius: 9px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--black);
   background: var(--white);
 }
 
-input[type="range"] {
-  accent-color: var(--black);
-}
-
+input[type="range"],
 input[type="checkbox"] {
   accent-color: var(--black);
 }
 
 .value {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  color: rgba(0, 0, 0, 0.75);
+  font-family: var(--code);
+  font-size: 0.84rem;
 }
 
 .mode-note {
   margin: 2px 0 0;
   padding: 6px 8px;
   border-left: 3px solid var(--red);
-  background: var(--soft);
-  font-family: var(--mono);
-  font-size: 0.76rem;
-  color: var(--black);
+  background: var(--white);
+  font-family: var(--code);
+  font-size: 0.78rem;
 }
 
 .code-note {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   line-height: 1.4;
-  color: rgba(0, 0, 0, 0.82);
 }
 
 .code-output {
   width: 100%;
   min-height: 260px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--black);
   border-radius: 10px;
   padding: 10px;
   resize: vertical;
   background: var(--white);
   color: var(--black);
-  font-family: var(--mono);
-  font-size: 0.74rem;
+  font-family: var(--code);
+  font-size: 0.8rem;
   line-height: 1.45;
 }
 
 .code-output:focus {
-  outline: 2px solid rgba(255, 0, 0, 0.45);
+  outline: 2px solid var(--red);
   outline-offset: 1px;
 }
 
@@ -202,25 +186,23 @@ button {
   color: var(--white);
   background: var(--black);
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  transition: background 120ms ease, color 120ms ease;
 }
 
 button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
-  background: var(--red);
-  border-color: var(--red);
+  background: var(--white);
+  color: var(--black);
 }
 
 button:active {
-  transform: translateY(0);
+  background: var(--black);
+  color: var(--white);
 }
 
 .stage {
   display: grid;
   grid-template-rows: auto minmax(380px, 1fr) auto;
   gap: 10px;
-  animation: stage-in 280ms ease-out;
 }
 
 .stage-bar {
@@ -230,19 +212,18 @@ button:active {
 }
 
 .badge {
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--black);
   border-radius: 999px;
   background: var(--white);
   padding: 6px 10px;
-  font-family: var(--mono);
+  font-family: var(--code);
   font-size: 0.78rem;
 }
 
 #canvas-wrap {
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--black);
   min-height: 420px;
   background: var(--white);
 }
@@ -253,41 +234,14 @@ canvas {
 
 .hint {
   margin: 0;
-  color: rgba(0, 0, 0, 0.78);
   font-size: 0.9rem;
   line-height: 1.5;
 }
 
 .hint code {
-  font-family: var(--mono);
-  font-size: 0.84em;
+  font-family: var(--code);
+  font-size: 0.9em;
   color: var(--red);
-}
-
-.hidden {
-  display: none;
-}
-
-@keyframes panel-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes stage-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (max-width: 1024px) {

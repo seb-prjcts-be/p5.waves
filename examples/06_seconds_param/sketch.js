@@ -17,7 +17,7 @@ function setup() {
 }
 
 function draw() {
-  background(245, 30);
+  background(245);
 
   for (let y = 0; y < height; y += 10) {
     const x = Waves.wave(y + t);

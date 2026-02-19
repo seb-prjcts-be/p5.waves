@@ -289,7 +289,7 @@ function drawBackdrop() {
 }
 
 function drawGrid() {
-  stroke(0, 0, 0, 40);
+  stroke(0);
   strokeWeight(1);
   for (let y = 0; y <= height; y += 40) line(0, y, width, y);
   for (let x = 0; x <= width; x += 80) line(x, 0, x, height);
@@ -301,13 +301,13 @@ function drawWave(state) {
   const drawPoints = state.showPoints || !state.connectLine;
 
   if (state.connectLine) {
-    stroke(0, 0, 0, 220);
+    stroke(0);
     strokeWeight(2.1);
     noFill();
     beginShape();
   } else {
     noStroke();
-    fill(255, 0, 0);
+    fill(0);
   }
 
   for (let y = 0; y <= height; y += step) {
@@ -318,11 +318,11 @@ function drawWave(state) {
 
     if (drawPoints) {
       noStroke();
-      fill(255, 0, 0);
+      fill(0);
       circle(x, y, 4);
       if (state.connectLine) {
         noFill();
-        stroke(0, 0, 0, 220);
+        stroke(0);
       }
     }
   }
@@ -424,14 +424,14 @@ function drawMatrix14(state) {
         const centerX = ox + c * cell + cell * 0.5;
         const centerY = oy + r * cell + cell * 0.5;
         const radius = on ? cell * 0.36 : cell * 0.14;
-        fill(255, 0, 0, on ? 170 : 90);
+        fill(on ? 255 : 0);
         circle(centerX, centerY, radius);
       }
     }
   }
 
   if (state.showGrid) {
-    stroke(0, 0, 0, 160);
+    stroke(0);
     strokeWeight(1);
     noFill();
     for (let gx = 0; gx <= cols; gx++) {
@@ -497,7 +497,7 @@ function buildWaveOptionsLiteral(state, indent) {
 function buildLineSnippet(state) {
   const seconds = state.seconds > 0 ? codeNum(state.seconds, 2) : 'null';
 
-  return `// p5.waves line preset export\nconst waveSelect = ${state.wave};\nconst waveSeconds = ${seconds};\nconst connectLine = ${codeBool(state.connectLine)};\nconst drawPoints = ${codeBool(state.showPoints)};\nconst waveOptions = {\n${buildWaveOptionsLiteral(state, '  ')}\n};\n\nlet t = 0;\n\nfunction setup() {\n  createCanvas(800, 520);\n  noFill();\n}\n\nfunction draw() {\n  background(245);\n\n  if (connectLine) {\n    beginShape();\n    stroke(0);\n    strokeWeight(2);\n  } else {\n    noStroke();\n    fill(255, 0, 0);\n  }\n\n  for (let y = 0; y <= height; y += ${Math.max(1, state.step)}) {\n    const sample = Waves.wave(y + t, waveSelect, waveSeconds, waveOptions);\n    const x = width * 0.5 + (waveOptions.axis === 'xz' ? sample.x : sample);\n\n    if (connectLine) vertex(x, y);\n\n    if (drawPoints || !connectLine) {\n      noStroke();\n      fill(255, 0, 0);\n      circle(x, y, 4);\n      if (connectLine) {\n        noFill();\n        stroke(0);\n      }\n    }\n  }\n\n  if (connectLine) endShape();\n  t += ${codeNum(state.speed, 4)};\n}`;
+  return `// p5.waves line preset export\nconst waveSelect = ${state.wave};\nconst waveSeconds = ${seconds};\nconst connectLine = ${codeBool(state.connectLine)};\nconst drawPoints = ${codeBool(state.showPoints)};\nconst waveOptions = {\n${buildWaveOptionsLiteral(state, '  ')}\n};\n\nlet t = 0;\n\nfunction setup() {\n  createCanvas(800, 520);\n  noFill();\n}\n\nfunction draw() {\n  background(245);\n\n  if (connectLine) {\n    beginShape();\n    stroke(0);\n    strokeWeight(2);\n  } else {\n    noStroke();\n    fill(0);\n  }\n\n  for (let y = 0; y <= height; y += ${Math.max(1, state.step)}) {\n    const sample = Waves.wave(y + t, waveSelect, waveSeconds, waveOptions);\n    const x = width * 0.5 + (waveOptions.axis === 'xz' ? sample.x : sample);\n\n    if (connectLine) vertex(x, y);\n\n    if (drawPoints || !connectLine) {\n      noStroke();\n      fill(0);\n      circle(x, y, 4);\n      if (connectLine) {\n        noFill();\n        stroke(0);\n      }\n    }\n  }\n\n  if (connectLine) endShape();\n  t += ${codeNum(state.speed, 4)};\n}`;
 }
 
 function buildMatrixSnippet(state) {
