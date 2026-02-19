@@ -87,7 +87,8 @@ Parameters
 - `options` (object).
 - `options.refresh` (number). Default `0`.
 - `options.axis` (`'x'`, `'z'`, or `'xz'`). Default `'xz'`.
-- `options.scale` (number). Default `1`.
+- `options.amplitude` (number). Default `1`.
+- `options.scale` (number). Alias for `amplitude`.
 - `options.wave` (wave reference). Sets both axes.
 - `options.xWave` (wave reference). Sets only `x`.
 - `options.zWave` (wave reference). Sets only `z`.
@@ -96,6 +97,8 @@ Parameters
 - `options.domain` (array). Default `[-100, 100]`.
 - `options.samples` (number). Default `512`.
 - `options.normalizeVars` (object). Default `null`.
+`amplitude` is preferred.
+`scale` stays supported for backward compatibility.
 Expected ranges
 - `options.axis` must be `'x'`, `'z'`, or `'xz'`.
 - `options.range` and `options.domain` must be `[min, max]` with `min !== max`.
@@ -144,7 +147,8 @@ const out = Waves.sample(50, 3, { axis: 'x', wave: 'classic sine' });
 Parameters
 - `options` (object).
 - `options.axis` (`'x'`, `'z'`, or `'xz'`).
-- `options.scale` (number).
+- `options.amplitude` (number).
+- `options.scale` (number). Alias for `amplitude`.
 - `options.refresh` (number).
 - `options.select` (wave reference).
 - `options.seconds` (number).
@@ -162,7 +166,7 @@ Return value
 - A copy of the current defaults.
 Example
 ```js
-Waves.setWaveParams({ axis: 'x', scale: 120, normalize: true });
+Waves.setWaveParams({ axis: 'x', amplitude: 120, normalize: true });
 ```
 These defaults are used by `Waves.wave()` on every call.
 `Waves.createSampler()` only uses the `normalize`, `range`, `domain`, `samples`, and `normalizeVars` defaults when you omit them.
@@ -174,7 +178,7 @@ Parameters
 - `seconds` (number). Optional.
 - `axisOrOptions` (string or object). Optional.
 - If `axisOrOptions` is a string, it is the axis.
-- If it is an object, it accepts `axis`, `scale`, `refresh`, `select`, `seconds`, `vars`, `normalize`, `range`, `domain`, `samples`, and `normalizeVars`.
+- If it is an object, it accepts `axis`, `amplitude`, `scale`, `refresh`, `select`, `seconds`, `vars`, `normalize`, `range`, `domain`, `samples`, and `normalizeVars`.
 Expected ranges
 - `select` can be a number index, a name string, or an object with `index`, `wave`, or `name`.
 - `seconds` must be `> 0` to auto-advance.
@@ -204,7 +208,7 @@ These functions are added to `p5.prototype` when p5.js is loaded.
 In global mode, they also appear as globals.
 They behave the same as the `Waves` versions.
 
-**`p5.prototype.wave(y, select, seconds, axisOrOptions)`**
+**`p5.prototype.waves(y, select, seconds, axisOrOptions)`**
 Parameters
 - Same as `Waves.wave(...)`.
 Expected ranges
@@ -213,8 +217,11 @@ Return value
 - Same as `Waves.wave(...)`.
 Example
 ```js
-const x = p.wave(40, 'classic sine');
+const x = p.waves(40, 'classic sine');
 ```
+
+**`p5.prototype.wave(y, select, seconds, axisOrOptions)`**
+- Legacy alias kept for backward compatibility.
 
 **`p5.prototype.waveSample(y, refresh, axisOrOptions)`**
 Parameters
@@ -250,22 +257,22 @@ Return value
 - Same as `Waves.setWaveParams(...)`.
 Example
 ```js
-p.setWaveParams({ axis: 'x', scale: 80 });
+p.setWaveParams({ axis: 'x', amplitude: 80 });
 ```
 
 **Safe Usage vs Unsafe Usage**
 Safe and recommended:
 - `Waves.wave(...)` in any mode.
-- `p.wave(...)` in instance mode.
+- `p.waves(...)` in instance mode.
 
 Unsafe and collision-prone:
-- Global `wave(...)` in global mode.
-- The optional `wave` alias added to `window` when no `wave` function exists.
+- Relying on a global `wave(...)` function.
 
 Why this matters:
 Global mode places many functions on `window`.
 Any other script can overwrite them or be overwritten.
-Using `Waves.wave(...)` or `p.wave(...)` avoids that collision risk.
+Using `Waves.wave(...)` or `p.waves(...)` avoids that collision risk.
+This library does not define `window.wave`.
 
 **Usage Patterns**
 Global mode (explicit and safe):
@@ -273,7 +280,7 @@ Global mode (explicit and safe):
 function setup() {
   createCanvas(400, 200);
   noFill();
-  Waves.setWaveParams({ axis: 'x', scale: 80 });
+  Waves.setWaveParams({ axis: 'x', amplitude: 80 });
 }
 
 function draw() {
@@ -299,7 +306,7 @@ new p5(function (p) {
     p.background(240);
     p.beginShape();
     for (let y = 0; y <= p.height; y += 4) {
-      const x = p.wave(y, 'triangle', null, { scale: 80 });
+      const x = p.waves(y, 'triangle', null, { amplitude: 80 });
       p.vertex(p.width / 2 + x, y);
     }
     p.endShape();
@@ -313,7 +320,7 @@ let sampler;
 
 function setup() {
   createCanvas(400, 400, WEBGL);
-  sampler = Waves.createSampler({ refresh: 1, axis: 'xz', scale: 60 });
+  sampler = Waves.createSampler({ refresh: 1, axis: 'xz', amplitude: 60 });
   noStroke();
 }
 
