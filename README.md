@@ -21,6 +21,55 @@ Each formula is a small math expression that takes an input called `x`.
 The library treats your `y` input as that `x`.
 If you ask for both axes, it samples two formulas and returns `{ x, z }`.
 
+**Repository Split (v1 vs v2)**
+- `p5.waves` is the v1 formula library with a broad legacy dataset: `37` usable wave entries (around 40).
+- `p5.easywaves` is the v2 line with a smaller curated set: `4` wave types.
+- Use `p5.waves` when you want maximum variety and legacy-compatible behavior.
+- Use `p5.easywaves` when you want a minimal, constrained wave set.
+
+**Usable Waves In `p5.waves` (v1 dataset)**
+The current `Waves.data` list has `37` entries:
+
+| index | wave | shape |
+| --- | --- | --- |
+| 0 | classic sine | ellipse |
+| 1 | sine | infinity |
+| 2 | sharp peaks sine | pendulum |
+| 3 | sharp peaks sine | phasingPendulum |
+| 4 | rectangular | topBottom |
+| 5 | pulse | bottomTop |
+| 6 | rectangular sine | leftRight |
+| 7 | mountain peaks | invertedHeart |
+| 8 | valleys | heart |
+| 9 | zig-zag sine | spaceShip |
+| 10 | batman | starfighter |
+| 11 | zig-zag sine | solarSystem |
+| 12 | offset sine | cSection |
+| 13 | steps down | hive |
+| 14 | steps | hexagon |
+| 15 | class sine | invertedPendulum |
+| 16 | classic sine | pendulum |
+| 17 | bumpy sine | depthIllusion |
+| 18 | bumpy sine | headWithEars |
+| 19 | up down noise | upDownScatter |
+| 20 | meta sine | upDownScatter |
+| 21 | triangle | phasingSharpSine |
+| 22 | ramp with period height | spiral |
+| 23 | ramp down saw | crissCross |
+| 24 | ramp up saw | crissCross |
+| 25 | fade out | snake |
+| 26 | grow random | scatterDown |
+| 27 | noise | noise |
+| 28 | fuzzy pulse | fuzzyCenter |
+| 29 | up down pulse | spinningTop |
+| 30 | bald patch | scatter |
+| 31 | fuzzy peak sine | foamingBowl |
+| 32 | ramp up sine | scatter |
+| 33 | triangle sine | scatter |
+| 34 | round linked sine | scatterSphere |
+| 35 | half & half sine | crissCrossUpDown |
+| 36 | smooth solid sine | dna |
+
 **Installation**
 Script tag (local file):
 ```html
@@ -342,7 +391,7 @@ Patch releases fix bugs or docs without changing outputs.
 Minor releases add new waves or options without breaking existing calls.
 Major releases may change outputs or remove or rename functions.
 
-**Makers and Contributors**
+**Makers and Contributors (v1 dataset)**
 - `tw@GenerativePunk` (wave formula contributor in the original dataset).
 - `gh@ffd8` (wave formula contributor in the original dataset).
 - Reference for rectangular and pulse formulas: https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0
