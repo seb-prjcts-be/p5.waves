@@ -15,9 +15,9 @@ new p5(function (p) {
     p.background(245);
     p.beginShape();
     for (let y = 0; y <= p.height; y += STEP) {
-      const x = p.width / 2 + p.wave(y + p.frameCount * SPEED, SELECT, SECONDS, {
+      const x = p.width / 2 + p.waves(y + p.frameCount * SPEED, SELECT, SECONDS, {
         axis: 'x',
-        scale: SCALE
+        amplitude: SCALE
       });
       p.vertex(x, y);
     }
