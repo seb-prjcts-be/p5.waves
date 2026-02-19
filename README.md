@@ -20,6 +20,14 @@ Script tag (local file):
 Load order matters.
 `p5.js` must load before `p5.waves.js` or `p5.waves.min.js`.
 
+**GitHub Pages Examples**
+- Landing page: `https://seb-prjcts-be.github.io/p5.waves/`
+- Direct examples: `https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/` (and the other folders under `examples/`).
+- Deployment is handled by `.github/workflows/pages.yml` on pushes to `main`.
+
+If Pages is not enabled yet in the repository settings, set:
+- `Settings` -> `Pages` -> `Build and deployment` -> `Source: GitHub Actions`.
+
 **What's New In 1.3.0 (Additive)**
 - Added friendly name aliases in `Waves.getWaveByName(...)` and `Waves.wave(...)` (for example `classicSine`, `sawRise`, `squarePulse`).
 - Added optional input shaping controls: `frequency` and `phase` on `Waves.createSampler(...)`, `Waves.wave(...)`, and `Waves.setWaveParams(...)`.
