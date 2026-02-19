@@ -91,15 +91,15 @@ function windowResized() {
 }
 
 function populateWaveSelect() {
-  const select = controls.wave;
-  select.innerHTML = '';
+  const waveSelectEl = controls.wave;
+  waveSelectEl.innerHTML = '';
 
   for (let i = 0; i < waveDefs.length; i++) {
     const def = waveDefs[i];
     const option = document.createElement('option');
     option.value = String(i);
     option.textContent = `${i} - ${def.wave} | ${def.shape}`;
-    select.appendChild(option);
+    waveSelectEl.appendChild(option);
   }
 
   let defaultIndex = 0;
@@ -110,7 +110,7 @@ function populateWaveSelect() {
     }
   }
 
-  select.value = String(defaultIndex);
+  waveSelectEl.value = String(defaultIndex);
 }
 
 function bindControls() {
@@ -165,7 +165,7 @@ function readState() {
   const phase = Number(controls.phase.value);
   const mode = controls.mode.value;
   const unpredictability = Number(controls.unpredictability.value);
-  const normalize = controls.normalize.checked;
+  const normalizeOutput = controls.normalize.checked;
   const range = [Number(controls['range-min'].value), Number(controls['range-max'].value)];
   const domain = [Number(controls['domain-min'].value), Number(controls['domain-max'].value)];
   const samples = Number(controls.samples.value);
@@ -185,7 +185,7 @@ function readState() {
       unpredictability,
       modulation,
       refresh,
-      normalize,
+      normalize: normalizeOutput,
       range,
       domain,
       samples
