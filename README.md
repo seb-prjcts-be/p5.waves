@@ -134,6 +134,22 @@ function draw() {
 
 ## Sampling Patterns
 
+### Time source (clock vs tick)
+Use one explicit timing source for wave switching and default `vars.t`:
+
+```js
+Waves.setTimeMode('clock'); // default behavior
+```
+
+```js
+Waves.setTimeMode('tick');
+function draw() {
+  Waves.tick(deltaTime / 1000); // live
+  // or fixed-step recording:
+  // Waves.tick(1 / targetFps);
+}
+```
+
 ### Animate a wave
 ```js
 let t = 0;
@@ -236,7 +252,7 @@ function draw() {
 ### `Waves.wave(y, select, seconds, axisOrOptions)`
 - `y`: number input
 - `select`: wave reference (optional)
-- `seconds`: number (optional, auto-advance)
+- `seconds`: number (optional, `0` disables auto-advance, `> 0` auto-advances)
 - `axisOrOptions`: string axis or options object
 
 Options:
@@ -249,12 +265,24 @@ Options:
 - `refresh`: number
 - `seconds`: number
 - `select`: wave reference
+- `vars`: object
 - `normalize`: boolean
 - `range`: `[min, max]`
 - `modulation`: `{ shape, frequency, phase, phaseDepth, amplitudeDepth }`
 
 Returns:
 - number (`x` or `z`) or `{ x, z }` when `axis: 'xz'`
+- if `vars.t` is omitted, `Waves.wave(...)` injects `t` from the active time source
+- if `vars.t` is provided, it overrides internal time
+
+### `Waves.setTimeMode(mode, options)`
+- `mode`: `'clock' | 'tick'`
+- `options`: reserved object (optional)
+- default mode is `'clock'`
+
+### `Waves.tick(dtSeconds)`
+- advances internal time in seconds (relevant in `'tick'` mode)
+- returns current internal time
 
 ### `Waves.createSampler(options)`
 ```js
@@ -321,6 +349,7 @@ For full control (`mode`, `unpredictability`, `frequencyA/B`, thresholds, combin
 - `examples/05_range_0_1`
 - `examples/06_wave_override`
 - `examples/07_archive_comparison`: side-by-side stable core vs legacy archive behavior
+- `examples/11_tick_time_mode`: deterministic timing demo (`frameRate(1)` + fixed `tick`)
 
 ## Archive & Legacy Builds
 

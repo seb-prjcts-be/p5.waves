@@ -403,10 +403,50 @@
     return ranged * settings.amplitude * modAmp * amplitudeNoise;
   }
 
-  function nowSeconds() {
+  function getClockSeconds() {
     if (typeof global.millis === 'function') return global.millis() / 1000;
     if (typeof performance !== 'undefined' && performance.now) return performance.now() / 1000;
     return Date.now() / 1000;
+  }
+
+  function resolveTimeMode(mode) {
+    return normalizeName(mode) === 'tick' ? 'tick' : 'clock';
+  }
+
+  function setTimeMode(mode, options) {
+    options = options || {};
+    const nextMode = resolveTimeMode(mode);
+    if (nextMode === 'tick' && api._timeMode !== 'tick') {
+      const lastClock = toNumber(api._lastClockSeconds, NaN);
+      if (Number.isFinite(lastClock)) api._timeSeconds = lastClock;
+    } else if (nextMode === 'clock') {
+      const clockSeconds = getClockSeconds();
+      api._lastClockSeconds = clockSeconds;
+      api._timeSeconds = clockSeconds;
+    }
+    api._timeMode = nextMode;
+    return api._timeMode;
+  }
+
+  function tick(dtSeconds) {
+    if (api._timeMode !== 'tick') return getTimeSeconds();
+    const dt = toNumber(dtSeconds, 0);
+    if (dt > 0) api._timeSeconds += dt;
+    return api._timeSeconds;
+  }
+
+  function getTimeSeconds() {
+    if (api._timeMode === 'tick') return api._timeSeconds;
+    const clockSeconds = getClockSeconds();
+    api._lastClockSeconds = clockSeconds;
+    api._timeSeconds = clockSeconds;
+    return clockSeconds;
+  }
+
+  function resolveWaveVars(vars, timeSeconds) {
+    if (!vars || typeof vars !== 'object') return { t: timeSeconds };
+    if (Object.prototype.hasOwnProperty.call(vars, 't')) return vars;
+    return { ...vars, t: timeSeconds };
   }
 
   function createSampler(options) {
@@ -576,12 +616,13 @@
     const resolvedXWave = resolveWaveRef(opts.xWave);
     const resolvedZWave = resolveWaveRef(opts.zWave);
 
+    const baseVars = opts.vars ?? WAVE_DEFAULTS.vars;
     const normalize = opts.normalize ?? WAVE_DEFAULTS.normalize;
     const range = opts.range ?? WAVE_DEFAULTS.range;
     const modulation = opts.modulation ?? WAVE_DEFAULTS.modulation;
-    const vars = opts.vars ?? WAVE_DEFAULTS.vars;
-
-    const tick = secs > 0 ? Math.floor(nowSeconds() / secs) : 0;
+    const timeSeconds = getTimeSeconds();
+    const switchTick = secs > 0 ? Math.floor(timeSeconds / secs) : 0;
+    const vars = resolveWaveVars(baseVars, timeSeconds);
 
     const samplerOptions = {
       axis,
@@ -601,12 +642,12 @@
     } else {
       const resolved = resolveWaveRef(resolvedSelect);
       if (resolved) {
-      const len = WAVES.length;
-      const baseIndex = Math.floor(baseRefresh) + resolved.index + tick;
-      const index = ((baseIndex % len) + len) % len;
-      samplerOptions.wave = index;
+        const len = WAVES.length;
+        const baseIndex = Math.floor(baseRefresh) + resolved.index + switchTick;
+        const index = ((baseIndex % len) + len) % len;
+        samplerOptions.wave = index;
       } else {
-        samplerOptions.refresh = baseRefresh + tick;
+        samplerOptions.refresh = baseRefresh + switchTick;
       }
     }
 
@@ -877,7 +918,12 @@
     grid,
     setWaveParams,
     wave,
-    seedFrom
+    seedFrom,
+    setTimeMode,
+    tick,
+    _timeMode: 'clock',
+    _timeSeconds: 0,
+    _lastClockSeconds: null
   };
 
   if (global.p5 && global.p5.prototype) {
