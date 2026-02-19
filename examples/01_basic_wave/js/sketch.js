@@ -6,7 +6,7 @@ const SPEED = 0.5;
 function setup() {
   createCanvas(400, 200);
   noFill();
-  stroke(20);
+  stroke(0);
 }
 
 function draw() {
