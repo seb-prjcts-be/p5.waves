@@ -20,6 +20,16 @@ Script tag (local file):
 Load order matters.
 `p5.js` must load before `p5.waves.js` or `p5.waves.min.js`.
 
+**What's New In 1.3.0 (Additive)**
+- Added friendly name aliases in `Waves.getWaveByName(...)` and `Waves.wave(...)` (for example `classicSine`, `sawRise`, `squarePulse`).
+- Added optional input shaping controls: `frequency` and `phase` on `Waves.createSampler(...)`, `Waves.wave(...)`, and `Waves.setWaveParams(...)`.
+- Added optional behavior controls: `mode`, `unpredictability`, and `modulation` on sampler and wave calls.
+- Added grid helpers: `Waves.createGridSampler(options)` and `Waves.grid(time, options)`.
+- Added discovery helpers: `Waves.list()`, `Waves.aliases`, and `Waves.families`.
+- Added p5 instance helpers: `p.createWaveGridSampler(options)` and `p.waveGrid(time, options)`.
+
+These are additive and keep 1.2 call patterns working.
+
 **What This Library Does**
 This library adds wave sampling functions to p5.js and exposes a global `Waves` object.
 You pass a single number (named `y` in the API).
@@ -83,13 +93,20 @@ The current `Waves.data` list has `37` entries:
 | 35 | half & half sine | crissCrossUpDown |
 | 36 | smooth solid sine | dna |
 
-**Legacy Examples (minimal set)**
-This repository intentionally keeps a smaller example set during the legacy phase.
+**Examples**
+The repository now includes a broader set of examples covering base usage and 1.3 features.
 
+- `examples/00_wave_lab`
 - `examples/01_basic_wave`
 - `examples/02_instance_mode`
-
-This repository keeps the examples minimal by design.
+- `examples/03_basic_wave_instance`
+- `examples/04_basic_wave_p2d`
+- `examples/05_basic_wave_webgl`
+- `examples/06_seconds_param`
+- `examples/07_select_by_index`
+- `examples/08_triangle_domain`
+- `examples/09_range_0_1`
+- `examples/10_wave_override`
 
 **Core API**
 All functions below are available on the global `Waves` object.
@@ -104,6 +121,42 @@ Return value
 Example
 ```js
 const count = Waves.data.length;
+```
+
+**`Waves.aliases`**
+Parameters
+- None.
+Expected ranges
+- Not applicable.
+Return value
+- Object map of compact alias names to canonical wave names.
+Example
+```js
+const canonical = Waves.aliases.classicsine; // "classic sine"
+```
+
+**`Waves.list()`**
+Parameters
+- None.
+Expected ranges
+- Not applicable.
+Return value
+- Array of `{ index, wave, shape, algo }`.
+Example
+```js
+const list = Waves.list();
+```
+
+**`Waves.families`**
+Parameters
+- None.
+Expected ranges
+- Not applicable.
+Return value
+- Family groups for dataset browsing. Current value includes `legacy`.
+Example
+```js
+const legacy = Waves.families.legacy;
 ```
 
 **`Waves.getWaveByIndex(index)`**
@@ -127,6 +180,7 @@ Expected ranges
 - Matching is case-insensitive and checks both `wave` and `shape`.
 - Shape names in `Waves.data` are camelCase.
 - For shapes, spaces and hyphens in the input are ignored.
+- Common migration aliases are supported (for example `classicSine`, `sawRise`, `squarePulse`).
 Return value
 - `{ index, wave }` or `null`.
 Example
@@ -141,6 +195,11 @@ Parameters
 - `options.axis` (`'x'`, `'z'`, or `'xz'`). Default `'xz'`.
 - `options.amplitude` (number). Default `1`.
 - `options.scale` (number). Alias for `amplitude`.
+- `options.frequency` (number). Input multiplier. Default `1`.
+- `options.phase` (number). Input offset. Default `0`.
+- `options.mode` (`'stable'` or `'wild'`). Default `'stable'`.
+- `options.unpredictability` (number `0..1`). Default `0`.
+- `options.modulation` (object or `null`). Default `null`.
 - `options.wave` (wave reference). Sets both axes.
 - `options.xWave` (wave reference). Sets only `x`.
 - `options.zWave` (wave reference). Sets only `z`.
@@ -153,6 +212,9 @@ Parameters
 `scale` stays supported for backward compatibility.
 Expected ranges
 - `options.axis` must be `'x'`, `'z'`, or `'xz'`.
+- `options.frequency` and `options.phase` should be finite numbers.
+- `options.mode` must be `'stable'` or `'wild'` when provided.
+- `options.unpredictability` should be in `[0, 1]`.
 - `options.range` and `options.domain` must be `[min, max]` with `min !== max`.
 - `options.samples` should be an integer `>= 2`.
 - A wave reference is a number index, a name string, or an object with `index`, `wave`, or `name`.
@@ -201,6 +263,11 @@ Parameters
 - `options.axis` (`'x'`, `'z'`, or `'xz'`).
 - `options.amplitude` (number).
 - `options.scale` (number). Alias for `amplitude`.
+- `options.frequency` (number). Input multiplier.
+- `options.phase` (number). Input offset.
+- `options.mode` (`'stable'` or `'wild'`).
+- `options.unpredictability` (number `0..1`).
+- `options.modulation` (object or `null`).
 - `options.refresh` (number).
 - `options.select` (wave reference).
 - `options.seconds` (number).
@@ -212,6 +279,9 @@ Parameters
 - `options.normalizeVars` (object).
 Expected ranges
 - `options.axis` must be `'x'`, `'z'`, or `'xz'` when provided.
+- `options.frequency` and `options.phase` should be finite numbers when provided.
+- `options.mode` must be `'stable'` or `'wild'` when provided.
+- `options.unpredictability` should be in `[0, 1]` when provided.
 - `options.seconds` must be `> 0` to auto-advance.
 - `options.range` and `options.domain` must be `[min, max]` with `min !== max`.
 Return value
@@ -221,7 +291,7 @@ Example
 Waves.setWaveParams({ axis: 'x', amplitude: 120, normalize: true });
 ```
 These defaults are used by `Waves.wave()` on every call.
-`Waves.createSampler()` only uses the `normalize`, `range`, `domain`, `samples`, and `normalizeVars` defaults when you omit them.
+`Waves.createSampler()` uses the `frequency`, `phase`, `mode`, `unpredictability`, `modulation`, `normalize`, `range`, `domain`, `samples`, and `normalizeVars` defaults when you omit them.
 
 **`Waves.wave(y, select, seconds, axisOrOptions)`**
 Parameters
@@ -230,9 +300,12 @@ Parameters
 - `seconds` (number). Optional.
 - `axisOrOptions` (string or object). Optional.
 - If `axisOrOptions` is a string, it is the axis.
-- If it is an object, it accepts `axis`, `amplitude`, `scale`, `refresh`, `select`, `seconds`, `vars`, `normalize`, `range`, `domain`, `samples`, and `normalizeVars`.
+- If it is an object, it accepts `axis`, `amplitude`, `scale`, `frequency`, `phase`, `mode`, `unpredictability`, `modulation`, `refresh`, `select`, `xWave`, `zWave`, `seconds`, `vars`, `normalize`, `range`, `domain`, `samples`, and `normalizeVars`.
 Expected ranges
 - `select` can be a number index, a name string, or an object with `index`, `wave`, or `name`.
+- `xWave` and `zWave` can use the same wave reference formats as `select`.
+- `mode` must be `'stable'` or `'wild'` when provided.
+- `unpredictability` should be in `[0, 1]` when provided.
 - `seconds` must be `> 0` to auto-advance.
 - `axis` must be `'x'`, `'z'`, or `'xz'` when provided.
 Return value
@@ -253,6 +326,52 @@ Return value
 Example
 ```js
 const seed = Waves.seedFrom('demo');
+```
+
+**`Waves.createGridSampler(options)`**
+Parameters
+- `options` (object).
+- `options.cols` (number). Default `14`.
+- `options.rows` (number). Default `14`.
+- `options.waveA`, `options.waveB` (wave reference). Optional.
+- `options.axisA`, `options.axisB` (`'x'`, `'z'`, or `'xz'`). Defaults `'x'`.
+- `options.amplitudeA`, `options.amplitudeB` (number). Optional.
+- `options.frequencyA`, `options.frequencyB` (number). Optional.
+- `options.phaseWaveA`, `options.phaseWaveB` (number). Optional.
+- `options.modeA`, `options.modeB` (`'stable'` or `'wild'`). Optional.
+- `options.unpredictabilityA`, `options.unpredictabilityB` (number `0..1`). Optional.
+- `options.modulation`, `options.modulationA`, `options.modulationB` (object or `null`). Optional.
+- `options.refreshA`, `options.refreshB` (number). Optional.
+- `options.normalizeA`, `options.normalizeB` (boolean). Optional.
+- `options.rangeA`, `options.rangeB` (array). Optional.
+- `options.domainA`, `options.domainB` (array). Optional.
+- `options.samplesA`, `options.samplesB` (number). Optional.
+- `options.combine` (`add`, `subtract`, `multiply`, `max`, `min`, `avg`). Default `add`.
+- `options.threshold` (number). Default `0`.
+- `options.high`, `options.low` (numbers). Defaults `1` and `0`.
+- `options.invert` (boolean). Default `false`.
+- `options.inputScale` (number). Default `TWO_PI`.
+- `options.timeScaleA`, `options.timeScaleB` (numbers). Defaults `1` and `-1`.
+- `options.phaseA`, `options.phaseB` (numbers). Defaults `0`.
+- `options.mode` (`stable` or `wild`). Default `stable`.
+- `options.unpredictability` (number `0..1`). Default `0`.
+- `options.autoStepOnUniform` (boolean). Default `false`.
+Return value
+- Grid sampler object with methods `sample(time, out)`, `setWaves(...)`, `nextPair(...)`, and `getState()`.
+Example
+```js
+const gridSampler = Waves.createGridSampler({ cols: 14, rows: 14, waveA: 'triangle', waveB: 'pulse' });
+```
+
+**`Waves.grid(time, options)`**
+Parameters
+- `time` (number).
+- `options` (object). Same options as `Waves.createGridSampler(...)`.
+Return value
+- One-shot grid frame object from `createGridSampler(...).sample(time)`.
+Example
+```js
+const frame = Waves.grid(frameCount * 0.02, { cols: 10, rows: 10 });
 ```
 
 **p5 Methods (Aliases)**
@@ -295,6 +414,31 @@ Return value
 Example
 ```js
 const sampler = p.createWaveSampler(2, { axis: 'xz' });
+```
+
+**`p5.prototype.createWaveGridSampler(options)`**
+Parameters
+- `options` (object). Same fields as `Waves.createGridSampler(...)`.
+Expected ranges
+- Same as `Waves.createGridSampler(...)`.
+Return value
+- Same as `Waves.createGridSampler(...)`.
+Example
+```js
+const gridSampler = p.createWaveGridSampler({ cols: 14, rows: 14 });
+```
+
+**`p5.prototype.waveGrid(time, options)`**
+Parameters
+- `time` (number).
+- `options` (object). Same fields as `Waves.createGridSampler(...)`.
+Expected ranges
+- Same as `Waves.grid(...)`.
+Return value
+- Same as `Waves.grid(...)`.
+Example
+```js
+const frame = p.waveGrid(frameCount * 0.02, { cols: 8, rows: 8 });
 ```
 
 **`p5.prototype.setWaveParams(options)`**
