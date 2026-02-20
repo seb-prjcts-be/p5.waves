@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>p5.waves Wave Lab</title>
+    <title>p5.waves Wave Lab v2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Oswald:wght@300&display=swap" rel="stylesheet" />
@@ -15,7 +15,7 @@
     <div class="page-shell">
       <aside class="control-panel">
         <h1>Wave Lab</h1>
-        <p class="subtitle">Main playground for tuning p5.waves</p>
+        <p class="subtitle">p5.waves v2 playground</p>
 
         <section class="control-group">
           <h2>Preview</h2>
@@ -23,39 +23,26 @@
             Preview Mode
             <select id="preview-mode">
               <option value="line" selected>Line Field</option>
-              <option value="matrix14">Matrix 14x14</option>
+              <option value="grid">Grid 14×14</option>
             </select>
           </label>
         </section>
 
         <section class="control-group">
-          <h2>Wave Selection</h2>
-          <label>
-            Axis
-            <select id="axis">
-              <option value="x">x</option>
-              <option value="z">z</option>
-              <option value="xz" selected>xz</option>
-            </select>
-          </label>
+          <h2>Wave</h2>
           <label>
             Wave
             <select id="wave"></select>
           </label>
           <label>
-            Refresh
-            <input id="refresh" type="range" min="0" max="120" step="1" value="12" />
-            <span id="refresh-value" class="value"></span>
-          </label>
-          <label>
-            Seconds (auto-advance)
-            <input id="seconds" type="range" min="0" max="4" step="0.25" value="1" />
-            <span id="seconds-value" class="value"></span>
+            Seed
+            <input id="seed" type="range" min="0" max="120" step="1" value="0" />
+            <span id="seed-value" class="value"></span>
           </label>
         </section>
 
         <section class="control-group">
-          <h2>Sampler Controls</h2>
+          <h2>Sampler</h2>
           <label>
             Amplitude
             <input id="amplitude" type="range" min="0" max="220" step="1" value="88" />
@@ -84,8 +71,8 @@
             <span id="unpredictability-value" class="value"></span>
           </label>
           <label class="inline">
-            <input id="normalize" type="checkbox" checked />
-            Normalize output
+            <input id="range-enable" type="checkbox" checked />
+            Normalise with range
           </label>
           <label>
             Range Min
@@ -97,110 +84,41 @@
             <input id="range-max" type="range" min="-1.5" max="2" step="0.05" value="1" />
             <span id="range-max-value" class="value"></span>
           </label>
-          <label>
-            Domain Min
-            <input id="domain-min" type="range" min="-300" max="-1" step="1" value="-100" />
-            <span id="domain-min-value" class="value"></span>
-          </label>
-          <label>
-            Domain Max
-            <input id="domain-max" type="range" min="1" max="300" step="1" value="100" />
-            <span id="domain-max-value" class="value"></span>
-          </label>
-          <label>
-            Samples
-            <input id="samples" type="range" min="64" max="2048" step="64" value="512" />
-            <span id="samples-value" class="value"></span>
-          </label>
         </section>
 
         <section class="control-group">
-          <h2>Modulation (1.3)</h2>
-          <label class="inline">
-            <input id="mod-enable" type="checkbox" />
-            Enable modulation
-          </label>
-          <div id="mod-fields" class="hidden">
-            <label>
-              Shape
-              <select id="mod-shape">
-                <option value="sine" selected>sine</option>
-                <option value="triangle">triangle</option>
-                <option value="saw">saw</option>
-                <option value="square">square</option>
-                <option value="noise">noise</option>
-              </select>
-            </label>
-            <label>
-              Mod Frequency
-              <input id="mod-frequency" type="range" min="0.01" max="1.25" step="0.01" value="0.2" />
-              <span id="mod-frequency-value" class="value"></span>
-            </label>
-            <label>
-              Mod Phase
-              <input id="mod-phase" type="range" min="-4" max="4" step="0.05" value="0" />
-              <span id="mod-phase-value" class="value"></span>
-            </label>
-            <label>
-              Phase Depth
-              <input id="mod-phase-depth" type="range" min="0" max="1" step="0.01" value="0.1" />
-              <span id="mod-phase-depth-value" class="value"></span>
-            </label>
-            <label>
-              Amp Depth
-              <input id="mod-amp-depth" type="range" min="-1" max="1" step="0.01" value="0.2" />
-              <span id="mod-amp-depth-value" class="value"></span>
-            </label>
-          </div>
-        </section>
-
-        <section class="control-group">
-          <h2>Grid Controls</h2>
+          <h2>Grid</h2>
           <label>
-            Wave B Gap
-            <input id="wave-b-gap" type="range" min="1" max="20" step="1" value="10" />
-            <span id="wave-b-gap-value" class="value"></span>
+            Wave Row
+            <select id="wave-row"></select>
           </label>
           <label>
-            Combine
-            <select id="combine">
-              <option value="add" selected>add</option>
-              <option value="subtract">subtract</option>
-              <option value="multiply">multiply</option>
-              <option value="max">max</option>
-              <option value="min">min</option>
-              <option value="avg">avg</option>
-            </select>
+            Wave Col
+            <select id="wave-col"></select>
           </label>
           <label>
             Threshold
             <input id="threshold" type="range" min="-2" max="2" step="0.01" value="0" />
             <span id="threshold-value" class="value"></span>
           </label>
-          <label>
-            Grid Mode
-            <select id="grid-mode">
-              <option value="stable" selected>stable</option>
-              <option value="wild">wild</option>
-            </select>
-          </label>
-          <label>
-            Grid Unpredictability
-            <input id="grid-unpredictability" type="range" min="0" max="1" step="0.01" value="0.35" />
-            <span id="grid-unpredictability-value" class="value"></span>
-          </label>
-          <label class="inline">
-            <input id="auto-step-on-uniform" type="checkbox" />
-            Auto-step on uniform frame
-          </label>
         </section>
 
         <section class="control-group">
-          <h2>Render Controls</h2>
+          <h2>Render</h2>
           <label>
             Time Speed
             <input id="time-speed" type="range" min="0" max="0.2" step="0.001" value="0.02" />
             <span id="time-speed-value" class="value"></span>
+          </label>
+          <label>
+            Frame Rate
+            <select id="frame-rate">
+              <option value="60" selected>60 fps</option>
+              <option value="30">30 fps</option>
+              <option value="12">12 fps</option>
+              <option value="6">6 fps (slow)</option>
+              <option value="2">2 fps (capture)</option>
+            </select>
           </label>
           <label>
             Point Step
@@ -225,7 +143,7 @@
         <section class="control-group">
           <h2>Copy This Sample</h2>
           <p class="code-note">
-            Live export of your current `Waves.wave(...)` and `Waves.createGridSampler(...)` setup.
+            Live export of your current <code>Waves.wave()</code> or <code>Waves.createGrid()</code> setup.
           </p>
           <textarea id="code-output" class="code-output" readonly spellcheck="false"></textarea>
           <button id="copy-code" type="button">Copy Snippet</button>
@@ -235,13 +153,14 @@
       <main class="stage">
         <div class="stage-bar">
           <span class="badge" id="active-wave">wave: 0</span>
-          <span class="badge" id="active-settings">axis: xz | refresh: 12 | seconds: 1.00s</span>
-          <span class="badge" id="active-normalize">normalize: on</span>
-          <span class="badge" id="active-behavior">mode: stable | mod: off | combine: add</span>
+          <span class="badge" id="active-settings">seed: 0 | freq: 1.00 | phase: 0.00</span>
+          <span class="badge" id="active-normalize">range: [-1, 1]</span>
+          <span class="badge" id="active-behavior">mode: stable (0.00)</span>
         </div>
         <div id="canvas-wrap"></div>
         <p class="hint">
-          Tip: combine <code>seconds</code>, <code>mode=wild</code>, <code>modulation</code> and <code>Grid Mode</code> to stress-test 1.3 behavior.
+          Tip: try <code>mode=wild</code> + <code>unpredictability</code> for organic variation,
+          or switch to Grid and adjust the threshold.
         </p>
       </main>
     </div>
@@ -249,5 +168,3 @@
     <script src="sketch.js"></script>
   </body>
 </html>
-
-

@@ -1,3 +1,5 @@
+// 04 — Basic Wave (P2D renderer, global mode, range normalisation)
+
 let t = 0;
 
 function setup() {
@@ -10,11 +12,10 @@ function draw() {
   background(245);
 
   for (let y = 0; y < height; y += 10) {
-    const x = Waves.wave(y + t, 'classic sine', null, {
-      axis: 'x',
-      amplitude: 120,
-      normalize: true,
-      range: [-1, 1]
+    const x = Waves.wave(y, {
+      wave:  'classic sine',
+      t:     t,
+      range: [-120, 120]
     });
     circle(width / 2 + x, y, 5);
   }
