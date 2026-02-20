@@ -1,27 +1,24 @@
-let t = 0;
+// 07 — Select wave by index
+// wave(y, { wave: 4 }) selects wave at index 4 ('pulse').
+// wave(y, 4) would use 4 as a seed (picks a wave via hashing).
+// Use { wave: N } for direct index selection.
 
 function setup() {
   createCanvas(600, 600);
   noStroke();
   fill(0);
-
-  Waves.setWaveParams({
-    axis: 'x',
-    amplitude: 90,
-    select: 4,
-    normalize: true,
-    range: [-1, 1],
-    refresh: 8
-  });
 }
 
 function draw() {
   background(245);
+  const t = frameCount * 0.01;
 
   for (let y = 0; y < height; y += 10) {
-    const x = Waves.wave(y + t);
+    const x = Waves.wave(y, {
+      wave:  4,          // index 4 = 'pulse'
+      t:     t,
+      range: [-90, 90]
+    });
     circle(width / 2 + x, y, 5);
   }
-
-  t += 0.01;
 }
