@@ -1,6 +1,7 @@
-new p5(function (p) {
-  let t = 0;
+// 03 — Basic Wave (instance mode, range normalisation)
+// range: [-120, 120] normalises the wave output directly to that span.
 
+new p5(function (p) {
   p.setup = function () {
     p.createCanvas(600, 600);
     p.noStroke();
@@ -11,15 +12,12 @@ new p5(function (p) {
     p.background(245);
 
     for (let y = 0; y < p.height; y += 10) {
-      const x = p.waves(y + t, 'classic sine', null, {
-        axis: 'x',
-        amplitude: 120,
-        normalize: true,
-        range: [-1, 1]
+      const x = p.waves(y, {
+        wave:  'classic sine',
+        t:     p.frameCount * 0.01,
+        range: [-120, 120]
       });
       p.circle(p.width / 2 + x, y, 5);
     }
-
-    t += 0.01;
   };
 });
