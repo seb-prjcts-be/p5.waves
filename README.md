@@ -6,7 +6,7 @@ Wave sampling helpers for p5.js. Always returns a number.
 Script tag (CDN):
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.0.0/p5.waves.min.js"></script>
 <script src="sketch.js"></script>
 ```
 
