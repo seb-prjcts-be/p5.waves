@@ -150,6 +150,17 @@ s.sample(y)         // → number
 s.sample(y, t)      // → number with time offset
 ```
 
+**Mental model:**
+- `Waves.wave(y, options)` — ad hoc: compute one value, right now, with these options.
+- `Waves.createSampler(options)` — make an instrument once, then play it with `sample()`.
+
+**Why use a sampler?**
+
+- **Readability** — `s.sample(x)` reads like p5's `noise(x)`: one source, many samples.
+- **Performance** — config (wave, range, seed, …) is resolved once. In a 40×40 grid or a 1000-point loop you call only `sample()`.
+- **Repeatability** — fixing a `seed` gives stable, reproducible variation. Essential for generative work you want to re-run or export identically.
+- **Independent axes** — two samplers with different seeds produce two unrelated signals. One sampler shared between `ox` and `oz` would yield correlated values — movement feels flat or locked to a single plane.
+
 For 3D (two independent values) use two samplers with different seeds:
 ```js
 const sx = Waves.createSampler({ seed: 0 });
@@ -159,6 +170,8 @@ const sz = Waves.createSampler({ seed: 1 });
 const ox = sx.sample(y, frameCount * 0.01);
 const oz = sz.sample(y, frameCount * 0.01);
 ```
+
+With `seed: 0` and `seed: 1` the two fields have no correlation — motion feels volumetric rather than planar.
 
 ---
 
