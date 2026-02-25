@@ -10,6 +10,8 @@ Script tag (CDN):
 <script src="sketch.js"></script>
 ```
 
+Replace `v2.0.0` with the [latest tag on GitHub](https://github.com/seb-prjcts-be/p5.waves/tags).
+
 Script tag (local file):
 ```html
 <script src="p5.js"></script>
@@ -18,6 +20,8 @@ Script tag (local file):
 ```
 
 Load order matters. `p5.js` must load before `p5.waves.js`.
+
+> **New to waves?** Start with [p5.easywaves](https://github.com/seb-prjcts-be/p5.easywaves) — a simplified version for beginners. Come back here when you need more control.
 
 **GitHub Pages Examples**
 - Landing page: `https://seb-prjcts-be.github.io/p5.waves/`
@@ -91,6 +95,8 @@ Each formula is a small math expression that takes `x`. You pass `y` (your posit
 | 32 | half sine |
 | 33 | smooth solid sine |
 
+**`classic sine` vs `sine`**: Both are pure sine waves. `classic sine` (index 0) runs at half the spatial frequency with a wider amplitude envelope; `sine` (index 1) completes twice as many cycles at a smaller amplitude. The difference is in the built-in scaling of the formula, not the wave shape.
+
 ---
 
 ## Core API
@@ -113,7 +119,7 @@ Options (when second param is an object):
 | option | description | default |
 | --- | --- | --- |
 | `wave` | wave name or index | seed-determined |
-| `seed` | number for wave selection | `0` |
+| `seed` | integer that deterministically selects a wave formula (see note) | `0` |
 | `t` | time offset (e.g. `millis()/1000`) | `0` |
 | `amplitude` | fast multiply, no normalisation | `1` |
 | `range` | `[min, max]` normalises output | `null` (native) |
@@ -123,9 +129,18 @@ Options (when second param is an object):
 | `unpredictability` | `0..1`, wild mode only | `0` |
 
 **Notes:**
-- `wave` as a number inside options is a direct **index** (not a seed). `wave(y, 3)` uses 3 as a seed; `wave(y, { wave: 3 })` selects index 3.
+
+> ⚠️ **Seed vs index — a subtle difference:**
+> ```js
+> wave(y, 3)           // 3 is a seed  → hashed to pick a wave formula
+> wave(y, { wave: 3 }) // 3 is an index → selects wave at position 3 directly
+> ```
+> A seed goes through a hash function to determine the wave; the same number as a direct index picks a different wave. Use `{ wave: 3 }` when you want a specific wave by index, and `wave(y, 3)` (or `{ seed: 3 }`) when you want stable but varied results across a set of objects.
+
+- **`seed`** is named by analogy with generative seeds: a single integer deterministically picks one of 34 wave formulas via FNV-1a hashing. It does not affect p5's `random()` function and is independent of `randomSeed()`.
 - When `range` is specified it normalises the output; `amplitude` is ignored.
 - `t` adds to `y` before formula evaluation: `x = (y + t) * frequency + phase`.
+- **`unpredictability`** applies position-varying noise simultaneously to the input's frequency scale, phase offset, and amplitude envelope; at `1` the output is heavily distorted.
 
 Examples:
 ```js
@@ -197,6 +212,8 @@ Grid options:
 | `range` | `[min, max]` → Float32Array normalised | `null` (raw) |
 | `threshold` | threshold value → Uint8Array (0/1) | `null` |
 | `speed` | time scale factor | `1` |
+
+**How waveRow and waveCol combine:** each cell value is the **sum** of `waveRow` sampled at the row's position and `waveCol` sampled at the column's position. Both positions are mapped to `[0, 2π]` before sampling, so the two waves tile seamlessly across the grid.
 
 When `threshold` is given, `range` is ignored and a `Uint8Array` is returned.
 
@@ -446,8 +463,12 @@ function setup() {
 }
 
 function draw() {
-  // keep t multiplier small so motion matches the slower frame rate
-  const x = Waves.wave(y, { wave: 'classic sine', t: frameCount * 0.003, range: [-120, 120] });
+  background(245);
+  for (let y = 0; y < height; y += 10) {
+    // keep t multiplier small so motion matches the slower frame rate
+    const x = Waves.wave(y, { wave: 'classic sine', t: frameCount * 0.003, range: [-120, 120] });
+    circle(width / 2 + x, y, 5);
+  }
 }
 ```
 
