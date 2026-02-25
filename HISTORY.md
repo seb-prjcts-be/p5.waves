@@ -1,0 +1,38 @@
+# p5.waves — Version History
+
+## 2.0.0 — Complete Rewrite
+
+**v1 call patterns are not supported in v2.** The v1 source is available at the [`v1` tag](https://github.com/seb-prjcts-be/p5.waves/tree/v1) on GitHub.
+
+### What changed
+
+- `wave(y, secondParam)` always returns a **number**. No more `{x, z}` objects, no axis parameter.
+- Time is **explicit**: pass `t` in options instead of relying on an internal clock.
+- `range: [min, max]` replaces the old `normalize + range` combination.
+- 34 curated waves with **unique names** (removed 3 near-identical duplicates from v1).
+- `createSampler(opts).sample(y, t)` returns a number. Use two samplers for 3D.
+- `createGrid(cols, rows, opts).sample(t)` returns `Float32Array` or `Uint8Array`.
+
+### Removed functions
+
+| v1 | v2 replacement |
+| --- | --- |
+| `setWaveParams` | pass options directly to `wave()` |
+| `setTimeMode` | pass `t` explicitly |
+| `tick` | increment your own time variable |
+| `sample` | `createSampler().sample(y, t)` |
+| `grid` / `createGridSampler` | `createGrid(cols, rows, opts).sample(t)` |
+| `seedFrom` | internal; not exposed |
+| `aliases` / `families` | removed |
+| `getWaveByIndex` / `getWaveByName` | `Waves.list()` / `Waves.data` |
+
+### Removed parameters
+
+| parameter | reason |
+| --- | --- |
+| `axis` | `wave()` always returns a number now |
+| `refresh` / `seconds` | time is explicit via `t` |
+| `normalize` (bool) | replaced by `range: [min, max]` |
+| `domain` | map your input manually before passing `y` |
+| `samples` | internal detail, not needed |
+| `modulation` | removed; use `mode: 'wild'` instead |

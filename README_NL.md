@@ -32,21 +32,6 @@ Als Pages nog niet actief is: `Settings` → `Pages` → `Build and deployment` 
 
 ---
 
-## Wat is er nieuw in 2.0.0
-
-**v2 is een volledige herschrijving. v1-aanroepen worden niet meer ondersteund.**
-
-- `wave(y, secondParam)` geeft altijd een **getal** terug. Geen `{x, z}` objecten meer, geen axis-parameter.
-- Tijd is **expliciet**: geef `t` mee als optie in plaats van een interne klok.
-- `range: [min, max]` vervangt de oude combinatie `normalize + range`.
-- 34 gecureerde golven met **unieke namen** (3 bijna-identieke duplicaten uit v1 verwijderd).
-- `createSampler(opts).sample(y, t)` geeft een getal terug. Gebruik twee samplers voor 3D.
-- `createGrid(cols, rows, opts).sample(t)` geeft een `Float32Array` of `Uint8Array` terug.
-- Verwijderd: `setWaveParams`, `setTimeMode`, `tick`, `sample`, `grid`, `seedFrom`, `aliases`, `families`, `getWaveByIndex`, `getWaveByName`, `createGridSampler` (vervangen door `createGrid`).
-- Verwijderde parameters: `axis`, `refresh`, `seconds`, `normalize` (bool), `domain`, `samples`, `modulation`.
-
----
-
 ## Wat doet deze bibliotheek
 
 Geeft je een gecureerde lijst van 34 golfformules die je kunt samplen met één getal als invoer.
@@ -537,7 +522,7 @@ p5.waves volgt de [p5.js addon-bibliotheekrichtlijnen](https://p5js.org/contribu
 
 ## Versioning
 
-Semantische versienummering. Grote releases kunnen uitvoer wijzigen of functies verwijderen.
+Semantische versienummering. Grote releases kunnen uitvoer wijzigen of functies verwijderen. Zie [HISTORY.md](HISTORY.md) voor het volledige changelog en de v1-migratiegids.
 
 ---
 
