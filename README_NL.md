@@ -423,7 +423,7 @@ for (let y = 0; y < height; y += 10) {
 }
 ```
 
-**Handmatige tijdsbesturing (vervangt v1 tick-modus):**
+**Handmatige tijdsbesturing:**
 ```js
 let simTime = 0;
 
