@@ -26,7 +26,7 @@ Load order matters. `p5.js` must load before `p5.waves.js`.
 **GitHub Pages Examples**
 - Landing page: `https://seb-prjcts-be.github.io/p5.waves/`
 - Direct examples: `https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/`
-- Deployment is handled by `.github/workflows/pages.yml` on pushes to `fusion/v1-spirit`.
+- Deployment is handled by `.github/workflows/pages.yml` on pushes to `main`.
 
 If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` → `Source: GitHub Actions`.
 
