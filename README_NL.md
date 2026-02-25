@@ -442,7 +442,14 @@ for (let y = 0; y < height; y += 10) {
 ```js
 let simTime = 0;
 
+function setup() {
+  createCanvas(600, 600);
+  noStroke();
+  fill(0);
+}
+
 function draw() {
+  background(245);
   simTime += 1 / 30;  // vaste tijdstap ongeacht de echte framerate
   for (let y = 0; y < height; y += 10) {
     const x = Waves.wave(y, {
@@ -459,6 +466,8 @@ function draw() {
 ```js
 function setup() {
   createCanvas(600, 600);
+  noStroke();
+  fill(0);
   frameRate(6);   // vertraag de renderer voor schermopname / GIF-tools
 }
 

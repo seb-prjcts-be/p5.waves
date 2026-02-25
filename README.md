@@ -442,7 +442,14 @@ for (let y = 0; y < height; y += 10) {
 ```js
 let simTime = 0;
 
+function setup() {
+  createCanvas(600, 600);
+  noStroke();
+  fill(0);
+}
+
 function draw() {
+  background(245);
   simTime += 1 / 30;  // fixed timestep regardless of real frame rate
   for (let y = 0; y < height; y += 10) {
     const x = Waves.wave(y, {
@@ -459,6 +466,8 @@ function draw() {
 ```js
 function setup() {
   createCanvas(600, 600);
+  noStroke();
+  fill(0);
   frameRate(6);   // slow the renderer for screen recorders / GIF tools
 }
 
