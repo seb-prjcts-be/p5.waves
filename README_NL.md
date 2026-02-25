@@ -226,6 +226,59 @@ In globale modus zijn deze ook beschikbaar zonder `p.`.
 
 ---
 
+## Copy-paste template
+
+Plak dit in je sketch, verwijder het commentaarteken voor de regels die je nodig hebt en schrap de rest.
+
+**`Waves.wave()`**
+```js
+const x = Waves.wave(y, {
+  wave:                'classic sine',  // naam of index (0–33); zie Waves.list()
+  // seed:             0,               // alternatief: kies golf via seed-integer
+  // t:                millis() / 1000, // tijd → drijft animatie; probeer frameCount * 0.01
+  // amplitude:        1,               // snelle schaal (geen normalisatie); genegeerd als range is ingesteld
+  // range:            [-1, 1],         // normaliseert uitvoer naar [min, max]; overschrijft amplitude
+  // frequency:        1,               // invoervermenigvuldiger → nauwere of lossere golfcycli
+  // phase:            0,               // invoerverschuiving → verschuif de golf links of rechts
+  // mode:             'stable',        // 'stable' (standaard) of 'wild' voor chaotische variatie
+  // unpredictability: 0,               // 0..1; alleen actief als mode 'wild' is
+});
+```
+
+**`Waves.createSampler()`**
+```js
+const s = Waves.createSampler({
+  wave:                'classic sine',  // naam of index (0–33); eenmalig opgelost, hergebruikt bij elk sample
+  // seed:             0,               // alternatief: kies golf via seed-integer
+  // amplitude:        1,               // snelle schaal; genegeerd als range is ingesteld
+  // range:            [-80, 80],       // normaliseert elk sample naar [min, max]
+  // frequency:        1,               // invoervermenigvuldiger → nauwere of lossere golfcycli
+  // phase:            0,               // invoerverschuiving → verschuif de golf links of rechts
+  // mode:             'stable',        // 'stable' of 'wild' voor chaotische variatie
+  // unpredictability: 0,               // 0..1; alleen actief als mode 'wild' is
+});
+
+s.sample(y);         // → getal; geef positie mee
+s.sample(y, t);      // → getal; geef positie + tijd mee (drijft animatie)
+```
+
+**`Waves.createGrid()`**
+```js
+const g = Waves.createGrid(cols, rows, {
+  // waveRow:       'classic sine',  // golf voor de rijrichting (naam of index)
+  // waveCol:       'triangle',      // golf voor de kolomrichting (naam of index)
+  // seed:          0,               // selecteert automatisch waveRow en waveCol (twee verschillende golven)
+  // range:         [0, 1],          // normaliseert elke cel naar [min, max] → geeft Float32Array terug
+  // threshold:     0.5,             // boven drempel → 1, eronder → 0; geeft Uint8Array; overschrijft range
+  // speed:         1,               // tijdsschaalfactor; hoger = snellere animatie
+});
+
+const cells = g.sample(t);      // → Float32Array, of Uint8Array als threshold is ingesteld
+// cells[rij * g.cols + kolom]  // waarde voor een specifieke cel
+```
+
+---
+
 ## Gebruikspatronen
 
 **Globale modus — basisgolf:**

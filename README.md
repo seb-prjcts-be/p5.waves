@@ -226,6 +226,59 @@ In global mode these are also available without `p.`.
 
 ---
 
+## Copy-paste template
+
+Drop this into your sketch, uncomment the lines you need, delete the rest.
+
+**`Waves.wave()`**
+```js
+const x = Waves.wave(y, {
+  wave:                'classic sine',  // name or index (0–33); see Waves.list()
+  // seed:             0,               // alternative: select wave via seed integer
+  // t:                millis() / 1000, // time → drives animation; try frameCount * 0.01
+  // amplitude:        1,               // fast scale (no normalisation); ignored when range is set
+  // range:            [-1, 1],         // normalises output to [min, max]; overrides amplitude
+  // frequency:        1,               // input multiplier → tighter or looser wave cycles
+  // phase:            0,               // input offset → shift the wave left or right
+  // mode:             'stable',        // 'stable' (default) or 'wild' for chaotic variation
+  // unpredictability: 0,               // 0..1; only active when mode is 'wild'
+});
+```
+
+**`Waves.createSampler()`**
+```js
+const s = Waves.createSampler({
+  wave:                'classic sine',  // name or index (0–33); resolved once, reused on every sample
+  // seed:             0,               // alternative: select wave via seed integer
+  // amplitude:        1,               // fast scale; ignored when range is set
+  // range:            [-80, 80],       // normalises every sample to [min, max]
+  // frequency:        1,               // input multiplier → tighter or looser wave cycles
+  // phase:            0,               // input offset → shift the wave left or right
+  // mode:             'stable',        // 'stable' or 'wild' for chaotic variation
+  // unpredictability: 0,               // 0..1; only active when mode is 'wild'
+});
+
+s.sample(y);         // → number; pass position
+s.sample(y, t);      // → number; pass position + time (drives animation)
+```
+
+**`Waves.createGrid()`**
+```js
+const g = Waves.createGrid(cols, rows, {
+  // waveRow:       'classic sine',  // wave for the row direction (name or index)
+  // waveCol:       'triangle',      // wave for the column direction (name or index)
+  // seed:          0,               // auto-selects waveRow and waveCol (two different waves)
+  // range:         [0, 1],          // normalises each cell to [min, max] → returns Float32Array
+  // threshold:     0.5,             // cells above → 1, below → 0; returns Uint8Array; overrides range
+  // speed:         1,               // time scale factor; higher = faster animation
+});
+
+const cells = g.sample(t);      // → Float32Array, or Uint8Array when threshold is set
+// cells[row * g.cols + col]    // value for a specific cell
+```
+
+---
+
 ## Usage Patterns
 
 **Global mode — basic wave:**
