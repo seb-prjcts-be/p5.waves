@@ -32,21 +32,6 @@ If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` �
 
 ---
 
-## What's New in 2.0.0
-
-**v2 is a complete rewrite. v1 call patterns are not supported.**
-
-- `wave(y, secondParam)` always returns a **number**. No more `{x, z}` objects, no axis parameter.
-- Time is **explicit**: pass `t` in options instead of relying on an internal clock.
-- `range: [min, max]` replaces the old `normalize + range` combination.
-- 34 curated waves with **unique names** (removed 3 near-identical duplicates from v1).
-- `createSampler(opts).sample(y, t)` returns a number. Use two samplers for 3D.
-- `createGrid(cols, rows, opts).sample(t)` returns `Float32Array` or `Uint8Array`.
-- Removed: `setWaveParams`, `setTimeMode`, `tick`, `sample`, `grid`, `seedFrom`, `aliases`, `families`, `getWaveByIndex`, `getWaveByName`, `createGridSampler` (replaced by `createGrid`).
-- Removed parameters: `axis`, `refresh`, `seconds`, `normalize` (bool), `domain`, `samples`, `modulation`.
-
----
-
 ## What This Library Does
 
 Gives you a curated list of 34 wave formulas you can sample with a single number input.
@@ -537,7 +522,7 @@ p5.waves follows the [p5.js addon library guidelines](https://p5js.org/contribut
 
 ## Versioning
 
-Semantic versioning. Major releases may change outputs or remove functions.
+Semantic versioning. Major releases may change outputs or remove functions. See [HISTORY.md](HISTORY.md) for the full changelog and v1 migration guide.
 
 ---
 
