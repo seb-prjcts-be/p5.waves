@@ -10,6 +10,8 @@ Via script-tag (CDN):
 <script src="sketch.js"></script>
 ```
 
+Vervang `v2.0.0` door de [laatste tag op GitHub](https://github.com/seb-prjcts-be/p5.waves/tags).
+
 Via script-tag (lokaal bestand):
 ```html
 <script src="p5.js"></script>
@@ -18,6 +20,8 @@ Via script-tag (lokaal bestand):
 ```
 
 Volgorde is belangrijk. `p5.js` moet vóór `p5.waves.js` laden.
+
+> **Nieuw met waves?** Start met [p5.easywaves](https://github.com/seb-prjcts-be/p5.easywaves) — een vereenvoudigde versie voor beginners. Kom hier terug als je meer controle nodig hebt.
 
 **GitHub Pages voorbeelden**
 - Overzichtspagina: `https://seb-prjcts-be.github.io/p5.waves/`
@@ -91,6 +95,8 @@ Elke formule is een kleine wiskundige uitdrukking die `x` als invoer neemt. Jij 
 | 32 | half sine |
 | 33 | smooth solid sine |
 
+**`classic sine` vs `sine`**: Beide zijn zuivere sinusgolven. `classic sine` (index 0) heeft de halve ruimtelijke frequentie met een bredere amplitudeenvelope; `sine` (index 1) voltooit dubbel zoveel cycli bij een kleinere amplitude. Het verschil zit in de ingebakken schaalfactoren van de formule, niet in de golfvorm.
+
 ---
 
 ## Kern-API
@@ -113,7 +119,7 @@ Opties (als tweede parameter een object is):
 | optie | beschrijving | standaard |
 | --- | --- | --- |
 | `wave` | golfnaam of index | bepaald door seed |
-| `seed` | getal voor golfselectie | `0` |
+| `seed` | integer die deterministisch een golfformule selecteert (zie opmerking) | `0` |
 | `t` | tijdverschuiving (bv. `millis()/1000`) | `0` |
 | `amplitude` | snelle vermenigvuldiging, geen normalisatie | `1` |
 | `range` | `[min, max]` normaliseert de uitvoer | `null` (native) |
@@ -123,9 +129,18 @@ Opties (als tweede parameter een object is):
 | `unpredictability` | `0..1`, alleen in wild-modus | `0` |
 
 **Opmerkingen:**
-- `wave` als getal ín de opties is een directe **index** (geen seed). `wave(y, 3)` gebruikt 3 als seed; `wave(y, { wave: 3 })` selecteert index 3.
+
+> ⚠️ **Seed vs index — een subtiel verschil:**
+> ```js
+> wave(y, 3)           // 3 is een seed  → via hash omgezet naar een golfformule
+> wave(y, { wave: 3 }) // 3 is een index → selecteert direct de golf op positie 3
+> ```
+> Een seed doorloopt een hashfunctie om de golf te bepalen; hetzelfde getal als directe index kiest een andere golf. Gebruik `{ wave: 3 }` als je een specifieke golf op index wil, en `wave(y, 3)` (of `{ seed: 3 }`) als je stabiele maar gevarieerde resultaten wil over een reeks objecten.
+
+- **`seed`** is zo genoemd naar analogie met generatieve seeds: één integer bepaalt via FNV-1a-hashing deterministisch één van de 34 golfformules. Het heeft geen invloed op p5's `random()`-functie en staat volledig los van `randomSeed()`.
 - Als `range` is opgegeven, wordt de uitvoer genormaliseerd; `amplitude` wordt genegeerd.
 - `t` wordt opgeteld bij `y` vóór de formule wordt berekend: `x = (y + t) * frequency + phase`.
+- **`unpredictability`** past positieafhankelijke ruis toe op de frequentieschaal, phase-offset en amplitudeenvelope van de invoer tegelijk; bij `1` is de uitvoer sterk vervormd.
 
 Voorbeelden:
 ```js
@@ -197,6 +212,8 @@ Grid-opties:
 | `range` | `[min, max]` → genormaliseerde Float32Array | `null` (ruw) |
 | `threshold` | drempelwaarde → Uint8Array (0/1) | `null` |
 | `speed` | tijdsschaalfactor | `1` |
+
+**Hoe waveRow en waveCol gecombineerd worden:** elke celwaarde is de **som** van `waveRow` gesampled op de rijpositie en `waveCol` gesampled op de kolompositie. Beide posities worden vóór het samplen naar `[0, 2π]` gemapt, zodat de twee golven naadloos over het grid tegelen.
 
 Als `threshold` is opgegeven, wordt `range` genegeerd en wordt een `Uint8Array` teruggegeven.
 
@@ -446,8 +463,12 @@ function setup() {
 }
 
 function draw() {
-  // houd de t-vermenigvuldiger klein zodat de beweging past bij de lagere framerate
-  const x = Waves.wave(y, { wave: 'classic sine', t: frameCount * 0.003, range: [-120, 120] });
+  background(245);
+  for (let y = 0; y < height; y += 10) {
+    // houd de t-vermenigvuldiger klein zodat de beweging past bij de lagere framerate
+    const x = Waves.wave(y, { wave: 'classic sine', t: frameCount * 0.003, range: [-120, 120] });
+    circle(width / 2 + x, y, 5);
+  }
 }
 ```
 
