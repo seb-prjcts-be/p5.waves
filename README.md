@@ -37,7 +37,7 @@ If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` �
 Gives you a curated list of 34 wave formulas you can sample with a single number input.
 Each formula is a small math expression that takes `x`. You pass `y` (your position), and get a number back.
 
-**Mental model**: Think of `wave(y)` the same way you think of `noise(y)` in p5.js — pass a coordinate, get a number.
+**Mental model**: Think of `Waves.wave(y)` the same way you think of `noise(y)` in p5.js — pass a coordinate, get a number.
 
 ---
 
@@ -94,10 +94,10 @@ Second parameter forms:
 
 | form | meaning |
 | --- | --- |
-| `wave(y)` | default wave, seed 0 |
-| `wave(y, 3)` | number → seed 3 selects wave |
-| `wave(y, 'triangle')` | string → wave by name |
-| `wave(y, { wave: 'triangle' })` | options object |
+| `Waves.wave(y)` | default wave, seed 0 |
+| `Waves.wave(y, 3)` | number → seed 3 selects wave |
+| `Waves.wave(y, 'triangle')` | string → wave by name |
+| `Waves.wave(y, { wave: 'triangle' })` | options object |
 
 Options (when second param is an object):
 
@@ -117,10 +117,10 @@ Options (when second param is an object):
 
 > ⚠️ **Seed vs index — a subtle difference:**
 > ```js
-> wave(y, 3)           // 3 is a seed  → hashed to pick a wave formula
-> wave(y, { wave: 3 }) // 3 is an index → selects wave at position 3 directly
+> Waves.wave(y, 3)           // 3 is a seed  → hashed to pick a wave formula
+> Waves.wave(y, { wave: 3 }) // 3 is an index → selects wave at position 3 directly
 > ```
-> A seed goes through a hash function to determine the wave; the same number as a direct index picks a different wave. Use `{ wave: 3 }` when you want a specific wave by index, and `wave(y, 3)` (or `{ seed: 3 }`) when you want stable but varied results across a set of objects.
+> A seed goes through a hash function to determine the wave; the same number as a direct index picks a different wave. Use `{ wave: 3 }` when you want a specific wave by index, and `Waves.wave(y, 3)` (or `{ seed: 3 }`) when you want stable but varied results across a set of objects.
 
 - **`seed`** is named by analogy with generative seeds: a single integer deterministically picks one of 34 wave formulas via FNV-1a hashing. It does not affect p5's `random()` function and is independent of `randomSeed()`.
 - When `range` is specified it normalises the output; `amplitude` is ignored.
@@ -129,20 +129,20 @@ Options (when second param is an object):
 
 Examples:
 ```js
-wave(y)                                          // number, seed 0
-wave(y, 3)                                       // seed 3 selects wave
-wave(y, 'triangle')                              // wave by name
-wave(y, { wave: 'triangle' })                    // options form
-wave(y, { wave: 'triangle', range: [-1, 1] })    // normalised
-wave(y, { range: [0, 255], t: millis()/1000 })   // with time
-wave(y, { seed: 2, amplitude: 80 })              // seed + fast scaling
+Waves.wave(y)                                          // number, seed 0
+Waves.wave(y, 3)                                       // seed 3 selects wave
+Waves.wave(y, 'triangle')                              // wave by name
+Waves.wave(y, { wave: 'triangle' })                    // options form
+Waves.wave(y, { wave: 'triangle', range: [-1, 1] })    // normalised
+Waves.wave(y, { range: [0, 255], t: millis()/1000 })   // with time
+Waves.wave(y, { seed: 2, amplitude: 80 })              // seed + fast scaling
 ```
 
 ---
 
 ### `Waves.createSampler(options)`
 
-Returns a reusable sampler. Accepts the same options as `wave()`.
+Returns a reusable sampler. Accepts the same options as `Waves.wave()`.
 
 ```js
 const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
@@ -482,7 +482,7 @@ Lower `frameRate()` when your screen recorder or GIF tool needs time to grab eac
 - `examples/03_basic_wave_instance` — range normalisation, instance mode
 - `examples/04_basic_wave_p2d` — P2D renderer
 - `examples/05_basic_wave_webgl` — WEBGL with two samplers
-- `examples/06_seconds_param` — createSampler reuse
+- `examples/06_create_sampler` — createSampler reuse
 - `examples/07_select_by_index` — select wave by index
 - `examples/08_triangle_domain` — small input domain
 - `examples/09_range_0_1` — range [0, 1]
@@ -497,6 +497,7 @@ Recommended — no name collisions:
 ```js
 Waves.wave(...)
 Waves.createSampler(...)
+Waves.createGrid(...)
 p.waves(...)    // instance mode
 ```
 
