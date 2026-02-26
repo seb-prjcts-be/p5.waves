@@ -19,6 +19,27 @@ Script tag (local file):
 
 Load order matters. `p5.js` must load before `p5.waves.js`.
 
+**Quick Start** — paste into `sketch.js` and open in browser:
+```js
+function setup() {
+  createCanvas(400, 400);
+  noStroke();
+  fill(0);
+}
+
+function draw() {
+  background(245);
+  for (let y = 0; y < height; y += 8) {
+    const x = Waves.wave(y, {
+      wave:  'classic sine',
+      t:     frameCount * 0.02,
+      range: [-150, 150]
+    });
+    circle(width / 2 + x, y, 5);
+  }
+}
+```
+
 **GitHub Pages Examples**
 - Landing page: `https://seb-prjcts-be.github.io/p5.waves/`
 - Direct examples: `https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/`
@@ -32,12 +53,12 @@ If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` �
 
 **v2 is a complete rewrite. v1 call patterns are not supported.**
 
-- `wave(y, secondParam)` always returns a **number**. No more `{x, z}` objects, no axis parameter.
+- `Waves.wave(y, secondParam)` always returns a **number**. No more `{x, z}` objects, no axis parameter.
 - Time is **explicit**: pass `t` in options instead of relying on an internal clock.
 - `range: [min, max]` replaces the old `normalize + range` combination.
 - 34 curated waves with **unique names** (removed 3 near-identical duplicates from v1).
-- `createSampler(opts).sample(y, t)` returns a number. Use two samplers for 3D.
-- `createGrid(cols, rows, opts).sample(t)` returns `Float32Array` or `Uint8Array`.
+- `Waves.createSampler(opts).sample(y, t)` returns a number. Use two samplers for 3D.
+- `Waves.createGrid(cols, rows, opts).sample(t)` returns `Float32Array` or `Uint8Array`.
 - Removed: `setWaveParams`, `setTimeMode`, `tick`, `sample`, `grid`, `seedFrom`, `aliases`, `families`, `getWaveByIndex`, `getWaveByName`, `createGridSampler` (replaced by `createGrid`).
 - Removed parameters: `axis`, `refresh`, `seconds`, `normalize` (bool), `domain`, `samples`, `modulation`.
 
@@ -48,7 +69,7 @@ If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` �
 Gives you a curated list of 34 wave formulas you can sample with a single number input.
 Each formula is a small math expression that takes `x`. You pass `y` (your position), and get a number back.
 
-**Mental model**: Think of `wave(y)` the same way you think of `noise(y)` in p5.js — pass a coordinate, get a number.
+**Mental model**: Think of `Waves.wave(y)` the same way you think of `noise(y)` in p5.js — pass a coordinate, get a number.
 
 ---
 
@@ -103,10 +124,10 @@ Second parameter forms:
 
 | form | meaning |
 | --- | --- |
-| `wave(y)` | default wave, seed 0 |
-| `wave(y, 3)` | number → seed 3 selects wave |
-| `wave(y, 'triangle')` | string → wave by name |
-| `wave(y, { wave: 'triangle' })` | options object |
+| `Waves.wave(y)` | default wave, seed 0 |
+| `Waves.wave(y, 3)` | number → seed 3 selects wave |
+| `Waves.wave(y, 'triangle')` | string → wave by name |
+| `Waves.wave(y, { wave: 'triangle' })` | options object |
 
 Options (when second param is an object):
 
@@ -123,26 +144,26 @@ Options (when second param is an object):
 | `unpredictability` | `0..1`, wild mode only | `0` |
 
 **Notes:**
-- `wave` as a number inside options is a direct **index** (not a seed). `wave(y, 3)` uses 3 as a seed; `wave(y, { wave: 3 })` selects index 3.
+- `wave` as a number inside options is a direct **index** (not a seed). `Waves.wave(y, 3)` uses 3 as a seed; `Waves.wave(y, { wave: 3 })` selects index 3.
 - When `range` is specified it normalises the output; `amplitude` is ignored.
 - `t` adds to `y` before formula evaluation: `x = (y + t) * frequency + phase`.
 
 Examples:
 ```js
-wave(y)                                          // number, seed 0
-wave(y, 3)                                       // seed 3 selects wave
-wave(y, 'triangle')                              // wave by name
-wave(y, { wave: 'triangle' })                    // options form
-wave(y, { wave: 'triangle', range: [-1, 1] })    // normalised
-wave(y, { range: [0, 255], t: millis()/1000 })   // with time
-wave(y, { seed: 2, amplitude: 80 })              // seed + fast scaling
+Waves.wave(y)                                          // number, seed 0
+Waves.wave(y, 3)                                       // seed 3 selects wave
+Waves.wave(y, 'triangle')                              // wave by name
+Waves.wave(y, { wave: 'triangle' })                    // options form
+Waves.wave(y, { wave: 'triangle', range: [-1, 1] })    // normalised
+Waves.wave(y, { range: [0, 255], t: millis()/1000 })   // with time
+Waves.wave(y, { seed: 2, amplitude: 80 })              // seed + fast scaling
 ```
 
 ---
 
 ### `Waves.createSampler(options)`
 
-Returns a reusable sampler. Accepts the same options as `wave()`.
+Returns a reusable sampler. Accepts the same options as `Waves.wave()`.
 
 ```js
 const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
@@ -240,25 +261,43 @@ function draw() {
 
 **With range normalisation:**
 ```js
-for (let y = 0; y < height; y += 10) {
-  const x = Waves.wave(y, {
-    wave:  'classic sine',
-    t:     frameCount * 0.01,
-    range: [-120, 120]
-  });
-  circle(width / 2 + x, y, 5);
+function setup() {
+  createCanvas(600, 600);
+  noStroke();
+  fill(0);
+}
+
+function draw() {
+  background(245);
+  for (let y = 0; y < height; y += 10) {
+    const x = Waves.wave(y, {
+      wave:  'classic sine',
+      t:     frameCount * 0.01,
+      range: [-120, 120]
+    });
+    circle(width / 2 + x, y, 5);
+  }
 }
 ```
 
 **Range [0, 1] — use as a position fraction:**
 ```js
-for (let y = 0; y < height; y += 10) {
-  const x01 = Waves.wave(y, {
-    wave:  'classic sine',
-    t:     frameCount * 0.01,
-    range: [0, 1]
-  });
-  circle(x01 * width, y, 5);
+function setup() {
+  createCanvas(600, 600);
+  noStroke();
+  fill(0);
+}
+
+function draw() {
+  background(245);
+  for (let y = 0; y < height; y += 10) {
+    const x01 = Waves.wave(y, {
+      wave:  'classic sine',
+      t:     frameCount * 0.01,
+      range: [0, 1]
+    });
+    circle(x01 * width, y, 5);
+  }
 }
 ```
 
@@ -343,15 +382,24 @@ function draw() {
 
 **Wild mode:**
 ```js
-for (let y = 0; y < height; y += 10) {
-  const x = Waves.wave(y, {
-    wave:             'pulse',
-    t:                frameCount * 0.01,
-    mode:             'wild',
-    unpredictability: 0.45,
-    range:            [-160, 160]
-  });
-  circle(width / 2 + x, y, 5);
+function setup() {
+  createCanvas(600, 600);
+  noStroke();
+  fill(0);
+}
+
+function draw() {
+  background(245);
+  for (let y = 0; y < height; y += 10) {
+    const x = Waves.wave(y, {
+      wave:             'pulse',
+      t:                frameCount * 0.01,
+      mode:             'wild',
+      unpredictability: 0.45,
+      range:            [-160, 160]
+    });
+    circle(width / 2 + x, y, 5);
+  }
 }
 ```
 
