@@ -404,7 +404,7 @@ Lower `frameRate()` when your screen recorder or GIF tool needs time to grab eac
 - `examples/03_basic_wave_instance` — range normalisation, instance mode
 - `examples/04_basic_wave_p2d` — P2D renderer
 - `examples/05_basic_wave_webgl` — WEBGL with two samplers
-- `examples/06_seconds_param` — createSampler reuse
+- `examples/06_create_sampler` — createSampler reuse
 - `examples/07_select_by_index` — select wave by index
 - `examples/08_triangle_domain` — small input domain
 - `examples/09_range_0_1` — range [0, 1]
