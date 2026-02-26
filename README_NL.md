@@ -37,7 +37,7 @@ Als Pages nog niet actief is: `Settings` → `Pages` → `Build and deployment` 
 Geeft je een gecureerde lijst van 34 golfformules die je kunt samplen met één getal als invoer.
 Elke formule is een kleine wiskundige uitdrukking die `x` als invoer neemt. Jij geeft `y` (jouw positie) mee en krijgt een getal terug.
 
-**Mentaal model**: Denk aan `wave(y)` zoals je aan `noise(y)` in p5.js denkt — geef een coördinaat mee, krijg een getal terug.
+**Mentaal model**: Denk aan `Waves.wave(y)` zoals je aan `noise(y)` in p5.js denkt — geef een coördinaat mee, krijg een getal terug.
 
 ---
 
@@ -94,10 +94,10 @@ Mogelijke vormen voor de tweede parameter:
 
 | vorm | betekenis |
 | --- | --- |
-| `wave(y)` | standaardgolf, seed 0 |
-| `wave(y, 3)` | getal → seed 3 bepaalt de golf |
-| `wave(y, 'triangle')` | string → golf op naam |
-| `wave(y, { wave: 'triangle' })` | opties-object |
+| `Waves.wave(y)` | standaardgolf, seed 0 |
+| `Waves.wave(y, 3)` | getal → seed 3 bepaalt de golf |
+| `Waves.wave(y, 'triangle')` | string → golf op naam |
+| `Waves.wave(y, { wave: 'triangle' })` | opties-object |
 
 Opties (als tweede parameter een object is):
 
@@ -117,10 +117,10 @@ Opties (als tweede parameter een object is):
 
 > ⚠️ **Seed vs index — een subtiel verschil:**
 > ```js
-> wave(y, 3)           // 3 is een seed  → via hash omgezet naar een golfformule
-> wave(y, { wave: 3 }) // 3 is een index → selecteert direct de golf op positie 3
+> Waves.wave(y, 3)           // 3 is een seed  → via hash omgezet naar een golfformule
+> Waves.wave(y, { wave: 3 }) // 3 is een index → selecteert direct de golf op positie 3
 > ```
-> Een seed doorloopt een hashfunctie om de golf te bepalen; hetzelfde getal als directe index kiest een andere golf. Gebruik `{ wave: 3 }` als je een specifieke golf op index wil, en `wave(y, 3)` (of `{ seed: 3 }`) als je stabiele maar gevarieerde resultaten wil over een reeks objecten.
+> Een seed doorloopt een hashfunctie om de golf te bepalen; hetzelfde getal als directe index kiest een andere golf. Gebruik `{ wave: 3 }` als je een specifieke golf op index wil, en `Waves.wave(y, 3)` (of `{ seed: 3 }`) als je stabiele maar gevarieerde resultaten wil over een reeks objecten.
 
 - **`seed`** is zo genoemd naar analogie met generatieve seeds: één integer bepaalt via FNV-1a-hashing deterministisch één van de 34 golfformules. Het heeft geen invloed op p5's `random()`-functie en staat volledig los van `randomSeed()`.
 - Als `range` is opgegeven, wordt de uitvoer genormaliseerd; `amplitude` wordt genegeerd.
@@ -129,20 +129,20 @@ Opties (als tweede parameter een object is):
 
 Voorbeelden:
 ```js
-wave(y)                                          // getal, seed 0
-wave(y, 3)                                       // seed 3 bepaalt golf
-wave(y, 'triangle')                              // golf op naam
-wave(y, { wave: 'triangle' })                    // opties-vorm
-wave(y, { wave: 'triangle', range: [-1, 1] })    // genormaliseerd
-wave(y, { range: [0, 255], t: millis()/1000 })   // met tijd
-wave(y, { seed: 2, amplitude: 80 })              // seed + snelle schaling
+Waves.wave(y)                                          // getal, seed 0
+Waves.wave(y, 3)                                       // seed 3 bepaalt golf
+Waves.wave(y, 'triangle')                              // golf op naam
+Waves.wave(y, { wave: 'triangle' })                    // opties-vorm
+Waves.wave(y, { wave: 'triangle', range: [-1, 1] })    // genormaliseerd
+Waves.wave(y, { range: [0, 255], t: millis()/1000 })   // met tijd
+Waves.wave(y, { seed: 2, amplitude: 80 })              // seed + snelle schaling
 ```
 
 ---
 
 ### `Waves.createSampler(opties)`
 
-Geeft een herbruikbare sampler terug. Accepteert dezelfde opties als `wave()`.
+Geeft een herbruikbare sampler terug. Accepteert dezelfde opties als `Waves.wave()`.
 
 ```js
 const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
@@ -482,7 +482,7 @@ Verlaag `frameRate()` als je schermopname- of GIF-tool tijd nodig heeft om elk f
 - `examples/03_basic_wave_instance` — range-normalisatie, instance-modus
 - `examples/04_basic_wave_p2d` — P2D renderer
 - `examples/05_basic_wave_webgl` — WEBGL met twee samplers
-- `examples/06_seconds_param` — createSampler hergebruik
+- `examples/06_create_sampler` — createSampler hergebruik
 - `examples/07_select_by_index` — golf selecteren op index
 - `examples/08_triangle_domain` — klein invoerdomein
 - `examples/09_range_0_1` — range [0, 1]
@@ -497,6 +497,7 @@ Aanbevolen — geen naamconflicten:
 ```js
 Waves.wave(...)
 Waves.createSampler(...)
+Waves.createGrid(...)
 p.waves(...)    // instance-modus
 ```
 
