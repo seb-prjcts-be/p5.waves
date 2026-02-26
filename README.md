@@ -23,12 +23,9 @@ Load order matters. `p5.js` must load before `p5.waves.js`.
 
 > **New to waves?** Start with [p5.easywaves](https://github.com/seb-prjcts-be/p5.easywaves) — a simplified version for beginners. Come back here when you need more control.
 
-**GitHub Pages Examples**
-- Landing page: `https://seb-prjcts-be.github.io/p5.waves/`
-- Direct examples: `https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/`
-- Deployment is handled by `.github/workflows/pages.yml` on pushes to `main`.
+**[Live examples](https://seb-prjcts-be.github.io/p5.waves/)** — try the [Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/) to explore all 34 waves interactively.
 
-If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` → `Source: GitHub Actions`.
+Deployment is handled by `.github/workflows/pages.yml` on pushes to `main`. If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` → `Source: GitHub Actions`.
 
 ---
 
