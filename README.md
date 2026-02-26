@@ -184,6 +184,36 @@ const g2 = Waves.createGrid(20, 20, { range: [0, 1], threshold: 0.5 });
 g2.sample(t)  // → Uint8Array of 0/1 (binary)
 ```
 
+**Complete example — animated binary grid:**
+```js
+let g;
+
+function setup() {
+  createCanvas(560, 560);
+  g = Waves.createGrid(14, 14, {
+    waveRow:   'classic sine',
+    waveCol:   'triangle',
+    threshold: 0,
+    speed:     1
+  });
+}
+
+function draw() {
+  background(245);
+  const cells = g.sample(frameCount * 0.02);
+  const cell  = min(width / g.cols, height / g.rows);
+  const ox    = (width  - g.cols * cell) * 0.5;
+  const oy    = (height - g.rows * cell) * 0.5;
+  noStroke();
+  for (let r = 0; r < g.rows; r++) {
+    for (let c = 0; c < g.cols; c++) {
+      fill(cells[r * g.cols + c] === 1 ? 0 : 255);
+      rect(ox + c * cell, oy + r * cell, cell, cell);
+    }
+  }
+}
+```
+
 Grid options:
 
 | option | description | default |
