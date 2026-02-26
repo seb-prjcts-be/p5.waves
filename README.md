@@ -22,7 +22,7 @@ Load order matters. `p5.js` must load before `p5.waves.js`.
 **GitHub Pages Examples**
 - Landing page: `https://seb-prjcts-be.github.io/p5.waves/`
 - Direct examples: `https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/`
-- Deployment is handled by `.github/workflows/pages.yml` on pushes to `fusion/v1-spirit`.
+- Deployment is handled by `.github/workflows/pages.yml` on pushes to `fusion/v1-spirit` or `main`.
 
 If Pages is not enabled yet: `Settings` → `Pages` → `Build and deployment` → `Source: GitHub Actions`.
 
@@ -380,8 +380,11 @@ function setup() {
 }
 
 function draw() {
-  // keep t multiplier small so motion matches the slower frame rate
-  const x = Waves.wave(y, { wave: 'classic sine', t: frameCount * 0.003, range: [-120, 120] });
+  background(245);
+  for (let y = 0; y < height; y += 10) {
+    const x = Waves.wave(y, { wave: 'classic sine', t: frameCount * 0.003, range: [-120, 120] });
+    circle(width / 2 + x, y, 5);
+  }
 }
 ```
 
@@ -416,6 +419,7 @@ Recommended — no name collisions:
 ```js
 Waves.wave(...)
 Waves.createSampler(...)
+Waves.createGrid(...)
 p.waves(...)    // instance mode
 ```
 
