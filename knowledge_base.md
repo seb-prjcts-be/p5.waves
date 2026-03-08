@@ -2,6 +2,16 @@
 
 ## API observations (v2.0.0)
 
+## Wave Lab UX inzichten (2026-03-08)
+
+### Ritme-workflow vraagt formule-lock
+
+Bij ritmisch werken wil de gebruiker meestal frequent variëren zonder kernparameters te verliezen (frequency, phase, range/normalise, mode). Daarom is een gescheiden actie nuttig:
+- `Random Formula` wijzigt alleen de `wave`-formule.
+- `Surprise Me` blijft de volledige randomize-optie.
+
+Deze scheiding maakt gecontroleerd experimenteren mogelijk naast volledige exploratie.
+
 ### `wave` optie-key binnen `Waves.wave()` is zelf-refererend
 
 De aanroep `Waves.wave(y, { wave: 'triangle' })` leest verwarrend omdat `wave` zowel de functienaam als de optie-key is. Een gebruiker moet twee betekenissen van hetzelfde woord scheiden in dezelfde regel.

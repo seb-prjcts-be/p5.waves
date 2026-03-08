@@ -10,6 +10,12 @@ let gridSampler    = null;
 let gridSamplerKey = '';
 let codeOutputEl   = null;
 let copyButtonResetTimer = 0;
+let autoFormulaLastAtMs = Date.now();
+let autoSurpriseLastAtMs = Date.now();
+let prevAutoFormula = false;
+let prevAutoSurprise = false;
+let prevAutoFormulaSeconds = 0;
+let prevAutoSurpriseSeconds = 0;
 
 const ids = [
   'preview-mode', 'wave', 'seed',
@@ -17,14 +23,17 @@ const ids = [
   'range-enable', 'range-min', 'range-max',
   'wave-row', 'wave-col', 'threshold',
   'time-speed', 'frame-rate', 'step', 'show-points', 'connect-line', 'show-grid',
-  'surprise', 'copy-code'
+  'random-formula', 'auto-formula', 'auto-formula-seconds',
+  'surprise', 'auto-surprise', 'auto-surprise-seconds',
+  'copy-code'
 ];
 
 const valueIds = [
   'seed-value',
   'amplitude-value', 'frequency-value', 'phase-value', 'unpredictability-value',
   'range-min-value', 'range-max-value',
-  'threshold-value', 'time-speed-value', 'step-value'
+  'threshold-value', 'time-speed-value', 'step-value',
+  'auto-formula-seconds-value', 'auto-surprise-seconds-value'
 ];
 
 function fmt(num, digits) {
@@ -112,6 +121,7 @@ function bindControls() {
     allInputs[i].addEventListener('change', updateUiState);
   }
   controls.surprise.addEventListener('click', randomizeControls);
+  controls['random-formula'].addEventListener('click', randomizeWaveOnly);
   controls['copy-code'].addEventListener('click', copyCodeSnippet);
 }
 
@@ -163,6 +173,10 @@ function readState() {
     step:        Number(controls.step.value),
     fps:         Number(controls['frame-rate'].value),
     speed:       Number(controls['time-speed'].value),
+    autoFormula: controls['auto-formula'].checked,
+    autoFormulaSeconds: Number(controls['auto-formula-seconds'].value),
+    autoSurprise: controls['auto-surprise'].checked,
+    autoSurpriseSeconds: Number(controls['auto-surprise-seconds'].value),
     showPoints:  controls['show-points'].checked,
     connectLine: controls['connect-line'].checked,
     showGrid:    controls['show-grid'].checked
@@ -190,6 +204,29 @@ function updateValueDisplays() {
   valueTargets['threshold-value'].textContent     = fmt(controls.threshold.value, 2);
   valueTargets['time-speed-value'].textContent    = fmt(controls['time-speed'].value, 3);
   valueTargets['step-value'].textContent          = controls.step.value;
+  valueTargets['auto-formula-seconds-value'].textContent = fmt(controls['auto-formula-seconds'].value, 1);
+  valueTargets['auto-surprise-seconds-value'].textContent = fmt(controls['auto-surprise-seconds'].value, 1);
+}
+
+function syncAutoTimers(state) {
+  const now = Date.now();
+
+  if (!state.autoFormula) {
+    autoFormulaLastAtMs = now;
+  } else if (!prevAutoFormula || state.autoFormulaSeconds !== prevAutoFormulaSeconds) {
+    autoFormulaLastAtMs = now;
+  }
+
+  if (!state.autoSurprise) {
+    autoSurpriseLastAtMs = now;
+  } else if (!prevAutoSurprise || state.autoSurpriseSeconds !== prevAutoSurpriseSeconds) {
+    autoSurpriseLastAtMs = now;
+  }
+
+  prevAutoFormula = state.autoFormula;
+  prevAutoFormulaSeconds = state.autoFormulaSeconds;
+  prevAutoSurprise = state.autoSurprise;
+  prevAutoSurpriseSeconds = state.autoSurpriseSeconds;
 }
 
 function updateBadges(state) {
@@ -214,8 +251,11 @@ function updateUiState() {
   setControlDisabled('amplitude', rangeOn);
   setControlDisabled('range-min', !rangeOn);
   setControlDisabled('range-max', !rangeOn);
+  setControlDisabled('auto-formula-seconds', !controls['auto-formula'].checked);
+  setControlDisabled('auto-surprise-seconds', !controls['auto-surprise'].checked);
   updateValueDisplays();
   const state = readState();
+  syncAutoTimers(state);
   updateBadges(state);
   updateCodeSnippet(state);
 }
@@ -494,10 +534,42 @@ function randomizeControls() {
   updateUiState();
 }
 
+function randomizeWaveOnly() {
+  const count = Waves.count || 0;
+  if (count <= 1) return;
+
+  const current = Number(controls.wave.value) || 0;
+  let next = current;
+  while (next === current) {
+    next = Math.floor(Math.random() * count);
+  }
+  controls.wave.value = String(next);
+  updateUiState();
+}
+
+function processAutoRandom(state, nowMs) {
+  let changed = false;
+
+  if (state.autoFormula && nowMs - autoFormulaLastAtMs >= state.autoFormulaSeconds * 1000) {
+    randomizeWaveOnly();
+    autoFormulaLastAtMs = nowMs;
+    changed = true;
+  }
+
+  if (state.autoSurprise && nowMs - autoSurpriseLastAtMs >= state.autoSurpriseSeconds * 1000) {
+    randomizeControls();
+    autoSurpriseLastAtMs = nowMs;
+    changed = true;
+  }
+
+  return changed ? readState() : state;
+}
+
 // ─── Main draw loop ───────────────────────────────────────────────────────────
 
 function draw() {
-  const state = readState();
+  let state = readState();
+  state = processAutoRandom(state, Date.now());
   if (state.fps !== currentFps) {
     currentFps = state.fps;
     frameRate(currentFps);
