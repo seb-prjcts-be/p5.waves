@@ -33,3 +33,11 @@ De jsDelivr GitHub CDN link (`https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves
 ```
 https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.0.0/p5.waves.min.js
 ```
+
+## Rendering-robuustheid (2026-03-09)
+
+Wanneer een p5 `vertex()` waarschuwing meldt over niet-numerieke parameters, is de meest stabiele mitigatie in deze codebase om op renderpad-niveau te valideren:
+
+- Guard vlak voor `vertex()` (`Number.isFinite(x)` en `Number.isFinite(y)`).
+- Geen extra pagina of framework nodig; past binnen de bestaande vanilla JS setup.
+- Ook snippets/voorbeelden moeten dezelfde guard hebben, anders komt de fout terug bij copy-paste gebruik buiten Wave Lab.

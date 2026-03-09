@@ -40,6 +40,10 @@ function fmt(num, digits) {
   return Number(num).toFixed(digits);
 }
 
+function isFiniteNumber(value) {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
 // ─── p5 setup / resize ───────────────────────────────────────────────────────
 
 function setup() {
@@ -288,7 +292,10 @@ function buildWaveOpts(state) {
 
 function drawWave(state) {
   const cx         = width * 0.5;
-  const step       = Math.max(1, state.step);
+  const rawStep    = Number(state.step);
+  const step       = Number.isFinite(rawStep) && rawStep > 0
+    ? Math.max(1, Math.floor(rawStep))
+    : 1;
   const opts       = buildWaveOpts(state);
   const drawPoints = state.showPoints || !state.connectLine;
 
@@ -304,6 +311,7 @@ function drawWave(state) {
 
   for (let y = 0; y <= height; y += step) {
     const x = cx + Waves.wave(y, opts);
+    if (!isFiniteNumber(x) || !isFiniteNumber(y)) continue;
     if (state.connectLine) vertex(x, y);
     if (drawPoints) {
       noStroke();
@@ -410,7 +418,7 @@ function buildLineSnippet(state) {
     '      unpredictability: ' + codeNum(state.unpredictability, 4) +
     rangeStr + '\n' +
     '    });\n' +
-    '    vertex(x, y);\n' +
+    '    if (Number.isFinite(x) && Number.isFinite(y)) vertex(x, y);\n' +
     '  }\n' +
     '  endShape();\n' +
     '  t += ' + codeNum(state.speed, 4) + ';\n' +
