@@ -20,3 +20,9 @@
 3. Houd de fix modulair via een kleine helper (`isFiniteNumber`) i.p.v. verspreide ad-hoc checks.
 4. Pas dezelfde guard toe in basisvoorbeelden en gegenereerde code-snippet, zodat copy-paste code ook veilig blijft.
 5. Valideer handmatig in browser met DevTools-console tijdens interactie (line/grid wissel + randomize).
+
+## Repo housekeeping: AGENTS.md verwijderen (2026-03-09)
+
+1. Verwijder enkel `AGENTS.md`; laat overige repository-documentatie intact.
+2. Leg de wijziging kort vast in `strategy.md` en `knowledge_base.md` voor traceerbaarheid.
+3. Vermijd extra structurele wijzigingen; dit is een gerichte housekeeping-aanpassing.

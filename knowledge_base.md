@@ -41,3 +41,9 @@ Wanneer een p5 `vertex()` waarschuwing meldt over niet-numerieke parameters, is 
 - Guard vlak voor `vertex()` (`Number.isFinite(x)` en `Number.isFinite(y)`).
 - Geen extra pagina of framework nodig; past binnen de bestaande vanilla JS setup.
 - Ook snippets/voorbeelden moeten dezelfde guard hebben, anders komt de fout terug bij copy-paste gebruik buiten Wave Lab.
+
+## Repository-inzicht: AGENTS.md verwijderd (2026-03-09)
+
+- `AGENTS.md` was een cloud/agent-instructiebestand en geen runtime dependency van de library.
+- Verwijderen heeft geen effect op `p5.waves.js`, voorbeelden of browsergedrag.
+- Housekeeping-wijzigingen blijven het best beperkt en expliciet gelogd in bestaande kennisbestanden.
