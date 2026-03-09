@@ -40,6 +40,11 @@ function fmt(num, digits) {
   return Number(num).toFixed(digits);
 }
 
+function finiteOr(value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
 // ─── p5 setup / resize ───────────────────────────────────────────────────────
 
 function setup() {
@@ -288,7 +293,8 @@ function buildWaveOpts(state) {
 
 function drawWave(state) {
   const cx         = width * 0.5;
-  const step       = Math.max(1, state.step);
+  const yStep      = Math.max(1, finiteOr(state.step, 1));
+  const maxY       = finiteOr(height, 0);
   const opts       = buildWaveOpts(state);
   const drawPoints = state.showPoints || !state.connectLine;
 
@@ -302,8 +308,9 @@ function drawWave(state) {
     fill(0);
   }
 
-  for (let y = 0; y <= height; y += step) {
-    const x = cx + Waves.wave(y, opts);
+  for (let y = 0; y <= maxY; y += yStep) {
+    const x = cx + finiteOr(Waves.wave(y, opts), 0);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
     if (state.connectLine) vertex(x, y);
     if (drawPoints) {
       noStroke();
@@ -386,6 +393,7 @@ function codeNum(value, digits) {
 
 function buildLineSnippet(state) {
   const waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
+  const step = Math.max(1, finiteOr(state.step, 1));
   const rangeStr = state.rangeEnable
     ? ',\n      range: [' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) + ']'
     : ',\n      amplitude: ' + codeNum(state.amplitude, 0);
@@ -400,7 +408,7 @@ function buildLineSnippet(state) {
     '  background(245);\n' +
     '  beginShape();\n' +
     '  stroke(0);\n' +
-    '  for (let y = 0; y <= height; y += ' + Math.max(1, state.step) + ') {\n' +
+    '  for (let y = 0; y <= height; y += ' + step + ') {\n' +
     '    const x = width * 0.5 + Waves.wave(y, {\n' +
     '      wave:             \'' + waveName + '\',\n' +
     '      t:                t,\n' +

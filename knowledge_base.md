@@ -33,3 +33,10 @@ De jsDelivr GitHub CDN link (`https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves
 ```
 https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.0.0/p5.waves.min.js
 ```
+
+## Vertex-fout inzicht (2026-03-09)
+
+De p5-fout `Expected number at the second parameter in vertex()` kan runtime-gedreven zijn (bij ongeldige coördinaten), ook als de standaardflow meestal stabiel is. Praktische mitigatie in voorbeelden:
+- normaliseer stapwaarden defensief (`>= 1`);
+- gebruik alleen eindige `x/y` voor `vertex()`;
+- laat de animatie doorlopen door ongeldige samplepunten over te slaan i.p.v. hard te falen.

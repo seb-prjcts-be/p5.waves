@@ -15,13 +15,17 @@ function setup() {
 function draw() {
   background(245);
   beginShape();
-  for (let y = 0; y <= height; y += STEP) {
+  const maxY = Number.isFinite(height) ? height : 0;
+  const yStep = Number.isFinite(STEP) && STEP > 0 ? STEP : 1;
+  for (let y = 0; y <= maxY; y += yStep) {
     const x = width / 2 + Waves.wave(y, {
       wave:      SELECT,
       t:         frameCount * 0.5,
       amplitude: SCALE
     });
-    vertex(x, y);
+    if (Number.isFinite(x) && Number.isFinite(y)) {
+      vertex(x, y);
+    }
   }
   endShape();
 }

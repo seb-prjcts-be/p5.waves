@@ -15,13 +15,17 @@ new p5(function (p) {
   p.draw = function () {
     p.background(245);
     p.beginShape();
-    for (let y = 0; y <= p.height; y += STEP) {
+    const maxY = Number.isFinite(p.height) ? p.height : 0;
+    const yStep = Number.isFinite(STEP) && STEP > 0 ? STEP : 1;
+    for (let y = 0; y <= maxY; y += yStep) {
       const x = p.width / 2 + p.waves(y, {
         wave:      SELECT,
         t:         p.frameCount * 0.5,
         amplitude: SCALE
       });
-      p.vertex(x, y);
+      if (Number.isFinite(x) && Number.isFinite(y)) {
+        p.vertex(x, y);
+      }
     }
     p.endShape();
   };
