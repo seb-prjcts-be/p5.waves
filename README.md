@@ -2,6 +2,12 @@
 
 Wave sampling helpers for p5.js. Always returns a number.
 
+## Important Docs
+
+- `README.md` — primary usage and API reference.
+- `README_NL.md` — Dutch version of the main documentation.
+- `HISTORY.md` — version and release history.
+
 **Quick Install**
 Script tag (CDN):
 ```html
