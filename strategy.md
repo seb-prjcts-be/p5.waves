@@ -12,3 +12,11 @@
 4. Gebruik timerlogica in `draw()` met `Date.now()` zodat er geen extra interval-processen nodig zijn.
 5. Reset timer-basis bij toggle/interval-wijziging om onverwachte directe triggers te voorkomen.
 6. Houd controls duidelijk door seconde-sliders visueel te disablen als de bijbehorende auto-toggle uit staat.
+
+## Vertex-guard bij line rendering (2026-03-09)
+
+1. Reproduceer consolefout eerst in de bestaande Wave Lab flow; wijzig geen pagina-structuur.
+2. Hardening in bestaande tekenloops: roep `vertex()` enkel aan als `x` en `y` finite numbers zijn.
+3. Houd de fix modulair via een kleine helper (`isFiniteNumber`) i.p.v. verspreide ad-hoc checks.
+4. Pas dezelfde guard toe in basisvoorbeelden en gegenereerde code-snippet, zodat copy-paste code ook veilig blijft.
+5. Valideer handmatig in browser met DevTools-console tijdens interactie (line/grid wissel + randomize).
