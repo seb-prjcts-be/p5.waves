@@ -503,7 +503,7 @@ function draw() {
     </div>
     <div class="ex-demo">
       <div class="ex-code-wrap">
-        <div class="ex-code-label">copy-paste sketch · click canvas for sound</div>
+        <div class="ex-code-label">key parts — full runnable sketch → example 13</div>
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
 const samplers = [
@@ -562,6 +562,13 @@ const sizeSamplers = Array.from({ length: 5 }, (_, i) =>
   Waves.createSampler({ seed: i * 7, range: [28, 96] })
 );
 
+function setup() {
+  createCanvas(600, 400);
+  textAlign(CENTER, CENTER);
+  textFont('monospace');
+  noStroke();
+}
+
 function draw() {
   background(245);
   const t = frameCount * 0.018;
@@ -600,6 +607,11 @@ function draw() {
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
 const COLS = 11, ROWS = 11;
+
+function setup() {
+  createCanvas(600, 600);
+  noStroke();
+}
 
 function draw() {
   background(245);
@@ -644,6 +656,12 @@ function draw() {
         <div class="ex-code-label">copy-paste sketch</div>
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
+function setup() {
+  createCanvas(600, 400);
+  noStroke();
+  textAlign(CENTER, TOP);
+}
+
 function draw() {
   background(245);
   const n    = Waves.count;  // 34
@@ -681,6 +699,27 @@ function draw() {
   <script src="../p5.waves.js"></script>
   <script>
   function cw(id) { return document.getElementById(id).offsetWidth || 700; }
+
+  // ── Open in p5 editor buttons ─────────────────────────────
+  document.querySelectorAll('.ex-code-wrap').forEach(wrap => {
+    const btn = document.createElement('button');
+    btn.className = 'ex-editor-btn';
+    btn.textContent = '▷ open in p5 editor';
+    btn.addEventListener('click', () => {
+      const code = wrap.querySelector('.ex-code').textContent;
+      navigator.clipboard.writeText(code).catch(() => {});
+      btn.textContent = '✓ copied — paste in editor';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '▷ open in p5 editor';
+        btn.classList.remove('copied');
+      }, 2500);
+      window.open('https://editor.p5js.org/', '_blank');
+    });
+    const fullLink = wrap.querySelector('.ex-full-link');
+    if (fullLink) wrap.insertBefore(btn, fullLink);
+    else wrap.appendChild(btn);
+  });
 
   // ── 1. Wave basics ────────────────────────────────────────
   new p5(p => {
