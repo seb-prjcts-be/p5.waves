@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>15 — Fade Field | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 15 — opacity output</div>
+      <h1>Fade Field</h1>
+      <p>Wave output as <strong>alpha only</strong> — shapes don't move, change size or colour. Two overlapping grids at different speeds create interference patterns purely through opacity.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// Two waves, same grid position, different alpha
+const a1 = Waves.wave(c * 0.35 + r * 0.28, {
+  wave:  'classic sine',
+  t:     t,
+  range: [0, 220]   // → alpha
+});
+const a2 = Waves.wave(c * 0.28 - r * 0.35, {
+  wave:  'triangle',
+  t:     t * 1.6,
+  range: [0, 180]   // → alpha
+});
+
+fill(0, a1);              // black circle, large
+circle(cx, cy, cw * 0.72);
+fill(30, 80, 180, a2);   // blue circle, small
+circle(cx, cy, cw * 0.38);</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>

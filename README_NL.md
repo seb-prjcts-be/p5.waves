@@ -189,6 +189,8 @@ const cells = g.sample(t);  // cells[rij * g.cols + kolom]
 - `12_color_spectrum` — wave output als hue / saturatie (HSB)
 - `13_sound` — wave output als oscillatorfrequentie (Web Audio)
 - `14_typography` — wave output als lettergrootte, lift en doorzichtigheid
+- `15_opacity` — wave output als alpha, twee interfererende lagen
+- `16_wave_chart` — alle 34 formules als live geanimeerde bars
 
 ---
 
