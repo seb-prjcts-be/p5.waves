@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examples – p5.waves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="nav-logo">p5.<span>waves</span></div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Showcase</a></li>
+      <li><a href="examples.html" class="active">Examples</a></li>
+      <li><a href="guide.html">Guide</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="ex-page-header">
+    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v2.0.0</div>
+    <h1>p5.<span class="accent">waves</span> Examples</h1>
+    <p>Live demos with copy-paste code. Each section spotlights a distinct API feature — from a single <code>Waves.wave()</code> call to flow fields, 2D grids, wild mode and manual time control.</p>
+    <a class="ex-lab-card" href="../examples/00_wave_lab/" target="_blank">
+      <div class="section-tag">Interactive playground</div>
+      <strong>Wave Lab →</strong>
+      <p>All 34 formulas. Live tuning of every parameter. Exports ready-to-paste code.</p>
+    </a>
+  </div>
+
+  <!-- 1. WAVES.WAVE() -->
+  <section id="basics" class="section">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.wave(y, options)</div>
+      <h2>The core <span class="accent">function</span></h2>
+      <p class="section-desc">One call returns one number. Pass a position and options — wave shape, time, amplitude, frequency. Use the result as offset, size, colour value, or anything else.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+function setup() {
+  createCanvas(600, 400);
+  noFill();
+}
+
+function draw() {
+  background(245);
+  const t = frameCount * 0.01;
+  const waves = [
+    'classic sine', 'triangle',
+    'mountain peaks', 'noise'
+  ];
+
+  waves.forEach((wave, i) => {
+    const y0 = map(i, 0, 3, 70, height - 70);
+    stroke(0, 0, 0, map(i, 0, 3, 220, 80));
+    strokeWeight(1.5);
+    beginShape();
+    for (let x = 0; x &lt;= width; x += 3) {
+      const y = y0 + Waves.wave(x * 0.015, {
+        wave, t, amplitude: 45
+      });
+      vertex(x, y);
+    }
+    endShape();
+  });
+}</pre>
+        <a class="ex-full-link" href="../examples/01_basic_wave/" target="_blank">→ full example 01</a>
+      </div>
+      <div id="ex1" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 2. ALL 34 WAVES -->
+  <section id="taxonomy" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.list() · wave: N</div>
+      <h2>All <span class="accent">34</span> formulas</h2>
+      <p class="section-desc"><code>Waves.list()</code> returns every formula with its name and index. Select by name (<code>wave: 'noise'</code>) or directly by index (<code>wave: 3</code>).</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+function setup() {
+  createCanvas(600, 560);
+  noFill(); stroke(0); strokeWeight(1.2);
+  textFont('monospace'); textSize(8);
+}
+
+function draw() {
+  background(238);
+  const t    = frameCount * 0.012;
+  const COLS = 5, ROWS = 7;
+  const cw   = width / COLS;
+  const rh   = height / ROWS;
+  const all  = Waves.list(); // 34 entries
+
+  for (let i = 0; i &lt; COLS * ROWS; i++) {
+    if (i &gt;= all.length) break;
+    const col = i % COLS;
+    const row = Math.floor(i / COLS);
+    const x0 = col * cw, y0 = row * rh;
+
+    noFill(); stroke(0,0,0,22);
+    strokeWeight(0.5); rect(x0, y0, cw, rh);
+
+    stroke(0); strokeWeight(1.2);
+    beginShape();
+    for (let y = y0+18; y &lt; y0+rh-4; y += 2) {
+      const x = Waves.wave(y * 0.03, {
+        wave: i, t,    // i = direct index
+        range: [x0+6, x0+cw-6]
+      });
+      vertex(x, y);
+    }
+    endShape();
+
+    noStroke(); fill(0,0,0,100);
+    textAlign(LEFT);
+    text('#'+i+' '+all[i].name, x0+5, y0+13);
+    stroke(0); noFill();
+  }
+}</pre>
+        <a class="ex-full-link" href="../examples/07_select_by_index/" target="_blank">→ full example 07</a>
+      </div>
+      <div id="ex2" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 3. NOISE & RANDOM -->
+  <section id="noise" class="section">
+    <div class="section-header">
+      <div class="section-tag">waves: noise · grow random · fuzzy peak sine · fuzzy pulse</div>
+      <h2>Noise &amp; <span class="accent">random</span> waves</h2>
+      <p class="section-desc">Several formulas produce structurally different randomness — smooth noise, growing random values, fuzzy peaks, irregular pulses. Same seed + same x always returns the same number: deterministic but visually unpredictable.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+function setup() {
+  createCanvas(600, 400);
+  noFill();
+}
+
+function draw() {
+  background(245);
+  const t = frameCount * 0.008;
+  const types = [
+    'noise',
+    'grow random',
+    'fuzzy peak sine',
+    'fuzzy pulse'
+  ];
+
+  types.forEach((wave, i) => {
+    const y0 = map(i, 0, 3, 70, height - 70);
+    stroke(0, 0, 0, 200 - i * 30);
+    strokeWeight(1.4);
+    beginShape();
+    for (let x = 0; x &lt;= width; x += 2) {
+      const y = y0 + Waves.wave(x * 0.018, {
+        wave,
+        t,
+        amplitude: 38,
+        seed: 3
+      });
+      vertex(x, y);
+    }
+    endShape();
+
+    noStroke(); fill(0, 0, 0, 80);
+    textFont('monospace'); textSize(9);
+    textAlign(LEFT);
+    text(wave, 8, y0 - 18);
+    stroke(0); noFill();
+  });
+}</pre>
+      </div>
+      <div id="ex3" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 4. WILD MODE -->
+  <section id="wild" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">option: mode: 'wild' · unpredictability: 0–1</div>
+      <h2>Wild <span class="accent">mode</span></h2>
+      <p class="section-desc">Any wave can run in wild mode. Left: smooth. Right: <code>mode: 'wild'</code> with <code>unpredictability: 0.65</code>. Wild mode injects position-varying noise into frequency, phase and amplitude simultaneously.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+function setup() {
+  createCanvas(600, 400);
+  noStroke();
+}
+
+function draw() {
+  background(238);
+  const t = frameCount * 0.014;
+
+  for (let y = 4; y &lt; height; y += 6) {
+    // Left — smooth
+    const xs = Waves.wave(y * 0.014, {
+      wave:  'mountain peaks',
+      t,
+      range: [8, width / 2 - 8]
+    });
+
+    // Right — same wave, wild mode
+    const xw = Waves.wave(y * 0.014, {
+      wave:             'mountain peaks',
+      t,
+      mode:             'wild',
+      unpredictability:  0.65,
+      range:            [width / 2 + 8, width - 8]
+    });
+
+    fill(0, 0, 0, 170);
+    circle(xs, y, 4);
+    circle(xw, y, 4);
+  }
+
+  stroke(0,0,0,35); strokeWeight(1);
+  line(width/2, 0, width/2, height);
+  noStroke(); fill(0,0,0,90);
+  textFont('monospace'); textSize(9);
+  textAlign(CENTER);
+  text('smooth', width/4, 14);
+  text('wild  (0.65)', 3*width/4, 14);
+}</pre>
+        <a class="ex-full-link" href="../examples/10_wave_override/" target="_blank">→ full example 10</a>
+      </div>
+      <div id="ex4" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 5. CREATESAMPLER -->
+  <section id="sampler" class="section">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.createSampler(options)</div>
+      <h2>Create<span class="accent">Sampler</span></h2>
+      <p class="section-desc">Configure once, sample hundreds of times per frame. Two samplers with different wave shapes drive X and Y — each phase step traces an orbit unique to that combination.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch (instance mode)</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+new p5(p => {
+  let sx, sy;
+  const N = 90;
+
+  p.setup = () => {
+    p.createCanvas(500, 500);
+    p.noStroke();
+
+    sx = Waves.createSampler({
+      wave:  'classic sine',
+      seed:  3,
+      range: [-200, 200]
+    });
+    sy = Waves.createSampler({
+      wave:  'wobble',
+      seed:  9,
+      range: [-200, 200]
+    });
+  };
+
+  p.draw = () => {
+    p.background(245, 245, 245, 18);
+    const t = p.frameCount * 0.012;
+
+    for (let i = 0; i &lt; N; i++) {
+      const phase = (i / N) * p.TWO_PI * 2;
+      const x = p.width  / 2 + sx.sample(phase, t);
+      const y = p.height / 2 + sy.sample(phase + 0.8, t);
+      p.fill(0, 0, 0, p.map(i, 0, N, 30, 200));
+      p.circle(x, y, 4);
+    }
+  };
+});</pre>
+        <a class="ex-full-link" href="../examples/02_instance_mode/" target="_blank">→ full example 02</a>
+      </div>
+      <div id="ex5" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 6. CREATEGRID -->
+  <section id="grid" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.createGrid(cols, rows, options)</div>
+      <h2>Create<span class="accent">Grid</span></h2>
+      <p class="section-desc">One call generates a full 2D grid per frame. With <code>threshold</code> it returns a <code>Uint8Array</code> of 0/1 values — a binary pattern you can render any way you like.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+const COLS = 42, ROWS = 42;
+let grid;
+
+function setup() {
+  createCanvas(500, 500);
+  noStroke();
+
+  grid = Waves.createGrid(COLS, ROWS, {
+    waveRow:   'smooth solid sine',
+    waveCol:   'ramp up sine',
+    threshold:  0,    // → Uint8Array (0/1)
+    speed:      1
+  });
+}
+
+function draw() {
+  background(238);
+  const cells = grid.sample(frameCount * 0.004);
+  const cw    = width  / COLS;
+  const ch    = height / ROWS;
+
+  for (let row = 0; row &lt; ROWS; row++) {
+    for (let col = 0; col &lt; COLS; col++) {
+      const v = cells[row * COLS + col];
+      fill(v === 1 ? 15 : 225);
+      rect(col * cw, row * ch, cw - 1, ch - 1);
+    }
+  }
+}</pre>
+      </div>
+      <div id="ex6" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 7. FLOW FIELD -->
+  <section id="flow" class="section">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.createSampler() × 4 — particles</div>
+      <h2>Flow <span class="accent">fields</span></h2>
+      <p class="section-desc">Four samplers — each a different wave — steer 150 particles. Configure once, sample every particle on every frame. Swap the wave names to change the flow pattern entirely.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+let samplers = [], particles = [];
+
+function setup() {
+  createCanvas(600, 400);
+  noStroke();
+
+  ['classic sine', 'wobble',
+   'pulse', 'plasma'].forEach((w, i) => {
+    samplers.push(Waves.createSampler({
+      wave: w, seed: i * 11, range: [-2, 2]
+    }));
+  });
+
+  for (let i = 0; i &lt; 150; i++) {
+    particles.push({
+      x: random(width),
+      y: random(height),
+      s: i % 4
+    });
+  }
+}
+
+function draw() {
+  background(245, 245, 245, 22);
+  const t = frameCount * 0.014;
+
+  for (const p of particles) {
+    p.x += samplers[p.s].sample(p.y * 0.009, t) * 2.5;
+    p.y += samplers[(p.s+2)%4].sample(p.x * 0.009, t) * 2.5;
+    if (p.x &lt; 0) p.x += width;
+    if (p.x &gt; width)  p.x -= width;
+    if (p.y &lt; 0) p.y += height;
+    if (p.y &gt; height) p.y -= height;
+    fill(0, 0, 0, 160);
+    circle(p.x, p.y, 3);
+  }
+}</pre>
+        <a class="ex-full-link" href="../examples/06_seconds_param/" target="_blank">→ full example 06</a>
+      </div>
+      <div id="ex7" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 8. MANUAL TIME -->
+  <section id="time" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">feature: t is just a number</div>
+      <h2>Time is a <span class="accent">number</span></h2>
+      <p class="section-desc">There is no built-in clock. Pass any number as <code>t</code> — move the mouse to scrub through time. Freeze it, rewind it, slow it down for frame captures.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch · move mouse left–right</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+const LAYERS = 18;
+
+function setup() {
+  createCanvas(600, 400);
+  noFill();
+}
+
+function draw() {
+  background(238);
+
+  // t from mouseX — no auto-advance
+  const tBase = map(mouseX, 0, width, 0, 8);
+
+  for (let i = 0; i &lt; LAYERS; i++) {
+    // Each layer gets its own slice of time
+    const t  = tBase + (i / LAYERS) * 3;
+    const y0 = map(i, 0, LAYERS-1, 30, height-30);
+
+    stroke(0, 0, 0, map(i, 0, LAYERS-1, 210, 30));
+    strokeWeight(map(i, 0, LAYERS-1, 2, 0.5));
+
+    beginShape();
+    for (let x = 0; x &lt;= width; x += 3) {
+      const y = y0 + Waves.wave(x * 0.015, {
+        wave: 'classic sine', t, amplitude: 28
+      });
+      vertex(x, y);
+    }
+    endShape();
+  }
+
+  noStroke(); fill(0,0,0,80);
+  textFont('monospace'); textSize(10);
+  textAlign(LEFT);
+  text('t = ' + map(mouseX,0,width,0,8).toFixed(2), 10, 16);
+}</pre>
+        <a class="ex-full-link" href="../examples/11_tick_time_mode/" target="_blank">→ full example 11</a>
+      </div>
+      <div id="ex8" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
+    <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../p5.waves.js"></script>
+  <script>
+  function cw(id) { return document.getElementById(id).offsetWidth || 700; }
+
+  // ── 1. Wave basics ────────────────────────────────────────
+  new p5(p => {
+    p.setup = () => {
+      p.createCanvas(cw('ex1'), 380).parent('ex1');
+      p.noFill();
+    };
+    p.draw = () => {
+      p.background(245);
+      const t = p.frameCount * 0.01;
+      const waves = ['classic sine','triangle','mountain peaks','noise'];
+      waves.forEach((wave, i) => {
+        const y0 = p.map(i, 0, 3, 70, p.height - 70);
+        p.stroke(0, 0, 0, p.map(i, 0, 3, 220, 80));
+        p.strokeWeight(1.5);
+        p.beginShape();
+        for (let x = 0; x <= p.width; x += 3) {
+          p.vertex(x, y0 + Waves.wave(x * 0.015, { wave, t, amplitude: 45 }));
+        }
+        p.endShape();
+        p.noStroke(); p.fill(0,0,0,80);
+        p.textFont('monospace'); p.textSize(9); p.textAlign(p.LEFT);
+        p.text(wave, 10, y0 - 16);
+        p.stroke(0); p.noFill();
+      });
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex1'), 380);
+  }, 'ex1');
+
+  // ── 2. All 34 formulas ────────────────────────────────────
+  new p5(p => {
+    let all;
+    const COLS = 5, ROWS = 7;
+    p.setup = () => {
+      const w = cw('ex2');
+      p.createCanvas(w, Math.round(w * ROWS / COLS)).parent('ex2');
+      all = Waves.list();
+      p.noFill(); p.stroke(0);
+    };
+    p.draw = () => {
+      p.background(238);
+      const t = p.frameCount * 0.012;
+      const cw2 = p.width / COLS, rh = p.height / ROWS;
+      for (let i = 0; i < COLS * ROWS; i++) {
+        if (i >= all.length) break;
+        const col = i % COLS, row = Math.floor(i / COLS);
+        const x0 = col * cw2, y0 = row * rh;
+        p.noFill(); p.stroke(0,0,0,22); p.strokeWeight(0.5);
+        p.rect(x0, y0, cw2, rh);
+        p.stroke(0); p.strokeWeight(1.3);
+        p.beginShape();
+        for (let y = y0 + 20; y < y0 + rh - 4; y += 2) {
+          p.vertex(Waves.wave(y * 0.03, { wave: i, t, range: [x0+6, x0+cw2-6] }), y);
+        }
+        p.endShape();
+        p.noStroke(); p.fill(0,0,0,100);
+        p.textFont('monospace'); p.textSize(7.5); p.textAlign(p.LEFT);
+        p.text('#' + i + ' ' + all[i].name, x0 + 5, y0 + 13);
+        p.stroke(0); p.noFill();
+      }
+    };
+    p.windowResized = () => {
+      const w = cw('ex2');
+      p.resizeCanvas(w, Math.round(w * ROWS / COLS));
+    };
+  }, 'ex2');
+
+  // ── 3. Noise & random ─────────────────────────────────────
+  new p5(p => {
+    p.setup = () => {
+      p.createCanvas(cw('ex3'), 380).parent('ex3');
+      p.noFill();
+    };
+    p.draw = () => {
+      p.background(245);
+      const t = p.frameCount * 0.008;
+      const types = ['noise','grow random','fuzzy peak sine','fuzzy pulse'];
+      types.forEach((wave, i) => {
+        const y0 = p.map(i, 0, 3, 70, p.height - 70);
+        p.stroke(0, 0, 0, 200 - i * 25);
+        p.strokeWeight(1.4);
+        p.beginShape();
+        for (let x = 0; x <= p.width; x += 2) {
+          p.vertex(x, y0 + Waves.wave(x * 0.018, { wave, t, amplitude: 38, seed: 3 }));
+        }
+        p.endShape();
+        p.noStroke(); p.fill(0,0,0,90);
+        p.textFont('monospace'); p.textSize(9); p.textAlign(p.LEFT);
+        p.text(wave, 10, y0 - 18);
+        p.stroke(0); p.noFill();
+      });
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex3'), 380);
+  }, 'ex3');
+
+  // ── 4. Wild mode ──────────────────────────────────────────
+  new p5(p => {
+    p.setup = () => {
+      p.createCanvas(cw('ex4'), 380).parent('ex4');
+      p.noStroke();
+    };
+    p.draw = () => {
+      p.background(238);
+      const t = p.frameCount * 0.014;
+      for (let y = 4; y < p.height; y += 6) {
+        const xs = Waves.wave(y * 0.014, { wave: 'mountain peaks', t, range: [8, p.width/2-8] });
+        const xw = Waves.wave(y * 0.014, { wave: 'mountain peaks', t, mode: 'wild', unpredictability: 0.65, range: [p.width/2+8, p.width-8] });
+        p.fill(0,0,0,170);
+        p.circle(xs, y, 4);
+        p.circle(xw, y, 4);
+      }
+      p.stroke(0,0,0,35); p.strokeWeight(1);
+      p.line(p.width/2, 0, p.width/2, p.height);
+      p.noStroke(); p.fill(0,0,0,90);
+      p.textFont('monospace'); p.textSize(9); p.textAlign(p.CENTER);
+      p.text('smooth', p.width/4, 14);
+      p.text('wild  (0.65)', 3*p.width/4, 14);
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex4'), 380);
+  }, 'ex4');
+
+  // ── 5. createSampler orbits ───────────────────────────────
+  new p5(p => {
+    let sx, sy;
+    const N = 90;
+    p.setup = () => {
+      const w = cw('ex5');
+      p.createCanvas(w, Math.min(w, 480)).parent('ex5');
+      p.noStroke();
+      sx = Waves.createSampler({ wave: 'classic sine', seed: 3, range: [-180, 180] });
+      sy = Waves.createSampler({ wave: 'wobble',       seed: 9, range: [-180, 180] });
+    };
+    p.draw = () => {
+      p.background(245, 245, 245, 18);
+      const t = p.frameCount * 0.035;
+      for (let i = 0; i < N; i++) {
+        const phase = (i / N) * p.TWO_PI * 2;
+        p.fill(0, 0, 0, p.map(i, 0, N, 30, 200));
+        p.circle(p.width/2 + sx.sample(phase, t), p.height/2 + sy.sample(phase + 0.8, t), 4);
+      }
+    };
+    p.windowResized = () => { const w = cw('ex5'); p.resizeCanvas(w, Math.min(w, 480)); };
+  }, 'ex5');
+
+  // ── 6. createGrid ─────────────────────────────────────────
+  new p5(p => {
+    let grid;
+    const COLS = 42, ROWS = 42;
+    p.setup = () => {
+      const w = cw('ex6');
+      p.createCanvas(w, Math.min(w, 520)).parent('ex6');
+      p.noStroke();
+      grid = Waves.createGrid(COLS, ROWS, { waveRow: 'smooth solid sine', waveCol: 'ramp up sine', threshold: 0, speed: 1 });
+    };
+    p.draw = () => {
+      p.background(238);
+      const cells = grid.sample(p.frameCount * 0.004);
+      const cw2 = p.width / COLS, ch = p.height / ROWS;
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          p.fill(cells[row * COLS + col] === 1 ? 15 : 225);
+          p.rect(col * cw2, row * ch, cw2 - 0.5, ch - 0.5);
+        }
+      }
+    };
+    p.windowResized = () => { const w = cw('ex6'); p.resizeCanvas(w, Math.min(w, 520)); };
+  }, 'ex6');
+
+  // ── 7. Flow field ─────────────────────────────────────────
+  new p5(p => {
+    let samplers = [], pts = [];
+    p.setup = () => {
+      p.createCanvas(cw('ex7'), 380).parent('ex7');
+      p.noStroke();
+      ['classic sine','wobble','pulse','plasma'].forEach((w, i) => {
+        samplers.push(Waves.createSampler({ wave: w, seed: i * 11, range: [-2, 2] }));
+      });
+      for (let i = 0; i < 150; i++) pts.push({ x: p.random(p.width), y: p.random(p.height), s: i % 4 });
+    };
+    p.draw = () => {
+      p.background(245, 245, 245, 22);
+      const t = p.frameCount * 0.014;
+      for (const pt of pts) {
+        pt.x += samplers[pt.s].sample(pt.y * 0.009, t) * 2.5;
+        pt.y += samplers[(pt.s+2)%4].sample(pt.x * 0.009, t) * 2.5;
+        if (pt.x < 0) pt.x += p.width;
+        if (pt.x > p.width)  pt.x -= p.width;
+        if (pt.y < 0) pt.y += p.height;
+        if (pt.y > p.height) pt.y -= p.height;
+        p.fill(0,0,0,160); p.circle(pt.x, pt.y, 3);
+      }
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex7'), 380);
+  }, 'ex7');
+
+  // ── 8. Manual time ────────────────────────────────────────
+  new p5(p => {
+    const LAYERS = 18;
+    p.setup = () => {
+      p.createCanvas(cw('ex8'), 380).parent('ex8');
+      p.noFill();
+    };
+    p.draw = () => {
+      p.background(238);
+      const tBase = p.map(p.mouseX, 0, p.width, 0, 8);
+      for (let i = 0; i < LAYERS; i++) {
+        const t  = tBase + (i / LAYERS) * 3;
+        const y0 = p.map(i, 0, LAYERS-1, 30, p.height-30);
+        p.stroke(0, 0, 0, p.map(i, 0, LAYERS-1, 210, 30));
+        p.strokeWeight(p.map(i, 0, LAYERS-1, 2, 0.5));
+        p.beginShape();
+        for (let x = 0; x <= p.width; x += 3) {
+          p.vertex(x, y0 + Waves.wave(x * 0.015, { wave: 'classic sine', t, amplitude: 28 }));
+        }
+        p.endShape();
+      }
+      p.noStroke(); p.fill(0,0,0,80);
+      p.textFont('monospace'); p.textSize(10); p.textAlign(p.LEFT);
+      p.text('t = ' + p.map(p.mouseX,0,p.width,0,8).toFixed(2), 10, 16);
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex8'), 380);
+  }, 'ex8');
+  </script>
+
+</body>
+</html>

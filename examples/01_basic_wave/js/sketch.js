@@ -21,7 +21,7 @@ function draw() {
       t:         frameCount * 0.5,
       amplitude: SCALE
     });
-    if (Number.isFinite(x) && Number.isFinite(y)) vertex(x, y);
+    vertex(x, y);
   }
   endShape();
 }

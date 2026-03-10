@@ -10,7 +10,7 @@ body {
   padding: 0;
   background: var(--gray-245);
   color: var(--black);
-  font-family: "Alegreya", serif;
+  font-family: 'Inter', sans-serif;
 }
 
 h1,

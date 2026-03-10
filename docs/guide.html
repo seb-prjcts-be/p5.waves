@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide – p5.waves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo">p5.<span>waves</span></div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Showcase</a></li>
+      <li><a href="examples.html">Examples</a></li>
+      <li><a href="guide.html" class="active">Guide</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="guide-wrap">
+
+    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v2.0.0</div>
+    <h1>p5.<span class="accent">waves</span> Guide</h1>
+    <p class="guide-intro">
+      Everything you need to use the library — from installation to advanced patterns.
+    </p>
+
+
+    <!-- ═══════════════════════════════════ INSTALL -->
+    <h2>Installation</h2>
+    <p>Load p5.js first, then p5.waves. Order matters.</p>
+    <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.0.0/p5.waves.js"&gt;&lt;/script&gt;
+&lt;script src="sketch.js"&gt;&lt;/script&gt;</div>
+
+
+    <!-- ═══════════════════════════════════ MENTAL MODEL -->
+    <h2>Mental Model</h2>
+    <p>Think of <code>Waves.wave(y)</code> the same way you think of <code>noise(y)</code> in p5.js — pass a coordinate, get a number back. That number is ready to use as an offset, size, color, or anything else.</p>
+    <div class="callout"><p>The difference: instead of one Perlin noise field, you have <strong>34 curated wave formulas</strong> to choose from, each with a distinct character.</p></div>
+
+
+    <!-- ═══════════════════════════════════ WAVE LIST -->
+    <h2>The 34 Waves</h2>
+    <p>Reference by name (string) or index (number). Use <code>Waves.list()</code> to inspect all formulas at runtime.</p>
+    <div class="wave-grid">
+      <div class="wave-item"><span class="wi">0</span> classic sine</div>
+      <div class="wave-item"><span class="wi">1</span> sine</div>
+      <div class="wave-item"><span class="wi">2</span> sharp peaks</div>
+      <div class="wave-item"><span class="wi">3</span> square</div>
+      <div class="wave-item"><span class="wi">4</span> pulse</div>
+      <div class="wave-item"><span class="wi">5</span> stepped sine</div>
+      <div class="wave-item"><span class="wi">6</span> mountain peaks</div>
+      <div class="wave-item"><span class="wi">7</span> valleys</div>
+      <div class="wave-item"><span class="wi">8</span> zig-zag sine</div>
+      <div class="wave-item"><span class="wi">9</span> batman</div>
+      <div class="wave-item"><span class="wi">10</span> offset sine</div>
+      <div class="wave-item"><span class="wi">11</span> steps down</div>
+      <div class="wave-item"><span class="wi">12</span> steps</div>
+      <div class="wave-item"><span class="wi">13</span> squared sine</div>
+      <div class="wave-item"><span class="wi">14</span> bumpy sine</div>
+      <div class="wave-item"><span class="wi">15</span> wobble sine</div>
+      <div class="wave-item"><span class="wi">16</span> up down noise</div>
+      <div class="wave-item"><span class="wi">17</span> meta sine</div>
+      <div class="wave-item"><span class="wi">18</span> triangle</div>
+      <div class="wave-item"><span class="wi">19</span> ramp</div>
+      <div class="wave-item"><span class="wi">20</span> saw down</div>
+      <div class="wave-item"><span class="wi">21</span> saw up</div>
+      <div class="wave-item"><span class="wi">22</span> fade out</div>
+      <div class="wave-item"><span class="wi">23</span> grow random</div>
+      <div class="wave-item"><span class="wi">24</span> noise</div>
+      <div class="wave-item"><span class="wi">25</span> fuzzy pulse</div>
+      <div class="wave-item"><span class="wi">26</span> up down pulse</div>
+      <div class="wave-item"><span class="wi">27</span> bald patch</div>
+      <div class="wave-item"><span class="wi">28</span> fuzzy peak sine</div>
+      <div class="wave-item"><span class="wi">29</span> ramp up sine</div>
+      <div class="wave-item"><span class="wi">30</span> triangle sine</div>
+      <div class="wave-item"><span class="wi">31</span> round linked sine</div>
+      <div class="wave-item"><span class="wi">32</span> half sine</div>
+      <div class="wave-item"><span class="wi">33</span> smooth solid sine</div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════ WAVES.WAVE -->
+    <h2>Waves.wave()</h2>
+    <p>The simplest entry point. Call it anywhere — no setup needed. Always returns a number.</p>
+
+    <h3>Calling forms</h3>
+    <div class="code-block">Waves.wave(y)                             <span class="cm">// default wave, seed 0</span>
+Waves.wave(y, 3)                          <span class="cm">// number → seed 3 selects a wave</span>
+Waves.wave(y, <span class="st">'triangle'</span>)               <span class="cm">// string → wave by name</span>
+Waves.wave(y, { wave: <span class="st">'triangle'</span> })      <span class="cm">// options object</span></div>
+
+    <h3>All options</h3>
+    <table class="opts-table">
+      <tr><th>Option</th><th>Description</th><th>Default</th></tr>
+      <tr><td>wave</td><td>Wave name (string) or index (number 0–33)</td><td>seed-determined</td></tr>
+      <tr><td>seed</td><td>Integer — deterministically picks a wave via hashing. Use for stable variety across objects.</td><td>0</td></tr>
+      <tr><td>t</td><td>Time offset — drives animation. Pass <code>frameCount * 0.01</code> or <code>millis()/1000</code>.</td><td>0</td></tr>
+      <tr><td>amplitude</td><td>Output multiplier. Ignored when <code>range</code> is set.</td><td>1</td></tr>
+      <tr><td>range</td><td><code>[min, max]</code> — normalises output to this interval.</td><td>null</td></tr>
+      <tr><td>frequency</td><td>Input multiplier — tighter or looser wave cycles.</td><td>1</td></tr>
+      <tr><td>phase</td><td>Input offset — shifts the wave left or right.</td><td>0</td></tr>
+      <tr><td>mode</td><td><code>'stable'</code> or <code>'wild'</code> — wild injects position-varying noise.</td><td>'stable'</td></tr>
+      <tr><td>unpredictability</td><td>0–1 intensity for wild mode. Has no effect in stable mode.</td><td>0</td></tr>
+    </table>
+
+    <div class="callout">
+      <p><span class="note warn">note</span> <strong>Seed vs index — two different numbers:</strong><br>
+      <code>Waves.wave(y, 3)</code> — the shorthand form treats 3 as a <em>seed</em>. It gets hashed into a wave selection, so seed 3 always picks the same wave, but it's not wave #3.<br>
+      <code>Waves.wave(y, { wave: 3 })</code> — the <code>wave</code> property is a <em>direct index</em>. You get exactly wave #3 from the list.<br>
+      Use <code>{ wave: N }</code> when you need a specific formula. Use the seed shorthand when you want each object in a set to get its own consistent wave without caring which one.</p>
+    </div>
+
+    <h3>Examples</h3>
+    <div class="code-block"><span class="cm">// Animated wave line</span>
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  background(<span class="nb">245</span>);
+  beginShape();
+  <span class="kw">for</span> (<span class="kw">let</span> y = <span class="nb">0</span>; y &lt;= height; y += <span class="nb">4</span>) {
+    <span class="kw">const</span> x = width / <span class="nb">2</span> + Waves.wave(y, {
+      wave:      <span class="st">'classic sine'</span>,
+      t:         frameCount * <span class="nb">0.01</span>,
+      amplitude: <span class="nb">80</span>
+    });
+    vertex(x, y);
+  }
+  endShape();
+}</div>
+
+    <div class="code-block"><span class="cm">// Range normalisation — output mapped to [–120, 120]</span>
+<span class="kw">const</span> x = Waves.wave(y, { wave: <span class="st">'classic sine'</span>, t: frameCount * <span class="nb">0.01</span>, range: [<span class="nb">-120</span>, <span class="nb">120</span>] });
+circle(width / <span class="nb">2</span> + x, y, <span class="nb">5</span>);</div>
+
+    <div class="code-block"><span class="cm">// Range [0, 1] — use as a position fraction</span>
+<span class="kw">const</span> x01 = Waves.wave(y, { wave: <span class="st">'classic sine'</span>, t: frameCount * <span class="nb">0.01</span>, range: [<span class="nb">0</span>, <span class="nb">1</span>] });
+circle(x01 * width, y, <span class="nb">5</span>);</div>
+
+
+    <!-- ═══════════════════════════════════ CREATESAMPLER -->
+    <h2>Waves.createSampler()</h2>
+    <p>Configure once, sample many times. Resolves the wave and options on creation, then calls to <code>sample()</code> are fast and clean.</p>
+
+    <div class="code-block"><span class="kw">const</span> s = Waves.createSampler({
+  wave:      <span class="st">'triangle'</span>,
+  range:     [<span class="nb">-80</span>, <span class="nb">80</span>]
+});
+
+s.sample(y);       <span class="cm">// → number at position y</span>
+s.sample(y, t);    <span class="cm">// → number at position y with time t</span></div>
+
+    <p>The sampler also exposes <code>.waveIndex</code> and <code>.waveName</code> for inspection.</p>
+
+    <h3>Why use a sampler instead of Waves.wave()?</h3>
+    <table class="opts-table">
+      <tr><th>Reason</th><th>Detail</th></tr>
+      <tr><td>Readability</td><td><code>s.sample(x)</code> reads like <code>noise(x)</code> — one source, many samples.</td></tr>
+      <tr><td>Performance</td><td>Config is resolved once. In a 40×40 grid or 1000-point loop you only call <code>sample()</code>.</td></tr>
+      <tr><td>Repeatability</td><td>Fixing a <code>seed</code> gives stable, reproducible results — essential for generative work.</td></tr>
+      <tr><td>Independent axes</td><td>Two samplers with different seeds produce two unrelated signals. One shared sampler would correlate them.</td></tr>
+    </table>
+
+    <h3>Two independent axes (WEBGL / 3D)</h3>
+    <div class="code-block"><span class="kw">let</span> samplerX, samplerZ;
+
+<span class="kw">function</span> <span class="fn">setup</span>() {
+  createCanvas(<span class="nb">600</span>, <span class="nb">600</span>, WEBGL);
+  samplerX = Waves.createSampler({ seed: <span class="nb">0</span>, range: [<span class="nb">-80</span>, <span class="nb">80</span>] });
+  samplerZ = Waves.createSampler({ seed: <span class="nb">1</span>, range: [<span class="nb">-80</span>, <span class="nb">80</span>] });
+}
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  background(<span class="nb">245</span>);
+  <span class="kw">const</span> t = frameCount * <span class="nb">0.01</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> y = <span class="nb">-200</span>; y &lt;= <span class="nb">200</span>; y += <span class="nb">30</span>) {
+    <span class="kw">for</span> (<span class="kw">let</span> x = <span class="nb">-200</span>; x &lt;= <span class="nb">200</span>; x += <span class="nb">30</span>) {
+      push();
+      translate(x + samplerX.sample(y, t), <span class="nb">0</span>, y + samplerZ.sample(y, t));
+      sphere(<span class="nb">4</span>);
+      pop();
+    }
+  }
+}</div>
+
+
+    <!-- ═══════════════════════════════════ CREATEGRID -->
+    <h2>Waves.createGrid()</h2>
+    <p>Generates a full 2D grid of wave values in one call. Returns a typed array — either <code>Float32Array</code> (continuous values) or <code>Uint8Array</code> (binary 0/1).</p>
+
+    <div class="code-block"><span class="kw">const</span> g = Waves.createGrid(cols, rows, options);
+<span class="kw">const</span> cells = g.sample(t);  <span class="cm">// → Float32Array or Uint8Array, length = cols × rows</span>
+<span class="cm">// Access a cell: cells[row * g.cols + col]</span></div>
+
+    <table class="opts-table">
+      <tr><th>Option</th><th>Description</th><th>Default</th></tr>
+      <tr><td>waveRow</td><td>Wave for the row direction (name or index)</td><td>seed-determined</td></tr>
+      <tr><td>waveCol</td><td>Wave for the column direction (name or index)</td><td>seed-determined (different)</td></tr>
+      <tr><td>seed</td><td>Auto-selects two different waves when waveRow/waveCol are omitted</td><td>0</td></tr>
+      <tr><td>range</td><td><code>[min, max]</code> → Float32Array with normalised values</td><td>null</td></tr>
+      <tr><td>threshold</td><td>Cells above → 1, below → 0. Returns Uint8Array. Overrides range.</td><td>null</td></tr>
+      <tr><td>speed</td><td>Time scale factor applied to the t argument of sample()</td><td>1</td></tr>
+    </table>
+
+    <div class="callout"><p><span class="note">how it works</span> Each cell value is the <strong>sum</strong> of waveRow sampled at the row position and waveCol sampled at the column position. Both positions are mapped to [0, 2π] before sampling.</p></div>
+
+    <h3>Binary grid (threshold → Uint8Array)</h3>
+    <div class="code-block"><span class="kw">let</span> g;
+
+<span class="kw">function</span> <span class="fn">setup</span>() {
+  createCanvas(<span class="nb">560</span>, <span class="nb">420</span>);
+  g = Waves.createGrid(<span class="nb">14</span>, <span class="nb">14</span>, {
+    waveRow:   <span class="st">'classic sine'</span>,
+    waveCol:   <span class="st">'triangle'</span>,
+    threshold: <span class="nb">0</span>,
+    speed:     <span class="nb">1</span>
+  });
+}
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  background(<span class="nb">245</span>);
+  <span class="kw">const</span> cells = g.sample(frameCount * <span class="nb">0.02</span>);
+  <span class="kw">const</span> cw = width / g.cols, ch = height / g.rows;
+  noStroke();
+  <span class="kw">for</span> (<span class="kw">let</span> r = <span class="nb">0</span>; r &lt; g.rows; r++) {
+    <span class="kw">for</span> (<span class="kw">let</span> c = <span class="nb">0</span>; c &lt; g.cols; c++) {
+      fill(cells[r * g.cols + c] === <span class="nb">1</span> ? <span class="nb">0</span> : <span class="nb">255</span>);
+      rect(c * cw, r * ch, cw, ch);
+    }
+  }
+}</div>
+
+    <h3>Continuous grid (range → Float32Array)</h3>
+    <div class="code-block"><span class="kw">const</span> g = Waves.createGrid(<span class="nb">20</span>, <span class="nb">20</span>, { seed: <span class="nb">0</span>, range: [<span class="nb">0</span>, <span class="nb">1</span>] });
+<span class="kw">const</span> cells = g.sample(frameCount * <span class="nb">0.01</span>);
+<span class="cm">// cells[i] is a float in [0, 1] — use directly as a grey value, size, alpha…</span></div>
+
+
+    <!-- ═══════════════════════════════════ WILD MODE -->
+    <h2>Wild Mode</h2>
+    <p>Set <code>mode: 'wild'</code> to inject position-varying noise simultaneously into frequency, phase, and amplitude. Control the intensity with <code>unpredictability</code> (0 = stable, 1 = pure chaos).</p>
+
+    <div class="code-block"><span class="kw">for</span> (<span class="kw">let</span> y = <span class="nb">0</span>; y &lt; height; y += <span class="nb">10</span>) {
+  <span class="kw">const</span> x = Waves.wave(y, {
+    wave:             <span class="st">'pulse'</span>,
+    t:                frameCount * <span class="nb">0.01</span>,
+    mode:             <span class="st">'wild'</span>,
+    unpredictability: <span class="nb">0.45</span>,
+    range:            [<span class="nb">-160</span>, <span class="nb">160</span>]
+  });
+  circle(width / <span class="nb">2</span> + x, y, <span class="nb">5</span>);
+}</div>
+
+    <div class="callout"><p>Works identically with <code>createSampler()</code> — just add <code>mode: 'wild'</code> and <code>unpredictability</code> to the options.</p></div>
+
+
+    <!-- ═══════════════════════════════════ ANIMATION -->
+    <h2>Animation &amp; Time</h2>
+    <p>The <code>t</code> parameter shifts the wave input over time: internally, <code>x = (y + t) × frequency + phase</code>. Two independent knobs control animation speed:</p>
+
+    <table class="opts-table">
+      <tr><th>Knob</th><th>Controls</th></tr>
+      <tr><td>t multiplier</td><td>How fast the wave moves (motion speed)</td></tr>
+      <tr><td>frameRate(n)</td><td>How many frames per second p5 renders (capture speed)</td></tr>
+    </table>
+
+    <div class="code-block"><span class="cm">// Fixed timestep — motion speed is independent of frame rate</span>
+<span class="kw">let</span> simTime = <span class="nb">0</span>;
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  simTime += <span class="nb">1</span> / <span class="nb">30</span>;
+  <span class="kw">const</span> x = Waves.wave(y, { wave: <span class="st">'classic sine'</span>, t: simTime * <span class="nb">6</span>, range: [<span class="nb">-120</span>, <span class="nb">120</span>] });
+}</div>
+
+    <div class="code-block"><span class="cm">// Slow down for screen recording or GIF capture</span>
+<span class="kw">function</span> <span class="fn">setup</span>() {
+  createCanvas(<span class="nb">600</span>, <span class="nb">600</span>);
+  frameRate(<span class="nb">6</span>);   <span class="cm">// keep t multiplier small to match slower frame rate</span>
+}</div>
+
+
+    <!-- ═══════════════════════════════════ INSTANCE MODE -->
+    <h2>Instance Mode</h2>
+    <p>In instance mode, use <code>p.waves()</code>, <code>p.createWaveSampler()</code>, and <code>p.createWaveGrid()</code> — or keep using the global <code>Waves.*</code> methods, which work in both modes.</p>
+
+    <div class="code-block"><span class="kw">new</span> p5(<span class="kw">function</span>(p) {
+  p.setup = <span class="kw">function</span>() { p.createCanvas(<span class="nb">400</span>, <span class="nb">400</span>); };
+  p.draw  = <span class="kw">function</span>() {
+    p.background(<span class="nb">245</span>);
+    p.beginShape();
+    <span class="kw">for</span> (<span class="kw">let</span> y = <span class="nb">0</span>; y &lt;= p.height; y += <span class="nb">4</span>) {
+      <span class="kw">const</span> x = p.width / <span class="nb">2</span> + p.waves(y, {
+        wave:      <span class="st">'classic sine'</span>,
+        t:         p.frameCount * <span class="nb">0.5</span>,
+        amplitude: <span class="nb">80</span>
+      });
+      p.vertex(x, y);
+    }
+    p.endShape();
+  };
+});</div>
+
+
+    <!-- ═══════════════════════════════════ COPY-PASTE -->
+    <h2>Copy-Paste Templates</h2>
+    <p>Drop the block you need into your sketch, uncomment what you want, delete the rest.</p>
+
+    <h3>Waves.wave()</h3>
+    <div class="code-block"><span class="kw">const</span> x = Waves.wave(y, {
+  wave:                <span class="st">'classic sine'</span>,  <span class="cm">// name or index 0–33; see Waves.list()</span>
+  <span class="cm">// seed:             0,               // select wave via seed integer</span>
+  <span class="cm">// t:                millis() / 1000, // time → drives animation</span>
+  <span class="cm">// amplitude:        1,               // fast scale; ignored when range is set</span>
+  <span class="cm">// range:            [-1, 1],         // normalises output to [min, max]</span>
+  <span class="cm">// frequency:        1,               // input multiplier</span>
+  <span class="cm">// phase:            0,               // input offset</span>
+  <span class="cm">// mode:             'stable',        // 'stable' or 'wild'</span>
+  <span class="cm">// unpredictability: 0,               // 0..1; wild mode only</span>
+});</div>
+
+    <h3>Waves.createSampler()</h3>
+    <div class="code-block"><span class="kw">const</span> s = Waves.createSampler({
+  wave:                <span class="st">'classic sine'</span>,  <span class="cm">// resolved once, reused on every sample</span>
+  <span class="cm">// seed:             0,</span>
+  <span class="cm">// amplitude:        1,</span>
+  <span class="cm">// range:            [-80, 80],</span>
+  <span class="cm">// frequency:        1,</span>
+  <span class="cm">// phase:            0,</span>
+  <span class="cm">// mode:             'stable',</span>
+  <span class="cm">// unpredictability: 0,</span>
+});
+s.sample(y);       <span class="cm">// → number</span>
+s.sample(y, t);    <span class="cm">// → number with time</span></div>
+
+    <h3>Waves.createGrid()</h3>
+    <div class="code-block"><span class="kw">const</span> g = Waves.createGrid(cols, rows, {
+  <span class="cm">// waveRow:   'classic sine',  // wave for row direction</span>
+  <span class="cm">// waveCol:   'triangle',      // wave for column direction</span>
+  <span class="cm">// seed:      0,               // auto-selects two waves</span>
+  <span class="cm">// range:     [0, 1],          // → Float32Array</span>
+  <span class="cm">// threshold: 0.5,             // → Uint8Array (0/1); overrides range</span>
+  <span class="cm">// speed:     1,               // time scale factor</span>
+});
+<span class="kw">const</span> cells = g.sample(t);  <span class="cm">// → Float32Array or Uint8Array</span></div>
+
+
+    <!-- ═══════════════════════════════════ DISCOVERY -->
+    <h2>Discovery</h2>
+    <div class="code-block">Waves.list()   <span class="cm">// → [{ index, name, algo }, ...]  — all 34 formulas</span>
+Waves.count    <span class="cm">// → 34</span>
+Waves.data     <span class="cm">// → raw WAVES array</span></div>
+
+
+    <!-- ═══════════════════════════════════ P5.JS VERSION -->
+    <h2>p5.js Version Compatibility</h2>
+    <p>p5.waves targets <strong>p5.js 2.x</strong>. All examples in this showcase run on <code>p5@2.1.1</code>. No deprecated APIs are used — the library is a plain IIFE that adds three methods to <code>p5.prototype</code> and exports a global <code>Waves</code> object.</p>
+    <div class="callout"><p>The library does not call any p5.js internals. As long as <code>p5.prototype</code> exists when the script loads, it will work.</p></div>
+
+
+    <!-- ═══════════════════════════════════ LIBRARY COMPLIANCE -->
+    <h2>p5.js Library Compliance</h2>
+    <p>p5.waves follows the official p5.js addon library guidelines.</p>
+    <table class="opts-table compliance-table">
+      <tr><th>Requirement</th><th>Status</th></tr>
+      <tr><td>Filename pattern <code>p5.featurename.js</code></td><td>&#10003; p5.waves.js / p5.waves.min.js</td></tr>
+      <tr><td>Prototype methods use <code>function()</code>, not arrow functions</td><td>&#10003; correct <code>this</code> binding in instance mode</td></tr>
+      <tr><td>Does not overwrite existing p5.js methods</td><td>&#10003; adds only <code>waves</code>, <code>createWaveSampler</code>, <code>createWaveGrid</code></td></tr>
+      <tr><td>Does not shadow native JS objects (<code>Math</code>, <code>console</code>, …)</td><td>&#10003;</td></tr>
+      <tr><td>p5.js must load before the library</td><td>&#10003; documented above</td></tr>
+      <tr><td>Single-file bundle + minified version</td><td>&#10003;</td></tr>
+      <tr><td>Working examples</td><td>&#10003; 12 examples (00–11)</td></tr>
+    </table>
+
+  </div>
+
+  <footer>
+    <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
+    <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode · 3D Terrain · Browser Presets</p>
+  </footer>
+
+</body>
+</html>

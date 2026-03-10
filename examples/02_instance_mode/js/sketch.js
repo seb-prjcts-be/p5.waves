@@ -21,7 +21,7 @@ new p5(function (p) {
         t:         p.frameCount * 0.5,
         amplitude: SCALE
       });
-      if (Number.isFinite(x) && Number.isFinite(y)) p.vertex(x, y);
+      p.vertex(x, y);
     }
     p.endShape();
   };

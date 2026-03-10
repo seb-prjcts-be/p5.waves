@@ -3,15 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>p5.waves Wave Lab v2</title>
+    <title>p5.waves | Wave Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Oswald:wght@300&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../showcase.css" />
     <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-    <script src="../../p5.waves.min.js"></script>
+    <script src="../../p5.waves.js"></script>
   </head>
   <body>
+
+    <nav id="navbar">
+      <a class="nav-logo" href="../../index.html">p5.<span>waves</span></a>
+      <ul class="nav-links">
+        <li><a href="../../index.html">Showcase</a></li>
+        <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+        <li><a href="../../docs/guide.html">Guide</a></li>
+        <li><a href="../../docs/about.html">About</a></li>
+      </ul>
+    </nav>
+
     <div class="page-shell">
       <aside class="control-panel">
         <h1>Wave Lab</h1>
@@ -86,7 +98,7 @@
           </label>
         </section>
 
-        <section class="control-group">
+        <section class="control-group" id="grid-controls">
           <h2>Grid</h2>
           <label>
             Wave Row
@@ -137,26 +149,7 @@
             <input id="show-grid" type="checkbox" checked />
             Show grid
           </label>
-          <button id="random-formula" type="button">Random Formula</button>
-          <label class="inline">
-            <input id="auto-formula" type="checkbox" />
-            Auto random formula
-          </label>
-          <label>
-            Formula every (s)
-            <input id="auto-formula-seconds" type="range" min="0.2" max="30" step="0.1" value="2" />
-            <span id="auto-formula-seconds-value" class="value"></span>
-          </label>
           <button id="surprise" type="button">Surprise Me</button>
-          <label class="inline">
-            <input id="auto-surprise" type="checkbox" />
-            Auto surprise me
-          </label>
-          <label>
-            Surprise every (s)
-            <input id="auto-surprise-seconds" type="range" min="0.2" max="30" step="0.1" value="4" />
-            <span id="auto-surprise-seconds-value" class="value"></span>
-          </label>
         </section>
 
         <section class="control-group">
@@ -183,6 +176,11 @@
         </p>
       </main>
     </div>
+
+    <footer>
+      <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
+      <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode</p>
+    </footer>
 
     <script src="sketch.js"></script>
   </body>
