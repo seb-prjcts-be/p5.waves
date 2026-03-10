@@ -453,6 +453,225 @@ function draw() {
     </div>
   </section>
 
+  <!-- 9. COLOR OUTPUT -->
+  <section id="color" class="section">
+    <div class="section-header">
+      <div class="section-tag">output: hue · saturation — colorMode(HSB)</div>
+      <h2>Wave as <span class="accent">colour</span></h2>
+      <p class="section-desc">Wave output mapped to hue and saturation in HSB mode. No x/y position involved — the wave value <em>is</em> the colour. Two independent waves create a drifting interference in the spectrum.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+function setup() {
+  createCanvas(600, 400);
+  colorMode(HSB, 360, 100, 100);
+  noStroke();
+}
+
+function draw() {
+  const t = frameCount * 0.008;
+  for (let y = 0; y &lt; height; y += 2) {
+    const hue = Waves.wave(y * 0.015, {
+      wave:  'classic sine',
+      t,
+      range: [0, 360]   // → hue
+    });
+    const sat = Waves.wave(y * 0.015, {
+      wave:  'wobble sine',
+      t:     t * 0.6,
+      range: [30, 100]  // → saturation
+    });
+    fill(hue, sat, 88);
+    rect(0, y, width, 2);
+  }
+}</pre>
+        <a class="ex-full-link" href="../examples/12_color_spectrum/" target="_blank">→ full example 12</a>
+      </div>
+      <div id="ex9" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 10. SOUND OUTPUT -->
+  <section id="sound" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">output: oscillator frequency — Web Audio API</div>
+      <h2>Wave as <span class="accent">sound</span></h2>
+      <p class="section-desc">Three <code>createSampler()</code> calls with Hz ranges drive Web Audio oscillators. A moving cursor reads the wave as a score — what you see is what you hear. No p5.sound needed.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch · click canvas for sound</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+const samplers = [
+  Waves.createSampler({ wave: 'classic sine', range: [110, 330] }),
+  Waves.createSampler({ wave: 'triangle',     range: [220, 550] }),
+  Waves.createSampler({ wave: 'stepped sine', range: [330, 770] }),
+];
+let audioCtx, oscs = [], running = false;
+
+function mousePressed() {
+  if (!running) {
+    audioCtx = new AudioContext();
+    oscs = samplers.map(() => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.05;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      return osc;
+    });
+    running = true;
+  } else {
+    oscs.forEach(o => o.stop());
+    audioCtx.close(); oscs = []; running = false;
+  }
+}
+
+function draw() {
+  const cursor = (frameCount * 2) % width;
+  const t = frameCount * 0.012;
+  // ... draw wave paths, update osc.frequency.value
+  const freq = samplers[i].sample(cursor * 0.018, t);
+  if (running) oscs[i].frequency.value = freq;
+}</pre>
+        <a class="ex-full-link" href="../examples/13_sound/" target="_blank">→ full example 13</a>
+      </div>
+      <div id="ex10" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 11. TYPOGRAPHY OUTPUT -->
+  <section id="typography" class="section">
+    <div class="section-header">
+      <div class="section-tag">output: textSize · vertical lift · opacity</div>
+      <h2>Wave as <span class="accent">type</span></h2>
+      <p class="section-desc">One sampler per letter drives font size independently. A second wave controls vertical lift; a third drives opacity. Same idea as position output — but applied to typographic properties.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+const WORD = 'WAVES';
+const sizeSamplers = Array.from({ length: 5 }, (_, i) =>
+  Waves.createSampler({ seed: i * 7, range: [28, 96] })
+);
+
+function draw() {
+  background(245);
+  const t = frameCount * 0.018;
+  const sizes = WORD.split('').map((_, i) =>
+    sizeSamplers[i].sample(i * 0.6, t)
+  );
+  const totalW = sizes.reduce((s, sz) => s + sz * 0.72, 0);
+  let x = (width - totalW) / 2 + sizes[0] * 0.36;
+
+  for (let i = 0; i &lt; WORD.length; i++) {
+    const sz    = sizes[i];
+    const lift  = Waves.wave(i * 0.9 + t * 0.6,  { seed: i+20, range: [-38, 38] });
+    const alpha = Waves.wave(i * 1.1 + t * 0.35, { seed: i+40, range: [80, 255] });
+    textSize(sz);
+    fill(0, 0, 0, alpha);
+    text(WORD[i], x, height / 2 + lift);
+    x += sz * 0.72;
+  }
+}</pre>
+        <a class="ex-full-link" href="../examples/14_typography/" target="_blank">→ full example 14</a>
+      </div>
+      <div id="ex11" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 12. OPACITY OUTPUT -->
+  <section id="opacity" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">output: alpha — no movement, no size change</div>
+      <h2>Wave as <span class="accent">opacity</span></h2>
+      <p class="section-desc">Two overlapping grids — same positions, same sizes — only alpha moves. Two waves at different speeds create interference patterns that appear and dissolve without anything changing shape or place.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+const COLS = 11, ROWS = 11;
+
+function draw() {
+  background(245);
+  const t  = frameCount * 0.01;
+  const cw = width  / COLS;
+  const ch = height / ROWS;
+
+  for (let r = 0; r &lt; ROWS; r++) {
+    for (let c = 0; c &lt; COLS; c++) {
+      const cx = (c + 0.5) * cw;
+      const cy = (r + 0.5) * ch;
+
+      const a1 = Waves.wave(c*0.35 + r*0.28, {
+        wave: 'classic sine', t, range: [0, 220]
+      });
+      const a2 = Waves.wave(c*0.28 - r*0.35, {
+        wave: 'triangle', t: t*1.6, range: [0, 180]
+      });
+
+      fill(0, a1);
+      circle(cx, cy, cw * 0.72);
+      fill(30, 80, 180, a2);
+      circle(cx, cy, cw * 0.38);
+    }
+  }
+}</pre>
+        <a class="ex-full-link" href="../examples/15_opacity/" target="_blank">→ full example 15</a>
+      </div>
+      <div id="ex12" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 13. WAVE CHART -->
+  <section id="wavechart" class="section">
+    <div class="section-header">
+      <div class="section-tag">reference: all 34 formulas at once — wave: i</div>
+      <h2>Wave <span class="accent">chart</span></h2>
+      <p class="section-desc">All 34 formulas rendered as animated bars simultaneously. Bar height = current output of each wave at the same time input. Index numbers match <code>&#123; wave: i &#125;</code> — use as a live reference when choosing a formula.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+function draw() {
+  background(245);
+  const n    = Waves.count;  // 34
+  const t    = frameCount * 0.016;
+  const barW = width / n;
+  const midY = height * 0.54;
+  const amp  = height * 0.40;
+
+  for (let i = 0; i &lt; n; i++) {
+    const v = Waves.wave(t * 28, {
+      wave:  i,           // direct index
+      range: [-amp, amp]
+    });
+    const h = abs(v);
+    const y = v &lt; 0 ? midY : midY - h;
+
+    colorMode(HSB, n, 100, 100);
+    fill(i, 65, 78);
+    colorMode(RGB, 255);
+    rect(i * barW + 1, y, barW - 2, h);
+  }
+}</pre>
+        <a class="ex-full-link" href="../examples/16_wave_chart/" target="_blank">→ full example 16</a>
+      </div>
+      <div id="ex13" class="ex-canvas"></div>
+    </div>
+  </section>
+
   <footer>
     <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
     <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode</p>
@@ -684,6 +903,159 @@ function draw() {
     };
     p.windowResized = () => p.resizeCanvas(cw('ex8'), 380);
   }, 'ex8');
+
+  // ── 9. Color spectrum ─────────────────────────────────────
+  new p5(p => {
+    p.setup = () => {
+      p.createCanvas(cw('ex9'), 380).parent('ex9');
+      p.noStroke();
+    };
+    p.draw = () => {
+      const t = p.frameCount * 0.008;
+      p.colorMode(p.HSB, 360, 100, 100);
+      for (let y = 0; y < p.height; y += 2) {
+        const hue = Waves.wave(y * 0.015, { wave: 'classic sine', t, range: [0, 360] });
+        const sat = Waves.wave(y * 0.015, { wave: 'wobble sine',  t: t * 0.6, range: [30, 100] });
+        p.fill(hue, sat, 88);
+        p.rect(0, y, p.width, 2);
+      }
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex9'), 380);
+  }, 'ex9');
+
+  // ── 10. Sound / wave synth (visual only, sound on full page) ──
+  new p5(p => {
+    const WAVE_NAMES = ['classic sine', 'triangle', 'stepped sine'];
+    const RANGES     = [[110, 330], [220, 550], [330, 770]];
+    const COLORS     = ['#e05540', '#4466ee', '#33bb88'];
+    const samplers   = WAVE_NAMES.map((w, i) =>
+      Waves.createSampler({ wave: w, seed: i * 5, range: RANGES[i] })
+    );
+    p.setup = () => {
+      p.createCanvas(cw('ex10'), 380).parent('ex10');
+      p.textFont('monospace');
+    };
+    p.draw = () => {
+      p.background(18);
+      const cursor = (p.frameCount * 2) % p.width;
+      const t      = p.frameCount * 0.012;
+      const TRACK_CY = [p.height * 0.22, p.height * 0.5, p.height * 0.78];
+      const hw = p.height * 0.13;
+      for (let i = 0; i < 3; i++) {
+        const [minF, maxF] = RANGES[i];
+        const cy = TRACK_CY[i];
+        p.noFill(); p.stroke(COLORS[i]); p.strokeWeight(1.5);
+        p.beginShape();
+        for (let x = 0; x < p.width; x += 3) {
+          const freq = samplers[i].sample(x * 0.018, t);
+          p.vertex(x, p.map(freq, minF, maxF, cy + hw, cy - hw));
+        }
+        p.endShape();
+        const curFreq = samplers[i].sample(cursor * 0.018, t);
+        const curY    = p.map(curFreq, minF, maxF, cy + hw, cy - hw);
+        p.fill(COLORS[i]); p.noStroke();
+        p.circle(cursor, curY, 8);
+        p.textSize(9); p.textAlign(p.LEFT);
+        p.text(WAVE_NAMES[i] + '  ' + Math.round(curFreq) + ' Hz', 8, cy - hw - 3);
+      }
+      p.stroke(255, 255, 255, 45); p.strokeWeight(1);
+      p.line(cursor, 0, cursor, p.height);
+      p.noStroke(); p.fill(255, 130);
+      p.textAlign(p.CENTER); p.textSize(9);
+      p.text('click for sound → full example', p.width / 2, p.height - 12);
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex10'), 380);
+  }, 'ex10');
+
+  // ── 11. Typography ────────────────────────────────────────
+  new p5(p => {
+    const WORD = 'WAVES';
+    const sizeSamplers = Array.from({ length: 5 }, (_, i) =>
+      Waves.createSampler({ seed: i * 7, range: [28, 96] })
+    );
+    p.setup = () => {
+      p.createCanvas(cw('ex11'), 380).parent('ex11');
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textFont('monospace');
+      p.noStroke();
+    };
+    p.draw = () => {
+      p.background(245);
+      const t     = p.frameCount * 0.018;
+      const sizes = WORD.split('').map((_, i) => sizeSamplers[i].sample(i * 0.6, t));
+      const totalW = sizes.reduce((s, sz) => s + sz * 0.72, 0);
+      let x = (p.width - totalW) / 2 + sizes[0] * 0.36;
+      for (let i = 0; i < WORD.length; i++) {
+        const sz    = sizes[i];
+        const lift  = Waves.wave(i * 0.9 + t * 0.6,  { seed: i + 20, range: [-38, 38] });
+        const alpha = Waves.wave(i * 1.1 + t * 0.35, { seed: i + 40, range: [80, 255] });
+        p.textSize(sz);
+        p.fill(0, 0, 0, alpha);
+        p.text(WORD[i], x, p.height / 2 + lift);
+        x += sz * 0.72;
+      }
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex11'), 380);
+  }, 'ex11');
+
+  // ── 12. Opacity ───────────────────────────────────────────
+  new p5(p => {
+    const COLS = 11, ROWS = 11;
+    p.setup = () => {
+      const w = cw('ex12');
+      p.createCanvas(w, Math.min(w, 440)).parent('ex12');
+      p.noStroke();
+    };
+    p.draw = () => {
+      p.background(245);
+      const t   = p.frameCount * 0.01;
+      const cw2 = p.width  / COLS;
+      const ch  = p.height / ROWS;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cx = (c + 0.5) * cw2;
+          const cy = (r + 0.5) * ch;
+          const a1 = Waves.wave(c * 0.35 + r * 0.28, { wave: 'classic sine', t,          range: [0, 220] });
+          const a2 = Waves.wave(c * 0.28 - r * 0.35, { wave: 'triangle',     t: t * 1.6, range: [0, 180] });
+          p.fill(0, a1);           p.circle(cx, cy, cw2 * 0.72);
+          p.fill(30, 80, 180, a2); p.circle(cx, cy, cw2 * 0.38);
+        }
+      }
+    };
+    p.windowResized = () => { const w = cw('ex12'); p.resizeCanvas(w, Math.min(w, 440)); };
+  }, 'ex12');
+
+  // ── 13. Wave chart ────────────────────────────────────────
+  new p5(p => {
+    p.setup = () => {
+      p.createCanvas(cw('ex13'), 380).parent('ex13');
+      p.noStroke();
+      p.textAlign(p.CENTER, p.TOP);
+    };
+    p.draw = () => {
+      p.background(245);
+      const n    = Waves.count;
+      const t    = p.frameCount * 0.016;
+      const barW = p.width / n;
+      const midY = p.height * 0.54;
+      const amp  = p.height * 0.40;
+      p.stroke(200); p.strokeWeight(0.5);
+      p.line(0, midY, p.width, midY);
+      p.noStroke();
+      for (let i = 0; i < n; i++) {
+        const v = Waves.wave(t * 28, { wave: i, range: [-amp, amp] });
+        const h = p.abs(v);
+        const y = v < 0 ? midY : midY - h;
+        p.colorMode(p.HSB, n, 100, 100);
+        p.fill(i, 65, 78);
+        p.colorMode(p.RGB, 255);
+        p.rect(i * barW + 1, y, barW - 2, h);
+        p.fill(150); p.textSize(6.5);
+        p.text(i, i * barW + barW / 2, midY + 3);
+      }
+    };
+    p.windowResized = () => p.resizeCanvas(cw('ex13'), 380);
+  }, 'ex13');
   </script>
 
 </body>
