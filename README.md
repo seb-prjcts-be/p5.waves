@@ -1,5 +1,7 @@
 # p5.waves
 
+**[Open site](https://seb-prjcts-be.github.io/p5.waves/)**
+
 Wave sampling helpers for p5.js. Always returns a number.
 
 ## Important Docs
