@@ -186,6 +186,9 @@ const cells = g.sample(t);  // cells[row * g.cols + col]
 - `09_range_0_1` — range [0, 1]
 - `10_wave_override` — wild mode
 - `11_tick_time_mode` — manual time control
+- `12_color_spectrum` — wave output as hue / saturation (HSB)
+- `13_sound` — wave output as oscillator frequency (Web Audio)
+- `14_typography` — wave output as font size, lift and opacity
 
 ---
 

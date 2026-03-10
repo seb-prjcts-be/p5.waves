@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>14 — Breathing Type | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 14 — typographic output</div>
+      <h1>Breathing Type</h1>
+      <p>Five <code>createSampler()</code> calls — one per letter — drive <strong>font size</strong> independently. A second wave controls vertical lift; a third drives opacity. Wave output as typographic property, not position.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// One sampler per character, each a different seed
+const sizeSamplers = Array.from({ length: 5 }, (_, i) =>
+  Waves.createSampler({ seed: i * 7, range: [28, 96] })
+);
+
+// In draw():
+const sz    = sizeSamplers[i].sample(i * 0.6, t); // → textSize
+const lift  = Waves.wave(i * 0.9 + t * 0.6,  { range: [-38, 38] }); // → y offset
+const alpha = Waves.wave(i * 1.1 + t * 0.35, { range: [80, 255] });  // → opacity
+
+textSize(sz);
+fill(0, 0, 0, alpha);
+text(WORD[i], x, height / 2 + lift);</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>
