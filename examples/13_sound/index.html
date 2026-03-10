@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>13 — Wave Synth | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 13 — sound output</div>
+      <h1>Wave Synth</h1>
+      <p>Three <code>createSampler()</code> calls drive Web Audio oscillator <strong>frequencies</strong>. A moving cursor reads the wave as a score — click to hear the result. No p5.sound required.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// Samplers with Hz ranges instead of pixels
+const samplers = [
+  Waves.createSampler({ wave: 'classic sine', range: [110, 330] }),
+  Waves.createSampler({ wave: 'triangle',     range: [220, 550] }),
+  Waves.createSampler({ wave: 'stepped sine', range: [330, 770] }),
+];
+
+// In draw():
+const freq = samplers[i].sample(cursor * 0.018, t);
+osc.frequency.value = freq;  // Web Audio API</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>

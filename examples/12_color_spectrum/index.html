@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12 — Chromatic Drift | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 12 — color output</div>
+      <h1>Chromatic Drift</h1>
+      <p>Wave output as <strong>hue and saturation</strong> — not position. Each row's colour is determined by two independent waves sampled at that row's coordinate. No x/y movement: the wave value <em>is</em> the colour.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>colorMode(HSB, 360, 100, 100);
+
+for (let y = 0; y &lt; height; y += 2) {
+  const hue = Waves.wave(y * 0.015, {
+    wave:  'classic sine',
+    t:     t,
+    range: [0, 360]   // → hue value
+  });
+  const sat = Waves.wave(y * 0.015, {
+    wave:  'wobble sine',
+    t:     t * 0.6,
+    range: [30, 100]  // → saturation
+  });
+  fill(hue, sat, 88);
+  rect(0, y, width, 2);
+}</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>
