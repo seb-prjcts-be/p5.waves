@@ -1,18 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>p5.waves | Tick Time Mode</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Oswald:wght@300&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-    <script src="../../p5.waves.min.js"></script>
-  </head>
-  <body>
-    <main></main>
-    <script src="sketch.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11 — Time Strata | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 11 — Time Control</div>
+      <h1>Time Strata</h1>
+      <p>Time is a plain number — no auto-advance. Mouse X scrubs a time window; 16 layers each freeze the wave at a different <code>t</code> value, showing how wave shape varies across time as stacked strata.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// Time is just a number — no automatic advancement.
+// Mouse X scrubs the time window; each layer freezes at its own t.
+
+const timeBase = map(mouseX, 0, width, 0, 8);
+
+for (let i = 0; i &lt; LAYERS; i++) {
+  const t  = timeBase + (i / LAYERS) * WAVE_WINDOW;
+  const y0 = map(i, 0, LAYERS-1, 40, height-40);
+
+  beginShape();
+  for (let x = 0; x &lt;= width; x += 3) {
+    const dy = Waves.wave(x * 0.015, {
+      wave: 'classic sine', t,
+      amplitude: 30
+    });
+    vertex(x, y0 + dy);
+  }
+  endShape();
+}</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
 </html>

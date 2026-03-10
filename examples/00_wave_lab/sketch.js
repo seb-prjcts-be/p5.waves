@@ -10,12 +10,6 @@ let gridSampler    = null;
 let gridSamplerKey = '';
 let codeOutputEl   = null;
 let copyButtonResetTimer = 0;
-let autoFormulaLastAtMs = Date.now();
-let autoSurpriseLastAtMs = Date.now();
-let prevAutoFormula = false;
-let prevAutoSurprise = false;
-let prevAutoFormulaSeconds = 0;
-let prevAutoSurpriseSeconds = 0;
 
 const ids = [
   'preview-mode', 'wave', 'seed',
@@ -23,25 +17,18 @@ const ids = [
   'range-enable', 'range-min', 'range-max',
   'wave-row', 'wave-col', 'threshold',
   'time-speed', 'frame-rate', 'step', 'show-points', 'connect-line', 'show-grid',
-  'random-formula', 'auto-formula', 'auto-formula-seconds',
-  'surprise', 'auto-surprise', 'auto-surprise-seconds',
-  'copy-code'
+  'surprise', 'copy-code'
 ];
 
 const valueIds = [
   'seed-value',
   'amplitude-value', 'frequency-value', 'phase-value', 'unpredictability-value',
   'range-min-value', 'range-max-value',
-  'threshold-value', 'time-speed-value', 'step-value',
-  'auto-formula-seconds-value', 'auto-surprise-seconds-value'
+  'threshold-value', 'time-speed-value', 'step-value'
 ];
 
 function fmt(num, digits) {
   return Number(num).toFixed(digits);
-}
-
-function isFiniteNumber(value) {
-  return typeof value === 'number' && Number.isFinite(value);
 }
 
 // ─── p5 setup / resize ───────────────────────────────────────────────────────
@@ -64,6 +51,8 @@ function setup() {
   const c = createCanvas(wrap.clientWidth, h);
   c.parent('canvas-wrap');
 
+  controls.amplitude.max = wrap.clientWidth;
+
   strokeWeight(2);
   noFill();
 }
@@ -71,6 +60,7 @@ function setup() {
 function windowResized() {
   const wrap = document.getElementById('canvas-wrap');
   resizeCanvas(wrap.clientWidth, Math.max(360, Math.min(window.innerHeight - 130, 760)));
+  controls.amplitude.max = wrap.clientWidth;
 }
 
 // ─── Populate selects ─────────────────────────────────────────────────────────
@@ -125,7 +115,6 @@ function bindControls() {
     allInputs[i].addEventListener('change', updateUiState);
   }
   controls.surprise.addEventListener('click', randomizeControls);
-  controls['random-formula'].addEventListener('click', randomizeWaveOnly);
   controls['copy-code'].addEventListener('click', copyCodeSnippet);
 }
 
@@ -177,10 +166,6 @@ function readState() {
     step:        Number(controls.step.value),
     fps:         Number(controls['frame-rate'].value),
     speed:       Number(controls['time-speed'].value),
-    autoFormula: controls['auto-formula'].checked,
-    autoFormulaSeconds: Number(controls['auto-formula-seconds'].value),
-    autoSurprise: controls['auto-surprise'].checked,
-    autoSurpriseSeconds: Number(controls['auto-surprise-seconds'].value),
     showPoints:  controls['show-points'].checked,
     connectLine: controls['connect-line'].checked,
     showGrid:    controls['show-grid'].checked
@@ -208,29 +193,6 @@ function updateValueDisplays() {
   valueTargets['threshold-value'].textContent     = fmt(controls.threshold.value, 2);
   valueTargets['time-speed-value'].textContent    = fmt(controls['time-speed'].value, 3);
   valueTargets['step-value'].textContent          = controls.step.value;
-  valueTargets['auto-formula-seconds-value'].textContent = fmt(controls['auto-formula-seconds'].value, 1);
-  valueTargets['auto-surprise-seconds-value'].textContent = fmt(controls['auto-surprise-seconds'].value, 1);
-}
-
-function syncAutoTimers(state) {
-  const now = Date.now();
-
-  if (!state.autoFormula) {
-    autoFormulaLastAtMs = now;
-  } else if (!prevAutoFormula || state.autoFormulaSeconds !== prevAutoFormulaSeconds) {
-    autoFormulaLastAtMs = now;
-  }
-
-  if (!state.autoSurprise) {
-    autoSurpriseLastAtMs = now;
-  } else if (!prevAutoSurprise || state.autoSurpriseSeconds !== prevAutoSurpriseSeconds) {
-    autoSurpriseLastAtMs = now;
-  }
-
-  prevAutoFormula = state.autoFormula;
-  prevAutoFormulaSeconds = state.autoFormulaSeconds;
-  prevAutoSurprise = state.autoSurprise;
-  prevAutoSurpriseSeconds = state.autoSurpriseSeconds;
 }
 
 function updateBadges(state) {
@@ -242,7 +204,7 @@ function updateBadges(state) {
     ' | freq: ' + state.frequency.toFixed(2) +
     ' | phase: ' + state.phase.toFixed(2);
   document.getElementById('active-normalize').textContent = state.rangeEnable
-    ? 'range: [' + state.range[0].toFixed(2) + ', ' + state.range[1].toFixed(2) + ']'
+    ? 'range: [' + state.range[0].toFixed(2) + ', ' + state.range[1].toFixed(2) + '] x amp: ' + state.amplitude
     : 'amplitude: ' + state.amplitude;
   document.getElementById('active-behavior').textContent =
     'mode: ' + state.mode + ' (' + state.unpredictability.toFixed(2) + ')';
@@ -252,14 +214,13 @@ function updateUiState() {
   enforceRanges();
   setControlDisabled('unpredictability', controls.mode.value !== 'wild');
   const rangeOn = controls['range-enable'].checked;
-  setControlDisabled('amplitude', rangeOn);
+  setControlDisabled('amplitude', false);
   setControlDisabled('range-min', !rangeOn);
   setControlDisabled('range-max', !rangeOn);
-  setControlDisabled('auto-formula-seconds', !controls['auto-formula'].checked);
-  setControlDisabled('auto-surprise-seconds', !controls['auto-surprise'].checked);
+  const isGrid = controls['preview-mode'].value === 'grid';
+  document.getElementById('grid-controls').style.display = isGrid ? '' : 'none';
   updateValueDisplays();
   const state = readState();
-  syncAutoTimers(state);
   updateBadges(state);
   updateCodeSnippet(state);
 }
@@ -292,10 +253,7 @@ function buildWaveOpts(state) {
 
 function drawWave(state) {
   const cx         = width * 0.5;
-  const rawStep    = Number(state.step);
-  const step       = Number.isFinite(rawStep) && rawStep > 0
-    ? Math.max(1, Math.floor(rawStep))
-    : 1;
+  const pointStep  = Math.max(1, state.step);
   const opts       = buildWaveOpts(state);
   const drawPoints = state.showPoints || !state.connectLine;
 
@@ -309,9 +267,9 @@ function drawWave(state) {
     fill(0);
   }
 
-  for (let y = 0; y <= height; y += step) {
-    const x = cx + Waves.wave(y, opts);
-    if (!isFiniteNumber(x) || !isFiniteNumber(y)) continue;
+  for (let y = 0; y <= height; y += pointStep) {
+    const sample = Waves.wave(y, opts);
+    const x = cx + (state.rangeEnable ? sample * state.amplitude : sample);
     if (state.connectLine) vertex(x, y);
     if (drawPoints) {
       noStroke();
@@ -326,15 +284,15 @@ function drawWave(state) {
 
 function getGridSampler(state) {
   const g   = state.grid;
-  const key = [
+  const gridCacheKey = [
     g.waveRow !== undefined ? g.waveRow : 'a',
     g.waveCol !== undefined ? g.waveCol : 'a',
     state.seed,
     g.threshold
   ].join('|');
 
-  if (gridSamplerKey !== key) {
-    gridSamplerKey = key;
+  if (gridSamplerKey !== gridCacheKey) {
+    gridSamplerKey = gridCacheKey;
     const opts = { seed: state.seed, threshold: g.threshold };
     if (g.waveRow !== undefined) opts.waveRow = g.waveRow;
     if (g.waveCol !== undefined) opts.waveCol = g.waveCol;
@@ -394,9 +352,23 @@ function codeNum(value, digits) {
 
 function buildLineSnippet(state) {
   const waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
-  const rangeStr = state.rangeEnable
+  const waveTail = state.rangeEnable
     ? ',\n      range: [' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) + ']'
     : ',\n      amplitude: ' + codeNum(state.amplitude, 0);
+  const waveCall =
+    'Waves.wave(y, {\n' +
+    '      wave:             \'' + waveName + '\',\n' +
+    '      t:                t,\n' +
+    '      frequency:        ' + codeNum(state.frequency, 4) + ',\n' +
+    '      phase:            ' + codeNum(state.phase, 4) + ',\n' +
+    '      mode:             \'' + state.mode + '\',\n' +
+    '      unpredictability: ' + codeNum(state.unpredictability, 4) +
+    waveTail + '\n' +
+    '    })';
+  const xLines = state.rangeEnable
+    ? '    const sample = ' + waveCall + ';\n' +
+      '    const x = width * 0.5 + sample * ' + codeNum(state.amplitude, 0) + ';\n'
+    : '    const x = width * 0.5 + ' + waveCall + ';\n';
   return (
     '// p5.waves v2 \u2014 line\n' +
     'let t = 0;\n\n' +
@@ -409,16 +381,8 @@ function buildLineSnippet(state) {
     '  beginShape();\n' +
     '  stroke(0);\n' +
     '  for (let y = 0; y <= height; y += ' + Math.max(1, state.step) + ') {\n' +
-    '    const x = width * 0.5 + Waves.wave(y, {\n' +
-    '      wave:             \'' + waveName + '\',\n' +
-    '      t:                t,\n' +
-    '      frequency:        ' + codeNum(state.frequency, 4) + ',\n' +
-    '      phase:            ' + codeNum(state.phase, 4) + ',\n' +
-    '      mode:             \'' + state.mode + '\',\n' +
-    '      unpredictability: ' + codeNum(state.unpredictability, 4) +
-    rangeStr + '\n' +
-    '    });\n' +
-    '    if (Number.isFinite(x) && Number.isFinite(y)) vertex(x, y);\n' +
+    xLines +
+    '    vertex(x, y);\n' +
     '  }\n' +
     '  endShape();\n' +
     '  t += ' + codeNum(state.speed, 4) + ';\n' +
@@ -542,42 +506,10 @@ function randomizeControls() {
   updateUiState();
 }
 
-function randomizeWaveOnly() {
-  const count = Waves.count || 0;
-  if (count <= 1) return;
-
-  const current = Number(controls.wave.value) || 0;
-  let next = current;
-  while (next === current) {
-    next = Math.floor(Math.random() * count);
-  }
-  controls.wave.value = String(next);
-  updateUiState();
-}
-
-function processAutoRandom(state, nowMs) {
-  let changed = false;
-
-  if (state.autoFormula && nowMs - autoFormulaLastAtMs >= state.autoFormulaSeconds * 1000) {
-    randomizeWaveOnly();
-    autoFormulaLastAtMs = nowMs;
-    changed = true;
-  }
-
-  if (state.autoSurprise && nowMs - autoSurpriseLastAtMs >= state.autoSurpriseSeconds * 1000) {
-    randomizeControls();
-    autoSurpriseLastAtMs = nowMs;
-    changed = true;
-  }
-
-  return changed ? readState() : state;
-}
-
 // ─── Main draw loop ───────────────────────────────────────────────────────────
 
 function draw() {
-  let state = readState();
-  state = processAutoRandom(state, Date.now());
+  const state = readState();
   if (state.fps !== currentFps) {
     currentFps = state.fps;
     frameRate(currentFps);

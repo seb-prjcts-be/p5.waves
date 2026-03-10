@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>09 — Luminance Field | p5.waves examples</title>
+  <title>06 — Swarm Flows | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -21,27 +21,25 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 09 — Output Shaping</div>
-      <h1>Luminance Field</h1>
-      <p>Two wave layers (different speeds and directions) are summed and their average drives fill brightness via <code>range: [0, 1]</code>. No extra mapping needed — the output is used directly as a greyscale value.</p>
+      <div class="demo-number">Example 06 — createSampler</div>
+      <h1>Swarm Flows</h1>
+      <p>Four <code>createSampler()</code> calls — each a different wave formula — steer 120 particles through a shared canvas. Particles wrap at edges; each sampler produces its own distinct flow pattern.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// range: [0, 1] → use output directly as brightness (0–220).
-// Two wave layers at different speeds produce moving interference.
+        <pre><code>// Four samplers with distinct wave shapes steer 120 particles.
+// Each particle uses its assigned sampler for x and y velocity.
 
-const v1 = Waves.wave(gx * 0.12 + gy * 0.07, {
-  wave: 'smooth step', t,
-  range: [0, 1]
-});
-const v2 = Waves.wave(gy * 0.1 - gx * 0.05, {
-  wave: 'classic sine', t: t * 0.7,
-  range: [0, 1]
-});
+samplers = ['classic sine','wobble','pulse','plasma']
+  .map((w, i) =&gt; Waves.createSampler({
+    wave: w, seed: i * 11, range: [-1.8, 1.8]
+  }));
 
-fill((v1 + v2) / 2 * 220);
-rect(gx * cell, gy * cell, cell - 0.5, cell - 0.5);</code></pre>
+// In draw():
+p.x += samplers[p.s].sample(p.y * 0.009, t) * 2.2;
+p.y += samplers[(p.s + 2) % 4].sample(p.x * 0.009, t) * 2.2;
+// wrap edges…</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

@@ -1,35 +1,40 @@
-// 05 — WEBGL (two samplers for x and z offsets)
-// In v2, createSampler() always returns a number.
-// Use two samplers with different seeds to get independent x and z.
+// 05 — Terrain Mesh (WEBGL)
+// createGrid() generates a Float32Array height map each frame.
+// Drawn as TRIANGLE_STRIP rows — a full animated 3D terrain mesh.
 
-const STEP = 30;
-const SIZE = 8;
-let samplerX, samplerZ;
+const COLS = 28;
+const ROWS = 28;
+let grid;
 
 function setup() {
-  createCanvas(600, 600, WEBGL);
-  noStroke();
-  fill(0);
+  createCanvas(460, 460, WEBGL).parent('sketch-container');
+  stroke(0);
+  strokeWeight(0.5);
+  noFill();
 
-  samplerX = Waves.createSampler({ seed: 0, wave: 'classic sine', range: [-80, 80] });
-  samplerZ = Waves.createSampler({ seed: 1, range: [-80, 80] });
+  grid = Waves.createGrid(COLS, ROWS, {
+    range: [-55, 55],
+    speed: 0.5
+  });
 }
 
 function draw() {
   background(245);
-  rotateX(-0.5);
-  rotateY(frameCount * 0.01);
+  rotateX(-0.65);
+  rotateY(frameCount * 0.006);
 
-  const t = frameCount * 0.01;
+  const data = grid.sample(frameCount * 0.016);
+  const size = 300 / Math.max(COLS, ROWS);
 
-  for (let y = -200; y <= 200; y += STEP) {
-    for (let x = -200; x <= 200; x += STEP) {
-      const ox = samplerX.sample(y, t);
-      const oz = samplerZ.sample(y, t);
-      push();
-      translate(x + ox, 0, y + oz);
-      box(SIZE);
-      pop();
+  for (let r = 0; r < ROWS - 1; r++) {
+    beginShape(TRIANGLE_STRIP);
+    for (let c = 0; c < COLS; c++) {
+      const x  = (c - COLS / 2) * size;
+      const z0 = (r - ROWS / 2) * size;
+      const z1 = z0 + size;
+      vertex(x, -data[r * COLS + c],         z0);
+      vertex(x, -data[(r + 1) * COLS + c],   z1);
     }
+    endShape();
   }
 }

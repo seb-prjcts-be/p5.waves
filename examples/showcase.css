@@ -1,0 +1,222 @@
+/* ============================================================
+   p5.waves Examples – Showcase design system shared styles
+   Nav, footer, body layout – included by all example pages
+   Load AFTER the example's own style.css so these win.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap');
+
+/* ── Body layout ── */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 56px;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: #f5f5f5;
+  color: #111;
+}
+
+/*
+  Canvases appended directly to body by p5 global mode
+  get order:1 so they appear before the footer (order:2),
+  regardless of DOM insertion order.
+*/
+body > canvas {
+  display: block;
+  order: 1;
+  margin: 2rem auto;
+}
+
+/* ── NAV ── */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 2.5rem;
+  height: 56px;
+  background: rgba(245, 245, 245, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+.nav-logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #111;
+  text-decoration: none;
+}
+
+.nav-logo span {
+  color: #000;
+  border-bottom: 2px solid #000;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: #666;
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 400;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #000;
+}
+
+/* ── FOOTER ── */
+footer {
+  order: 2;
+  text-align: center;
+  padding: 3rem 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  color: #666;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.9;
+  margin-top: auto;
+}
+
+footer a {
+  color: #111;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+footer a:hover { color: #000; }
+
+.footer-sub {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+}
+
+/* ============================================================
+   Demo two-column layout — used by examples 01–11
+   ============================================================ */
+
+.demo-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+.demo-header {
+  margin-bottom: 2rem;
+}
+
+.demo-number {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 0.3rem;
+}
+
+.demo-header h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.demo-header p {
+  color: #555;
+  font-size: 0.9rem;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+/* Two-column layout */
+.demo-layout {
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* ── Code panel ── */
+.demo-code {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #fff;
+}
+
+.code-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #777;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.demo-code pre {
+  margin: 0;
+  padding: 1.25rem;
+  overflow-x: auto;
+}
+
+.demo-code code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  line-height: 1.75;
+  color: #111;
+  white-space: pre;
+}
+
+/* ── Canvas panel ── */
+.demo-canvas {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #f5f5f5;
+  width: 460px;
+  height: 460px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-canvas canvas {
+  display: block !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 1080px) {
+  .demo-layout {
+    grid-template-columns: 1fr;
+  }
+  .demo-canvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+}
