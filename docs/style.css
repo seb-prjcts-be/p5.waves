@@ -716,6 +716,25 @@ section[id] {
 }
 .ex-full-link:hover { color: #bbb; }
 
+.ex-editor-btn {
+  display: block;
+  width: 100%;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #555;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-top: 1px solid #222;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.ex-editor-btn:hover { color: #bbb; }
+.ex-editor-btn.copied { color: #6c9; }
+
 .ex-canvas { overflow: hidden; background: var(--bg); }
 .ex-canvas canvas { display: block !important; width: 100% !important; }
 .section-dark .ex-canvas { background: var(--bg2); }
