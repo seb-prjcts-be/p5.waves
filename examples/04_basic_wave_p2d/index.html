@@ -1,20 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>p5.waves | Basic Wave (P2D)</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Oswald:wght@300&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-    <script src="../../p5.waves.min.js"></script>
-  </head>
-  <body>
-    <main></main>
-    <script src="sketch.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04 — Contour Map | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 04 — P2D Renderer</div>
+      <h1>Contour Map</h1>
+      <p>30 horizontal wave lines stacked with a progressive phase offset per row. The overlapping contours create a topographic map illusion. Explicit <code>P2D</code> renderer — confirms <code>Waves.wave()</code> works renderer-agnostic.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// P2D renderer — Waves.wave() is renderer-agnostic.
+// 30 contour lines, phase offset i * 0.24 staggers the rows.
+
+createCanvas(460, 460, P2D).parent('sketch-container');
+
+// In draw():
+for (let i = 0; i &lt; LINES; i++) {
+  const y0    = map(i, 0, LINES-1, 30, height-30);
+  const phase = i * 0.24;
+
+  beginShape();
+  for (let x = 0; x &lt;= width; x += 4) {
+    const dy = Waves.wave(x * 0.011, {
+      wave: 'wobble', t: t + phase, amplitude: 13
+    });
+    vertex(x, y0 + dy);
+  }
+  endShape();
+}</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
 </html>
-
-

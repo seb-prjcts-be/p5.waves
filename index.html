@@ -1,86 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>p5.waves Examples</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap" rel="stylesheet" />
-    <style>
-      :root {
-        --bg: #f4f4f4;
-        --fg: #111;
-        --card: #fff;
-        --line: #ddd;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        background: var(--bg);
-        color: var(--fg);
-        font-family: "Segoe UI", Arial, sans-serif;
-      }
-      main {
-        max-width: 880px;
-        margin: 0 auto;
-        padding: 24px 16px 40px;
-      }
-      h1 {
-        margin: 0 0 8px;
-        font-size: 2rem;
-        font-family: "Oswald", sans-serif;
-        font-weight: 300;
-      }
-      p {
-        margin: 0 0 18px;
-      }
-      ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        gap: 10px;
-      }
-      a {
-        display: block;
-        text-decoration: none;
-        color: inherit;
-        border: 1px solid var(--line);
-        background: var(--card);
-        border-radius: 10px;
-        padding: 10px 12px;
-      }
-      a:hover {
-        border-color: #999;
-      }
-      code {
-        font-family: "IBM Plex Mono", "Courier New", monospace;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>p5.waves Examples</h1>
-      <p>GitHub Pages overview for the example sketches. View the <a href="https://github.com/seb-prjcts-be/p5.waves" style="display:inline;border:none;padding:0;border-radius:0;background:none;text-decoration:underline">repository on GitHub</a>.</p>
-      <ul>
-        <li><a href="examples/00_wave_lab/">00 - Wave Lab</a></li>
-        <li><a href="examples/01_basic_wave/">01 - Basic Wave</a></li>
-        <li><a href="examples/02_instance_mode/">02 - Instance Mode</a></li>
-        <li><a href="examples/03_basic_wave_instance/">03 - Basic Wave Instance</a></li>
-        <li><a href="examples/04_basic_wave_p2d/">04 - Basic Wave P2D</a></li>
-        <li><a href="examples/05_basic_wave_webgl/">05 - Basic Wave WEBGL</a></li>
-        <li><a href="examples/06_create_sampler/">06 - createSampler</a></li>
-        <li><a href="examples/07_select_by_index/">07 - Select by Index</a></li>
-        <li><a href="examples/08_triangle_domain/">08 - Triangle Domain</a></li>
-        <li><a href="examples/09_range_0_1/">09 - Range 0..1</a></li>
-        <li><a href="examples/10_wave_override/">10 - Wave Override</a></li>
-        <li><a href="examples/11_tick_time_mode/">11 - Tick Time Mode</a></li>
-      </ul>
-      <p style="margin-top: 18px">
-        Library files are available at <code>p5.waves.js</code> and <code>p5.waves.min.js</code>.
-      </p>
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.waves – Ultimate Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="docs/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.0.0/p5.waves.js"></script>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo">p5.<span>waves</span></div>
+    <ul class="nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#gallery">All Waves</a></li>
+      <li><a href="#interactive">Interactive</a></li>
+      <li><a href="#grid">Grid</a></li>
+      <li><a href="#wild">Wild Mode</a></li>
+      <li><a href="#terrain">3D Terrain</a></li>
+      <li><a href="docs/examples.html">Examples</a></li>
+      <li><a href="docs/guide.html">Guide</a></li>
+      <li><a href="docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div id="hero-canvas"></div>
+    <div class="hero-overlay">
+      <div class="hero-text">
+        <div class="hero-badge">p5.js addon library</div>
+        <h1>p5.<span class="accent">waves</span></h1>
+        <p class="hero-sub">34 wave formulas. One unified API.<br>Deterministic, animated, generative.</p>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">34</span><span class="stat-label">Wave Types</span></div>
+          <div class="stat"><span class="stat-num">3</span><span class="stat-label">Core APIs</span></div>
+          <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Combinations</span></div>
+        </div>
+        <a href="#gallery" class="cta-btn">Explore Waves ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAVE GALLERY -->
+  <section id="gallery" class="section">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.wave()</div>
+      <h2>All <span class="accent">34</span> Wave Formulas</h2>
+      <p class="section-desc">Every wave type rendered live. Hover to highlight. Each uses a unique formula under the hood.</p>
+    </div>
+    <div id="gallery-canvas"></div>
+  </section>
+
+  <!-- INTERACTIVE -->
+  <section id="interactive" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.createSampler()</div>
+      <h2>Interactive <span class="accent">Wave Lab</span></h2>
+      <p class="section-desc">Tweak every parameter in real time.</p>
+    </div>
+    <div class="interactive-layout">
+      <div class="controls-panel">
+        <div class="control-group">
+          <label>Wave Type</label>
+          <select id="ctrl-wave"><!-- populated by JS --></select>
+        </div>
+        <div class="control-group">
+          <label>Amplitude <span id="val-amplitude">80</span></label>
+          <input type="range" id="ctrl-amplitude" min="10" max="200" value="80">
+        </div>
+        <div class="control-group">
+          <label>Frequency <span id="val-frequency">0.020</span></label>
+          <input type="range" id="ctrl-frequency" min="1" max="100" value="20">
+        </div>
+        <div class="control-group">
+          <label>Speed <span id="val-speed">0.010</span></label>
+          <input type="range" id="ctrl-speed" min="1" max="100" value="10">
+        </div>
+        <div class="control-group">
+          <label>Phase <span id="val-phase">0.00</span></label>
+          <input type="range" id="ctrl-phase" min="0" max="628" value="0">
+        </div>
+        <div class="control-group">
+          <label>Line Count <span id="val-lines">5</span></label>
+          <input type="range" id="ctrl-lines" min="1" max="12" value="5">
+        </div>
+        <div class="control-group checkbox-group">
+          <label class="check-label"><input type="checkbox" id="ctrl-fill"> Fill waves</label>
+          <label class="check-label"><input type="checkbox" id="ctrl-dots"> Show dots</label>
+        </div>
+        <div class="code-preview"><code id="code-text"></code></div>
+
+      </div>
+      <div id="interactive-canvas"></div>
+    </div>
+  </section>
+
+  <!-- GRID -->
+  <section id="grid" class="section">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.createGrid()</div>
+      <h2>Wave <span class="accent">Grid</span> Patterns</h2>
+      <p class="section-desc">createGrid() combines row and column wave formulas. Binary threshold mode returns Uint8Array of 0/1 values.</p>
+    </div>
+    <div class="grid-layout">
+      <div class="grid-card">
+        <h3>Binary Grid <small>(threshold → Uint8Array)</small></h3>
+        <div id="grid-binary-canvas"></div>
+        <div class="grid-controls">
+          <label>Row wave:
+            <select id="grid-row-wave">
+              <option value="classic sine">classic sine</option>
+              <option value="triangle">triangle</option>
+              <option value="square">square</option>
+              <option value="stepped sine">stepped sine</option>
+              <option value="smooth solid sine" selected>smooth solid sine</option>
+              <option value="mountain peaks">mountain peaks</option>
+              <option value="bumpy sine">bumpy sine</option>
+              <option value="saw up">saw up</option>
+              <option value="noise">noise</option>
+              <option value="grow random">grow random</option>
+              <option value="fuzzy peak sine">fuzzy peak sine</option>
+              <option value="fuzzy pulse">fuzzy pulse</option>
+            </select>
+          </label>
+          <label>Col wave:
+            <select id="grid-col-wave">
+              <option value="classic sine">classic sine</option>
+              <option value="triangle">triangle</option>
+              <option value="ramp up sine" selected>ramp up sine</option>
+              <option value="square">square</option>
+              <option value="stepped sine">stepped sine</option>
+              <option value="mountain peaks">mountain peaks</option>
+              <option value="bumpy sine">bumpy sine</option>
+              <option value="saw up">saw up</option>
+              <option value="noise">noise</option>
+              <option value="grow random">grow random</option>
+              <option value="fuzzy peak sine">fuzzy peak sine</option>
+              <option value="fuzzy pulse">fuzzy pulse</option>
+            </select>
+          </label>
+          <label>Speed: <input type="range" id="grid-speed" min="1" max="100" value="30" style="width:90px"></label>
+          <label>Threshold: <input type="range" id="grid-threshold" min="-50" max="50" value="0" style="width:90px"></label>
+        </div>
+        <div class="code-preview"><code id="grid-binary-code"></code></div>
+      </div>
+      <div class="grid-card">
+        <h3>Continuous Grid <small>(range → Float32Array)</small></h3>
+        <div id="grid-float-canvas"></div>
+        <div class="grid-controls">
+          <label>Seed: <input type="range" id="grid-seed-a" min="0" max="20" value="0" style="width:90px"></label>
+          <label>Speed: <input type="range" id="grid-float-speed" min="1" max="20" value="3" style="width:90px"></label>
+          <label>Style:
+            <select id="grid-style">
+              <option value="rect">Rechthoeken</option>
+              <option value="circle">Cirkels</option>
+              <option value="bars">Balken</option>
+            </select>
+          </label>
+        </div>
+        <div class="code-preview"><code id="grid-float-code"></code></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WILD MODE -->
+  <section id="wild" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">option: mode: 'wild'</div>
+      <h2>Wild <span class="accent">Mode</span></h2>
+      <p class="section-desc">Set mode: 'wild' and use unpredictability (0–1) to inject position-varying noise into frequency, phase, and amplitude. Left = stable, right = chaos.</p>
+    </div>
+    <div class="wild-layout">
+      <div id="wild-canvas"></div>
+      <div class="wild-controls">
+        <label>Wave:
+          <select id="wild-wave">
+            <option value="pulse">pulse</option>
+            <option value="classic sine" selected>classic sine</option>
+            <option value="triangle">triangle</option>
+            <option value="mountain peaks">mountain peaks</option>
+            <option value="stepped sine">stepped sine</option>
+            <option value="batman">batman</option>
+            <option value="noise">noise</option>
+            <option value="grow random">grow random</option>
+            <option value="fuzzy peak sine">fuzzy peak sine</option>
+            <option value="fuzzy pulse">fuzzy pulse</option>
+          </select>
+        </label>
+        <label>Speed: <input type="range" id="wild-speed" min="1" max="50" value="8" style="width:120px"></label>
+        <label>Amplitude: <input type="range" id="wild-amplitude" min="10" max="200" value="100" style="width:120px"></label>
+        <label>Frequency: <input type="range" id="wild-frequency" min="1" max="80" value="10" style="width:120px"></label>
+        <label>Wildness: <input type="range" id="wild-wildness" min="0" max="100" value="95" style="width:120px"></label>
+      </div>
+      <div class="code-preview wild-code-preview"><code id="wild-code"></code></div>
+    </div>
+  </section>
+
+  <!-- 3D TERRAIN -->
+  <section id="terrain" class="section">
+    <div class="section-header">
+      <div class="section-tag">API: createSampler() × 2 + WEBGL</div>
+      <h2>3D Wave <span class="accent">Terrain</span></h2>
+      <p class="section-desc">Two independent samplers (different seeds) drive X and Z motion separately. Drag to rotate.</p>
+    </div>
+    <div class="terrain-layout">
+      <div id="terrain-canvas"></div>
+      <div class="terrain-controls">
+        <div class="control-group">
+          <label>X Wave</label>
+          <select id="terrain-wave-x">
+            <option value="classic sine">classic sine</option>
+            <option value="mountain peaks">mountain peaks</option>
+            <option value="triangle">triangle</option>
+            <option value="bumpy sine">bumpy sine</option>
+            <option value="stepped sine">stepped sine</option>
+            <option value="wobble sine">wobble sine</option>
+            <option value="noise">noise</option>
+            <option value="grow random" selected>grow random</option>
+            <option value="fuzzy peak sine">fuzzy peak sine</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Z Wave</label>
+          <select id="terrain-wave-z">
+            <option value="triangle">triangle</option>
+            <option value="classic sine">classic sine</option>
+            <option value="mountain peaks">mountain peaks</option>
+            <option value="bumpy sine" selected>bumpy sine</option>
+            <option value="stepped sine">stepped sine</option>
+            <option value="wobble sine">wobble sine</option>
+            <option value="noise">noise</option>
+            <option value="grow random">grow random</option>
+            <option value="fuzzy peak sine">fuzzy peak sine</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Height <span id="val-height">100</span></label>
+          <input type="range" id="terrain-height" min="20" max="300" value="100">
+        </div>
+        <div class="control-group">
+          <label>Speed <span id="val-terrain-speed">0.023</span></label>
+          <input type="range" id="terrain-speed" min="1" max="50" value="23">
+        </div>
+        <div class="control-group">
+          <label>Display</label>
+          <select id="terrain-color">
+            <option value="height">Dark peaks</option>
+            <option value="inverse">Light peaks</option>
+            <option value="contour">Contour lines</option>
+            <option value="fog">Depth fog</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="check-label"><input type="checkbox" id="terrain-wireframe" checked> Wireframe</label>
+          <label class="check-label"><input type="checkbox" id="terrain-solid"> Solid</label>
+        </div>
+        <div class="code-preview terrain-code-preview"><code id="terrain-code"></code></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
+    <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode · 3D Terrain · Browser Presets</p>
+  </footer>
+
+  <script src="docs/sketch.js"></script>
+</body>
 </html>

@@ -1,20 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>p5.waves | Per-call Override</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Oswald:wght@300&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
-    <script src="../../p5.waves.min.js"></script>
-  </head>
-  <body>
-    <main></main>
-    <script src="sketch.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 — Wild Storm | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 10 — Wild Mode</div>
+      <h1>Wild Storm</h1>
+      <p>The same wave formula runs twice — left half in default smooth mode, right half with <code>mode: 'wild'</code> and <code>unpredictability: 0.65</code>. The contrast shows exactly what wild mode adds to the signal.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// Same wave, same time — mode:'wild' injects structured noise.
+// Left half: smooth. Right half: wild + high unpredictability.
+
+const xs = Waves.wave(y * 0.014, {
+  wave: 'plasma', t,
+  range: [10, width / 2 - 10]        // smooth
+});
+
+const xw = Waves.wave(y * 0.014, {
+  wave: 'plasma', t,
+  mode: 'wild',
+  unpredictability: 0.65,             // wild
+  range: [width / 2 + 10, width - 10]
+});</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
 </html>
-
-

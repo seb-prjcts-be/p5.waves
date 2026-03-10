@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About – p5.waves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .about-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+    .about-wrap h1 { font-family: 'Oswald', sans-serif; font-size: 2.8rem; margin-bottom: 0.4rem; }
+    .about-wrap h2 { font-family: 'Oswald', sans-serif; font-size: 1.4rem; margin: 2.5rem 0 0.6rem; text-transform: uppercase; letter-spacing: .05em; }
+    .about-wrap p  { line-height: 1.7; margin-bottom: 0.8rem; color: var(--text-secondary, #555); }
+    .about-wrap a  { color: #000; text-decoration: underline; }
+    .about-wrap a:hover { color: #555; }
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.2rem;
+      margin: 1.5rem 0;
+    }
+    .highlight-card {
+      border: 1px solid #e0e0e0;
+      padding: 1.2rem 1.4rem;
+      background: #fafafa;
+    }
+    .highlight-card .card-tag {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 0.4rem;
+    }
+    .highlight-card strong {
+      display: block;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .highlight-card p { margin: 0; font-size: 0.88rem; }
+    .api-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.8rem 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .api-list li {
+      border-left: 3px solid #000;
+      padding: 0.5rem 1rem;
+      background: #f5f5f5;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+    }
+    .api-list li span {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.2rem;
+    }
+    .credits-block {
+      border-top: 1px solid #e0e0e0;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+    }
+    .credits-block p { font-size: 0.85rem; color: #888; }
+    .credits-block a { color: #555; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo">p5.<span>waves</span></div>
+    <ul class="nav-links">
+      <li><a href="../index.html">Showcase</a></li>
+      <li><a href="examples.html">Examples</a></li>
+      <li><a href="guide.html">Guide</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="about-wrap">
+
+    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v2.0.0</div>
+    <h1>p5.<span class="accent">waves</span></h1>
+    <p style="font-size:1.1rem; color:#333;">
+      Wave sampling helpers for p5.js. <strong>Always returns a number.</strong><br>
+      Think of <code>noise(y)</code> — but with 34 curated wave formulas you can freely combine.
+    </p>
+    <p>
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">→ View the library on GitHub</a>
+    </p>
+
+    <h2>What this library does</h2>
+    <p>
+      p5.waves gives you a curated list of <strong>34 wave formulas</strong> you can sample with a single number input.
+      Each formula is a small math expression that takes <code>x</code>. You pass your position (<code>y</code>)
+      and get a number back — ready to use as an offset, color value, size, or anything else.
+    </p>
+
+    <div class="highlight-grid">
+      <div class="highlight-card">
+        <div class="card-tag">Core</div>
+        <strong>34 wave formulas</strong>
+        <p>From classic sine and triangle to random noise, fuzzy peaks and chaotic tangent — each with a name and index.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="card-tag">Animation</div>
+        <strong>Time parameter <code>t</code></strong>
+        <p>Pass <code>t: frameCount * 0.01</code> and every wave animates smoothly — no extra code needed.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="card-tag">Output</div>
+        <strong>Range normalisation</strong>
+        <p>With <code>range: [-80, 80]</code> the output maps automatically to your coordinate space.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="card-tag">Chaos</div>
+        <strong>Wild Mode</strong>
+        <p>Set <code>mode: 'wild'</code> and control how chaotically the wave deviates with <code>unpredictability</code> (0–1).</p>
+      </div>
+      <div class="highlight-card">
+        <div class="card-tag">2D</div>
+        <strong>createGrid()</strong>
+        <p>Generates a full grid in one call — as Float32Array (range) or Uint8Array (binary via threshold).</p>
+      </div>
+      <div class="highlight-card">
+        <div class="card-tag">Reusable</div>
+        <strong>createSampler()</strong>
+        <p>Configure once, sample hundreds of times. Two samplers with different seeds give independent axes — no correlation.</p>
+      </div>
+    </div>
+
+    <h2>Core API</h2>
+    <ul class="api-list">
+      <li>
+        Waves.wave(y, options)
+        <span>Single-shot sampling — returns one number. Second param: number (seed), string (name), or options object.</span>
+      </li>
+      <li>
+        Waves.createSampler(options) → { sample(y, t) }
+        <span>Reusable sampler. Configuration is resolved once; ideal for loops and grids.</span>
+      </li>
+      <li>
+        Waves.createGrid(cols, rows, options) → { sample(t) }
+        <span>Returns Float32Array or Uint8Array for a full grid. Combines two waves (row + col direction).</span>
+      </li>
+      <li>
+        Waves.list() / Waves.count / Waves.data
+        <span>Discovery — inspect all 34 formulas with name, index and expression.</span>
+      </li>
+    </ul>
+
+    <h2>Installation</h2>
+    <p>Via CDN (script tag, load after p5.js):</p>
+    <div class="code-preview">
+      <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"&gt;&lt;/script&gt;<br>
+&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.0.0/p5.waves.js"&gt;&lt;/script&gt;</code>
+    </div>
+
+    <div class="credits-block">
+      <h2 style="margin-top:0">Makers &amp; Contributors</h2>
+      <p>Maker:</p>
+      <p>
+        <strong>Sebastien Vanblaere</strong> — <a href="https://prjcts.be" target="_blank">prjcts.be</a>
+      </p>
+      <p>Contributors (wave formula dataset):</p>
+      <p>
+        <strong>tw@GenerativePunk</strong> — original dataset contributor<br>
+        <strong>gh@ffd8</strong> — original dataset contributor
+      </p>
+      <p>
+        Reference for rectangular/pulse formulas:<br>
+        <a href="https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0" target="_blank">titanwolf.org – pulse/rectangular wave formulas</a>
+      </p>
+      <p>
+        Reference for triangle formula:<br>
+        <a href="https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg" target="_blank">p5.js editor – jeremydouglass triangle sketch</a>
+      </p>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
+    <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode · 3D Terrain · Browser Presets</p>
+  </footer>
+
+</body>
+</html>
