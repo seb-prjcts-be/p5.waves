@@ -704,17 +704,16 @@ function draw() {
   document.querySelectorAll('.ex-code-wrap').forEach(wrap => {
     const btn = document.createElement('button');
     btn.className = 'ex-editor-btn';
-    btn.textContent = '▷ open in p5 editor';
+    btn.textContent = '⎘ copy code';
     btn.addEventListener('click', () => {
       const code = wrap.querySelector('.ex-code').textContent;
       navigator.clipboard.writeText(code).catch(() => {});
-      btn.textContent = '✓ copied — paste in editor';
+      btn.textContent = '✓ copied';
       btn.classList.add('copied');
       setTimeout(() => {
-        btn.textContent = '▷ open in p5 editor';
+        btn.textContent = '⎘ copy code';
         btn.classList.remove('copied');
       }, 2500);
-      window.open('https://editor.p5js.org/', '_blank');
     });
     const fullLink = wrap.querySelector('.ex-full-link');
     if (fullLink) wrap.insertBefore(btn, fullLink);
