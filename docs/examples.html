@@ -404,7 +404,7 @@ function draw() {
     <div class="section-header">
       <div class="section-tag">feature: t is just a number</div>
       <h2>Time is a <span class="accent">number</span></h2>
-      <p class="section-desc">There is no built-in clock. Pass any number as <code>t</code> — move the mouse to scrub through time. Freeze it, rewind it, slow it down for frame captures.</p>
+      <p class="section-desc">There is no built-in clock. Pass any number as <code>t</code> — move the <strong>mouse</strong> to scrub through time. Freeze it, rewind it, slow it down for frame captures.</p>
     </div>
     <div class="ex-demo">
       <div class="ex-code-wrap">
@@ -422,7 +422,7 @@ function draw() {
   background(238);
 
   // t from mouseX — no auto-advance
-  const tBase = map(mouseX, 0, width, 0, 8);
+  const tBase = map(mouseX, 0, width, 0, 24);
 
   for (let i = 0; i &lt; LAYERS; i++) {
     // Each layer gets its own slice of time
@@ -885,7 +885,7 @@ function draw() {
     };
     p.draw = () => {
       p.background(238);
-      const tBase = p.map(p.mouseX, 0, p.width, 0, 8);
+      const tBase = p.map(p.mouseX, 0, p.width, 0, 24);
       for (let i = 0; i < LAYERS; i++) {
         const t  = tBase + (i / LAYERS) * 3;
         const y0 = p.map(i, 0, LAYERS-1, 30, p.height-30);
