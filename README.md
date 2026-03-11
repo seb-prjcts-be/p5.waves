@@ -203,3 +203,5 @@ Semantic versioning. See [HISTORY.md](HISTORY.md) for changelog and v1 migration
 ## Credits
 
 - `tw@GenerativePunk`, `gh@ffd8` — wave formula dataset
+
+Developed by Sebastien Vanblaere with support from AI tools during ideation, drafting, and testing.
