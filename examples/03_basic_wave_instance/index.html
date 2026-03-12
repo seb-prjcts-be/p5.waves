@@ -32,7 +32,7 @@
 // Use it directly as a scale — no extra map() call needed.
 
 const val = p.waves(gx * 0.22 + gy * 0.15, {
-  wave:  'smooth step',
+  wave:  'smooth solid sine',
   t:     t + gx * 0.04 + gy * 0.06,
   range: [0, 1]    // fraction, not pixels
 });

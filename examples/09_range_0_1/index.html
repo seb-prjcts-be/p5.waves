@@ -32,7 +32,7 @@
 // Two wave layers at different speeds produce moving interference.
 
 const v1 = Waves.wave(gx * 0.12 + gy * 0.07, {
-  wave: 'smooth step', t,
+  wave: 'smooth solid sine', t,
   range: [0, 1]
 });
 const v2 = Waves.wave(gy * 0.1 - gx * 0.05, {

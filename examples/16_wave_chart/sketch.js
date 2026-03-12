@@ -23,21 +23,19 @@ function draw() {
   line(0, midY, width, midY);
   noStroke();
 
+  colorMode(HSB, n, 100, 100);
   for (let i = 0; i < n; i++) {
     const v = Waves.wave(t * 28, { wave: i, range: [-amp, amp] });
     const h = abs(v);
     const y = v < 0 ? midY : midY - h;
 
-    // Hue cycles across all 34 bars
-    colorMode(HSB, n, 100, 100);
     fill(i, 65, 78);
-    colorMode(RGB, 255);
-
     rect(i * barW + 1, y, barW - 2, h);
 
     // Index label below baseline
-    fill(150);
+    fill(0, 0, 59);
     textSize(7);
     text(i, i * barW + barW / 2, midY + 3);
   }
+  colorMode(RGB, 255);
 }
