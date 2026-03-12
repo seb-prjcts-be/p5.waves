@@ -12,14 +12,11 @@ function draw() {
   const t = frameCount * 0.014;
 
   for (let y = 0; y < height; y += 7) {
-    [
-      { mode: 'stable', range: [10, width / 2 - 10] },
-      { mode: 'wild',   range: [width / 2 + 10, width - 10] }
-    ].forEach(({ mode, range }) => {
-      const x = Waves.wave(y * 0.014, { wave: 'mountain peaks', t, mode, unpredictability: 0.65, range });
-      fill(0, 0, 0, 180);
-      circle(x, y, 5);
-    });
+    const xs = Waves.wave(y * 0.014, { wave: 'mountain peaks', t, range: [10, width / 2 - 10] });
+    const xw = Waves.wave(y * 0.014, { wave: 'mountain peaks', t, mode: 'wild', unpredictability: 0.65, range: [width / 2 + 10, width - 10] });
+    fill(0, 0, 0, 180);
+    circle(xs, y, 5);
+    circle(xw, y, 5);
   }
 
   // centre divider

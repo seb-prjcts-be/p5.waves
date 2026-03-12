@@ -2,9 +2,12 @@
 // Four createSampler() calls, each a different wave, steer 120 particles.
 // Particles wrap at canvas edges, leaving soft trails.
 
-const samplers = ['classic sine', 'wobble sine', 'pulse', 'meta sine'].map((w, i) =>
-  Waves.createSampler({ wave: w, seed: i * 11, range: [-1.8, 1.8] })
-);
+const samplers = [
+  Waves.createSampler({ wave: 'classic sine', seed:  0, range: [-1.8, 1.8] }),
+  Waves.createSampler({ wave: 'wobble sine',  seed: 11, range: [-1.8, 1.8] }),
+  Waves.createSampler({ wave: 'pulse',        seed: 22, range: [-1.8, 1.8] }),
+  Waves.createSampler({ wave: 'meta sine',    seed: 33, range: [-1.8, 1.8] }),
+];
 const particles = [];
 const N = 120;
 
