@@ -27,7 +27,7 @@ function draw() {
     beginShape();
     for (let x = 0; x <= width; x += 4) {
       const dy = Waves.wave(x * 0.011, {
-        wave:      'wobble',
+        wave:      'wobble sine',
         t:         t + phase,
         amplitude: 13,
         frequency: 3.2

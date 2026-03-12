@@ -41,7 +41,7 @@ for (let i = 0; i &lt; LINES; i++) {
   beginShape();
   for (let x = 0; x &lt;= width; x += 4) {
     const dy = Waves.wave(x * 0.011, {
-      wave: 'wobble', t: t + phase, amplitude: 13
+      wave: 'wobble sine', t: t + phase, amplitude: 13
     });
     vertex(x, y0 + dy);
   }

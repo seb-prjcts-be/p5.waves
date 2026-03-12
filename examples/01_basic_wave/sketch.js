@@ -27,7 +27,7 @@ function draw() {
     beginShape();
     for (let y = 0; y <= height; y += 3) {
       const dx = Waves.wave(y * 0.012, {
-        wave:      'smooth step',
+        wave:      'smooth solid sine',
         t:         t + phase,
         amplitude: 14,
         frequency: 1.6

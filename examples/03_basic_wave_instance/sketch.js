@@ -19,7 +19,7 @@ new p5(function (p) {
     for (let gy = 0; gy < GRID; gy++) {
       for (let gx = 0; gx < GRID; gx++) {
         const val = p.waves(gx * 0.22 + gy * 0.15, {
-          wave:  'smooth step',
+          wave:  'smooth solid sine',
           t:     t + gx * 0.04 + gy * 0.06,
           range: [0, 1]
         });

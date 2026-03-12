@@ -11,7 +11,7 @@ new p5(function (p) {
     p.noStroke();
 
     samplerX = Waves.createSampler({ wave: 'classic sine', seed: 3, range: [-200, 200] });
-    samplerY = Waves.createSampler({ wave: 'wobble',       seed: 9, range: [-200, 200] });
+    samplerY = Waves.createSampler({ wave: 'wobble sine',  seed: 9, range: [-200, 200] });
   };
 
   p.draw = function () {
