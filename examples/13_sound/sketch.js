@@ -7,9 +7,11 @@ const RANGES     = [[110, 330], [220, 550], [330, 770]];
 const COLORS     = ['#e05540', '#4466ee', '#33bb88'];
 const TRACK_CY   = [76, 230, 384];
 
-const samplers = WAVE_NAMES.map((w, i) =>
-  Waves.createSampler({ wave: w, seed: i * 5, range: RANGES[i] })
-);
+const samplers = [
+  Waves.createSampler({ wave: WAVE_NAMES[0], seed:  0, range: RANGES[0] }),
+  Waves.createSampler({ wave: WAVE_NAMES[1], seed:  5, range: RANGES[1] }),
+  Waves.createSampler({ wave: WAVE_NAMES[2], seed: 10, range: RANGES[2] }),
+];
 
 let audioCtx, oscs = [], running = false;
 
@@ -21,7 +23,8 @@ function setup() {
 function mousePressed() {
   if (!running) {
     audioCtx = new AudioContext();
-    oscs = samplers.map(() => {
+    oscs = [];
+    for (let i = 0; i < 3; i++) {
       const osc  = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       gain.gain.value = 0.05;
@@ -29,11 +32,11 @@ function mousePressed() {
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      return osc;
-    });
+      oscs.push(osc);
+    }
     running = true;
   } else {
-    oscs.forEach(o => o.stop());
+    for (const o of oscs) o.stop();
     audioCtx.close();
     oscs    = [];
     running = false;
