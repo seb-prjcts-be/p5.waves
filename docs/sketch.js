@@ -222,7 +222,8 @@ s.sample(x, t * ${params.speed.toFixed(3)})`;
 
   p.setup = () => {
     const container = document.getElementById('interactive-canvas');
-    p.createCanvas(container.offsetWidth || 800, 420).parent('interactive-canvas');
+    const w = container.offsetWidth || 800;
+    p.createCanvas(w, Math.round(w * 3 / 4)).parent('interactive-canvas');
     sampler = Waves.createSampler({ wave: params.wave, amplitude: params.amplitude, frequency: params.frequency, phase: params.phase });
     updateCode();
 
@@ -269,7 +270,8 @@ s.sample(x, t * ${params.speed.toFixed(3)})`;
 
   p.windowResized = () => {
     const container = document.getElementById('interactive-canvas');
-    p.resizeCanvas(container.offsetWidth || 800, 420);
+    const w = container.offsetWidth || 800;
+    p.resizeCanvas(w, Math.round(w * 3 / 4));
   };
 }, 'interactive-canvas'));
 
