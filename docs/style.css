@@ -246,7 +246,7 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  align-items: start;
+  align-items: stretch;
 }
 
 .controls-panel {
@@ -696,6 +696,7 @@ section[id] {
   margin: 0;
   padding: 1.3rem 1.2rem;
   overflow-x: auto;
+  overflow-y: auto;
   font-family: 'Courier New', monospace;
   font-size: 0.79rem;
   line-height: 1.7;
