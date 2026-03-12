@@ -18,7 +18,7 @@ function draw() {
   for (let gy = 0; gy < GRID; gy++) {
     for (let gx = 0; gx < GRID; gx++) {
       const v1 = Waves.wave(gx * 0.12 + gy * 0.07, {
-        wave:  'smooth step',
+        wave:  'smooth solid sine',
         t:     t,
         range: [0, 1]
       });

@@ -277,7 +277,7 @@ new p5(p => {
       range: [-200, 200]
     });
     sy = Waves.createSampler({
-      wave:  'wobble',
+      wave:  'wobble sine',
       seed:  9,
       range: [-200, 200]
     });
@@ -360,18 +360,15 @@ function draw() {
         <div class="ex-code-label">copy-paste sketch</div>
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
-let samplers = [], particles = [];
+let samplers, particles = [];
 
 function setup() {
   createCanvas(600, 400);
   noStroke();
 
-  ['classic sine', 'wobble',
-   'pulse', 'plasma'].forEach((w, i) => {
-    samplers.push(Waves.createSampler({
-      wave: w, seed: i * 11, range: [-2, 2]
-    }));
-  });
+  samplers = ['classic sine', 'wobble sine', 'pulse', 'meta sine'].map((w, i) =>
+    Waves.createSampler({ wave: w, seed: i * 11, range: [-2, 2] })
+  );
 
   for (let i = 0; i &lt; 150; i++) {
     particles.push({
@@ -674,6 +671,7 @@ function draw() {
   const midY = height * 0.54;
   const amp  = height * 0.40;
 
+  colorMode(HSB, n, 100, 100);
   for (let i = 0; i &lt; n; i++) {
     const v = Waves.wave(t * 28, {
       wave:  i,           // direct index
@@ -682,11 +680,10 @@ function draw() {
     const h = abs(v);
     const y = v &lt; 0 ? midY : midY - h;
 
-    colorMode(HSB, n, 100, 100);
     fill(i, 65, 78);
-    colorMode(RGB, 255);
     rect(i * barW + 1, y, barW - 2, h);
   }
+  colorMode(RGB, 255);
 }</pre>
         <a class="ex-full-link" href="../examples/16_wave_chart/" target="_blank">→ full example 16</a>
       </div>
@@ -853,7 +850,7 @@ function draw() {
       p.createCanvas(w, Math.min(w, 480)).parent('ex5');
       p.noStroke();
       sx = Waves.createSampler({ wave: 'classic sine', seed: 3, range: [-180, 180] });
-      sy = Waves.createSampler({ wave: 'wobble',       seed: 9, range: [-180, 180] });
+      sy = Waves.createSampler({ wave: 'wobble sine',  seed: 9, range: [-180, 180] });
     };
     p.draw = () => {
       p.background(245, 245, 245, 18);
@@ -893,13 +890,13 @@ function draw() {
 
   // ── 7. Flow field ─────────────────────────────────────────
   new p5(p => {
-    let samplers = [], pts = [];
+    let samplers, pts = [];
     p.setup = () => {
       p.createCanvas(cw('ex7'), 380).parent('ex7');
       p.noStroke();
-      ['classic sine','wobble','pulse','plasma'].forEach((w, i) => {
-        samplers.push(Waves.createSampler({ wave: w, seed: i * 11, range: [-2, 2] }));
-      });
+      samplers = ['classic sine', 'wobble sine', 'pulse', 'meta sine'].map((w, i) =>
+        Waves.createSampler({ wave: w, seed: i * 11, range: [-2, 2] })
+      );
       for (let i = 0; i < 150; i++) pts.push({ x: p.random(p.width), y: p.random(p.height), s: i % 4 });
     };
     p.draw = () => {
@@ -1084,17 +1081,17 @@ function draw() {
       p.stroke(200); p.strokeWeight(0.5);
       p.line(0, midY, p.width, midY);
       p.noStroke();
+      p.colorMode(p.HSB, n, 100, 100);
       for (let i = 0; i < n; i++) {
         const v = Waves.wave(t * 28, { wave: i, range: [-amp, amp] });
         const h = p.abs(v);
         const y = v < 0 ? midY : midY - h;
-        p.colorMode(p.HSB, n, 100, 100);
         p.fill(i, 65, 78);
-        p.colorMode(p.RGB, 255);
         p.rect(i * barW + 1, y, barW - 2, h);
-        p.fill(150); p.textSize(6.5);
+        p.fill(0, 0, 59); p.textSize(6.5);
         p.text(i, i * barW + barW / 2, midY + 3);
       }
+      p.colorMode(p.RGB, 255);
     };
     p.windowResized = () => p.resizeCanvas(cw('ex13'), 380);
   }, 'ex13');

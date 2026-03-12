@@ -2,17 +2,15 @@
 // Four createSampler() calls, each a different wave, steer 120 particles.
 // Particles wrap at canvas edges, leaving soft trails.
 
-let samplers = [];
+const samplers = ['classic sine', 'wobble sine', 'pulse', 'meta sine'].map((w, i) =>
+  Waves.createSampler({ wave: w, seed: i * 11, range: [-1.8, 1.8] })
+);
 const particles = [];
 const N = 120;
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
   noStroke();
-
-  ['classic sine', 'wobble', 'pulse', 'plasma'].forEach((w, i) => {
-    samplers.push(Waves.createSampler({ wave: w, seed: i * 11, range: [-1.8, 1.8] }));
-  });
 
   for (let i = 0; i < N; i++) {
     particles.push({ x: random(width), y: random(height), s: i % 4 });
