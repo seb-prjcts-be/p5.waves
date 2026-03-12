@@ -80,11 +80,15 @@
   <!-- NAV -->
   <nav id="navbar">
     <div class="nav-logo">p5.<span>waves</span></div>
+    <button class="nav-hamburger" aria-label="Toggle menu" onclick="this.closest('nav').classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
     <ul class="nav-links">
       <li><a href="../index.html">Showcase</a></li>
       <li><a href="examples.html">Examples</a></li>
       <li><a href="guide.html">Guide</a></li>
       <li><a href="about.html" class="active">About</a></li>
+      <li><a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">GitHub</a></li>
     </ul>
   </nav>
 
@@ -96,10 +100,6 @@
       Wave sampling helpers for p5.js. <strong>Always returns a number.</strong><br>
       Think of <code>noise(y)</code> — but with 34 curated wave formulas you can freely combine.
     </p>
-    <p>
-      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">→ View the library on GitHub</a>
-    </p>
-
     <h2>What this library does</h2>
     <p>
       p5.waves gives you a curated list of <strong>34 wave formulas</strong> you can sample with a single number input.
