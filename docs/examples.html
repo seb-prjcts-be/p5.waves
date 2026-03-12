@@ -79,6 +79,51 @@ function draw() {
     </div>
   </section>
 
+  <!-- 1b. SEED × TIME — AUTO WAVE CYCLING -->
+  <section id="seeding" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">feature: seed · floor(t / interval)</div>
+      <h2>Seed as a <span class="accent">time dimension</span></h2>
+      <p class="section-desc"><code>seed</code> deterministically picks a wave formula. Pass <code>floor(t / interval)</code> as seed and the wave rotates automatically — no state, no timers, no extra variables.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+const INTERVAL = 3; // switch wave every 3 s
+
+function setup() {
+  createCanvas(600, 450);
+  noFill();
+}
+
+function draw() {
+  background(245);
+  const t      = frameCount * 0.01;
+  const period = floor(t / INTERVAL);
+
+  stroke(0); strokeWeight(1.5);
+  beginShape();
+  for (let x = 0; x &lt;= width; x += 3) {
+    vertex(x, height / 2 + Waves.wave(x * 0.02, {
+      seed:      period,   // new wave each interval
+      t:         t,
+      amplitude: 80
+    }));
+  }
+  endShape();
+
+  noStroke(); fill(0, 0, 0, 80);
+  textFont('monospace'); textSize(9); textAlign(LEFT);
+  text('seed ' + period + '  →  ' +
+    Waves.data[period % Waves.count].name, 10, 16);
+}</pre>
+      </div>
+      <div id="ex-seed" class="ex-canvas"></div>
+    </div>
+  </section>
+
   <!-- 2. ALL 34 WAVES -->
   <section id="taxonomy" class="section section-dark">
     <div class="section-header">
@@ -722,7 +767,8 @@ function draw() {
   // ── 1. Wave basics ────────────────────────────────────────
   new p5(function(p) {
     p.setup = function() {
-      p.createCanvas(cw('ex1'), 380).parent('ex1');
+      const w = cw('ex1');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex1');
       p.noFill();
     };
     p.draw = function() {
@@ -745,8 +791,37 @@ function draw() {
         p.stroke(0); p.noFill();
       }
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex1'), 380); };
+    p.windowResized = function() { const w = cw('ex1'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex1');
+
+  // ── 1b. Seed × time — auto wave cycling ──────────────────
+  new p5(function(p) {
+    p.setup = function() {
+      const w = cw('ex-seed');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex-seed');
+      p.noFill();
+    };
+    p.draw = function() {
+      p.background(245);
+      const t      = p.frameCount * 0.01;
+      const period = Math.floor(t / 3);
+      const name   = Waves.data[period % Waves.count].name;
+      p.stroke(0); p.strokeWeight(1.5);
+      p.beginShape();
+      for (let x = 0; x <= p.width; x += 3) {
+        p.vertex(x, p.height / 2 + Waves.wave(x * 0.02, {
+          seed:      period,
+          t:         t,
+          amplitude: 80
+        }));
+      }
+      p.endShape();
+      p.noStroke(); p.fill(0, 0, 0, 80);
+      p.textFont('monospace'); p.textSize(9); p.textAlign(p.LEFT);
+      p.text('seed ' + period + '  →  ' + name, 10, 16);
+    };
+    p.windowResized = function() { const w = cw('ex-seed'); p.resizeCanvas(w, Math.round(w * 3/4)); };
+  }, 'ex-seed');
 
   // ── 2. All 34 formulas ────────────────────────────────────
   new p5(function(p) {
@@ -754,7 +829,7 @@ function draw() {
     const COLS = 5, ROWS = 7;
     p.setup = function() {
       const w = cw('ex2');
-      p.createCanvas(w, Math.round(w * ROWS / COLS)).parent('ex2');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex2');
       all = Waves.list();
       p.noFill(); p.stroke(0);
     };
@@ -782,14 +857,15 @@ function draw() {
     };
     p.windowResized = function() {
       const w = cw('ex2');
-      p.resizeCanvas(w, Math.round(w * ROWS / COLS));
+      p.resizeCanvas(w, Math.round(w * 3/4));
     };
   }, 'ex2');
 
   // ── 3. Noise & random ─────────────────────────────────────
   new p5(function(p) {
     p.setup = function() {
-      p.createCanvas(cw('ex3'), 380).parent('ex3');
+      const w = cw('ex3');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex3');
       p.noFill();
     };
     p.draw = function() {
@@ -812,13 +888,14 @@ function draw() {
         p.stroke(0); p.noFill();
       }
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex3'), 380); };
+    p.windowResized = function() { const w = cw('ex3'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex3');
 
   // ── 4. Wild mode ──────────────────────────────────────────
   new p5(function(p) {
     p.setup = function() {
-      p.createCanvas(cw('ex4'), 380).parent('ex4');
+      const w = cw('ex4');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex4');
       p.noStroke();
     };
     p.draw = function() {
@@ -838,7 +915,7 @@ function draw() {
       p.text('smooth', p.width/4, 14);
       p.text('wild  (0.65)', 3*p.width/4, 14);
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex4'), 380); };
+    p.windowResized = function() { const w = cw('ex4'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex4');
 
   // ── 5. createSampler orbits ───────────────────────────────
@@ -847,7 +924,7 @@ function draw() {
     const N = 90;
     p.setup = function() {
       const w = cw('ex5');
-      p.createCanvas(w, Math.min(w, 480)).parent('ex5');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex5');
       p.noStroke();
       sx = Waves.createSampler({ wave: 'classic sine', seed: 3, range: [-180, 180] });
       sy = Waves.createSampler({ wave: 'wobble sine',  seed: 9, range: [-180, 180] });
@@ -861,7 +938,7 @@ function draw() {
         p.circle(p.width/2 + sx.sample(phase, t), p.height/2 + sy.sample(phase + 0.8, t), 4);
       }
     };
-    p.windowResized = function() { const w = cw('ex5'); p.resizeCanvas(w, Math.min(w, 480)); };
+    p.windowResized = function() { const w = cw('ex5'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex5');
 
   // ── 6. createGrid ─────────────────────────────────────────
@@ -870,7 +947,7 @@ function draw() {
     const COLS = 42, ROWS = 42;
     p.setup = function() {
       const w = cw('ex6');
-      p.createCanvas(w, Math.min(w, 520)).parent('ex6');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex6');
       p.noStroke();
       grid = Waves.createGrid(COLS, ROWS, { waveRow: 'smooth solid sine', waveCol: 'ramp up sine', threshold: 0, speed: 1 });
     };
@@ -885,14 +962,15 @@ function draw() {
         }
       }
     };
-    p.windowResized = function() { const w = cw('ex6'); p.resizeCanvas(w, Math.min(w, 520)); };
+    p.windowResized = function() { const w = cw('ex6'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex6');
 
   // ── 7. Flow field ─────────────────────────────────────────
   new p5(function(p) {
     let samplers, pts = [];
     p.setup = function() {
-      p.createCanvas(cw('ex7'), 380).parent('ex7');
+      const w = cw('ex7');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex7');
       p.noStroke();
       samplers = [
         Waves.createSampler({ wave: 'classic sine', seed:  0, range: [-2, 2] }),
@@ -915,14 +993,15 @@ function draw() {
         p.fill(0,0,0,160); p.circle(pt.x, pt.y, 3);
       }
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex7'), 380); };
+    p.windowResized = function() { const w = cw('ex7'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex7');
 
   // ── 8. Manual time ────────────────────────────────────────
   new p5(function(p) {
     const LAYERS = 18;
     p.setup = function() {
-      p.createCanvas(cw('ex8'), 380).parent('ex8');
+      const w = cw('ex8');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex8');
       p.noFill();
     };
     p.draw = function() {
@@ -943,13 +1022,14 @@ function draw() {
       p.textFont('monospace'); p.textSize(10); p.textAlign(p.LEFT);
       p.text('t = ' + p.map(p.mouseX,0,p.width,0,8).toFixed(2), 10, 16);
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex8'), 380); };
+    p.windowResized = function() { const w = cw('ex8'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex8');
 
   // ── 9. Color spectrum ─────────────────────────────────────
   new p5(function(p) {
     p.setup = function() {
-      p.createCanvas(cw('ex9'), 380).parent('ex9');
+      const w = cw('ex9');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex9');
       p.noStroke();
     };
     p.draw = function() {
@@ -962,7 +1042,7 @@ function draw() {
         p.rect(0, y, p.width, 2);
       }
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex9'), 380); };
+    p.windowResized = function() { const w = cw('ex9'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex9');
 
   // ── 10. Sound / wave synth (visual only, sound on full page) ──
@@ -976,7 +1056,8 @@ function draw() {
       Waves.createSampler({ wave: WAVE_NAMES[2], seed: 10, range: RANGES[2] }),
     ];
     p.setup = function() {
-      p.createCanvas(cw('ex10'), 380).parent('ex10');
+      const w = cw('ex10');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex10');
       p.textFont('monospace');
     };
     p.draw = function() {
@@ -1008,7 +1089,7 @@ function draw() {
       p.textAlign(p.CENTER); p.textSize(9);
       p.text('click for sound → full example', p.width / 2, p.height - 12);
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex10'), 380); };
+    p.windowResized = function() { const w = cw('ex10'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex10');
 
   // ── 11. Typography ────────────────────────────────────────
@@ -1019,7 +1100,8 @@ function draw() {
       sizeSamplers.push(Waves.createSampler({ seed: i * 7, range: [28, 96] }));
     }
     p.setup = function() {
-      p.createCanvas(cw('ex11'), 380).parent('ex11');
+      const w = cw('ex11');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex11');
       p.textAlign(p.CENTER, p.CENTER);
       p.textFont('monospace');
       p.noStroke();
@@ -1042,7 +1124,7 @@ function draw() {
         x += sz * 0.72;
       }
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex11'), 380); };
+    p.windowResized = function() { const w = cw('ex11'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex11');
 
   // ── 12. Opacity ───────────────────────────────────────────
@@ -1050,7 +1132,7 @@ function draw() {
     const COLS = 11, ROWS = 11;
     p.setup = function() {
       const w = cw('ex12');
-      p.createCanvas(w, Math.min(w, 440)).parent('ex12');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex12');
       p.noStroke();
     };
     p.draw = function() {
@@ -1069,13 +1151,14 @@ function draw() {
         }
       }
     };
-    p.windowResized = function() { const w = cw('ex12'); p.resizeCanvas(w, Math.min(w, 440)); };
+    p.windowResized = function() { const w = cw('ex12'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex12');
 
   // ── 13. Wave chart ────────────────────────────────────────
   new p5(function(p) {
     p.setup = function() {
-      p.createCanvas(cw('ex13'), 380).parent('ex13');
+      const w = cw('ex13');
+      p.createCanvas(w, Math.round(w * 3/4)).parent('ex13');
       p.noStroke();
       p.textAlign(p.CENTER, p.TOP);
     };
@@ -1101,7 +1184,7 @@ function draw() {
       }
       p.colorMode(p.RGB, 255);
     };
-    p.windowResized = function() { p.resizeCanvas(cw('ex13'), 380); };
+    p.windowResized = function() { const w = cw('ex13'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex13');
   </script>
 
