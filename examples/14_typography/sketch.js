@@ -5,9 +5,10 @@
 
 const WORD = 'WAVES';
 
-const sizeSamplers = Array.from({ length: 5 }, (_, i) =>
-  Waves.createSampler({ seed: i * 7, range: [28, 96] })
-);
+const sizeSamplers = [];
+for (let i = 0; i < 5; i++) {
+  sizeSamplers.push(Waves.createSampler({ seed: i * 7, range: [28, 96] }));
+}
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
@@ -21,8 +22,10 @@ function draw() {
   const t = frameCount * 0.018;
 
   // First pass: measure total width for centering
-  const sizes = WORD.split('').map((_, i) => sizeSamplers[i].sample(i * 0.6, t));
-  const totalW = sizes.reduce((sum, sz) => sum + sz * 0.72, 0);
+  const sizes = [];
+  for (let i = 0; i < WORD.length; i++) sizes.push(sizeSamplers[i].sample(i * 0.6, t));
+  let totalW = 0;
+  for (let i = 0; i < sizes.length; i++) totalW += sizes[i] * 0.72;
 
   let x = (width - totalW) / 2 + sizes[0] * 0.36;
 

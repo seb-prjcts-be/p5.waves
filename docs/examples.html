@@ -61,19 +61,17 @@ function draw() {
     'mountain peaks', 'noise'
   ];
 
-  waves.forEach((wave, i) => {
+  for (let i = 0; i &lt; waves.length; i++) {
+    const wave = waves[i];
     const y0 = map(i, 0, 3, 70, height - 70);
     stroke(0, 0, 0, map(i, 0, 3, 220, 80));
     strokeWeight(1.5);
     beginShape();
     for (let x = 0; x &lt;= width; x += 3) {
-      const y = y0 + Waves.wave(x * 0.015, {
-        wave, t, amplitude: 45
-      });
-      vertex(x, y);
+      vertex(x, y0 + Waves.wave(x * 0.015, { wave, t, amplitude: 45 }));
     }
     endShape();
-  });
+  }
 }</pre>
         <a class="ex-full-link" href="../examples/01_basic_wave/" target="_blank">→ full example 01</a>
       </div>
@@ -166,19 +164,14 @@ function draw() {
     'fuzzy pulse'
   ];
 
-  types.forEach((wave, i) => {
+  for (let i = 0; i &lt; types.length; i++) {
+    const wave = types[i];
     const y0 = map(i, 0, 3, 70, height - 70);
     stroke(0, 0, 0, 200 - i * 30);
     strokeWeight(1.4);
     beginShape();
     for (let x = 0; x &lt;= width; x += 2) {
-      const y = y0 + Waves.wave(x * 0.018, {
-        wave,
-        t,
-        amplitude: 38,
-        seed: 3
-      });
-      vertex(x, y);
+      vertex(x, y0 + Waves.wave(x * 0.018, { wave, t, amplitude: 38, seed: 3 }));
     }
     endShape();
 
@@ -263,11 +256,11 @@ function draw() {
         <div class="ex-code-label">copy-paste sketch (instance mode)</div>
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
-new p5(p => {
+new p5(function(p) {
   let sx, sy;
   const N = 90;
 
-  p.setup = () => {
+  p.setup = function() {
     p.createCanvas(500, 500);
     p.noStroke();
 
@@ -283,7 +276,7 @@ new p5(p => {
     });
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(245, 245, 245, 18);
     const t = p.frameCount * 0.012;
 
@@ -366,9 +359,12 @@ function setup() {
   createCanvas(600, 400);
   noStroke();
 
-  samplers = ['classic sine', 'wobble sine', 'pulse', 'meta sine'].map((w, i) =>
-    Waves.createSampler({ wave: w, seed: i * 11, range: [-2, 2] })
-  );
+  samplers = [
+    Waves.createSampler({ wave: 'classic sine', seed:  0, range: [-2, 2] }),
+    Waves.createSampler({ wave: 'wobble sine',  seed: 11, range: [-2, 2] }),
+    Waves.createSampler({ wave: 'pulse',        seed: 22, range: [-2, 2] }),
+    Waves.createSampler({ wave: 'meta sine',    seed: 33, range: [-2, 2] }),
+  ];
 
   for (let i = 0; i &lt; 150; i++) {
     particles.push({
@@ -517,18 +513,19 @@ let audioCtx, oscs = [], running = false;
 function mousePressed() {
   if (!running) {
     audioCtx = new AudioContext();
-    oscs = samplers.map(() => {
+    oscs = [];
+    for (let i = 0; i &lt; samplers.length; i++) {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       gain.gain.value = 0.05;
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      return osc;
-    });
+      oscs.push(osc);
+    }
     running = true;
   } else {
-    oscs.forEach(o => o.stop());
+    for (const o of oscs) o.stop();
     audioCtx.close(); oscs = []; running = false;
   }
 }
@@ -559,9 +556,10 @@ function draw() {
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
 const WORD = 'WAVES';
-const sizeSamplers = Array.from({ length: 5 }, (_, i) =>
-  Waves.createSampler({ seed: i * 7, range: [28, 96] })
-);
+const sizeSamplers = [];
+for (let i = 0; i &lt; 5; i++) {
+  sizeSamplers.push(Waves.createSampler({ seed: i * 7, range: [28, 96] }));
+}
 
 function setup() {
   createCanvas(600, 400);
@@ -573,10 +571,10 @@ function setup() {
 function draw() {
   background(245);
   const t = frameCount * 0.018;
-  const sizes = WORD.split('').map((_, i) =>
-    sizeSamplers[i].sample(i * 0.6, t)
-  );
-  const totalW = sizes.reduce((s, sz) => s + sz * 0.72, 0);
+  const sizes = [];
+  for (let i = 0; i &lt; WORD.length; i++) sizes.push(sizeSamplers[i].sample(i * 0.6, t));
+  let totalW = 0;
+  for (let i = 0; i &lt; sizes.length; i++) totalW += sizes[i] * 0.72;
   let x = (width - totalW) / 2 + sizes[0] * 0.36;
 
   for (let i = 0; i &lt; WORD.length; i++) {
@@ -722,16 +720,17 @@ function draw() {
   });
 
   // ── 1. Wave basics ────────────────────────────────────────
-  new p5(p => {
-    p.setup = () => {
+  new p5(function(p) {
+    p.setup = function() {
       p.createCanvas(cw('ex1'), 380).parent('ex1');
       p.noFill();
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(245);
       const t = p.frameCount * 0.01;
       const waves = ['classic sine','triangle','mountain peaks','noise'];
-      waves.forEach((wave, i) => {
+      for (let i = 0; i < waves.length; i++) {
+        const wave = waves[i];
         const y0 = p.map(i, 0, 3, 70, p.height - 70);
         p.stroke(0, 0, 0, p.map(i, 0, 3, 220, 80));
         p.strokeWeight(1.5);
@@ -744,22 +743,22 @@ function draw() {
         p.textFont('monospace'); p.textSize(9); p.textAlign(p.LEFT);
         p.text(wave, 10, y0 - 16);
         p.stroke(0); p.noFill();
-      });
+      }
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex1'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex1'), 380); };
   }, 'ex1');
 
   // ── 2. All 34 formulas ────────────────────────────────────
-  new p5(p => {
+  new p5(function(p) {
     let all;
     const COLS = 5, ROWS = 7;
-    p.setup = () => {
+    p.setup = function() {
       const w = cw('ex2');
       p.createCanvas(w, Math.round(w * ROWS / COLS)).parent('ex2');
       all = Waves.list();
       p.noFill(); p.stroke(0);
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(238);
       const t = p.frameCount * 0.012;
       const cw2 = p.width / COLS, rh = p.height / ROWS;
@@ -781,23 +780,24 @@ function draw() {
         p.stroke(0); p.noFill();
       }
     };
-    p.windowResized = () => {
+    p.windowResized = function() {
       const w = cw('ex2');
       p.resizeCanvas(w, Math.round(w * ROWS / COLS));
     };
   }, 'ex2');
 
   // ── 3. Noise & random ─────────────────────────────────────
-  new p5(p => {
-    p.setup = () => {
+  new p5(function(p) {
+    p.setup = function() {
       p.createCanvas(cw('ex3'), 380).parent('ex3');
       p.noFill();
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(245);
       const t = p.frameCount * 0.008;
       const types = ['noise','grow random','fuzzy peak sine','fuzzy pulse'];
-      types.forEach((wave, i) => {
+      for (let i = 0; i < types.length; i++) {
+        const wave = types[i];
         const y0 = p.map(i, 0, 3, 70, p.height - 70);
         p.stroke(0, 0, 0, 200 - i * 25);
         p.strokeWeight(1.4);
@@ -810,18 +810,18 @@ function draw() {
         p.textFont('monospace'); p.textSize(9); p.textAlign(p.LEFT);
         p.text(wave, 10, y0 - 18);
         p.stroke(0); p.noFill();
-      });
+      }
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex3'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex3'), 380); };
   }, 'ex3');
 
   // ── 4. Wild mode ──────────────────────────────────────────
-  new p5(p => {
-    p.setup = () => {
+  new p5(function(p) {
+    p.setup = function() {
       p.createCanvas(cw('ex4'), 380).parent('ex4');
       p.noStroke();
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(238);
       const t = p.frameCount * 0.014;
       for (let y = 4; y < p.height; y += 6) {
@@ -838,21 +838,21 @@ function draw() {
       p.text('smooth', p.width/4, 14);
       p.text('wild  (0.65)', 3*p.width/4, 14);
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex4'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex4'), 380); };
   }, 'ex4');
 
   // ── 5. createSampler orbits ───────────────────────────────
-  new p5(p => {
+  new p5(function(p) {
     let sx, sy;
     const N = 90;
-    p.setup = () => {
+    p.setup = function() {
       const w = cw('ex5');
       p.createCanvas(w, Math.min(w, 480)).parent('ex5');
       p.noStroke();
       sx = Waves.createSampler({ wave: 'classic sine', seed: 3, range: [-180, 180] });
       sy = Waves.createSampler({ wave: 'wobble sine',  seed: 9, range: [-180, 180] });
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(245, 245, 245, 18);
       const t = p.frameCount * 0.035;
       for (let i = 0; i < N; i++) {
@@ -861,20 +861,20 @@ function draw() {
         p.circle(p.width/2 + sx.sample(phase, t), p.height/2 + sy.sample(phase + 0.8, t), 4);
       }
     };
-    p.windowResized = () => { const w = cw('ex5'); p.resizeCanvas(w, Math.min(w, 480)); };
+    p.windowResized = function() { const w = cw('ex5'); p.resizeCanvas(w, Math.min(w, 480)); };
   }, 'ex5');
 
   // ── 6. createGrid ─────────────────────────────────────────
-  new p5(p => {
+  new p5(function(p) {
     let grid;
     const COLS = 42, ROWS = 42;
-    p.setup = () => {
+    p.setup = function() {
       const w = cw('ex6');
       p.createCanvas(w, Math.min(w, 520)).parent('ex6');
       p.noStroke();
       grid = Waves.createGrid(COLS, ROWS, { waveRow: 'smooth solid sine', waveCol: 'ramp up sine', threshold: 0, speed: 1 });
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(238);
       const cells = grid.sample(p.frameCount * 0.004);
       const cw2 = p.width / COLS, ch = p.height / ROWS;
@@ -885,21 +885,24 @@ function draw() {
         }
       }
     };
-    p.windowResized = () => { const w = cw('ex6'); p.resizeCanvas(w, Math.min(w, 520)); };
+    p.windowResized = function() { const w = cw('ex6'); p.resizeCanvas(w, Math.min(w, 520)); };
   }, 'ex6');
 
   // ── 7. Flow field ─────────────────────────────────────────
-  new p5(p => {
+  new p5(function(p) {
     let samplers, pts = [];
-    p.setup = () => {
+    p.setup = function() {
       p.createCanvas(cw('ex7'), 380).parent('ex7');
       p.noStroke();
-      samplers = ['classic sine', 'wobble sine', 'pulse', 'meta sine'].map((w, i) =>
-        Waves.createSampler({ wave: w, seed: i * 11, range: [-2, 2] })
-      );
+      samplers = [
+        Waves.createSampler({ wave: 'classic sine', seed:  0, range: [-2, 2] }),
+        Waves.createSampler({ wave: 'wobble sine',  seed: 11, range: [-2, 2] }),
+        Waves.createSampler({ wave: 'pulse',        seed: 22, range: [-2, 2] }),
+        Waves.createSampler({ wave: 'meta sine',    seed: 33, range: [-2, 2] }),
+      ];
       for (let i = 0; i < 150; i++) pts.push({ x: p.random(p.width), y: p.random(p.height), s: i % 4 });
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(245, 245, 245, 22);
       const t = p.frameCount * 0.014;
       for (const pt of pts) {
@@ -912,17 +915,17 @@ function draw() {
         p.fill(0,0,0,160); p.circle(pt.x, pt.y, 3);
       }
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex7'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex7'), 380); };
   }, 'ex7');
 
   // ── 8. Manual time ────────────────────────────────────────
-  new p5(p => {
+  new p5(function(p) {
     const LAYERS = 18;
-    p.setup = () => {
+    p.setup = function() {
       p.createCanvas(cw('ex8'), 380).parent('ex8');
       p.noFill();
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(238);
       const tBase = p.map(p.mouseX, 0, p.width, 0, 24);
       for (let i = 0; i < LAYERS; i++) {
@@ -940,16 +943,16 @@ function draw() {
       p.textFont('monospace'); p.textSize(10); p.textAlign(p.LEFT);
       p.text('t = ' + p.map(p.mouseX,0,p.width,0,8).toFixed(2), 10, 16);
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex8'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex8'), 380); };
   }, 'ex8');
 
   // ── 9. Color spectrum ─────────────────────────────────────
-  new p5(p => {
-    p.setup = () => {
+  new p5(function(p) {
+    p.setup = function() {
       p.createCanvas(cw('ex9'), 380).parent('ex9');
       p.noStroke();
     };
-    p.draw = () => {
+    p.draw = function() {
       const t = p.frameCount * 0.008;
       p.colorMode(p.HSB, 360, 100, 100);
       for (let y = 0; y < p.height; y += 2) {
@@ -959,29 +962,31 @@ function draw() {
         p.rect(0, y, p.width, 2);
       }
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex9'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex9'), 380); };
   }, 'ex9');
 
   // ── 10. Sound / wave synth (visual only, sound on full page) ──
-  new p5(p => {
+  new p5(function(p) {
     const WAVE_NAMES = ['classic sine', 'triangle', 'stepped sine'];
     const RANGES     = [[110, 330], [220, 550], [330, 770]];
     const COLORS     = ['#e05540', '#4466ee', '#33bb88'];
-    const samplers   = WAVE_NAMES.map((w, i) =>
-      Waves.createSampler({ wave: w, seed: i * 5, range: RANGES[i] })
-    );
-    p.setup = () => {
+    const samplers   = [
+      Waves.createSampler({ wave: WAVE_NAMES[0], seed:  0, range: RANGES[0] }),
+      Waves.createSampler({ wave: WAVE_NAMES[1], seed:  5, range: RANGES[1] }),
+      Waves.createSampler({ wave: WAVE_NAMES[2], seed: 10, range: RANGES[2] }),
+    ];
+    p.setup = function() {
       p.createCanvas(cw('ex10'), 380).parent('ex10');
       p.textFont('monospace');
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(18);
       const cursor = (p.frameCount * 2) % p.width;
       const t      = p.frameCount * 0.012;
       const TRACK_CY = [p.height * 0.22, p.height * 0.5, p.height * 0.78];
       const hw = p.height * 0.13;
       for (let i = 0; i < 3; i++) {
-        const [minF, maxF] = RANGES[i];
+        const minF = RANGES[i][0], maxF = RANGES[i][1];
         const cy = TRACK_CY[i];
         p.noFill(); p.stroke(COLORS[i]); p.strokeWeight(1.5);
         p.beginShape();
@@ -1003,26 +1008,29 @@ function draw() {
       p.textAlign(p.CENTER); p.textSize(9);
       p.text('click for sound → full example', p.width / 2, p.height - 12);
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex10'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex10'), 380); };
   }, 'ex10');
 
   // ── 11. Typography ────────────────────────────────────────
-  new p5(p => {
+  new p5(function(p) {
     const WORD = 'WAVES';
-    const sizeSamplers = Array.from({ length: 5 }, (_, i) =>
-      Waves.createSampler({ seed: i * 7, range: [28, 96] })
-    );
-    p.setup = () => {
+    const sizeSamplers = [];
+    for (let i = 0; i < 5; i++) {
+      sizeSamplers.push(Waves.createSampler({ seed: i * 7, range: [28, 96] }));
+    }
+    p.setup = function() {
       p.createCanvas(cw('ex11'), 380).parent('ex11');
       p.textAlign(p.CENTER, p.CENTER);
       p.textFont('monospace');
       p.noStroke();
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(245);
-      const t     = p.frameCount * 0.018;
-      const sizes = WORD.split('').map((_, i) => sizeSamplers[i].sample(i * 0.6, t));
-      const totalW = sizes.reduce((s, sz) => s + sz * 0.72, 0);
+      const t = p.frameCount * 0.018;
+      const sizes = [];
+      for (let i = 0; i < WORD.length; i++) sizes.push(sizeSamplers[i].sample(i * 0.6, t));
+      let totalW = 0;
+      for (let i = 0; i < sizes.length; i++) totalW += sizes[i] * 0.72;
       let x = (p.width - totalW) / 2 + sizes[0] * 0.36;
       for (let i = 0; i < WORD.length; i++) {
         const sz    = sizes[i];
@@ -1034,18 +1042,18 @@ function draw() {
         x += sz * 0.72;
       }
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex11'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex11'), 380); };
   }, 'ex11');
 
   // ── 12. Opacity ───────────────────────────────────────────
-  new p5(p => {
+  new p5(function(p) {
     const COLS = 11, ROWS = 11;
-    p.setup = () => {
+    p.setup = function() {
       const w = cw('ex12');
       p.createCanvas(w, Math.min(w, 440)).parent('ex12');
       p.noStroke();
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(245);
       const t   = p.frameCount * 0.01;
       const cw2 = p.width  / COLS;
@@ -1061,17 +1069,17 @@ function draw() {
         }
       }
     };
-    p.windowResized = () => { const w = cw('ex12'); p.resizeCanvas(w, Math.min(w, 440)); };
+    p.windowResized = function() { const w = cw('ex12'); p.resizeCanvas(w, Math.min(w, 440)); };
   }, 'ex12');
 
   // ── 13. Wave chart ────────────────────────────────────────
-  new p5(p => {
-    p.setup = () => {
+  new p5(function(p) {
+    p.setup = function() {
       p.createCanvas(cw('ex13'), 380).parent('ex13');
       p.noStroke();
       p.textAlign(p.CENTER, p.TOP);
     };
-    p.draw = () => {
+    p.draw = function() {
       p.background(245);
       const n    = Waves.count;
       const t    = p.frameCount * 0.016;
@@ -1093,7 +1101,7 @@ function draw() {
       }
       p.colorMode(p.RGB, 255);
     };
-    p.windowResized = () => p.resizeCanvas(cw('ex13'), 380);
+    p.windowResized = function() { p.resizeCanvas(cw('ex13'), 380); };
   }, 'ex13');
   </script>
 
