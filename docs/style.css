@@ -671,72 +671,29 @@ section[id] {
 .ex-lab-card strong { display: block; font-family: 'Oswald', sans-serif; font-size: 1.15rem; letter-spacing: .04em; margin-bottom: 0.35rem; color: #fff; }
 .ex-lab-card p { font-size: 0.84rem; color: #999; margin: 0; line-height: 1.5; }
 
-.ex-demo {
-  display: grid;
-  grid-template-columns: 400px 1fr;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.ex-code-wrap {
+.ex-preview {
   display: flex;
   flex-direction: column;
-  background: #111;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 360px;
+  margin: 0 auto;
 }
-.ex-code-label {
-  font-family: 'Oswald', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: #555;
-  padding: 0.5rem 1.2rem;
-  border-bottom: 1px solid #222;
-}
-.ex-code {
-  flex: 1;
-  margin: 0;
-  padding: 1.3rem 1.2rem;
-  overflow-x: auto;
-  overflow-y: auto;
-  font-family: 'Courier New', monospace;
-  font-size: 0.79rem;
-  line-height: 1.7;
-  white-space: pre;
-  color: #ccc;
-}
+
 .ex-full-link {
-  display: block;
+  display: inline-block;
   font-family: 'Oswald', sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: #555;
-  padding: 0.5rem 1.2rem;
-  border-top: 1px solid #222;
+  color: var(--text-muted);
   text-decoration: none;
-  transition: color 0.15s;
+  border-bottom: 1px solid var(--border-mid);
+  transition: color 0.15s, border-color 0.15s;
 }
-.ex-full-link:hover { color: #bbb; }
+.ex-full-link:hover { color: #000; border-color: #000; }
 
-.ex-editor-btn {
-  display: block;
-  width: 100%;
-  font-family: 'Oswald', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: #555;
-  padding: 0.5rem 1.2rem;
-  border: none;
-  border-top: 1px solid #222;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  transition: color 0.15s;
-}
-.ex-editor-btn:hover { color: #bbb; }
-.ex-editor-btn.copied { color: #6c9; }
-
-.ex-canvas { overflow: hidden; background: var(--bg); }
+.ex-canvas { overflow: hidden; background: var(--bg); border: 1px solid var(--border-mid); width: 100%; }
 .ex-canvas canvas { display: block !important; width: 100% !important; }
 .section-dark .ex-canvas { background: var(--bg2); }
 
@@ -771,7 +728,6 @@ section[id] {
   .grid-layout { grid-template-columns: 1fr; }
   .terrain-layout { grid-template-columns: 1fr; }
   .terrain-controls { position: static; }
-  .ex-demo { grid-template-columns: 1fr; }
 
   .nav-hamburger { display: flex; }
 
