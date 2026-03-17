@@ -1,8 +1,8 @@
 // 09 — Luminance Field
 // range: [0, 1] maps wave output to a 0–1 fraction used directly as brightness.
-// Two layers at different speeds create a moving greyscale interference grid.
+// Three layers at different speeds and axes create a dense greyscale interference grid.
 
-const GRID = 55;
+const GRID = 90;
 let t = 0;
 
 function setup() {
@@ -27,9 +27,14 @@ function draw() {
         t:     t * 0.7,
         range: [0, 1]
       });
+      const v3 = Waves.wave(gx * 0.08 - gy * 0.09, {
+        wave:  'triangle',
+        t:     t * 1.3,
+        range: [0, 1]
+      });
 
-      fill((v1 + v2) / 2 * 220);
-      rect(gx * cell, gy * cell, cell - 0.5, cell - 0.5);
+      fill((v1 + v2 + v3) / 3 * 230);
+      rect(gx * cell, gy * cell, cell, cell);
     }
   }
 }

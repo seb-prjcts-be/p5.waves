@@ -1,10 +1,10 @@
 // 03 — Breathing Grid (instance mode)
 // range: [0, 1] gives a 0–1 fraction usable directly as a size scale.
-// The grid of dots breathes as the wave moves through it.
+// A second wave drives each dot's shade — size and colour breathe independently.
 
 new p5(function (p) {
   const GRID   = 28;
-  const maxDot = 13;
+  const maxDot = 18;
 
   p.setup = function () {
     p.createCanvas(460, 460).parent('sketch-container');
@@ -24,7 +24,13 @@ new p5(function (p) {
           range: [0, 1]
         });
 
-        p.fill(0, 0, 0, 185);
+        const shade = p.waves(gx * 0.18 - gy * 0.12, {
+          wave:  'triangle',
+          t:     t * 0.7 + gx * 0.05,
+          range: [0, 1]
+        });
+
+        p.fill(shade * 180, shade * 180, shade * 180, 210);
         p.circle(
           (gx + 0.5) * cell,
           (gy + 0.5) * cell,

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>15 — Fade Field | p5.waves examples</title>
+  <title>15 — Morph Wave | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -21,29 +21,22 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 15 — opacity output</div>
-      <h1>Fade Field</h1>
-      <p>Wave output as <strong>alpha only</strong> — shapes don't move, change size or colour. Two overlapping grids at different speeds create interference patterns purely through opacity.</p>
+      <div class="demo-number">Example 15 — wave: [a, b] + mix</div>
+      <h1>Morph Wave</h1>
+      <p>Pass <strong>two wave names</strong> as an array and animate <code>mix</code> from 0 to 1 to crossfade between formulas. Each panel morphs a different pair at its own speed.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// Two waves, same grid position, different alpha
-const a1 = Waves.wave(c * 0.35 + r * 0.28, {
-  wave:  'classic sine',
-  t:     t,
-  range: [0, 220]   // → alpha
-});
-const a2 = Waves.wave(c * 0.28 - r * 0.35, {
-  wave:  'triangle',
-  t:     t * 1.6,
-  range: [0, 180]   // → alpha
-});
+        <pre><code>// mix 0 = fully waveA, mix 1 = fully waveB
+const mix = (sin(frameCount * 0.008) + 1) * 0.5;
 
-fill(0, a1);              // black circle, large
-circle(cx, cy, cw * 0.72);
-fill(30, 80, 180, a2);   // blue circle, small
-circle(cx, cy, cw * 0.38);</code></pre>
+const x = Waves.wave(y * 0.014, {
+  wave:      ['classic sine', 'triangle'],
+  mix:       mix,
+  t:         t,
+  amplitude: 45
+});</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>
