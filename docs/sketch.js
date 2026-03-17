@@ -139,6 +139,7 @@ reg('gallery-canvas', new p5((p) => {
   p.draw = () => {
     p.background(248);
     const t = p.frameCount * 0.01;
+    const limit = cellH * 0.45;
     WAVE_NAMES.forEach((name, i) => {
       const col = i % COLS, row = Math.floor(i / COLS);
       const ox = col * cellW, oy = row * cellH;
@@ -149,7 +150,10 @@ reg('gallery-canvas', new p5((p) => {
 
       p.stroke(isHov ? 0 : 60); p.strokeWeight(isHov ? 2 : 1.2); p.noFill();
       p.beginShape();
-      for (let x = 6; x <= cellW - 6; x += 2) p.vertex(ox + x, oy + cellH * 0.55 + samplers[i].sample(x * 0.5, t));
+      for (let x = 6; x <= cellW - 6; x += 2) {
+        const raw = samplers[i].sample(x * 0.5, t);
+        p.vertex(ox + x, oy + cellH * 0.5 + Math.tanh(raw / limit) * limit);
+      }
       p.endShape();
 
       p.noStroke(); p.fill(isHov ? 0 : 100);
