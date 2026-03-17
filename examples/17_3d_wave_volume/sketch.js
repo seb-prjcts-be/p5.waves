@@ -1,5 +1,5 @@
 // 17 — 3D Wave Volume (WEBGL)
-// 16×16×16 point lattice. Waves.morph() crossfades between formulas
+// 16×16×16 point lattice. wave: [a, b] + mix crossfades between formulas
 // over 15 frames at the end of each 2-second cycle.
 
 var N          = 16;
@@ -35,12 +35,8 @@ function draw() {
   beginShape(POINTS);
   for (var xi = 0; xi < N; xi++) {
     for (var zi = 0; zi < N; zi++) {
-      var wv = Waves.morph(xi * 0.38,
-                 { wave: waveX, t: t,        amplitude: 7.5 },
-                 { wave: nextX, t: t,        amplitude: 7.5 }, mix)
-             + Waves.morph(zi * 0.38,
-                 { wave: waveZ, t: t * 0.85, amplitude: 7.5 },
-                 { wave: nextZ, t: t * 0.85, amplitude: 7.5 }, mix);
+      var wv = Waves.wave(xi * 0.38, { wave: [waveX, nextX], t: t,        amplitude: 7.5, mix: mix })
+             + Waves.wave(zi * 0.38, { wave: [waveZ, nextZ], t: t * 0.85, amplitude: 7.5, mix: mix });
       var yi = Math.max(0, Math.min(N - 1, Math.round(N / 2 + wv / 2)));
       vertex(
         -half + xi * SPACING,

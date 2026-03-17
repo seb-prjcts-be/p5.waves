@@ -299,6 +299,20 @@
 
     const internalSeed = seedFrom(seed);
 
+    // ─── Morph: wave: ['nameA', 'nameB'], mix: 0–1 ───────────
+    if (Array.isArray(waveRef)) {
+      const mix  = toUnit(secondParam.mix, 0.5);
+      const rA   = resolveWave(waveRef[0]);
+      const rB   = waveRef.length > 1 ? resolveWave(waveRef[1]) : rA;
+      const idxA = rA >= 0 ? rA : pickWaveIndex(seed);
+      const idxB = rB >= 0 ? rB : pickWaveIndex(seed);
+      const fnA  = compile(WAVES[idxA].algo);
+      const fnB  = compile(WAVES[idxB].algo);
+      const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
+      const valB = evalKernel(fnB, y, t, frequency, phase, internalSeed, mode, unpredictability);
+      return (valA + (valB - valA) * mix) * amplitude;
+    }
+
     let waveIndex;
     if (waveRef !== undefined) {
       const r = resolveWave(waveRef);
@@ -344,24 +358,43 @@
     }
 
     const internalSeed = seedFrom(seed);
+    const isMorph      = Array.isArray(opts.wave) && opts.wave.length >= 2;
+    const mixDefault   = isMorph ? toUnit(opts.mix, 0.5) : 0;
 
-    let waveIndex;
-    if (opts.wave !== undefined) {
+    let waveIndexA;
+    if (isMorph) {
+      const rA = resolveWave(opts.wave[0]);
+      waveIndexA = rA >= 0 ? rA : pickWaveIndex(seed);
+    } else if (opts.wave !== undefined) {
       const r = resolveWave(opts.wave);
-      waveIndex = r >= 0 ? r : pickWaveIndex(seed);
+      waveIndexA = r >= 0 ? r : pickWaveIndex(seed);
     } else {
-      waveIndex = pickWaveIndex(seed);
+      waveIndexA = pickWaveIndex(seed);
     }
 
-    const fn    = compile(WAVES[waveIndex].algo);
-    const stats = range !== null ? getStats(waveIndex, internalSeed) : null;
+    let waveIndexB = -1;
+    if (isMorph) {
+      const rB = resolveWave(opts.wave[1]);
+      waveIndexB = rB >= 0 ? rB : pickWaveIndex(seed);
+    }
+
+    const fn    = compile(WAVES[waveIndexA].algo);
+    const fnB   = waveIndexB >= 0 ? compile(WAVES[waveIndexB].algo) : null;
+    const stats = range !== null && !isMorph ? getStats(waveIndexA, internalSeed) : null;
 
     return {
-      waveIndex: waveIndex,
-      waveName:  WAVES[waveIndex].name,
-      sample: function (y, t) {
+      waveIndex: isMorph ? [waveIndexA, waveIndexB] : waveIndexA,
+      waveName:  isMorph
+        ? WAVES[waveIndexA].name + ' → ' + WAVES[waveIndexB].name
+        : WAVES[waveIndexA].name,
+      sample: function (y, t, mix) {
         const tVal = t !== undefined ? toNumber(t, 0) : t0;
         const val  = evalKernel(fn, y, tVal, frequency, phase, internalSeed, mode, unpredictability);
+        if (fnB !== null) {
+          const mixVal = mix !== undefined ? toUnit(mix, mixDefault) : mixDefault;
+          const valB   = evalKernel(fnB, y, tVal, frequency, phase, internalSeed, mode, unpredictability);
+          return (val + (valB - val) * mixVal) * amplitude;
+        }
         if (range !== null && stats !== null) return mapToRange(val, stats, range);
         return val * amplitude;
       }
@@ -482,29 +515,6 @@
     });
   }
 
-  // ─── Morph ───────────────────────────────────────────────────────────────────
-  //
-  // Waves.morph(y, optsA, optsB, mix)
-  //
-  // Linearly interpolates between the outputs of two wave formulas at position y.
-  //   mix = 0  → fully optsA
-  //   mix = 1  → fully optsB
-  //   mix = 0.5 → equal blend
-  //
-  // optsA / optsB accept the same options as Waves.wave():
-  //   { wave, seed, t, amplitude, frequency, phase, range, mode, unpredictability }
-  //
-  // Example:
-  //   Waves.morph(x, { wave: 'sine', t, amplitude: 80 },
-  //                  { wave: 'triangle', t, amplitude: 80 }, 0.5)
-
-  function morph(y, optsA, optsB, mix) {
-    var a = wave(y, optsA);
-    var b = wave(y, optsB);
-    mix = (mix === undefined) ? 0.5 : (mix < 0 ? 0 : mix > 1 ? 1 : mix);
-    return a + (b - a) * mix;
-  }
-
   // ─── Public API ──────────────────────────────────────────────────────────────
 
   const Waves = {
@@ -512,7 +522,6 @@
     count:         WAVES.length,
     list:          list,
     wave:          wave,
-    morph:         morph,
     createSampler: createSampler,
     createGrid:    createGrid
   };
