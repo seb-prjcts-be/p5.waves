@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>17 — 3D Wave Volume | p5.waves examples</title>
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 17 — WEBGL · 3D</div>
+      <h1>3D Wave Volume</h1>
+      <p>A 16×16×16 point lattice (4 096 points). Two <code>Waves.wave()</code> calls — one along X, one along Z — define a floating wave surface. Points within distance 3 of the surface glow; the rest are hidden. Drag to rotate.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>var wv = Waves.wave(xi * 0.38, { seed: 0, t: t,        amplitude: 7.5 })
+       + Waves.wave(zi * 0.38, { seed: 1, t: t * 0.85, amplitude: 7.5 });
+var surfaceY = wv / 2;
+
+for (var yi = 0; yi &lt; N; yi++) {
+  var dist = Math.abs(yi - (N / 2 + surfaceY));
+  if (dist &lt; 3) {
+    var alpha  = 220 * (1 - dist / 3);
+    var bright = Math.round(80 + (yi / (N - 1)) * 175);
+    stroke(bright, bright, 255, alpha);
+    point(x, y, z);
+  }
+}</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.0.0 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>
