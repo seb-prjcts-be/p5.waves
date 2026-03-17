@@ -172,6 +172,10 @@ const cells = g.sample(t);  // cells[row * g.cols + col]
 
 ## Examples
 
+The **[Examples page](https://seb-prjcts-be.github.io/p5.waves/docs/examples.html)** is an animated gallery — each section shows a small live thumbnail and links to its standalone full-code page.
+
+Standalone examples:
+
 - `00_wave_lab` — interactive Wave Lab
 - `01_basic_wave` — line wave, global mode
 - `02_instance_mode` — instance mode
@@ -179,7 +183,6 @@ const cells = g.sample(t);  // cells[row * g.cols + col]
 - `04_basic_wave_p2d` — P2D renderer
 - `05_basic_wave_webgl` — WEBGL, two samplers
 - `06_seconds_param` — seconds param
-- `07_select_by_index` — select by index
 - `08_triangle_domain` — small input domain
 - `09_range_0_1` — range [0, 1]
 - `10_wave_override` — wild mode
@@ -189,6 +192,7 @@ const cells = g.sample(t);  // cells[row * g.cols + col]
 - `14_typography` — wave output as font size, lift and opacity
 - `15_opacity` — wave output as alpha, two interfering layers
 - `16_wave_chart` — all 34 formulas as live animated bars
+- `17_3d_wave_volume` — 3D point lattice, wave cycling (WEBGL)
 
 ---
 

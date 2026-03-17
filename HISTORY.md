@@ -1,5 +1,12 @@
 # p5.waves — Version History
 
+## 2.1.1
+
+- Examples page redesigned as a lightweight animated gallery: 14 small thumbnail sketches replace the previous layout of full code panels + full-size canvases running simultaneously. Each thumbnail links to its standalone example page where the full code lives.
+- Removed copy-paste code blocks and copy-button from examples.html — code is on the individual example pages.
+- Added example `17_3d_wave_volume` to README and README_NL example lists.
+- Guide: updated working-examples count to 17.
+
 ## 2.1.0
 
 - Default amplitude changed from `1` to `100` — `Waves.wave()` and `createSampler()` now produce visible pixel values out of the box without setting amplitude explicitly

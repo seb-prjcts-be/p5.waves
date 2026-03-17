@@ -172,6 +172,10 @@ const cells = g.sample(t);  // cells[rij * g.cols + kolom]
 
 ## Voorbeelden
 
+De **[Voorbeeldenpagina](https://seb-prjcts-be.github.io/p5.waves/docs/examples.html)** is een geanimeerde galerij — elke sectie toont een kleine live miniatuur en linkt naar de volledige zelfstandige pagina met code.
+
+Zelfstandige voorbeelden:
+
 - `00_wave_lab` — interactieve Wave Lab
 - `01_basic_wave` — lijngolf, globale modus
 - `02_instance_mode` — instance-modus
@@ -179,7 +183,6 @@ const cells = g.sample(t);  // cells[rij * g.cols + kolom]
 - `04_basic_wave_p2d` — P2D renderer
 - `05_basic_wave_webgl` — WEBGL, twee samplers
 - `06_seconds_param` — seconds param
-- `07_select_by_index` — golf op index selecteren
 - `08_triangle_domain` — klein invoerdomein
 - `09_range_0_1` — range [0, 1]
 - `10_wave_override` — wild-modus
@@ -189,6 +192,7 @@ const cells = g.sample(t);  // cells[rij * g.cols + kolom]
 - `14_typography` — wave output als lettergrootte, lift en doorzichtigheid
 - `15_opacity` — wave output als alpha, twee interfererende lagen
 - `16_wave_chart` — alle 34 formules als live geanimeerde bars
+- `17_3d_wave_volume` — 3D puntrooster, golfcycling (WEBGL)
 
 ---
 
