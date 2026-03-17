@@ -3,7 +3,7 @@
 // Mouse X scrubs a time window; each layer is frozen at its own t.
 
 const LAYERS      = 16;
-const WAVE_WINDOW = 4;
+const WAVE_WINDOW = 6;
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
@@ -28,7 +28,7 @@ function draw() {
       const dy = Waves.wave(x * 0.015, {
         wave:      'classic sine',
         t:         t,
-        amplitude: 30
+        amplitude: 55
       });
       vertex(x, y0 + dy);
     }
