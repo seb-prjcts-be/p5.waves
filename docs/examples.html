@@ -749,8 +749,9 @@ var N = 16, SPACING = 22, CYCLE = 60;
 function setup() {
   createCanvas(460, 460, WEBGL);
   frameRate(30);
-  colorMode(RGB, 255);
   noFill();
+  stroke(120, 160, 255);
+  strokeWeight(4);
 }
 
 function draw() {
@@ -760,23 +761,16 @@ function draw() {
   var half  = (N - 1) * SPACING / 2;
   var waveX = Math.floor(frameCount / CYCLE) % Waves.count;
   var waveZ = (waveX + 1) % Waves.count;
-  strokeWeight(4);
+  beginShape(POINTS);
   for (var xi = 0; xi &lt; N; xi++) {
     for (var zi = 0; zi &lt; N; zi++) {
       var wv = Waves.wave(xi * 0.38, { wave: waveX, t: t,        amplitude: 7.5 })
              + Waves.wave(zi * 0.38, { wave: waveZ, t: t * 0.85, amplitude: 7.5 });
-      var surfaceY = wv / 2;
-      for (var yi = 0; yi &lt; N; yi++) {
-        var dist = Math.abs(yi - (N / 2 + surfaceY));
-        if (dist &lt; 3) {
-          var alpha  = 220 * (1 - dist / 3);
-          var bright = Math.round(80 + (yi / (N - 1)) * 175);
-          stroke(bright, bright, 255, alpha);
-          point(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
-        }
-      }
+      var yi = Math.max(0, Math.min(N - 1, Math.round(N / 2 + wv / 2)));
+      vertex(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
     }
   }
+  endShape();
 }</pre>
         <a class="ex-full-link" href="../examples/17_3d_wave_volume/" target="_blank">→ full example 17</a>
       </div>
@@ -1249,8 +1243,9 @@ function draw() {
       const w = cw('ex14');
       p.createCanvas(w, w, p.WEBGL).parent('ex14');
       p.frameRate(30);
-      p.colorMode(p.RGB, 255);
       p.noFill();
+      p.stroke(120, 160, 255);
+      p.strokeWeight(4);
     };
     p.draw = function() {
       p.background(12);
@@ -1259,23 +1254,16 @@ function draw() {
       var half  = (N - 1) * SPACING / 2;
       var waveX = Math.floor(p.frameCount / CYCLE) % Waves.count;
       var waveZ = (waveX + 1) % Waves.count;
-      p.strokeWeight(4);
+      p.beginShape(p.POINTS);
       for (var xi = 0; xi < N; xi++) {
         for (var zi = 0; zi < N; zi++) {
           var wv = Waves.wave(xi * 0.38, { wave: waveX, t: t,        amplitude: 7.5 })
                  + Waves.wave(zi * 0.38, { wave: waveZ, t: t * 0.85, amplitude: 7.5 });
-          var surfaceY = wv / 2;
-          for (var yi = 0; yi < N; yi++) {
-            var dist = Math.abs(yi - (N / 2 + surfaceY));
-            if (dist < 3) {
-              var alpha  = 220 * (1 - dist / 3);
-              var bright = Math.round(80 + (yi / (N - 1)) * 175);
-              p.stroke(bright, bright, 255, alpha);
-              p.point(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
-            }
-          }
+          var yi = Math.max(0, Math.min(N - 1, Math.round(N / 2 + wv / 2)));
+          p.vertex(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
         }
       }
+      p.endShape();
     };
     p.windowResized = function() { const w = cw('ex14'); p.resizeCanvas(w, w); };
   }, 'ex14');
