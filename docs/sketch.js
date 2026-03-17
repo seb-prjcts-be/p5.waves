@@ -197,7 +197,7 @@ reg('gallery-canvas', new p5(function(p) {
 // 3. INTERACTIVE – Live wave lab
 // ═════════════════════════════════════════════════════════════
 reg('interactive-canvas', new p5(function(p) {
-  let params = { wave: 'classic sine', amplitude: 136, frequency: 0.058, speed: 0.016, phase: 0, lines: 5, fill: true, dots: false };
+  let params = { wave: 'classic sine', amplitude: 136, frequency: 0.060, speed: 0.020, phase: 0, lines: 5, fill: true, dots: false };
   const GRAYS = [0, 40, 80, 120, 160, 30, 70, 110, 20, 50, 90, 140];
   let sampler;
 
