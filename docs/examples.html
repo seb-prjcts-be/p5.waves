@@ -795,7 +795,7 @@ function draw() {
 
   // ── 1. Wave Curtain ───────────────────────────────────────
   new p5(function(p) {
-    const THREADS = 50;
+    const THREADS = 25;
     const threads = [];
     let t = 0;
     p.setup = function() {
@@ -822,7 +822,7 @@ function draw() {
         p.stroke(0, 0, 0, alpha);
         p.strokeWeight(sw);
         p.beginShape();
-        for (let y = 0; y <= p.height; y += 3) {
+        for (let y = 0; y <= p.height; y += 6) {
           const dx = Waves.wave(y * 0.012, {
             wave:      threads[i].wave,
             t:         t + phase,
@@ -1040,7 +1040,7 @@ function draw() {
     };
     p.draw = function() {
       const t    = p.frameCount * 0.007;
-      const step = 4;
+      const step = 8;
       for (let y = 0; y < p.height; y += step) {
         for (let x = 0; x < p.width; x += step) {
           const hue = Waves.wave(x * 0.007 + y * 0.005, { wave: 'meta sine',    t: t,        range: [0, 360] });
