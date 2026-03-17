@@ -269,7 +269,9 @@ function drawWave(state) {
 
   for (let y = 0; y <= height; y += pointStep) {
     const sample = Waves.wave(y, opts);
-    const x = cx + (state.rangeEnable ? sample * state.amplitude : sample);
+    const x = cx + (state.rangeEnable
+      ? map(sample, state.range[0], state.range[1], -state.amplitude, state.amplitude)
+      : sample);
     if (state.connectLine) vertex(x, y);
     if (drawPoints) {
       noStroke();
@@ -367,7 +369,8 @@ function buildLineSnippet(state) {
     '    })';
   const xLines = state.rangeEnable
     ? '    const sample = ' + waveCall + ';\n' +
-      '    const x = width * 0.5 + sample * ' + codeNum(state.amplitude, 0) + ';\n'
+      '    const x = map(sample, ' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) +
+      ', width * 0.5 - ' + codeNum(state.amplitude, 0) + ', width * 0.5 + ' + codeNum(state.amplitude, 0) + ');\n'
     : '    const x = width * 0.5 + ' + waveCall + ';\n';
   return (
     '// p5.waves v2 \u2014 line\n' +
