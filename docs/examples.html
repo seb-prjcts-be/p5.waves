@@ -737,7 +737,7 @@ function draw() {
     <div class="section-header">
       <div class="section-tag">WEBGL · 3D · wave cycling</div>
       <h2>3D Wave <span class="accent">Volume</span></h2>
-      <p class="section-desc">16×16×16 point lattice (4 096 points). Two <code>Waves.wave()</code> calls — one along X, one along Z — define a floating wave surface. Points near the surface glow; the formula cycles through all 34 types every 2 seconds. Drag to rotate.</p>
+      <p class="section-desc">16×16×16 point lattice (4 096 points). Two <code>Waves.wave()</code> calls — one along X, one along Z — define a floating wave surface. Points near the surface glow; the formula cycles through all 34 types every 2 seconds.</p>
     </div>
     <div class="ex-demo">
       <div class="ex-code-wrap">
@@ -756,7 +756,8 @@ function setup() {
 
 function draw() {
   background(12);
-  orbitControl();
+  rotateX(-0.5);
+  rotateY(frameCount * 0.006);
   var t     = frameCount * 0.008;
   var half  = (N - 1) * SPACING / 2;
   var waveX = Math.floor(frameCount / CYCLE) % Waves.count;
@@ -1249,7 +1250,8 @@ function draw() {
     };
     p.draw = function() {
       p.background(12);
-      p.orbitControl();
+      p.rotateX(-0.5);
+      p.rotateY(p.frameCount * 0.006);
       var t     = p.frameCount * 0.008;
       var half  = (N - 1) * SPACING / 2;
       var waveX = Math.floor(p.frameCount / CYCLE) % Waves.count;

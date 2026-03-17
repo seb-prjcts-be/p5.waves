@@ -16,7 +16,8 @@ function setup() {
 
 function draw() {
   background(12);
-  orbitControl();
+  rotateX(-0.5);
+  rotateY(frameCount * 0.006);
 
   var t     = frameCount * 0.008;
   var half  = (N - 1) * SPACING / 2;
