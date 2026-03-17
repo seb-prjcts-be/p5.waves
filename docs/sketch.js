@@ -3,7 +3,6 @@
    - IntersectionObserver: pauses off-screen sketches
    - frameRate caps to reduce idle CPU usage
    - Terrain GRID=35, 4 real B&W color modes
-   - Preset save/load via localStorage
    ============================================================ */
 
 // ── WAVE NAMES ──────────────────────────────────────────────
@@ -19,28 +18,28 @@ const WAVE_NAMES = [
 ];
 
 // Populate wave select on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   const sel = document.getElementById('ctrl-wave');
   if (!sel) return;
-  WAVE_NAMES.forEach((name, i) => {
+  for (let i = 0; i < WAVE_NAMES.length; i++) {
     const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = `${i}. ${name}`;
-    if (name === 'classic sine') opt.selected = true;
+    opt.value = WAVE_NAMES[i];
+    opt.textContent = i + '. ' + WAVE_NAMES[i];
+    if (WAVE_NAMES[i] === 'classic sine') opt.selected = true;
     sel.appendChild(opt);
-  });
+  }
 });
 
 // ── PERFORMANCE: IntersectionObserver ───────────────────────
 // Pauses p5 draw loops for sketches not visible in the viewport,
 // significantly reducing CPU when user scrolls away.
 const _inst = {};
-const _observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    const s = _inst[e.target.id];
-    if (!s) return;
-    e.isIntersecting ? s.loop() : s.noLoop();
-  });
+const _observer = new IntersectionObserver(function(entries) {
+  for (let i = 0; i < entries.length; i++) {
+    const s = _inst[entries[i].target.id];
+    if (!s) continue;
+    entries[i].isIntersecting ? s.loop() : s.noLoop();
+  }
 }, { rootMargin: '100px 0px', threshold: 0 });
 
 function reg(id, sketch) {
@@ -54,7 +53,7 @@ function reg(id, sketch) {
 // ═════════════════════════════════════════════════════════════
 // 1. HERO – Multi-wave layered background (B&W)
 // ═════════════════════════════════════════════════════════════
-reg('hero-canvas', new p5((p) => {
+reg('hero-canvas', new p5(function(p) {
   const LAYERS = [
     { wave: 'classic sine',   gray: 30,  amp: 90,  freq: 0.008, speed: 0.008, weight: 2.0 },
     { wave: 'mountain peaks', gray: 80,  amp: 70,  freq: 0.010, speed: 0.012, weight: 1.5 },
@@ -67,21 +66,25 @@ reg('hero-canvas', new p5((p) => {
   ];
   let samplers = [], particles = [];
 
-  p.setup = () => {
+  p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight).parent('hero-canvas');
     p.colorMode(p.RGB, 255, 255, 255, 255);
     p.frameRate(30);
-    samplers = LAYERS.map(l => Waves.createSampler({ wave: l.wave, amplitude: l.amp, frequency: l.freq }));
+    samplers = [];
+    for (let i = 0; i < LAYERS.length; i++) {
+      samplers.push(Waves.createSampler({ wave: LAYERS[i].wave, amplitude: LAYERS[i].amp, frequency: LAYERS[i].freq }));
+    }
     for (let i = 0; i < 50; i++) {
       particles.push({ x: p.random(p.width), li: Math.floor(p.random(LAYERS.length)), size: p.random(2, 4), alpha: p.random(60, 160) });
     }
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(245, 245, 245, 35);
     const t = p.frameCount * 0.01;
     const waveY = p.height * 0.82;
-    LAYERS.forEach((l, i) => {
+    for (let i = 0; i < LAYERS.length; i++) {
+      const l = LAYERS[i];
       if (i % 2 === 0) {
         p.noStroke(); p.fill(l.gray, l.gray, l.gray, 8);
         p.beginShape();
@@ -99,20 +102,23 @@ reg('hero-canvas', new p5((p) => {
       p.beginShape();
       for (let x = 0; x <= p.width; x += 3) p.vertex(x, waveY + samplers[i].sample(x * 0.4, t * l.speed * 100));
       p.endShape();
-    });
-    particles.forEach(pt => {
+    }
+    for (let i = 0; i < particles.length; i++) {
+      const pt = particles[i];
       const l = LAYERS[pt.li];
       const y = waveY + samplers[pt.li].sample(pt.x * 0.4, t * l.speed * 100);
       pt.x += 0.7 + pt.li * 0.15;
       if (pt.x > p.width + 10) pt.x = -10;
       p.noStroke(); p.fill(l.gray, l.gray, l.gray, pt.alpha);
       p.ellipse(pt.x, y, pt.size, pt.size);
-    });
+    }
   };
 
-  p.windowResized = () => {
+  p.windowResized = function() {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
-    particles.forEach(pt => { pt.x = p.random(p.width); });
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].x = p.random(p.width);
+    }
   };
 }, 'hero-canvas'));
 
@@ -120,27 +126,30 @@ reg('hero-canvas', new p5((p) => {
 // ═════════════════════════════════════════════════════════════
 // 2. GALLERY – All 34 waves (B&W, 30 fps)
 // ═════════════════════════════════════════════════════════════
-reg('gallery-canvas', new p5((p) => {
+reg('gallery-canvas', new p5(function(p) {
   const COLS = 6;
   const ROWS = Math.ceil(WAVE_NAMES.length / COLS);
   let cellW, cellH = 90;
   let samplers = [], hovered = -1;
 
-  p.setup = () => {
+  p.setup = function() {
     const container = document.getElementById('gallery-canvas');
     const w = container.offsetWidth || 1200;
     cellW = Math.floor(w / COLS);
     p.createCanvas(cellW * COLS, cellH * ROWS).parent('gallery-canvas');
     p.textFont('Consolas, monospace');
     p.frameRate(30);
-    samplers = WAVE_NAMES.map(name => Waves.createSampler({ wave: name, amplitude: cellH * 0.28, frequency: 1 }));
+    samplers = [];
+    for (let i = 0; i < WAVE_NAMES.length; i++) {
+      samplers.push(Waves.createSampler({ wave: WAVE_NAMES[i], amplitude: cellH * 0.28, frequency: 1 }));
+    }
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(248);
     const t = p.frameCount * 0.01;
     const limit = cellH * 0.45;
-    WAVE_NAMES.forEach((name, i) => {
+    for (let i = 0; i < WAVE_NAMES.length; i++) {
       const col = i % COLS, row = Math.floor(i / COLS);
       const ox = col * cellW, oy = row * cellH;
       const isHov = i === hovered;
@@ -162,34 +171,33 @@ reg('gallery-canvas', new p5((p) => {
       p.text(i, ox + 16, oy + 13);
 
       p.fill(isHov ? 0 : 120); p.textSize(9); p.textAlign(p.LEFT, p.BOTTOM);
-      p.text(name, ox + 8, oy + cellH - 7);
+      p.text(WAVE_NAMES[i], ox + 8, oy + cellH - 7);
 
       p.stroke(215); p.strokeWeight(1);
       if (col < COLS - 1) p.line(ox + cellW, oy, ox + cellW, oy + cellH);
       if (row < ROWS - 1) p.line(ox, oy + cellH, ox + cellW, oy + cellH);
-    });
+    }
   };
 
-  p.mouseMoved = () => {
+  p.mouseMoved = function() {
     const idx = Math.floor(p.mouseY / cellH) * COLS + Math.floor(p.mouseX / cellW);
     hovered = (idx >= 0 && idx < WAVE_NAMES.length) ? idx : -1;
   };
 
-  p.mouseExited = () => { hovered = -1; };
+  p.mouseExited = function() { hovered = -1; };
 
-  p.windowResized = () => {
+  p.windowResized = function() {
     const container = document.getElementById('gallery-canvas');
     cellW = Math.floor((container.offsetWidth || 1200) / COLS);
     p.resizeCanvas(cellW * COLS, cellH * ROWS);
-    samplers = WAVE_NAMES.map(name => Waves.createSampler({ wave: name, amplitude: cellH * 0.28, frequency: 1 }));
   };
 }, 'gallery-canvas'));
 
 
 // ═════════════════════════════════════════════════════════════
-// 3. INTERACTIVE – Live wave lab + preset system
+// 3. INTERACTIVE – Live wave lab
 // ═════════════════════════════════════════════════════════════
-reg('interactive-canvas', new p5((p) => {
+reg('interactive-canvas', new p5(function(p) {
   let params = { wave: 'classic sine', amplitude: 80, frequency: 0.02, speed: 0.01, phase: 0, lines: 5, fill: false, dots: false };
   const GRAYS = [0, 40, 80, 120, 160, 30, 70, 110, 20, 50, 90, 140];
   let sampler;
@@ -224,19 +232,21 @@ reg('interactive-canvas', new p5((p) => {
 s.sample(x, t * ${params.speed.toFixed(3)})`;
   }
 
-  p.setup = () => {
+  p.setup = function() {
     const container = document.getElementById('interactive-canvas');
     const w = container.offsetWidth || 800;
     p.createCanvas(w, Math.round(w * 3 / 4)).parent('interactive-canvas');
     sampler = Waves.createSampler({ wave: params.wave, amplitude: params.amplitude, frequency: params.frequency, phase: params.phase });
     updateCode();
 
-    ['ctrl-wave','ctrl-amplitude','ctrl-frequency','ctrl-speed','ctrl-phase','ctrl-lines','ctrl-fill','ctrl-dots']
-      .forEach(id => { const el = document.getElementById(id); if (el) { el.addEventListener('input', readControls); el.addEventListener('change', readControls); } });
-
+    const ids = ['ctrl-wave','ctrl-amplitude','ctrl-frequency','ctrl-speed','ctrl-phase','ctrl-lines','ctrl-fill','ctrl-dots'];
+    for (let i = 0; i < ids.length; i++) {
+      const el = document.getElementById(ids[i]);
+      if (el) { el.addEventListener('input', readControls); el.addEventListener('change', readControls); }
+    }
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(248);
     const t = p.frameCount * params.speed * 100;
 
@@ -269,10 +279,10 @@ s.sample(x, t * ${params.speed.toFixed(3)})`;
 
     p.noStroke(); p.fill(180); p.textSize(10); p.textFont('Consolas, monospace');
     p.textAlign(p.LEFT, p.TOP);
-    p.text(`wave: "${params.wave}"  ·  ${p.frameRate().toFixed(0)} fps`, 10, 10);
+    p.text('wave: "' + params.wave + '"  ·  ' + p.frameRate().toFixed(0) + ' fps', 10, 10);
   };
 
-  p.windowResized = () => {
+  p.windowResized = function() {
     const container = document.getElementById('interactive-canvas');
     const w = container.offsetWidth || 800;
     p.resizeCanvas(w, Math.round(w * 3 / 4));
@@ -283,7 +293,7 @@ s.sample(x, t * ${params.speed.toFixed(3)})`;
 // ═════════════════════════════════════════════════════════════
 // 4a. GRID – Binary threshold (B&W cells)
 // ═════════════════════════════════════════════════════════════
-reg('grid-binary-canvas', new p5((p) => {
+reg('grid-binary-canvas', new p5(function(p) {
   const COLS = 24, ROWS = 18;
   let grid, currentRowWave = 'smooth solid sine', currentColWave = 'ramp up sine';
   let currentSpeed = 1, currentThreshold = 0;
@@ -304,7 +314,7 @@ reg('grid-binary-canvas', new p5((p) => {
 const cells = g.sample(t); // Uint8Array`;
   }
 
-  p.setup = () => {
+  p.setup = function() {
     const container = document.getElementById('grid-binary-canvas');
     const w = container.offsetWidth || 500;
     p.createCanvas(w, Math.round(w * ROWS / COLS)).parent('grid-binary-canvas');
@@ -312,7 +322,7 @@ const cells = g.sample(t); // Uint8Array`;
     updateCode();
     p.noStroke();
 
-    const sync = () => {
+    function sync() {
       currentRowWave   = document.getElementById('grid-row-wave').value;
       currentColWave   = document.getElementById('grid-col-wave').value;
       currentSpeed     = document.getElementById('grid-speed').value / 30;
@@ -320,14 +330,15 @@ const cells = g.sample(t); // Uint8Array`;
       buildGrid();
       updateCode();
       p.loop();
-    };
-    ['grid-row-wave','grid-col-wave','grid-speed','grid-threshold'].forEach(id => {
-      const el = document.getElementById(id);
+    }
+    const ids = ['grid-row-wave','grid-col-wave','grid-speed','grid-threshold'];
+    for (let i = 0; i < ids.length; i++) {
+      const el = document.getElementById(ids[i]);
       if (el) { el.addEventListener('change', sync); el.addEventListener('input', sync); }
-    });
+    }
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(245);
     const t = p.frameCount * 0.004;
     const cells = grid.sample(t);
@@ -342,7 +353,7 @@ const cells = g.sample(t); // Uint8Array`;
     }
   };
 
-  p.windowResized = () => {
+  p.windowResized = function() {
     const container = document.getElementById('grid-binary-canvas');
     const w = container.offsetWidth || 500;
     p.resizeCanvas(w, Math.round(w * ROWS / COLS));
@@ -354,7 +365,7 @@ const cells = g.sample(t); // Uint8Array`;
 // ═════════════════════════════════════════════════════════════
 // 4b. GRID – Continuous Float32 (grayscale)
 // ═════════════════════════════════════════════════════════════
-reg('grid-float-canvas', new p5((p) => {
+reg('grid-float-canvas', new p5(function(p) {
   const COLS = 24, ROWS = 18;
   let grid, seedA = 0, speed = 0.02, style = 'rect';
 
@@ -373,27 +384,28 @@ reg('grid-float-canvas', new p5((p) => {
 const cells = g.sample(t); // Float32Array`;
   }
 
-  p.setup = () => {
+  p.setup = function() {
     const container = document.getElementById('grid-float-canvas');
     const w = container.offsetWidth || 500;
     p.createCanvas(w, Math.round(w * ROWS / COLS)).parent('grid-float-canvas');
     buildGrid();
     updateCode();
 
-    const syncFloat = () => {
+    function syncFloat() {
       seedA = +document.getElementById('grid-seed-a').value;
       speed = document.getElementById('grid-float-speed').value / 1000;
       style = document.getElementById('grid-style').value;
       buildGrid();
       updateCode();
-    };
-    ['grid-seed-a','grid-float-speed','grid-style'].forEach(id => {
-      const el = document.getElementById(id);
+    }
+    const ids = ['grid-seed-a','grid-float-speed','grid-style'];
+    for (let i = 0; i < ids.length; i++) {
+      const el = document.getElementById(ids[i]);
       if (el) { el.addEventListener('input', syncFloat); el.addEventListener('change', syncFloat); }
-    });
+    }
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(245);
     const t = p.frameCount * speed * 5;
     const cells = grid.sample(t);
@@ -416,7 +428,7 @@ const cells = g.sample(t); // Float32Array`;
     }
   };
 
-  p.windowResized = () => {
+  p.windowResized = function() {
     const container = document.getElementById('grid-float-canvas');
     const w = container.offsetWidth || 500;
     p.resizeCanvas(w, Math.round(w * ROWS / COLS));
@@ -427,7 +439,7 @@ const cells = g.sample(t); // Float32Array`;
 // ═════════════════════════════════════════════════════════════
 // 5. WILD MODE (stable=black → wild=light gray)
 // ═════════════════════════════════════════════════════════════
-reg('wild-canvas', new p5((p) => {
+reg('wild-canvas', new p5(function(p) {
   const NUM_LINES = 8;
   let wave = 'classic sine', speed = 0.008, amplitude = 100, frequency = 0.010, wildnessMax = 0.95;
 
@@ -450,31 +462,34 @@ reg('wild-canvas', new p5((p) => {
 
   function bindSlider(id, handler) {
     const el = document.getElementById(id);
-    el?.addEventListener('input',  handler);
-    el?.addEventListener('change', handler);
+    if (el) {
+      el.addEventListener('input',  handler);
+      el.addEventListener('change', handler);
+    }
   }
 
-  p.setup = () => {
+  p.setup = function() {
     const container = document.getElementById('wild-canvas');
     p.createCanvas(container.offsetWidth || 1100, 360).parent('wild-canvas');
     p.textFont('Consolas, monospace');
 
-    document.getElementById('wild-wave')?.addEventListener('change', e => { wave = e.target.value; updateWildCode(); });
-    bindSlider('wild-speed',    e => { speed       = e.target.value / 1000;  updateWildCode(); });
-    bindSlider('wild-amplitude',e => { amplitude   = +e.target.value;        updateWildCode(); });
-    bindSlider('wild-frequency',e => { frequency   = e.target.value / 1000;  updateWildCode(); });
-    bindSlider('wild-wildness', e => { wildnessMax = e.target.value / 100;   updateWildCode(); });
+    const waveEl = document.getElementById('wild-wave');
+    if (waveEl) waveEl.addEventListener('change', function(e) { wave = e.target.value; updateWildCode(); });
+    bindSlider('wild-speed',     function(e) { speed       = e.target.value / 1000; updateWildCode(); });
+    bindSlider('wild-amplitude', function(e) { amplitude   = +e.target.value;       updateWildCode(); });
+    bindSlider('wild-frequency', function(e) { frequency   = e.target.value / 1000; updateWildCode(); });
+    bindSlider('wild-wildness',  function(e) { wildnessMax = e.target.value / 100;  updateWildCode(); });
 
     updateWildCode();
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(245, 245, 245, 35);
     const t = p.frameCount * speed * 100;
 
     p.noStroke(); p.fill(160); p.textSize(9);
     p.textAlign(p.LEFT,  p.TOP); p.text('stable  (0.0)', 10, 12);
-    p.textAlign(p.RIGHT, p.TOP); p.text(`wild  (${wildnessMax.toFixed(2)})`, p.width - 10, 12);
+    p.textAlign(p.RIGHT, p.TOP); p.text('wild  (' + wildnessMax.toFixed(2) + ')', p.width - 10, 12);
 
     for (let li = 0; li < NUM_LINES; li++) {
       const unpred = (li / (NUM_LINES - 1)) * wildnessMax;
@@ -492,11 +507,14 @@ reg('wild-canvas', new p5((p) => {
       p.endShape();
     }
 
-    // Scale bar
+    // Scale bar – 20 blocks instead of pixel-by-pixel
     p.noStroke();
-    for (let x = 0; x < p.width; x++) {
-      const g = Math.round(p.lerp(0, 170, x / p.width));
-      p.fill(g, g, g, 180); p.rect(x, p.height - 12, 1, 6);
+    const steps = 20;
+    const bw = p.width / steps;
+    for (let sx = 0; sx < steps; sx++) {
+      const g = Math.round((sx / (steps - 1)) * 170);
+      p.fill(g, g, g, 180);
+      p.rect(sx * bw, p.height - 12, bw + 1, 6);
     }
     p.fill(140); p.textSize(9);
     p.textAlign(p.LEFT,   p.BOTTOM); p.text('0.0', 4, p.height - 15);
@@ -504,7 +522,7 @@ reg('wild-canvas', new p5((p) => {
     p.textAlign(p.CENTER, p.BOTTOM); p.text('unpredictability', p.width / 2, p.height - 15);
   };
 
-  p.windowResized = () => {
+  p.windowResized = function() {
     const container = document.getElementById('wild-canvas');
     p.resizeCanvas(container.offsetWidth || 1100, 360);
   };
@@ -514,7 +532,7 @@ reg('wild-canvas', new p5((p) => {
 // ═════════════════════════════════════════════════════════════
 // 6. 3D TERRAIN – WEBGL, GRID=35, 4 real B&W color modes
 // ═════════════════════════════════════════════════════════════
-reg('terrain-canvas', new p5((p) => {
+reg('terrain-canvas', new p5(function(p) {
   const GRID = 35;
   let terrainH = 100, terrainSpeed = 0.023;
   let waveX = 'grow random', waveZ = 'bumpy sine';
@@ -536,8 +554,6 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
 // display: '${colorMode}', wireframe: ${wireframe}, solid: ${solid}`;
   }
 
-  // Four real B&W color modes
-  // v = sum of two samplers → range [-2·terrainH, +2·terrainH]
   function grayFor(v, gx, gz) {
     const n = p.constrain((v + terrainH * 2) / (terrainH * 4), 0, 1);
     switch (colorMode) {
@@ -548,7 +564,7 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
         return Math.round(p.lerp(200, 20, band));
       }
       case 'fog': {
-        const depth = gz / GRID; // 0 = near, 1 = far
+        const depth = gz / GRID;
         const base  = Math.round(p.lerp(210, 20, n));
         return Math.round(p.lerp(base, 210, depth * 0.65));
       }
@@ -556,7 +572,15 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     }
   }
 
-  p.setup = () => {
+  function bind(id, fn) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input',  function() { fn(); updateTerrainCode(); p.loop(); });
+      el.addEventListener('change', function() { fn(); updateTerrainCode(); p.loop(); });
+    }
+  }
+
+  p.setup = function() {
     const container = document.getElementById('terrain-canvas');
     const cnv = p.createCanvas(container.offsetWidth || 800, 480, p.WEBGL);
     cnv.parent('terrain-canvas');
@@ -564,38 +588,29 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     buildSamplers();
     updateTerrainCode();
 
-    const bind = (id, fn) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener('input', () => { fn(); updateTerrainCode(); p.loop(); });
-        el.addEventListener('change', () => { fn(); updateTerrainCode(); p.loop(); });
-      }
-    };
-
-    bind('terrain-wave-x', () => { waveX = document.getElementById('terrain-wave-x').value; buildSamplers(); });
-    bind('terrain-wave-z', () => { waveZ = document.getElementById('terrain-wave-z').value; buildSamplers(); });
-    bind('terrain-height', () => {
+    bind('terrain-wave-x', function() { waveX = document.getElementById('terrain-wave-x').value; buildSamplers(); });
+    bind('terrain-wave-z', function() { waveZ = document.getElementById('terrain-wave-z').value; buildSamplers(); });
+    bind('terrain-height', function() {
       terrainH = +document.getElementById('terrain-height').value;
       document.getElementById('val-height').textContent = terrainH;
       buildSamplers();
     });
-    bind('terrain-speed', () => {
+    bind('terrain-speed', function() {
       terrainSpeed = document.getElementById('terrain-speed').value / 1000;
       document.getElementById('val-terrain-speed').textContent = terrainSpeed.toFixed(3);
     });
-    bind('terrain-color', () => { colorMode = document.getElementById('terrain-color').value; });
-    bind('terrain-wireframe', () => {
+    bind('terrain-color', function() { colorMode = document.getElementById('terrain-color').value; });
+    bind('terrain-wireframe', function() {
       wireframe = document.getElementById('terrain-wireframe').checked;
       if (!wireframe && !solid) { solid = true; document.getElementById('terrain-solid').checked = true; }
     });
-    bind('terrain-solid', () => {
+    bind('terrain-solid', function() {
       solid = document.getElementById('terrain-solid').checked;
       if (!wireframe && !solid) { wireframe = true; document.getElementById('terrain-wireframe').checked = true; }
     });
-
   };
 
-  p.draw = () => {
+  p.draw = function() {
     p.background(245);
     const t    = p.frameCount * terrainSpeed;
     const size = Math.min(p.width, p.height) * 0.85;
@@ -604,7 +619,6 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     p.rotateX(-0.55); p.rotateY(0.35);
     p.translate(-size / 2, 0, -size / 2);
 
-    // Build height map once per frame
     const H = [];
     for (let z = 0; z <= GRID; z++) {
       H[z] = [];
@@ -642,14 +656,13 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
       }
     }
 
-    // HUD (screen-space, after reset)
     p.resetMatrix();
     p.noStroke(); p.fill(160); p.textSize(10);
     p.textAlign(p.LEFT, p.TOP);
-    p.text(`X: ${waveX}  ·  Z: ${waveZ}  ·  display: ${colorMode}`, -p.width/2 + 10, -p.height/2 + 10);
+    p.text('X: ' + waveX + '  ·  Z: ' + waveZ + '  ·  display: ' + colorMode, -p.width/2 + 10, -p.height/2 + 10);
   };
 
-  p.windowResized = () => {
+  p.windowResized = function() {
     const container = document.getElementById('terrain-canvas');
     p.resizeCanvas(container.offsetWidth || 800, 480);
   };
