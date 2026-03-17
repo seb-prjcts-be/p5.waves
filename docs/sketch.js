@@ -141,14 +141,13 @@ reg('gallery-canvas', new p5(function(p) {
     p.frameRate(30);
     samplers = [];
     for (let i = 0; i < WAVE_NAMES.length; i++) {
-      samplers.push(Waves.createSampler({ wave: WAVE_NAMES[i], amplitude: cellH * 0.28, frequency: 1 }));
+      samplers.push(Waves.createSampler({ wave: WAVE_NAMES[i], amplitude: cellH * 0.44, frequency: 1 }));
     }
   };
 
   p.draw = function() {
     p.background(248);
     const t = p.frameCount * 0.01;
-    const limit = cellH * 0.45;
     for (let i = 0; i < WAVE_NAMES.length; i++) {
       const col = i % COLS, row = Math.floor(i / COLS);
       const ox = col * cellW, oy = row * cellH;
@@ -161,7 +160,7 @@ reg('gallery-canvas', new p5(function(p) {
       p.beginShape();
       for (let x = 6; x <= cellW - 6; x += 2) {
         const raw = samplers[i].sample(x * 0.5, t);
-        p.vertex(ox + x, oy + cellH * 0.5 + Math.tanh(raw / limit) * limit);
+        p.vertex(ox + x, oy + cellH * 0.5 + raw);
       }
       p.endShape();
 

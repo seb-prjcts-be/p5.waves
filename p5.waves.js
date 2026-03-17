@@ -1,7 +1,7 @@
 /*!
  * p5.waves
  * Wave sampling for p5.js. Always returns a number.
- * Version 2.0.0
+ * Version 2.1.0
  * Author: seb@prjcts
  * License: MIT
  */
@@ -274,7 +274,7 @@
   // Returns: always a number.
 
   function wave(y, secondParam) {
-    let waveRef, seed = 0, t = 0, amplitude = 1, range = null;
+    let waveRef, seed = 0, t = 0, amplitude = 100, range = null;
     let frequency = 1, phase = 0, mode = 'stable', unpredictability = 0;
 
     if (secondParam !== null && secondParam !== undefined) {
@@ -286,7 +286,7 @@
         if (secondParam.wave !== undefined) waveRef = secondParam.wave;
         seed            = toNumber(secondParam.seed, 0);
         t               = toNumber(secondParam.t, 0);
-        amplitude       = toNumber(secondParam.amplitude, 1);
+        amplitude       = toNumber(secondParam.amplitude, 100);
         frequency       = toNumber(secondParam.frequency, 1);
         phase           = toNumber(secondParam.phase, 0);
         mode            = normalizeName(secondParam.mode || 'stable') === 'wild' ? 'wild' : 'stable';
@@ -332,7 +332,7 @@
     const opts           = options || {};
     const seed           = toNumber(opts.seed, 0);
     const t0             = toNumber(opts.t, 0);
-    const amplitude      = toNumber(opts.amplitude, 1);
+    const amplitude      = toNumber(opts.amplitude, 100);
     const frequency      = toNumber(opts.frequency, 1);
     const phase          = toNumber(opts.phase, 0);
     const mode           = normalizeName(opts.mode || 'stable') === 'wild' ? 'wild' : 'stable';

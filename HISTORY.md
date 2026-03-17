@@ -1,5 +1,11 @@
 # p5.waves — Version History
 
+## 2.1.0
+
+- Default amplitude changed from `1` to `100` — `Waves.wave()` and `createSampler()` now produce visible pixel values out of the box without setting amplitude explicitly
+- Gallery showcase: larger amplitude, removed Math.tanh clamp for more expressive wave rendering
+- CDN references updated to v2.1.0
+
 ## 2.0.0 — Complete Rewrite
 
 **v1 call patterns are not supported in v2.** The v1 source is available at the [`v1` tag](https://github.com/seb-prjcts-be/p5.waves/tree/v1) on GitHub.
