@@ -49,12 +49,21 @@
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
 const THREADS = 50;
+const threads = [];
 let t = 0;
 
 function setup() {
   createCanvas(600, 460);
   strokeCap(ROUND);
   noFill();
+
+  for (let i = 0; i &lt; THREADS; i++) {
+    threads.push({
+      wave: floor(random(Waves.count)),
+      amp:  random(25, 55),
+      freq: random(0.7, 1.8)
+    });
+  }
 }
 
 function draw() {
@@ -72,10 +81,10 @@ function draw() {
     beginShape();
     for (let y = 0; y &lt;= height; y += 3) {
       const dx = Waves.wave(y * 0.012, {
-        wave:      'smooth solid sine',
+        wave:      threads[i].wave,
         t:         t + phase,
-        amplitude: 45,
-        frequency: 1.2
+        amplitude: threads[i].amp,
+        frequency: threads[i].freq
       });
       vertex(x0 + dx, y);
     }
@@ -787,12 +796,20 @@ function draw() {
   // ── 1. Wave Curtain ───────────────────────────────────────
   new p5(function(p) {
     const THREADS = 50;
+    const threads = [];
     let t = 0;
     p.setup = function() {
       const w = cw('ex1');
       p.createCanvas(w, Math.round(w * 3/4)).parent('ex1');
       p.strokeCap(p.ROUND);
       p.noFill();
+      for (let i = 0; i < THREADS; i++) {
+        threads.push({
+          wave: p.floor(p.random(Waves.count)),
+          amp:  p.random(25, 55),
+          freq: p.random(0.7, 1.8)
+        });
+      }
     };
     p.draw = function() {
       p.background(245);
@@ -807,10 +824,10 @@ function draw() {
         p.beginShape();
         for (let y = 0; y <= p.height; y += 3) {
           const dx = Waves.wave(y * 0.012, {
-            wave:      'smooth solid sine',
+            wave:      threads[i].wave,
             t:         t + phase,
-            amplitude: 45,
-            frequency: 1.2
+            amplitude: threads[i].amp,
+            frequency: threads[i].freq
           });
           p.vertex(x0 + dx, y);
         }

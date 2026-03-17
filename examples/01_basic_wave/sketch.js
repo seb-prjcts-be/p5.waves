@@ -1,14 +1,23 @@
 // 01 — Wave Curtain
-// 50 vertical threads displaced by Waves.wave() create a flowing cloth.
-// Phase offset between threads makes the wave travel sideways.
+// 50 vertical threads, each with a randomly chosen wave formula,
+// amplitude, and frequency. Threads animate independently via phase offset.
 
 const THREADS = 50;
+const threads = [];
 let t = 0;
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
   strokeCap(ROUND);
   noFill();
+
+  for (let i = 0; i < THREADS; i++) {
+    threads.push({
+      wave: floor(random(Waves.count)),
+      amp:  random(25, 55),
+      freq: random(0.7, 1.8)
+    });
+  }
 }
 
 function draw() {
@@ -27,10 +36,10 @@ function draw() {
     beginShape();
     for (let y = 0; y <= height; y += 3) {
       const dx = Waves.wave(y * 0.012, {
-        wave:      'smooth solid sine',
+        wave:      threads[i].wave,
         t:         t + phase,
-        amplitude: 45,
-        frequency: 1.2
+        amplitude: threads[i].amp,
+        frequency: threads[i].freq
       });
       vertex(x0 + dx, y);
     }
