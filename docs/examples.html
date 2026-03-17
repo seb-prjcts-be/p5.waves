@@ -91,7 +91,7 @@ function draw() {
         <div class="ex-code-label">copy-paste sketch</div>
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
-const INTERVAL = 3; // switch wave every 3 s
+const INTERVAL = 1.5; // switch wave every 1.5 s
 
 function setup() {
   createCanvas(600, 450);
@@ -103,7 +103,7 @@ function draw() {
   const t      = frameCount * 0.01;
   const period = floor(t / INTERVAL);
 
-  stroke(0); strokeWeight(1.5);
+  noFill(); stroke(0); strokeWeight(1.5);
   beginShape();
   for (let x = 0; x &lt;= width; x += 3) {
     vertex(x, height / 2 + Waves.wave(x * 0.02, {
@@ -225,7 +225,7 @@ function draw() {
     textAlign(LEFT);
     text(wave, 8, y0 - 18);
     stroke(0); noFill();
-  });
+  }
 }</pre>
       </div>
       <div id="ex3" class="ex-canvas"></div>
@@ -745,24 +745,27 @@ function draw() {
   function cw(id) { return document.getElementById(id).offsetWidth || 700; }
 
   // ── Open in p5 editor buttons ─────────────────────────────
-  document.querySelectorAll('.ex-code-wrap').forEach(wrap => {
-    const btn = document.createElement('button');
-    btn.className = 'ex-editor-btn';
-    btn.textContent = '⎘ copy code';
-    btn.addEventListener('click', () => {
-      const code = wrap.querySelector('.ex-code').textContent;
-      navigator.clipboard.writeText(code).catch(() => {});
-      btn.textContent = '✓ copied';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = '⎘ copy code';
-        btn.classList.remove('copied');
-      }, 2500);
-    });
-    const fullLink = wrap.querySelector('.ex-full-link');
-    if (fullLink) wrap.insertBefore(btn, fullLink);
-    else wrap.appendChild(btn);
-  });
+  var wraps = document.querySelectorAll('.ex-code-wrap');
+  for (var i = 0; i < wraps.length; i++) {
+    (function(wrap) {
+      var btn = document.createElement('button');
+      btn.className = 'ex-editor-btn';
+      btn.textContent = '⎘ copy code';
+      btn.addEventListener('click', function() {
+        var code = wrap.querySelector('.ex-code').textContent;
+        navigator.clipboard.writeText(code).catch(function() {});
+        btn.textContent = '✓ copied';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '⎘ copy code';
+          btn.classList.remove('copied');
+        }, 2500);
+      });
+      var fullLink = wrap.querySelector('.ex-full-link');
+      if (fullLink) wrap.insertBefore(btn, fullLink);
+      else wrap.appendChild(btn);
+    })(wraps[i]);
+  }
 
   // ── 1. Wave basics ────────────────────────────────────────
   new p5(function(p) {
@@ -804,9 +807,9 @@ function draw() {
     p.draw = function() {
       p.background(245);
       const t      = p.frameCount * 0.01;
-      const period = Math.floor(t / 3);
+      const period = Math.floor(t / 1.5);
       const name   = Waves.data[period % Waves.count].name;
-      p.stroke(0); p.strokeWeight(1.5);
+      p.noFill(); p.stroke(0); p.strokeWeight(1.5);
       p.beginShape();
       for (let x = 0; x <= p.width; x += 3) {
         p.vertex(x, p.height / 2 + Waves.wave(x * 0.02, {
