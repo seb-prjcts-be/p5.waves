@@ -732,6 +732,58 @@ function draw() {
     </div>
   </section>
 
+  <!-- 14. 3D WAVE VOLUME -->
+  <section id="wavevolume" class="section">
+    <div class="section-header">
+      <div class="section-tag">WEBGL · 3D · wave cycling</div>
+      <h2>3D Wave <span class="accent">Volume</span></h2>
+      <p class="section-desc">16×16×16 point lattice (4 096 points). Two <code>Waves.wave()</code> calls — one along X, one along Z — define a floating wave surface. Points near the surface glow; the formula cycles through all 34 types every 2 seconds. Drag to rotate.</p>
+    </div>
+    <div class="ex-demo">
+      <div class="ex-code-wrap">
+        <div class="ex-code-label">copy-paste sketch</div>
+        <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
+
+var N = 16, SPACING = 22, CYCLE = 60;
+
+function setup() {
+  createCanvas(460, 460, WEBGL);
+  frameRate(30);
+  colorMode(RGB, 255);
+  noFill();
+}
+
+function draw() {
+  background(12);
+  orbitControl();
+  var t     = frameCount * 0.008;
+  var half  = (N - 1) * SPACING / 2;
+  var waveX = Math.floor(frameCount / CYCLE) % Waves.count;
+  var waveZ = (waveX + 1) % Waves.count;
+  strokeWeight(4);
+  for (var xi = 0; xi &lt; N; xi++) {
+    for (var zi = 0; zi &lt; N; zi++) {
+      var wv = Waves.wave(xi * 0.38, { wave: waveX, t: t,        amplitude: 7.5 })
+             + Waves.wave(zi * 0.38, { wave: waveZ, t: t * 0.85, amplitude: 7.5 });
+      var surfaceY = wv / 2;
+      for (var yi = 0; yi &lt; N; yi++) {
+        var dist = Math.abs(yi - (N / 2 + surfaceY));
+        if (dist &lt; 3) {
+          var alpha  = 220 * (1 - dist / 3);
+          var bright = Math.round(80 + (yi / (N - 1)) * 175);
+          stroke(bright, bright, 255, alpha);
+          point(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
+        }
+      }
+    }
+  }
+}</pre>
+        <a class="ex-full-link" href="../examples/17_3d_wave_volume/" target="_blank">→ full example 17</a>
+      </div>
+      <div id="ex14" class="ex-canvas"></div>
+    </div>
+  </section>
+
   <footer>
     <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
     <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode</p>
@@ -1189,6 +1241,44 @@ function draw() {
     };
     p.windowResized = function() { const w = cw('ex13'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex13');
+
+  // ── 14. 3D Wave Volume ────────────────────────────────────
+  new p5(function(p) {
+    var N = 16, SPACING = 22, CYCLE = 60;
+    p.setup = function() {
+      const w = cw('ex14');
+      p.createCanvas(w, w, p.WEBGL).parent('ex14');
+      p.frameRate(30);
+      p.colorMode(p.RGB, 255);
+      p.noFill();
+    };
+    p.draw = function() {
+      p.background(12);
+      p.orbitControl();
+      var t     = p.frameCount * 0.008;
+      var half  = (N - 1) * SPACING / 2;
+      var waveX = Math.floor(p.frameCount / CYCLE) % Waves.count;
+      var waveZ = (waveX + 1) % Waves.count;
+      p.strokeWeight(4);
+      for (var xi = 0; xi < N; xi++) {
+        for (var zi = 0; zi < N; zi++) {
+          var wv = Waves.wave(xi * 0.38, { wave: waveX, t: t,        amplitude: 7.5 })
+                 + Waves.wave(zi * 0.38, { wave: waveZ, t: t * 0.85, amplitude: 7.5 });
+          var surfaceY = wv / 2;
+          for (var yi = 0; yi < N; yi++) {
+            var dist = Math.abs(yi - (N / 2 + surfaceY));
+            if (dist < 3) {
+              var alpha  = 220 * (1 - dist / 3);
+              var bright = Math.round(80 + (yi / (N - 1)) * 175);
+              p.stroke(bright, bright, 255, alpha);
+              p.point(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
+            }
+          }
+        }
+      }
+    };
+    p.windowResized = function() { const w = cw('ex14'); p.resizeCanvas(w, w); };
+  }, 'ex14');
   </script>
 
 </body>
