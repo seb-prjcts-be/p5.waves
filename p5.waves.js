@@ -483,6 +483,29 @@
     });
   }
 
+  // ─── Morph ───────────────────────────────────────────────────────────────────
+  //
+  // Waves.morph(y, optsA, optsB, mix)
+  //
+  // Linearly interpolates between the outputs of two wave formulas at position y.
+  //   mix = 0  → fully optsA
+  //   mix = 1  → fully optsB
+  //   mix = 0.5 → equal blend
+  //
+  // optsA / optsB accept the same options as Waves.wave():
+  //   { wave, seed, t, amplitude, frequency, phase, range, mode, unpredictability }
+  //
+  // Example:
+  //   Waves.morph(x, { wave: 'sine', t, amplitude: 80 },
+  //                  { wave: 'triangle', t, amplitude: 80 }, 0.5)
+
+  function morph(y, optsA, optsB, mix) {
+    var a = wave(y, optsA);
+    var b = wave(y, optsB);
+    mix = (mix === undefined) ? 0.5 : (mix < 0 ? 0 : mix > 1 ? 1 : mix);
+    return a + (b - a) * mix;
+  }
+
   // ─── Public API ──────────────────────────────────────────────────────────────
 
   const Waves = {
@@ -490,6 +513,7 @@
     count:         WAVES.length,
     list:          list,
     wave:          wave,
+    morph:         morph,
     createSampler: createSampler,
     createGrid:    createGrid
   };
