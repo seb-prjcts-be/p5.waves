@@ -29,8 +29,8 @@ function draw() {
       const dx = Waves.wave(y * 0.012, {
         wave:      'smooth solid sine',
         t:         t + phase,
-        amplitude: 14,
-        frequency: 1.6
+        amplitude: 45,
+        frequency: 1.2
       });
       vertex(x0 + dx, y);
     }

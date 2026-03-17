@@ -497,9 +497,9 @@ function draw() {
   <!-- 9. COLOR OUTPUT -->
   <section id="color" class="section">
     <div class="section-header">
-      <div class="section-tag">output: hue · saturation — colorMode(HSB)</div>
-      <h2>Wave as <span class="accent">colour</span></h2>
-      <p class="section-desc">Wave output mapped to hue and saturation in HSB mode. No x/y position involved — the wave value <em>is</em> the colour. Two independent waves create a drifting interference in the spectrum.</p>
+      <div class="section-tag">output: hue · brightness — colorMode(HSB) — 2D field</div>
+      <h2>Wave <span class="accent">Color Field</span></h2>
+      <p class="section-desc">Two waves interfere across x and y to drive hue and brightness. Sampling <code>wave(x+y)</code> and <code>wave(x−y)</code> creates diagonal colour landscapes — a 2D field that flows as <code>t</code> advances.</p>
     </div>
     <div class="ex-demo">
       <div class="ex-code-wrap">
@@ -513,20 +513,23 @@ function setup() {
 }
 
 function draw() {
-  const t = frameCount * 0.008;
-  for (let y = 0; y &lt; height; y += 2) {
-    const hue = Waves.wave(y * 0.015, {
-      wave:  'classic sine',
-      t,
-      range: [0, 360]   // → hue
-    });
-    const sat = Waves.wave(y * 0.015, {
-      wave:  'wobble sine',
-      t:     t * 0.6,
-      range: [30, 100]  // → saturation
-    });
-    fill(hue, sat, 88);
-    rect(0, y, width, 2);
+  const t    = frameCount * 0.007;
+  const step = 4;
+  for (let y = 0; y &lt; height; y += step) {
+    for (let x = 0; x &lt; width; x += step) {
+      const hue = Waves.wave(x * 0.007 + y * 0.005, {
+        wave:  'meta sine',
+        t:     t,
+        range: [0, 360]
+      });
+      const bri = Waves.wave(x * 0.005 - y * 0.007, {
+        wave:  'wobble sine',
+        t:     t * 0.6,
+        range: [45, 95]
+      });
+      fill(hue, 72, bri);
+      rect(x, y, step, step);
+    }
   }
 }</pre>
         <a class="ex-full-link" href="../examples/12_color_spectrum/" target="_blank">→ full example 12</a>
@@ -637,48 +640,63 @@ function draw() {
     </div>
   </section>
 
-  <!-- 12. OPACITY OUTPUT -->
+  <!-- 12. MORPH WAVE -->
   <section id="opacity" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">output: alpha — no movement, no size change</div>
-      <h2>Wave as <span class="accent">opacity</span></h2>
-      <p class="section-desc">Two overlapping grids — same positions, same sizes — only alpha moves. Two waves at different speeds create interference patterns that appear and dissolve without anything changing shape or place.</p>
+      <div class="section-tag">feature: wave: [a, b] · mix — crossfade between formulas</div>
+      <h2>Morph <span class="accent">Wave</span></h2>
+      <p class="section-desc">Pass <code>wave: ['nameA', 'nameB']</code> with a <code>mix</code> value (0–1) to crossfade between any two formulas. Animate <code>mix</code> to smoothly morph the shape over time.</p>
     </div>
     <div class="ex-demo">
       <div class="ex-code-wrap">
         <div class="ex-code-label">copy-paste sketch</div>
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
-const COLS = 11, ROWS = 11;
+const PAIRS  = [
+  ['classic sine',   'triangle'],
+  ['mountain peaks', 'noise'],
+  ['stepped sine',   'wobble sine'],
+  ['sharp peaks',    'smooth solid sine']
+];
+const SPEEDS = [0.008, 0.013, 0.006, 0.010];
 
 function setup() {
-  createCanvas(600, 600);
-  noStroke();
+  createCanvas(600, 400);
+  noFill();
+  textFont('monospace');
+  textSize(8);
 }
 
 function draw() {
   background(245);
-  const t  = frameCount * 0.01;
-  const cw = width  / COLS;
-  const ch = height / ROWS;
+  const t  = frameCount * 0.012;
+  const pw = width / PAIRS.length;
 
-  for (let r = 0; r &lt; ROWS; r++) {
-    for (let c = 0; c &lt; COLS; c++) {
-      const cx = (c + 0.5) * cw;
-      const cy = (r + 0.5) * ch;
+  for (let i = 0; i &lt; PAIRS.length; i++) {
+    const mix = (sin(frameCount * SPEEDS[i]) + 1) * 0.5;
+    const cx  = pw * i + pw * 0.5;
 
-      const a1 = Waves.wave(c*0.35 + r*0.28, {
-        wave: 'classic sine', t, range: [0, 220]
+    stroke(0, 0, 0, 40); strokeWeight(0.5);
+    line(pw * i, 0, pw * i, height);
+
+    stroke(0); strokeWeight(1.4);
+    beginShape();
+    for (let y = 10; y &lt; height - 20; y += 2) {
+      const x = Waves.wave(y * 0.014, {
+        wave: [PAIRS[i][0], PAIRS[i][1]],
+        mix:  mix,
+        t:    t,
+        amplitude: pw * 0.40
       });
-      const a2 = Waves.wave(c*0.28 - r*0.35, {
-        wave: 'triangle', t: t*1.6, range: [0, 180]
-      });
-
-      fill(0, a1);
-      circle(cx, cy, cw * 0.72);
-      fill(30, 80, 180, a2);
-      circle(cx, cy, cw * 0.38);
+      vertex(cx + x, y);
     }
+    endShape();
+
+    noStroke(); fill(0, 0, 0, 80);
+    textAlign(CENTER);
+    text(PAIRS[i][0], cx, height - 22);
+    text(nf(mix, 1, 2), cx, height - 10);
+    stroke(0); noFill();
   }
 }</pre>
         <a class="ex-full-link" href="../examples/15_opacity/" target="_blank">→ full example 15</a>
@@ -1076,21 +1094,24 @@ function draw() {
     p.windowResized = function() { const w = cw('ex8'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex8');
 
-  // ── 9. Color spectrum ─────────────────────────────────────
+  // ── 9. Wave Color Field ───────────────────────────────────
   new p5(function(p) {
     p.setup = function() {
       const w = cw('ex9');
       p.createCanvas(w, Math.round(w * 3/4)).parent('ex9');
       p.noStroke();
+      p.colorMode(p.HSB, 360, 100, 100);
     };
     p.draw = function() {
-      const t = p.frameCount * 0.008;
-      p.colorMode(p.HSB, 360, 100, 100);
-      for (let y = 0; y < p.height; y += 2) {
-        const hue = Waves.wave(y * 0.015, { wave: 'classic sine', t, range: [0, 360] });
-        const sat = Waves.wave(y * 0.015, { wave: 'wobble sine',  t: t * 0.6, range: [30, 100] });
-        p.fill(hue, sat, 88);
-        p.rect(0, y, p.width, 2);
+      const t    = p.frameCount * 0.007;
+      const step = 4;
+      for (let y = 0; y < p.height; y += step) {
+        for (let x = 0; x < p.width; x += step) {
+          const hue = Waves.wave(x * 0.007 + y * 0.005, { wave: 'meta sine',    t: t,        range: [0, 360] });
+          const bri = Waves.wave(x * 0.005 - y * 0.007, { wave: 'wobble sine',  t: t * 0.6,  range: [45, 95] });
+          p.fill(hue, 72, bri);
+          p.rect(x, y, step, step);
+        }
       }
     };
     p.windowResized = function() { const w = cw('ex9'); p.resizeCanvas(w, Math.round(w * 3/4)); };
@@ -1178,28 +1199,48 @@ function draw() {
     p.windowResized = function() { const w = cw('ex11'); p.resizeCanvas(w, Math.round(w * 3/4)); };
   }, 'ex11');
 
-  // ── 12. Opacity ───────────────────────────────────────────
+  // ── 12. Morph Wave ────────────────────────────────────────
   new p5(function(p) {
-    const COLS = 11, ROWS = 11;
+    const PAIRS  = [
+      ['classic sine',   'triangle'],
+      ['mountain peaks', 'noise'],
+      ['stepped sine',   'wobble sine'],
+      ['sharp peaks',    'smooth solid sine']
+    ];
+    const SPEEDS = [0.008, 0.013, 0.006, 0.010];
     p.setup = function() {
       const w = cw('ex12');
       p.createCanvas(w, Math.round(w * 3/4)).parent('ex12');
-      p.noStroke();
+      p.noFill();
+      p.textFont('monospace');
+      p.textSize(8);
     };
     p.draw = function() {
       p.background(245);
-      const t   = p.frameCount * 0.01;
-      const cw2 = p.width  / COLS;
-      const ch  = p.height / ROWS;
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const cx = (c + 0.5) * cw2;
-          const cy = (r + 0.5) * ch;
-          const a1 = Waves.wave(c * 0.35 + r * 0.28, { wave: 'classic sine', t,          range: [0, 220] });
-          const a2 = Waves.wave(c * 0.28 - r * 0.35, { wave: 'triangle',     t: t * 1.6, range: [0, 180] });
-          p.fill(0, a1);           p.circle(cx, cy, cw2 * 0.72);
-          p.fill(30, 80, 180, a2); p.circle(cx, cy, cw2 * 0.38);
+      const t  = p.frameCount * 0.012;
+      const pw = p.width / PAIRS.length;
+      for (let i = 0; i < PAIRS.length; i++) {
+        const mix = (Math.sin(p.frameCount * SPEEDS[i]) + 1) * 0.5;
+        const cx  = pw * i + pw * 0.5;
+        p.stroke(0, 0, 0, 40); p.strokeWeight(0.5);
+        p.line(pw * i, 0, pw * i, p.height);
+        p.stroke(0); p.strokeWeight(1.4);
+        p.beginShape();
+        for (let y = 10; y < p.height - 20; y += 2) {
+          const x = Waves.wave(y * 0.014, {
+            wave: [PAIRS[i][0], PAIRS[i][1]],
+            mix:  mix,
+            t:    t,
+            amplitude: pw * 0.40
+          });
+          p.vertex(cx + x, y);
         }
+        p.endShape();
+        p.noStroke(); p.fill(0, 0, 0, 80);
+        p.textAlign(p.CENTER);
+        p.text(PAIRS[i][0], cx, p.height - 22);
+        p.text(p.nf(mix, 1, 2), cx, p.height - 10);
+        p.stroke(0); p.noFill();
       }
     };
     p.windowResized = function() { const w = cw('ex12'); p.resizeCanvas(w, Math.round(w * 3/4)); };
