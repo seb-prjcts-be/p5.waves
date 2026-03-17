@@ -111,7 +111,7 @@
 
   function findWaveByName(name) {
     const key  = normalizeName(name);
-    const keyC = compact(name);
+    const keyC = compact(key);
     for (let i = 0; i < WAVES.length; i++) {
       if (normalizeName(WAVES[i].name) === key)  return i;
       if (compact(WAVES[i].name)       === keyC) return i;
@@ -222,9 +222,8 @@
     let mn = Infinity, mx = -Infinity;
 
     for (let i = 0; i < STATS_SAMPLES; i++) {
-      const frac = i / (STATS_SAMPLES - 1);
-      const x    = STATS_DOMAIN[0] + (STATS_DOMAIN[1] - STATS_DOMAIN[0]) * frac;
-      const v    = evaluate(fn, x, 0, internalSeed);
+      const x = lerp(STATS_DOMAIN[0], STATS_DOMAIN[1], i / (STATS_SAMPLES - 1));
+      const v = evaluate(fn, x, 0, internalSeed);
       if (v < mn) mn = v;
       if (v > mx) mx = v;
     }
