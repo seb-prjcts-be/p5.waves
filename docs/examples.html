@@ -451,7 +451,8 @@ function draw() {
         <div class="ex-code-label">copy-paste sketch · move mouse left–right</div>
         <pre class="ex-code">// Needs p5.waves.js loaded after p5.js
 
-const LAYERS = 18;
+const LAYERS      = 16;
+const WAVE_WINDOW = 6;
 
 function setup() {
   createCanvas(600, 400);
@@ -462,11 +463,11 @@ function draw() {
   background(238);
 
   // t from mouseX — no auto-advance
-  const tBase = map(mouseX, 0, width, 0, 24);
+  const tBase = map(mouseX, 0, width, 0, 8);
 
   for (let i = 0; i &lt; LAYERS; i++) {
     // Each layer gets its own slice of time
-    const t  = tBase + (i / LAYERS) * 3;
+    const t  = tBase + (i / LAYERS) * WAVE_WINDOW;
     const y0 = map(i, 0, LAYERS-1, 30, height-30);
 
     stroke(0, 0, 0, map(i, 0, LAYERS-1, 210, 30));
@@ -475,7 +476,7 @@ function draw() {
     beginShape();
     for (let x = 0; x &lt;= width; x += 3) {
       const y = y0 + Waves.wave(x * 0.015, {
-        wave: 'classic sine', t, amplitude: 28
+        wave: 'classic sine', t, amplitude: 55
       });
       vertex(x, y);
     }
@@ -1048,7 +1049,7 @@ function draw() {
 
   // ── 8. Manual time ────────────────────────────────────────
   new p5(function(p) {
-    const LAYERS = 18;
+    const LAYERS = 16;
     p.setup = function() {
       const w = cw('ex8');
       p.createCanvas(w, Math.round(w * 3/4)).parent('ex8');
@@ -1056,15 +1057,15 @@ function draw() {
     };
     p.draw = function() {
       p.background(238);
-      const tBase = p.map(p.mouseX, 0, p.width, 0, 24);
+      const tBase = p.map(p.mouseX, 0, p.width, 0, 8);
       for (let i = 0; i < LAYERS; i++) {
-        const t  = tBase + (i / LAYERS) * 3;
+        const t  = tBase + (i / LAYERS) * 6;
         const y0 = p.map(i, 0, LAYERS-1, 30, p.height-30);
         p.stroke(0, 0, 0, p.map(i, 0, LAYERS-1, 210, 30));
         p.strokeWeight(p.map(i, 0, LAYERS-1, 2, 0.5));
         p.beginShape();
         for (let x = 0; x <= p.width; x += 3) {
-          p.vertex(x, y0 + Waves.wave(x * 0.015, { wave: 'classic sine', t, amplitude: 28 }));
+          p.vertex(x, y0 + Waves.wave(x * 0.015, { wave: 'classic sine', t, amplitude: 55 }));
         }
         p.endShape();
       }
