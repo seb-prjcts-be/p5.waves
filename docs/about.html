@@ -98,7 +98,7 @@
     <h1>p5.<span class="accent">waves</span></h1>
     <p style="font-size:1.1rem; color:#333;">
       Wave sampling helpers for p5.js. <strong>Always returns a number.</strong><br>
-      Think of <code>noise(y)</code> — but with 34 curated wave formulas you can freely combine.
+      34 formulas you can switch between for structured surprise — variation that keeps its rhythm, never degenerates into chaos.
     </p>
     <h2>What this library does</h2>
     <p>
@@ -106,12 +106,15 @@
       Each formula is a small math expression that takes <code>x</code>. You pass your position (<code>y</code>)
       and get a number back — ready to use as an offset, color value, size, or anything else.
     </p>
+    <p>
+      The core idea is <strong>structured surprise</strong>: switching between formulas changes the shape of the wave, but never its fundamental nature. Every formula stays periodic and legible — you always recognise a wave. That makes formula-switching a creative tool, not a chaos generator.
+    </p>
 
     <div class="highlight-grid">
       <div class="highlight-card">
         <div class="card-tag">Core</div>
         <strong>34 wave formulas</strong>
-        <p>From classic sine and triangle to random noise, fuzzy peaks and chaotic tangent — each with a name and index.</p>
+        <p>From classic sine and triangle to noise, fuzzy peaks and irregular pulses — each with its own character, all with recognizable periodic structure.</p>
       </div>
       <div class="highlight-card">
         <div class="card-tag">Animation</div>
@@ -124,9 +127,9 @@
         <p>With <code>range: [-80, 80]</code> the output maps automatically to your coordinate space.</p>
       </div>
       <div class="highlight-card">
-        <div class="card-tag">Chaos</div>
+        <div class="card-tag">Variation</div>
         <strong>Wild Mode</strong>
-        <p>Set <code>mode: 'wild'</code> and control how chaotically the wave deviates with <code>unpredictability</code> (0–1).</p>
+        <p>Set <code>mode: 'wild'</code> to inject position-varying noise — the wave grows wilder, but never loses its shape entirely.</p>
       </div>
       <div class="highlight-card">
         <div class="card-tag">2D</div>
