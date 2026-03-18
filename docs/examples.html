@@ -569,7 +569,7 @@
         var ph   = PH - 2;
         var midY = py + 1 + ph * 0.5;
         var amp  = ph * 0.30 * 0.5;
-        var step = p.max(1, p.floor(pw / 60));
+        var stride = p.max(1, p.floor(pw / 60));
         p.noStroke();
         p.fill(i, 18, 97);
         p.rect(px + 1, py + 1, pw, ph);
@@ -577,7 +577,7 @@
         p.strokeWeight(1);
         p.noFill();
         p.beginShape();
-        for (var x = 0; x <= pw; x += step) {
+        for (var x = 0; x <= pw; x += stride) {
           var v = Waves.wave(p.map(x, 0, pw, 0, 28) + t * 28, { wave: i, range: [-amp, amp] });
           p.vertex(px + 1 + x, midY + v);
         }
