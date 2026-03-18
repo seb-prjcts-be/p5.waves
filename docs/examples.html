@@ -480,10 +480,10 @@
 
   // ── 11. Typography ────────────────────────────────────────
   new p5(function(p) {
-    var WORD     = 'WAVES';
+    var LETTERS  = 'WAVES';
     var COLS     = 4;
     var ROWS     = 5;
-    var NLET     = WORD.length;
+    var NLET     = LETTERS.length;
     var INTERVAL = 2.16;
     p.setup = function() {
       var w = cw('ex11');
@@ -519,7 +519,7 @@
             var lift  = Waves.wave(idx * 0.6, { wave: [wA, wB], mix: blend, seed: idx + 20, range: [-8, 8],   t: t });
             var alpha = Waves.wave(idx * 1.1, { wave: [wA, wB], mix: blend, seed: idx + 40, range: [60, 255], t: t });
             p.textSize(sizes[l]); p.fill(0, 0, 0, alpha);
-            p.text(WORD[l], x, cy + lift);
+            p.text(LETTERS[l], x, cy + lift);
             x += sizes[l] * 0.72;
           }
         }

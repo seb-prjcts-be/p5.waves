@@ -2,10 +2,10 @@
 // 4×5 grid — each letter an independent instance.
 // Wave formula morphs smoothly every 2 seconds across all 100 letters.
 
-var WORD     = 'WAVES';
+var LETTERS     = 'WAVES';
 var COLS     = 4;
 var ROWS     = 5;
-var NLET     = WORD.length;   // 5
+var NLET     = LETTERS.length;   // 5
 var INTERVAL = 2.16;          // 2 s at 60 fps (frameCount * 0.018)
 
 function setup() {
@@ -52,7 +52,7 @@ function draw() {
 
         textSize(sizes[l]);
         fill(0, 0, 0, alpha);
-        text(WORD[l], x, cy + lift);
+        text(LETTERS[l], x, cy + lift);
         x += sizes[l] * 0.72;
       }
     }
