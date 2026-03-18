@@ -227,21 +227,38 @@
 
   // ── 1. Wave Curtain ───────────────────────────────────────
   new p5(function(p) {
+    var THREADS = 25;
+    var threads = [];
     var t = 0;
     p.setup = function() {
       var w = cw('ex1');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex1');
       p.noFill(); p.strokeCap(p.ROUND);
+      for (var i = 0; i < THREADS; i++) {
+        threads.push({
+          wave: p.floor(p.random(Waves.count)),
+          amp:  p.random(20, 45),
+          freq: p.random(0.7, 1.8)
+        });
+      }
     };
     p.draw = function() {
-      p.background(245); t += 0.014;
-      for (var i = 0; i < 18; i++) {
-        var x0 = p.map(i, 0, 17, 12, p.width - 12);
-        p.stroke(0, 0, 0, p.map(p.sin(i * 0.4 - t * 0.3), -1, 1, 50, 200));
-        p.strokeWeight(1.2);
+      p.background(245); t += 0.012;
+      for (var i = 0; i < THREADS; i++) {
+        var x0    = p.map(i, 0, THREADS - 1, 12, p.width - 12);
+        var phase = i * 0.22;
+        var alpha = Waves.wave(i * 0.28, { wave: 'sine', t: -t * 0.4, range: [55, 210] });
+        var sw    = Waves.wave(i * 0.35, { wave: 'sine', t:  t * 0.3, range: [0.5, 2.5] });
+        p.stroke(0, 0, 0, alpha);
+        p.strokeWeight(sw);
         p.beginShape();
-        for (var y = 0; y <= p.height; y += 8) {
-          p.vertex(x0 + Waves.wave(y * 0.013, { wave: 'smooth solid sine', t: t + i * 0.22, amplitude: 28 }), y);
+        for (var y = 0; y <= p.height; y += 6) {
+          p.vertex(x0 + Waves.wave(y * 0.012, {
+            wave:      threads[i].wave,
+            t:         t + phase,
+            amplitude: threads[i].amp,
+            frequency: threads[i].freq
+          }), y);
         }
         p.endShape();
       }
