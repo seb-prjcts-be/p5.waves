@@ -23,26 +23,26 @@
     <div class="demo-header">
       <div class="demo-number">Example 14 — typographic output</div>
       <h1>Breathing Type</h1>
-      <p>The same word fills a 4×5 grid — one <code>createSampler()</code> per cell drives <strong>font size</strong> independently. A second wave controls vertical lift; a third drives opacity. Each cell breathes at its own rhythm: the word is the same, the variation is structured.</p>
+      <p>4×5 grid of WAVES — each letter is an independent instance. 100 <code>createSampler()</code> calls drive font size per letter. A second wave controls vertical lift; a third drives opacity. Same word, 100 variations.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// One sampler per cell, seeded by flat index k
-for (var k = 0; k < COLS * ROWS; k++) {
+        <pre><code>// One sampler per letter per cell — 100 instances
+for (var k = 0; k < COLS * ROWS * NLET; k++) {
   sizeSamplers.push(
-    Waves.createSampler({ seed: k * 7, range: [10, 32] })
+    Waves.createSampler({ seed: k * 7, range: [8, 28] })
   );
 }
 
-// In draw(), per cell:
-var sz    = sizeSamplers[k].sample(k * 0.6, t);
-var lift  = Waves.wave(k * 0.6, { seed: k + 20, range: [-12, 12], t: t });
-var alpha = Waves.wave(k * 1.1, { seed: k + 40, range: [60, 255],  t: t });
+// In draw(), per letter (idx = cell * NLET + letter):
+var sz    = sizeSamplers[idx].sample(idx * 0.6, t);
+var lift  = Waves.wave(idx * 0.6, { seed: idx + 20, range: [-12, 12], t: t });
+var alpha = Waves.wave(idx * 1.1, { seed: idx + 40, range: [60, 255], t: t });
 
 textSize(sz);
 fill(0, 0, 0, alpha);
-text(WORD, cx, cy + lift);</code></pre>
+text(WORD[l], x, cy + lift);</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>
