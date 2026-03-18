@@ -542,28 +542,60 @@
 
   // ── 13. Wave chart ────────────────────────────────────────
   new p5(function(p) {
+    var COLS = 6;
+    var N    = 0;
+    var PW   = 0;
+    var PH   = 0;
     p.setup = function() {
       var w = cw('ex13');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex13');
-      p.noStroke(); p.textAlign(p.CENTER, p.TOP);
+      N  = Waves.count;
+      PW = p.floor(p.width / COLS);
+      PH = p.floor(p.height / p.ceil(N / COLS));
+      p.strokeCap(p.ROUND);
+      p.textFont('monospace');
     };
     p.draw = function() {
       p.background(245);
-      var n    = Waves.count;
-      var t    = p.frameCount * 0.016;
-      var barW = p.width / n;
-      var midY = p.height * 0.54;
-      var amp  = p.height * 0.38;
-      p.colorMode(p.HSB, n, 100, 100);
-      for (var i = 0; i < n; i++) {
-        var v = Waves.wave(t * 28, { wave: i, range: [-amp, amp] });
-        var h = p.abs(v);
-        p.fill(i, 65, 78);
-        p.rect(i * barW + 0.5, v < 0 ? midY : midY - h, barW - 1, h);
+      var t    = p.frameCount * 0.012;
+      var rows = p.ceil(N / COLS);
+      p.colorMode(p.HSB, N, 100, 100);
+      for (var i = 0; i < N; i++) {
+        var col  = i % COLS;
+        var row  = p.floor(i / COLS);
+        var px   = col * PW;
+        var py   = row * PH;
+        var pw   = PW - 2;
+        var ph   = PH - 2;
+        var midY = py + 1 + ph * 0.5;
+        var amp  = ph * 0.30 * 0.5;
+        var step = p.max(1, p.floor(pw / 60));
+        p.noStroke();
+        p.fill(i, 18, 97);
+        p.rect(px + 1, py + 1, pw, ph);
+        p.stroke(i, 65, 58);
+        p.strokeWeight(1);
+        p.noFill();
+        p.beginShape();
+        for (var x = 0; x <= pw; x += step) {
+          var v = Waves.wave(p.map(x, 0, pw, 0, 28) + t * 28, { wave: i, range: [-amp, amp] });
+          p.vertex(px + 1 + x, midY + v);
+        }
+        p.endShape();
+        p.noStroke();
+        p.fill(0, 0, 45, 70);
+        p.textSize(5);
+        p.textAlign(p.LEFT, p.BOTTOM);
+        p.text(i, px + 3, py + ph - 1);
       }
       p.colorMode(p.RGB, 255);
     };
-    p.windowResized = function() { var w = cw('ex13'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() {
+      var w = cw('ex13');
+      p.resizeCanvas(w, Math.round(w * 2/3));
+      PW = p.floor(p.width / COLS);
+      PH = p.floor(p.height / p.ceil(N / COLS));
+    };
   }, 'ex13');
 
   // ── 14. 3D Wave Volume ────────────────────────────────────
