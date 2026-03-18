@@ -11,8 +11,6 @@ Wave sampling helpers for p5.js. Always returns a number.
 
 Replace `v2.1.0` with the [latest tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
-> **New to waves?** Try [p5.easywaves](https://github.com/seb-prjcts-be/p5.easywaves) first — a simplified version for beginners.
-
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — explore all 34 waves interactively.
 
 ---

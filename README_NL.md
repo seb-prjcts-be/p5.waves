@@ -11,8 +11,6 @@ Wave-sampling hulpfuncties voor p5.js. Geeft altijd een getal terug.
 
 Vervang `v2.1.0` door de [laatste tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
-> **Nieuw met waves?** Begin met [p5.easywaves](https://github.com/seb-prjcts-be/p5.easywaves) — een vereenvoudigde versie voor beginners.
-
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — verken alle 34 golven interactief.
 
 ---
