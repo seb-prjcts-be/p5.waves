@@ -251,33 +251,12 @@
   }
 
   // ─── wave() ──────────────────────────────────────────────────────────────────
-  //
-  // wave(y)                               → number, default wave, seed 0
-  // wave(y, 3)                            → seed 3 selects wave
-  // wave(y, 'triangle')                   → wave by name
-  // wave(y, { wave: 'triangle' })         → options form
-  // wave(y, { wave: 4 })                  → wave by index
-  // wave(y, { seed: 2, amplitude: 80 })   → seed + amplitude scaling
-  // wave(y, { wave: 'sine', range: [0,1], t: millis()/1000 })
-  //
-  // Options:
-  //   wave             name or index                (seed-determined if omitted)
-  //   seed             number for wave selection    0
-  //   t                time offset                  0
-  //   amplitude        fast multiply, no normalise  1
-  //   range            [min,max] normalise output   null
-  //   frequency        input multiplier             1
-  //   phase            input offset                 0
-  //   mode             'stable' | 'wild'            'stable'
-  //   unpredictability 0..1 (wild only)             0
-  //
-  // Returns: always a number.
 
   function wave(y, secondParam) {
     let waveRef, seed = 0, t = 0, amplitude = 100, range = null;
     let frequency = 1, phase = 0, mode = 'stable', unpredictability = 0;
 
-    if (secondParam !== null && secondParam !== undefined) {
+    if (secondParam != null) {
       if (typeof secondParam === 'number') {
         seed = secondParam;
       } else if (typeof secondParam === 'string') {
@@ -333,14 +312,6 @@
   }
 
   // ─── createSampler() ─────────────────────────────────────────────────────────
-  //
-  // const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
-  // s.sample(y)      → number
-  // s.sample(y, t)   → number with time
-  //
-  // For 3D (two values) use two samplers with different seeds:
-  //   const sx = Waves.createSampler({ seed: 0 });
-  //   const sz = Waves.createSampler({ seed: 1 });
 
   function createSampler(options) {
     const opts           = options || {};
@@ -402,20 +373,6 @@
   }
 
   // ─── createGrid() ────────────────────────────────────────────────────────────
-  //
-  // const g = Waves.createGrid(20, 20);
-  // g.sample(t)  → Float32Array (length cols×rows)
-  //
-  // const g2 = Waves.createGrid(20, 20, { range: [0,1], threshold: 0.5 });
-  // g2.sample(t) → Uint8Array of 0/1
-  //
-  // Options:
-  //   waveRow   wave for row direction          (seed-determined)
-  //   waveCol   wave for col direction          (seed-determined, different)
-  //   seed      number for wave selection       0
-  //   range     [min,max] → Float32Array        null (raw)
-  //   threshold value → Uint8Array (0/1)        null
-  //   speed     time scale factor               1
 
   function createGrid(cols, rows, options) {
     const opts      = options || {};
