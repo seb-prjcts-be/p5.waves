@@ -124,10 +124,10 @@ function draw() {
 function drawWaveLine(waveIndex, t, bx, by, bw, bh, ampFrac) {
   var midY = by + bh * 0.5;
   var amp  = bh * ampFrac * 0.5;
-  var step = max(1, floor(bw / 80));
+  var stride = max(1, floor(bw / 80));
 
   beginShape();
-  for (var x = 0; x <= bw; x += step) {
+  for (var x = 0; x <= bw; x += stride) {
     var inputX = map(x, 0, bw, 0, 28) + t * 28;
     var v      = Waves.wave(inputX, { wave: waveIndex, range: [-amp, amp] });
     vertex(bx + x, midY + v);
