@@ -168,7 +168,7 @@
     <div class="section-header">
       <div class="section-tag">output: textSize · vertical lift · opacity</div>
       <h2>Wave as <span class="accent">type</span></h2>
-      <p class="section-desc">One sampler per cell drives font size across a 4×5 grid of the same word. A second wave controls vertical lift; a third drives opacity. Each cell breathes at its own rhythm — structured variation, not randomness.</p>
+      <p class="section-desc">4×5 grid of WAVES — each letter an independent instance. 100 samplers drive font size individually; lift and opacity follow per-letter waves. Same word, 100 variations.</p>
     </div>
     <div class="ex-preview">
       <div id="ex11" class="ex-canvas"></div>
@@ -483,9 +483,10 @@
     var WORD = 'WAVES';
     var COLS = 4;
     var ROWS = 5;
+    var NLET = WORD.length;
     var sizeSamplers = [];
-    for (var k = 0; k < COLS * ROWS; k++) {
-      sizeSamplers.push(Waves.createSampler({ seed: k * 7, range: [8, 24] }));
+    for (var k = 0; k < COLS * ROWS * NLET; k++) {
+      sizeSamplers.push(Waves.createSampler({ seed: k * 7, range: [6, 20] }));
     }
     p.setup = function() {
       var w = cw('ex11');
@@ -494,19 +495,27 @@
     };
     p.draw = function() {
       p.background(245);
-      var t  = p.frameCount * 0.018;
+      var t     = p.frameCount * 0.018;
       var cellW = p.width  / COLS;
       var cellH = p.height / ROWS;
       for (var row = 0; row < ROWS; row++) {
         for (var col = 0; col < COLS; col++) {
-          var k     = row * COLS + col;
-          var cx    = col * cellW + cellW * 0.5;
-          var cy    = row * cellH + cellH * 0.5;
-          var sz    = sizeSamplers[k].sample(k * 0.6, t);
-          var lift  = Waves.wave(k * 0.6, { seed: k + 20, range: [-8, 8],   t: t });
-          var alpha = Waves.wave(k * 1.1, { seed: k + 40, range: [60, 255], t: t });
-          p.textSize(sz); p.fill(0, 0, 0, alpha);
-          p.text(WORD, cx, cy + lift);
+          var k  = row * COLS + col;
+          var cx = col * cellW + cellW * 0.5;
+          var cy = row * cellH + cellH * 0.5;
+          var sizes = [];
+          for (var l = 0; l < NLET; l++) sizes.push(sizeSamplers[k * NLET + l].sample((k * NLET + l) * 0.6, t));
+          var totalW = 0;
+          for (var l = 0; l < NLET; l++) totalW += sizes[l] * 0.72;
+          var x = cx - totalW * 0.5 + sizes[0] * 0.36;
+          for (var l = 0; l < NLET; l++) {
+            var idx   = k * NLET + l;
+            var lift  = Waves.wave(idx * 0.6, { seed: idx + 20, range: [-8, 8],   t: t });
+            var alpha = Waves.wave(idx * 1.1, { seed: idx + 40, range: [60, 255], t: t });
+            p.textSize(sizes[l]); p.fill(0, 0, 0, alpha);
+            p.text(WORD[l], x, cy + lift);
+            x += sizes[l] * 0.72;
+          }
         }
       }
     };
