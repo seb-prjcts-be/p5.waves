@@ -1,41 +1,136 @@
-// 16 — Wave Chart
-// All 34 wave formulas rendered as animated bars simultaneously.
-// Bar height = current output of each wave. A live reference chart.
+// 16 — Wave Chart Gallery
+// 34 wave formulas as scrolling miniature waveforms in a 6×6 grid.
+// Hover over any panel to expand it — see the formula name and a playhead dot.
+
+var COLS      = 6;
+var N         = 0;
+var waveNames = [];
+var focused   = -1;
+
+var PANEL_W = 0;
+var PANEL_H = 0;
+var EXP_H   = 160;
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
-  noStroke();
-  textAlign(CENTER, TOP);
+  N         = Waves.count;          // 34
+  PANEL_W   = floor(width / COLS);  // 76
+  PANEL_H   = PANEL_W;              // square cells
+
+  var list = Waves.list();
+  for (var i = 0; i < list.length; i++) {
+    waveNames[i] = list[i].name;
+  }
+
+  strokeCap(ROUND);
+  textFont('monospace');
 }
 
 function draw() {
   background(245);
 
-  const n    = Waves.count;   // 34
-  const t    = frameCount * 0.016;
-  const barW = width / n;
-  const midY = height * 0.54;
-  const amp  = height * 0.40;
+  var t       = frameCount * 0.012;
+  var rows    = ceil(N / COLS);      // 6
+  var hasFocus = (focused >= 0 && focused < N);
+  var miniY0  = hasFocus ? EXP_H + 4 : 0;
+  var miniH   = hasFocus ? floor((height - miniY0) / rows) : PANEL_H;
 
-  // Baseline
-  stroke(200);
-  strokeWeight(0.5);
-  line(0, midY, width, midY);
-  noStroke();
+  colorMode(HSB, N, 100, 100);
 
-  colorMode(HSB, n, 100, 100);
-  for (let i = 0; i < n; i++) {
-    const v = Waves.wave(t * 28, { wave: i, range: [-amp, amp] });
-    const h = abs(v);
-    const y = v < 0 ? midY : midY - h;
+  // ── Mini grid ──────────────────────────────────────────────────────────────
+  for (var i = 0; i < N; i++) {
+    var col = i % COLS;
+    var row = floor(i / COLS);
+    var px  = col * PANEL_W;
+    var py  = miniY0 + row * miniH;
+    var pw  = PANEL_W - 2;
+    var ph  = miniH - 2;
 
-    fill(i, 65, 78);
-    rect(i * barW + 1, y, barW - 2, h);
+    noStroke();
+    fill(i, 18, 97);
+    rect(px + 1, py + 1, pw, ph);
 
-    // Index label below baseline
-    fill(0, 0, 59);
-    textSize(7);
-    text(i, i * barW + barW / 2, midY + 3);
+    stroke(i, 65, 58);
+    strokeWeight(1.2);
+    noFill();
+    drawWaveLine(i, t, px + 1, py + 1, pw, ph, 0.30);
+
+    noStroke();
+    fill(0, 0, 45, 70);
+    textSize(6);
+    textAlign(LEFT, BOTTOM);
+    text(i, px + 4, py + ph - 1);
   }
+
+  // ── Expanded focus panel ───────────────────────────────────────────────────
+  if (hasFocus) {
+    var fi = focused;
+
+    noStroke();
+    fill(fi, 22, 96);
+    rect(0, 0, width, EXP_H);
+
+    // Baseline
+    stroke(fi, 30, 68, 50);
+    strokeWeight(0.5);
+    line(0, EXP_H / 2, width, EXP_H / 2);
+
+    // Full-width waveform
+    stroke(fi, 70, 52);
+    strokeWeight(2);
+    noFill();
+    drawWaveLine(fi, t, 0, 0, width, EXP_H, 0.78);
+
+    // Playhead dot — the original single-point value, now in context
+    var tFrac = (t * 0.5) % 1.0;
+    var dotX  = tFrac * width;
+    var dotV  = Waves.wave(
+      map(tFrac, 0, 1, 0, width),
+      { wave: fi, t: t, range: [EXP_H * 0.11, EXP_H * 0.89] }
+    );
+    noStroke();
+    fill(fi, 80, 52);
+    circle(dotX, dotV, 8);
+
+    // Wave name + index
+    noStroke();
+    fill(0, 0, 28);
+    textSize(10);
+    textAlign(LEFT, TOP);
+    text('wave: ' + fi + '  ' + waveNames[fi], 10, 9);
+  }
+
   colorMode(RGB, 255);
+
+  // ── Hover detection (runs every frame so layout vars are current) ──────────
+  var newFocus = -1;
+  if (mouseX >= 0 && mouseX < width) {
+    if (hasFocus && mouseY >= 0 && mouseY < EXP_H) {
+      newFocus = focused;
+    } else if (mouseY >= miniY0 && mouseY < height) {
+      var mc = floor(mouseX / PANEL_W);
+      var mr = floor((mouseY - miniY0) / miniH);
+      var mi = mr * COLS + mc;
+      if (mi >= 0 && mi < N) {
+        newFocus = mi;
+      }
+    }
+  }
+  focused = newFocus;
+}
+
+// Draw one formula as a polyline inside the box (bx, by, bw, bh).
+// ampFrac: fraction of bh used as half-amplitude.
+function drawWaveLine(waveIndex, t, bx, by, bw, bh, ampFrac) {
+  var midY = by + bh * 0.5;
+  var amp  = bh * ampFrac * 0.5;
+  var step = max(1, floor(bw / 80));
+
+  beginShape();
+  for (var x = 0; x <= bw; x += step) {
+    var inputX = map(x, 0, bw, 0, 28) + t * 28;
+    var v      = Waves.wave(inputX, { wave: waveIndex, range: [-amp, amp] });
+    vertex(bx + x, midY + v);
+  }
+  endShape();
 }
