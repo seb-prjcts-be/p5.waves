@@ -1,13 +1,14 @@
 // 14 — Breathing Type
-// Five createSampler() calls drive letter size independently.
-// A second wave controls vertical lift per character.
-// No spatial position output — wave values are typographic properties.
+// The word repeats across a 4×5 grid — each cell driven independently
+// by wave-based size, lift, and opacity. Same word, structured surprise.
 
-const LETTERS = 'WAVES';
+var WORD = 'WAVES';
+var COLS = 4;
+var ROWS = 5;
 
-const sizeSamplers = [];
-for (let i = 0; i < 5; i++) {
-  sizeSamplers.push(Waves.createSampler({ seed: i * 7, range: [28, 96] }));
+var sizeSamplers = [];
+for (var k = 0; k < COLS * ROWS; k++) {
+  sizeSamplers.push(Waves.createSampler({ seed: k * 7, range: [10, 32] }));
 }
 
 function setup() {
@@ -19,25 +20,23 @@ function setup() {
 
 function draw() {
   background(245);
-  const t = frameCount * 0.018;
+  var t   = frameCount * 0.018;
+  var cw  = width  / COLS;
+  var ch  = height / ROWS;
 
-  // First pass: measure total width for centering
-  const sizes = [];
-  for (let i = 0; i < LETTERS.length; i++) sizes.push(sizeSamplers[i].sample(i * 0.6, t));
-  let totalW = 0;
-  for (let i = 0; i < sizes.length; i++) totalW += sizes[i] * 0.72;
+  for (var row = 0; row < ROWS; row++) {
+    for (var col = 0; col < COLS; col++) {
+      var k     = row * COLS + col;
+      var cx    = col * cw + cw * 0.5;
+      var cy    = row * ch + ch * 0.5;
 
-  let x = (width - totalW) / 2 + sizes[0] * 0.36;
+      var sz    = sizeSamplers[k].sample(k * 0.6, t);
+      var lift  = Waves.wave(k * 0.6, { seed: k + 20, range: [-12, 12], t: t });
+      var alpha = Waves.wave(k * 1.1, { seed: k + 40, range: [60, 255],  t: t });
 
-  for (let i = 0; i < LETTERS.length; i++) {
-    const sz    = sizes[i];
-    const lift  = Waves.wave(i * 0.9 + t * 0.6,  { seed: i + 20, range: [-38, 38] });
-    const alpha = Waves.wave(i * 1.1 + t * 0.35, { seed: i + 40, range: [80, 255] });
-
-    textSize(sz);
-    fill(0, 0, 0, alpha);
-    text(LETTERS[i], x, height / 2 + lift);
-
-    x += sz * 0.72;
+      textSize(sz);
+      fill(0, 0, 0, alpha);
+      text(WORD, cx, cy + lift);
+    }
   }
 }
