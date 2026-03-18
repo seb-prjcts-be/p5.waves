@@ -5,7 +5,7 @@
 var COLS      = 6;
 var N         = 0;
 var waveNames = [];
-var focused   = -1;
+var hoveredWave   = -1;
 
 var PANEL_W = 0;
 var PANEL_H = 0;
@@ -31,7 +31,7 @@ function draw() {
 
   var t       = frameCount * 0.012;
   var rows    = ceil(N / COLS);      // 6
-  var hasFocus = (focused >= 0 && focused < N);
+  var hasFocus = (hoveredWave >= 0 && hoveredWave < N);
   var miniY0  = hasFocus ? EXP_H + 4 : 0;
   var miniH   = hasFocus ? floor((height - miniY0) / rows) : PANEL_H;
 
@@ -64,7 +64,7 @@ function draw() {
 
   // ── Expanded focus panel ───────────────────────────────────────────────────
   if (hasFocus) {
-    var fi = focused;
+    var fi = hoveredWave;
 
     noStroke();
     fill(fi, 22, 96);
@@ -106,7 +106,7 @@ function draw() {
   var newFocus = -1;
   if (mouseX >= 0 && mouseX < width) {
     if (hasFocus && mouseY >= 0 && mouseY < EXP_H) {
-      newFocus = focused;
+      newFocus = hoveredWave;
     } else if (mouseY >= miniY0 && mouseY < height) {
       var mc = floor(mouseX / PANEL_W);
       var mr = floor((mouseY - miniY0) / miniH);
@@ -116,7 +116,7 @@ function draw() {
       }
     }
   }
-  focused = newFocus;
+  hoveredWave = newFocus;
 }
 
 // Draw one formula as a polyline inside the box (bx, by, bw, bh).
