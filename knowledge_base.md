@@ -49,7 +49,7 @@ Several identifiers were renamed to avoid collisions with p5.js globals:
 | `docs/` | Site pages: guide, about, examples gallery |
 | `docs/sketch.js` | All p5 sketches for the showcase |
 | `docs/style.css` | Shared styles for docs pages |
-| `examples/` | 17 standalone example folders (00–17, no 07) |
+| `examples/` | 17 standalone example folders (00–17, no 07). Ex 01 = "Wave Shift" (single wave morphing via lerp) |
 | `examples/showcase.css` | Shared styles for examples |
 | `examples2/` | 6 creative showcase examples (18–23) |
 | `examples2/showcase.css` | Shared styles for examples2 |
