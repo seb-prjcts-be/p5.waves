@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>22 — Particle Forces | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+  <style>
+    .mood-bar { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1rem; }
+    .mood-bar button {
+      font-family:'Oswald',sans-serif; font-size:0.72rem; font-weight:500;
+      letter-spacing:0.08em; text-transform:uppercase;
+      padding:0.35rem 0.8rem; border:1px solid rgba(0,0,0,0.2);
+      background:#fff; color:#333; cursor:pointer; transition:all 0.15s;
+    }
+    .mood-bar button:hover { background:#111; color:#fff; }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples2.html" class="active">Examples 2</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">Example 22</div>
+      <h1>Particle Forces</h1>
+      <p>Waves as force fields. Each particle's direction and magnitude come from <code>Waves.wave()</code>. The wave formula defines the system's personality — smoke drifts organically, confetti tumbles chaotically, fireflies pulse and wander.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>var forceX = Waves.wave(pt.y * 0.01, {
+  wave:      preset.wave,
+  t:         t + pt.seed * 0.05,
+  amplitude: preset.drift,
+  frequency: preset.freq
+});
+
+var forceY = Waves.wave(pt.x * 0.01, {
+  wave:      preset.wave,
+  t:         t * 0.8,
+  amplitude: preset.speed,
+  frequency: preset.freq * 0.8
+});
+
+pt.x += forceX;
+pt.y += forceY + preset.gravity;</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples2.html">← All examples 2</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v2.1.1 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>
