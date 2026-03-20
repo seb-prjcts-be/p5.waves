@@ -6,10 +6,10 @@ Wave sampling helpers for p5.js. Always returns a number.
 
 **Install**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.min.js"></script>
 ```
 
-Replace `v2.1.0` with the [latest tag](https://github.com/seb-prjcts-be/p5.waves/tags).
+Replace `v2.1.1` with the [latest tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — explore all 34 waves interactively.
 

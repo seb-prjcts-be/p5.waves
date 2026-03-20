@@ -6,10 +6,10 @@ Wave-sampling hulpfuncties voor p5.js. Geeft altijd een getal terug.
 
 **Installeren**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.min.js"></script>
 ```
 
-Vervang `v2.1.0` door de [laatste tag](https://github.com/seb-prjcts-be/p5.waves/tags).
+Vervang `v2.1.1` door de [laatste tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — verken alle 34 golven interactief.
 
