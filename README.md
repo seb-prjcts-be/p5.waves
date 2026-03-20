@@ -45,7 +45,7 @@ Options:
 | `wave` | name or index | seed-determined |
 | `seed` | selects wave via FNV-1a hash | `0` |
 | `t` | time offset (`millis()/1000`) | `0` |
-| `amplitude` | fast scale, no normalisation | `1` |
+| `amplitude` | fast scale, no normalisation | `100` |
 | `range` | `[min, max]` — normalises output | `null` |
 | `frequency` | input multiplier | `1` |
 | `phase` | input offset | `0` |
@@ -128,7 +128,7 @@ const x = Waves.wave(y, {
   wave:                'classic sine',  // name or index (0–33); see Waves.list()
   // seed:             0,               // alternative: select wave via seed
   // t:                millis() / 1000, // drives animation
-  // amplitude:        1,               // fast scale; ignored when range is set
+  // amplitude:        100,             // fast scale; ignored when range is set
   // range:            [-1, 1],         // normalises output; overrides amplitude
   // frequency:        1,               // tighter or looser cycles
   // phase:            0,               // shift wave left or right
@@ -142,7 +142,7 @@ const x = Waves.wave(y, {
 const s = Waves.createSampler({
   wave:                'classic sine',
   // seed:             0,
-  // amplitude:        1,
+  // amplitude:        100,
   // range:            [-80, 80],
   // frequency:        1,
   // phase:            0,

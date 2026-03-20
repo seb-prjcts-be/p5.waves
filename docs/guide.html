@@ -105,7 +105,7 @@ Waves.wave(y, { wave: <span class="st">'triangle'</span> })      <span class="cm
       <tr><td>wave</td><td>Wave name (string) or index (number 0–33)</td><td>seed-determined</td></tr>
       <tr><td>seed</td><td>Integer — deterministically picks a wave via hashing. Use for stable variety across objects.</td><td>0</td></tr>
       <tr><td>t</td><td>Time offset — drives animation. Pass <code>frameCount * 0.01</code> or <code>millis()/1000</code>.</td><td>0</td></tr>
-      <tr><td>amplitude</td><td>Output multiplier. Ignored when <code>range</code> is set.</td><td>1</td></tr>
+      <tr><td>amplitude</td><td>Output multiplier. Ignored when <code>range</code> is set.</td><td>100</td></tr>
       <tr><td>range</td><td><code>[min, max]</code> — normalises output to this interval.</td><td>null</td></tr>
       <tr><td>frequency</td><td>Input multiplier — tighter or looser wave cycles.</td><td>1</td></tr>
       <tr><td>phase</td><td>Input offset — shifts the wave left or right.</td><td>0</td></tr>
@@ -316,7 +316,7 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
   wave:                <span class="st">'classic sine'</span>,  <span class="cm">// name or index 0–33; see Waves.list()</span>
   <span class="cm">// seed:             0,               // select wave via seed integer</span>
   <span class="cm">// t:                millis() / 1000, // time → drives animation</span>
-  <span class="cm">// amplitude:        1,               // fast scale; ignored when range is set</span>
+  <span class="cm">// amplitude:        100,             // fast scale; ignored when range is set</span>
   <span class="cm">// range:            [-1, 1],         // normalises output to [min, max]</span>
   <span class="cm">// frequency:        1,               // input multiplier</span>
   <span class="cm">// phase:            0,               // input offset</span>
@@ -328,7 +328,7 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
     <div class="code-block"><span class="kw">const</span> s = Waves.createSampler({
   wave:                <span class="st">'classic sine'</span>,  <span class="cm">// resolved once, reused on every sample</span>
   <span class="cm">// seed:             0,</span>
-  <span class="cm">// amplitude:        1,</span>
+  <span class="cm">// amplitude:        100,</span>
   <span class="cm">// range:            [-80, 80],</span>
   <span class="cm">// frequency:        1,</span>
   <span class="cm">// phase:            0,</span>

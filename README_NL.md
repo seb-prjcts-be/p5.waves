@@ -45,7 +45,7 @@ Opties:
 | `wave` | naam of index | bepaald door seed |
 | `seed` | selecteert golf via FNV-1a hash | `0` |
 | `t` | tijdverschuiving (`millis()/1000`) | `0` |
-| `amplitude` | snelle schaal, geen normalisatie | `1` |
+| `amplitude` | snelle schaal, geen normalisatie | `100` |
 | `range` | `[min, max]` — normaliseert uitvoer | `null` |
 | `frequency` | invoervermenigvuldiger | `1` |
 | `phase` | invoerverschuiving | `0` |
@@ -128,7 +128,7 @@ const x = Waves.wave(y, {
   wave:                'classic sine',  // naam of index (0–33); zie Waves.list()
   // seed:             0,               // alternatief: kies golf via seed
   // t:                millis() / 1000, // drijft animatie
-  // amplitude:        1,               // snelle schaal; genegeerd als range is ingesteld
+  // amplitude:        100,             // snelle schaal; genegeerd als range is ingesteld
   // range:            [-1, 1],         // normaliseert uitvoer; overschrijft amplitude
   // frequency:        1,               // nauwere of lossere cycli
   // phase:            0,               // verschuif golf links of rechts
@@ -142,7 +142,7 @@ const x = Waves.wave(y, {
 const s = Waves.createSampler({
   wave:                'classic sine',
   // seed:             0,
-  // amplitude:        1,
+  // amplitude:        100,
   // range:            [-80, 80],
   // frequency:        1,
   // phase:            0,
