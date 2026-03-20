@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>01 — Wave Curtain | p5.waves examples</title>
+  <title>01 — Wave Shift | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -22,32 +22,29 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 01 — Global Mode</div>
-      <h1>Wave Curtain</h1>
-      <p>50 vertical threads each displaced horizontally by <code>Waves.wave()</code>. A phase offset per thread makes the displacement travel sideways, creating a flowing cloth effect.</p>
+      <div class="demo-number">Example 01 — wave: [a, b] + mix</div>
+      <h1>Wave Shift</h1>
+      <p>One wave line that smoothly morphs into a randomly chosen formula every few seconds — using the library's built-in lerp: <code>wave: ['a', 'b']</code> with an animated <code>mix</code> value.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// One Waves.wave() call bends each vertical thread.
-// Phase offset i * 0.22 makes the wave travel sideways.
+        <pre><code>// mix 0 → fully waveA,  mix 1 → fully waveB
+var mix = morphFrame / MORPH_DURATION;
+mix = mix * mix * (3 - 2 * mix);  // ease in-out
 
-for (let i = 0; i &lt; THREADS; i++) {
-  const x0    = map(i, 0, THREADS-1, 20, width-20);
-  const phase = i * 0.22;
-
-  beginShape();
-  for (let y = 0; y &lt;= height; y += 3) {
-    const dx = Waves.wave(y * 0.012, {
-      wave:      'smooth solid sine',
-      t:         t + phase,
-      amplitude: 14,
-      frequency: 1.6
-    });
-    vertex(x0 + dx, y);
-  }
-  endShape();
-}</code></pre>
+beginShape();
+for (var y = 0; y &lt;= height; y += 3) {
+  var x = Waves.wave(y * 0.012, {
+    wave:      [nameA, nameB],   // two formulas
+    mix:       mix,              // lerp position
+    t:         t,
+    amplitude: 120,
+    frequency: 1.2
+  });
+  vertex(width / 2 + x, y);
+}
+endShape();</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

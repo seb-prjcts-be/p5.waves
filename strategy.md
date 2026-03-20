@@ -26,6 +26,19 @@ New `examples2/` directory with 6 creative showcases. Goal: show the library as 
 
 p5.js global naming conflicts found and fixed: `GRID` → `CELLS`, `brightness` → `luma`.
 
+## Examples 1 Review (2026-03-20) — Use Case I
+
+Example 01 redesigned from "Wave Curtain" (50-thread complexity) to **"Wave Shift"** — a single wave that randomly morphs into a new formula every few seconds using the library's built-in lerp (`wave: ['a', 'b']` + `mix`).
+
+| Aspect | Before | After |
+|---|---|---|
+| Usability | Complex (50 threads, multiple params) | One wave, one concept, easy to copy |
+| Beauty | Busy curtain effect | Clean single-line morph with smooth easing |
+| Simplicity | Many moving parts | Minimal state machine: hold → morph → hold |
+| Originality | Generic multi-thread demo | Showcases the unique morph/lerp API as the first thing new users see |
+
+Changes: `sketch.js` rewritten, `index.html` updated (title, description, code snippet), `docs/examples.html` gallery section and inline thumbnail sketch updated. Legacy `js/` and `css/` subfolders removed.
+
 ### Remaining observations (non-blocking)
 
 - **No automated minification**: `p5.waves.min.js` is hand-maintained.
