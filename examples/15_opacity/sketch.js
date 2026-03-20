@@ -50,7 +50,7 @@ function draw() {
 
     // wave name labels
     noStroke();
-    fill(0, 0, 0, 60);
+    fill(0);
     textAlign(CENTER);
     text(PAIRS[i][0], cx, height - 20);
     text(PAIRS[i][1], cx, height - 10);
