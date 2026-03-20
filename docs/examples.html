@@ -573,7 +573,7 @@
           p.vertex(cx + Waves.wave(y * 0.014, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: mix, t: t, amplitude: pw * 0.38 }), y);
         }
         p.endShape();
-        p.noStroke(); p.fill(0, 0, 0, 70);
+        p.noStroke(); p.fill(0);
         p.textAlign(p.CENTER);
         p.text(p.nf(mix, 1, 2), cx, p.height - 6);
         p.stroke(0); p.noFill();
