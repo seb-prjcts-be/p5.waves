@@ -2,7 +2,7 @@
 // Identical grid of circles. Only the wave formula changes.
 // The formula alone determines the atmosphere.
 
-var GRID   = 10;
+var CELLS   = 10;
 var waveIdx = 0;
 var auto    = true;
 
@@ -22,15 +22,15 @@ function draw() {
   }
 
   var t     = frameCount * 0.012;
-  var cellW = width  / GRID;
-  var cellH = height / GRID;
+  var cellW = width  / CELLS;
+  var cellH = height / CELLS;
   var maxR  = min(cellW, cellH) * 0.38;
 
-  for (var row = 0; row < GRID; row++) {
-    for (var col = 0; col < GRID; col++) {
+  for (var row = 0; row < CELLS; row++) {
+    for (var col = 0; col < CELLS; col++) {
       var cx = col * cellW + cellW * 0.5;
       var cy = row * cellH + cellH * 0.5;
-      var idx = row * GRID + col;
+      var idx = row * CELLS + col;
 
       var size = Waves.wave(idx * 0.6, {
         wave:  waveIdx,
