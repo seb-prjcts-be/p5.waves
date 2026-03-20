@@ -37,12 +37,12 @@
     </a>
   </div>
 
-  <!-- 1. WAVES.WAVE() -->
+  <!-- 1. WAVE SHIFT -->
   <section id="basics" class="section">
     <div class="section-header">
-      <div class="section-tag">API: Waves.wave(y, options)</div>
-      <h2>The core <span class="accent">function</span></h2>
-      <p class="section-desc">One call returns one number. Pass a position and options — wave shape, time, amplitude, frequency. Use the result as offset, size, colour value, or anything else.</p>
+      <div class="section-tag">feature: wave: [a, b] + mix — built-in lerp</div>
+      <h2>Wave <span class="accent">Shift</span></h2>
+      <p class="section-desc">One wave line that smoothly morphs into a randomly chosen formula every few seconds. Pass <code>wave: ['a', 'b']</code> with an animated <code>mix</code> value — the library lerps between the two shapes for you.</p>
     </div>
     <div class="ex-preview">
       <div id="ex1" class="ex-canvas"></div>
@@ -226,43 +226,35 @@
   <script>
   function cw(id) { return document.getElementById(id).offsetWidth || 320; }
 
-  // ── 1. Wave Curtain ───────────────────────────────────────
+  // ── 1. Wave Shift ────────────────────────────────────────
   new p5(function(p) {
-    var THREADS = 25;
-    var threads = [];
+    var MORPH_DUR = 120, HOLD_DUR = 180;
+    var wA = 0, wB = 1, morphF = 0, holdF = HOLD_DUR, phase = 'hold';
     var t = 0;
+    function pick(ex) { var i; do { i = p.floor(p.random(Waves.count)); } while (i === ex); return i; }
     p.setup = function() {
       var w = cw('ex1');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex1');
       p.noFill(); p.strokeCap(p.ROUND);
-      for (var i = 0; i < THREADS; i++) {
-        threads.push({
-          wave: p.floor(p.random(Waves.count)),
-          amp:  p.random(20, 45),
-          freq: p.random(0.7, 1.8)
-        });
-      }
+      wB = pick(wA);
     };
     p.draw = function() {
-      p.background(245); t += 0.012;
-      for (var i = 0; i < THREADS; i++) {
-        var x0    = p.map(i, 0, THREADS - 1, 12, p.width - 12);
-        var phase = i * 0.22;
-        var alpha = Waves.wave(i * 0.28, { wave: 'sine', t: -t * 0.4, range: [55, 210] });
-        var sw    = Waves.wave(i * 0.35, { wave: 'sine', t:  t * 0.3, range: [0.5, 2.5] });
-        p.stroke(0, 0, 0, alpha);
-        p.strokeWeight(sw);
-        p.beginShape();
-        for (var y = 0; y <= p.height; y += 6) {
-          p.vertex(x0 + Waves.wave(y * 0.012, {
-            wave:      threads[i].wave,
-            t:         t + phase,
-            amplitude: threads[i].amp,
-            frequency: threads[i].freq
-          }), y);
-        }
-        p.endShape();
+      p.background(245); t += 0.014;
+      if (phase === 'hold') { holdF--; if (holdF <= 0) { phase = 'morph'; morphF = 0; wB = pick(wA); } }
+      if (phase === 'morph') { morphF++; if (morphF >= MORPH_DUR) { wA = wB; phase = 'hold'; holdF = HOLD_DUR; } }
+      var mix = phase === 'morph' ? morphF / MORPH_DUR : 0;
+      mix = mix * mix * (3 - 2 * mix);
+      p.stroke(0); p.strokeWeight(2);
+      p.beginShape();
+      for (var y = 0; y <= p.height; y += 4) {
+        p.vertex(p.width / 2 + Waves.wave(y * 0.012, {
+          wave: [Waves.data[wA].name, Waves.data[wB].name],
+          mix: mix, t: t, amplitude: p.width * 0.25, frequency: 1.2
+        }), y);
       }
+      p.endShape();
+      p.noStroke(); p.fill(0, 0, 0, 140); p.textFont('monospace'); p.textSize(8); p.textAlign(p.CENTER);
+      p.text(Waves.data[wA].name, p.width / 2, p.height - 10);
     };
     p.windowResized = function() { var w = cw('ex1'); p.resizeCanvas(w, Math.round(w * 2/3)); };
   }, 'ex1');
