@@ -31,6 +31,8 @@ Several identifiers were renamed to avoid collisions with p5.js globals:
 - `WORD` → `LETTERS`
 - `step` → `stride`
 - `focused` → `hoveredWave`
+- `GRID` → `CELLS`
+- `brightness` → `luma`
 
 ## Morph Behaviour
 
@@ -47,6 +49,20 @@ Several identifiers were renamed to avoid collisions with p5.js globals:
 | `docs/` | Site pages: guide, about, examples gallery |
 | `docs/sketch.js` | All p5 sketches for the showcase |
 | `docs/style.css` | Shared styles for docs pages |
-| `examples/` | 18 standalone example folders |
+| `examples/` | 17 standalone example folders (00–17, no 07) |
 | `examples/showcase.css` | Shared styles for examples |
+| `examples2/` | 6 creative showcase examples (18–23) |
+| `examples2/showcase.css` | Shared styles for examples2 |
+| `docs/examples2.html` | Examples 2 animated gallery page |
 | `src/content/libraries/en/p5.waves.yaml` | p5.js library registry entry |
+
+## Examples 2 — Creative Showcases
+
+| Folder | Concept |
+|---|---|
+| `18_mood_machine` | Pick a feeling (calm, anxious, playful, dreamy, mechanical, broken) — same radial composition, different wave formula |
+| `19_wave_zoo` | Bestiary: 34 wave "creatures" with name, temperament, and animated portrait |
+| `20_one_scene_34_moods` | Identical grid of circles — only the wave index changes, formula determines atmosphere |
+| `21_fabric` | Material simulation (silk, water, burlap, rubber, grass, cable) — no physics, just waves |
+| `22_particle_forces` | Wave-driven particles: smoke, dust, confetti, fireflies, snow, sparks |
+| `23_poster_generator` | Graphic design engine: breathing borders, flowing ornaments, wave-modulated typography |

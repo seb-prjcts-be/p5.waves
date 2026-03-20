@@ -11,6 +11,21 @@ All critical and moderate issues from the initial inspection have been fixed:
 | 3 | YAML says 35 waves (library has 34) | Fixed in `src/content/libraries/en/p5.waves.yaml` |
 | 4 | Orphaned `examples/06_create_sampler/` | Removed (unreferenced, duplicate `06_` prefix) |
 
+## Examples 2 (2026-03-20) — Added
+
+New `examples2/` directory with 6 creative showcases. Goal: show the library as a behaviour/character engine, not just an oscilloscope.
+
+| # | Example | Concept |
+|---|---|---|
+| 18 | Mood Machine | User picks a feeling → wave + palette + speed change together |
+| 19 | Wave Zoo | Bestiary of 34 waves with name, temperament, animated portrait |
+| 20 | One Scene, 34 Moods | Identical composition — only the formula changes the atmosphere |
+| 21 | Fabric | Material simulation without physics (silk, water, burlap, rubber, grass, cable) |
+| 22 | Particle Forces | Waves as force fields (smoke, dust, confetti, fireflies, snow, sparks) |
+| 23 | Poster Generator | Graphic design engine with breathing borders and wave-modulated typography |
+
+p5.js global naming conflicts found and fixed: `GRID` → `CELLS`, `brightness` → `luma`.
+
 ### Remaining observations (non-blocking)
 
 - **No automated minification**: `p5.waves.min.js` is hand-maintained.
