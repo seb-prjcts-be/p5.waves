@@ -38,7 +38,7 @@ function draw() {
         range: [maxR * 0.2, maxR]
       });
 
-      var brightness = Waves.wave(idx * 0.9, {
+      var luma = Waves.wave(idx * 0.9, {
         wave:  waveIdx,
         t:     t * 0.7,
         range: [30, 220]
@@ -50,7 +50,7 @@ function draw() {
         range: [-cellH * 0.12, cellH * 0.12]
       });
 
-      fill(brightness);
+      fill(luma);
       circle(cx, cy + lift, size * 2);
     }
   }
