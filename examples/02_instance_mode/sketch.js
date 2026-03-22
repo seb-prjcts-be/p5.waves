@@ -23,8 +23,8 @@ new p5(function (p) {
       const x     = p.width  / 2 + samplerX.sample(phase, t);
       const y     = p.height / 2 + samplerY.sample(phase + 0.8, t);
 
-      const alpha = p.map(i, 0, NUM - 1, 40, 200);
-      p.fill(0, 0, 0, alpha);
+      const dotAlpha = p.map(i, 0, NUM - 1, 40, 200);
+      p.fill(0, 0, 0, dotAlpha);
       p.circle(x, y, 4);
     }
   };
