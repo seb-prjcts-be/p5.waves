@@ -37,6 +37,18 @@
     </a>
   </div>
 
+  <!-- 0. FIRST CALL -->
+  <section id="firstcall" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">API: Waves.wave(y) · wave(y, seed) · wave(y, 'name') · wave(y, {…})</div>
+      <h2>The <span class="accent">call</span></h2>
+      <p class="section-desc">The second argument is optional. Pass a seed (number), a wave name (string), or a full options object — all three return the same kind of number. Start with whichever form fits.</p>
+    </div>
+    <div class="ex-preview">
+      <div id="ex0" class="ex-canvas"></div>
+    </div>
+  </section>
+
   <!-- 1. WAVE SHIFT -->
   <section id="basics" class="section">
     <div class="section-header">
@@ -59,6 +71,19 @@
     </div>
     <div class="ex-preview">
       <div id="ex-seed" class="ex-canvas"></div>
+    </div>
+  </section>
+
+  <!-- 1c. AMPLITUDE · FREQUENCY · PHASE -->
+  <section id="params" class="section">
+    <div class="section-header">
+      <div class="section-tag">params: amplitude · frequency · phase</div>
+      <h2>Shape <span class="accent">parameters</span></h2>
+      <p class="section-desc"><code>amplitude</code> scales the output height. <code>frequency</code> compresses or stretches the wave horizontally. <code>phase</code> shifts it sideways. Each row fans from small (light) to large (dark) — same formula, one parameter varies.</p>
+    </div>
+    <div class="ex-preview">
+      <div id="ex-params" class="ex-canvas"></div>
+      <a class="ex-full-link" href="../examples/07_wave_params/" target="_blank">→ full example 7</a>
     </div>
   </section>
 
@@ -121,7 +146,7 @@
     </div>
     <div class="ex-preview">
       <div id="ex7" class="ex-canvas"></div>
-      <a class="ex-full-link" href="../examples/06_seconds_param/" target="_blank">→ full example 6</a>
+      <a class="ex-full-link" href="../examples/06_flow_fields/" target="_blank">→ full example 6</a>
     </div>
   </section>
 
@@ -216,6 +241,18 @@
     </div>
   </section>
 
+  <!-- EXAMPLES 2 -->
+  <section id="more" class="section">
+    <div class="section-header">
+      <div class="section-tag">beyond the basics — waves as behaviour, rhythm, character</div>
+      <h2>Examples <span class="accent">2</span></h2>
+      <p class="section-desc">Six compositions that go further. Waves as material texture, particle force fields, poster design, mood, and 34 creature portraits. Same API — different lens.</p>
+    </div>
+    <div class="ex-preview" style="padding:1.5rem 0 0.5rem">
+      <a class="ex-full-link" href="examples2.html" style="font-size:1rem">→ Examples 2</a>
+    </div>
+  </section>
+
   <footer>
     <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
     <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode</p>
@@ -225,6 +262,55 @@
   <script src="../p5.waves.js"></script>
   <script>
   function cw(id) { return document.getElementById(id).offsetWidth || 320; }
+
+  // ── 0. First call ─────────────────────────────────────────
+  new p5(function(p) {
+    p.setup = function() {
+      var w = cw('ex0');
+      p.createCanvas(w, Math.round(w * 2/3)).parent('ex0');
+      p.noFill(); p.textFont('monospace');
+    };
+    p.draw = function() {
+      p.background(238);
+      var t    = p.frameCount * 0.012;
+      var rowH = p.height / 3;
+      var x;
+
+      // Row 1: minimal — wave(y) with no options
+      p.stroke(0); p.strokeWeight(1.5);
+      p.beginShape();
+      for (x = 0; x <= p.width; x += 5) {
+        p.vertex(x, rowH * 0.5 + Waves.wave(x * 0.016));
+      }
+      p.endShape();
+
+      // Row 2: wave name as second argument
+      p.beginShape();
+      for (x = 0; x <= p.width; x += 5) {
+        p.vertex(x, rowH * 1.5 + Waves.wave(x * 0.016, 'triangle'));
+      }
+      p.endShape();
+
+      // Row 3: full options object
+      p.beginShape();
+      for (x = 0; x <= p.width; x += 5) {
+        p.vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, { wave: 'wobble sine', t: t, amplitude: rowH * 0.36 }));
+      }
+      p.endShape();
+
+      // Dividers
+      p.stroke(0, 0, 0, 20); p.strokeWeight(1);
+      p.line(0, rowH, p.width, rowH);
+      p.line(0, rowH * 2, p.width, rowH * 2);
+
+      // Labels
+      p.noStroke(); p.fill(0, 0, 0, 100); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
+      p.text("wave(x * 0.016)",                                        6, rowH * 0 + 5);
+      p.text("wave(x * 0.016, 'triangle')",                            6, rowH * 1 + 5);
+      p.text("wave(x * 0.016, { wave: 'wobble sine', t, amplitude })", 6, rowH * 2 + 5);
+    };
+    p.windowResized = function() { var w = cw('ex0'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+  }, 'ex0');
 
   // ── 1. Wave Shift ────────────────────────────────────────
   new p5(function(p) {
@@ -242,14 +328,14 @@
       p.background(245); t += 0.014;
       if (phase === 'hold') { holdF--; if (holdF <= 0) { phase = 'morph'; morphF = 0; wB = pick(wA); } }
       if (phase === 'morph') { morphF++; if (morphF >= MORPH_DUR) { wA = wB; phase = 'hold'; holdF = HOLD_DUR; } }
-      var mix = phase === 'morph' ? morphF / MORPH_DUR : 0;
-      mix = mix * mix * (3 - 2 * mix);
+      var morphMix = phase === 'morph' ? morphF / MORPH_DUR : 0;
+      morphMix = morphMix * morphMix * (3 - 2 * morphMix);
       p.stroke(0); p.strokeWeight(2);
       p.beginShape();
       for (var y = 0; y <= p.height; y += 4) {
         p.vertex(p.width / 2 + Waves.wave(y * 0.012, {
           wave: [Waves.data[wA].name, Waves.data[wB].name],
-          mix: mix, t: t, amplitude: p.width * 0.25, frequency: 1.2
+          mix: morphMix, t: t, amplitude: p.width * 0.25, frequency: 1.2
         }), y);
       }
       p.endShape();
@@ -282,6 +368,70 @@
     };
     p.windowResized = function() { var w = cw('ex-seed'); p.resizeCanvas(w, Math.round(w * 2/3)); };
   }, 'ex-seed');
+
+  // ── 1c. Amplitude · Frequency · Phase ────────────────────
+  new p5(function(p) {
+    p.setup = function() {
+      var w = cw('ex-params');
+      p.createCanvas(w, Math.round(w * 2/3)).parent('ex-params');
+      p.noFill(); p.textFont('monospace');
+    };
+    p.draw = function() {
+      p.background(245);
+      var t    = p.frameCount * 0.012;
+      var rowH = p.height / 3;
+      var N    = 5;
+      var i, x, amp, freq, ph;
+
+      // Row 1: amplitude
+      for (i = 0; i < N; i++) {
+        amp = p.map(i, 0, N - 1, 4, rowH * 0.42);
+        p.stroke(0, 0, 0, p.map(i, 0, N - 1, 40, 200));
+        p.strokeWeight(1.2);
+        p.beginShape();
+        for (x = 0; x <= p.width; x += 5) {
+          p.vertex(x, rowH * 0.5 + Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: amp, frequency: 1.2 }));
+        }
+        p.endShape();
+      }
+
+      // Row 2: frequency
+      for (i = 0; i < N; i++) {
+        freq = p.map(i, 0, N - 1, 0.4, 2.8);
+        p.stroke(0, 0, 0, p.map(i, 0, N - 1, 40, 200));
+        p.strokeWeight(1.2);
+        p.beginShape();
+        for (x = 0; x <= p.width; x += 5) {
+          p.vertex(x, rowH * 1.5 + Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.22, frequency: freq }));
+        }
+        p.endShape();
+      }
+
+      // Row 3: phase
+      for (i = 0; i < N; i++) {
+        ph = p.map(i, 0, N - 1, 0, p.TWO_PI * 0.85);
+        p.stroke(0, 0, 0, p.map(i, 0, N - 1, 40, 200));
+        p.strokeWeight(1.2);
+        p.beginShape();
+        for (x = 0; x <= p.width; x += 5) {
+          p.vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.22, frequency: 1.2, phase: ph }));
+        }
+        p.endShape();
+      }
+
+      // Dividers
+      p.stroke(0, 0, 0, 18); p.strokeWeight(1);
+      p.line(0, rowH, p.width, rowH);
+      p.line(0, rowH * 2, p.width, rowH * 2);
+
+      // Labels
+      p.noStroke(); p.fill(0, 0, 0, 70); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
+      p.text('amplitude', 6, rowH * 0 + 5);
+      p.text('frequency', 6, rowH * 1 + 5);
+      p.text('phase',     6, rowH * 2 + 5);
+    };
+    p.windowResized = function() { var w = cw('ex-params'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+  }, 'ex-params');
 
   // ── 3. Noise ──────────────────────────────────────────────
   new p5(function(p) {
