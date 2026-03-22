@@ -93,12 +93,12 @@ reg('hero-canvas', new p5(function(p) {
         p.vertex(p.width, p.height);
         p.endShape(p.CLOSE);
       }
-      const alpha = 140 + Math.sin(t * 1.5 + i) * 40;
+      const strokeA = 140 + Math.sin(t * 1.5 + i) * 40;
       p.stroke(l.gray, l.gray, l.gray, 18); p.strokeWeight(l.weight * 5); p.noFill();
       p.beginShape();
       for (let x = 0; x <= p.width; x += 8) p.vertex(x, waveY + samplers[i].sample(x * 0.4, t * l.speed * 100));
       p.endShape();
-      p.stroke(l.gray, l.gray, l.gray, alpha); p.strokeWeight(l.weight); p.noFill();
+      p.stroke(l.gray, l.gray, l.gray, strokeA); p.strokeWeight(l.weight); p.noFill();
       p.beginShape();
       for (let x = 0; x <= p.width; x += 3) p.vertex(x, waveY + samplers[i].sample(x * 0.4, t * l.speed * 100));
       p.endShape();
