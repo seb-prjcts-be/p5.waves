@@ -129,6 +129,7 @@ reg('hero-canvas', new p5(function(p) {
 reg('gallery-canvas', new p5(function(p) {
   const COLS = 6;
   const ROWS = Math.ceil(WAVE_NAMES.length / COLS);
+  const EXP_H = 140;
   let cellW, cellH = 90;
   let samplers = [], hovered = -1;
 
@@ -148,19 +149,26 @@ reg('gallery-canvas', new p5(function(p) {
   p.draw = function() {
     p.background(248);
     const t = p.frameCount * 0.01;
+    const hasFocus  = hovered >= 0;
+    const miniY0    = hasFocus ? EXP_H + 4 : 0;
+    const miniCellH = hasFocus ? Math.floor((p.height - miniY0) / ROWS) : cellH;
+    const ampScale  = miniCellH / cellH;
+
+    // ── Mini grid ─────────────────────────────────────────────
     for (let i = 0; i < WAVE_NAMES.length; i++) {
       const col = i % COLS, row = Math.floor(i / COLS);
-      const ox = col * cellW, oy = row * cellH;
+      const ox = col * cellW, oy = miniY0 + row * miniCellH;
+      const ph = miniCellH - 2;
       const isHov = i === hovered;
 
       p.noStroke(); p.fill(isHov ? 235 : 248);
-      p.rect(ox + 1, oy + 1, cellW - 2, cellH - 2);
+      p.rect(ox + 1, oy + 1, cellW - 2, ph);
 
       p.stroke(isHov ? 0 : 60); p.strokeWeight(isHov ? 2 : 1.2); p.noFill();
       p.beginShape();
       for (let x = 6; x <= cellW - 6; x += 2) {
-        const raw = samplers[i].sample(x * 0.5, t);
-        p.vertex(ox + x, oy + cellH * 0.5 + raw);
+        const raw = samplers[i].sample(x * 0.5, t) * ampScale;
+        p.vertex(ox + x, oy + miniCellH * 0.5 + raw);
       }
       p.endShape();
 
@@ -169,18 +177,62 @@ reg('gallery-canvas', new p5(function(p) {
       p.fill(248); p.textSize(9); p.textAlign(p.CENTER, p.CENTER);
       p.text(i, ox + 16, oy + 13);
 
-      p.fill(isHov ? 0 : 120); p.textSize(9); p.textAlign(p.LEFT, p.BOTTOM);
-      p.text(WAVE_NAMES[i], ox + 8, oy + cellH - 7);
+      if (!hasFocus) {
+        p.fill(isHov ? 0 : 120); p.textSize(9); p.textAlign(p.LEFT, p.BOTTOM);
+        p.text(WAVE_NAMES[i], ox + 8, oy + miniCellH - 7);
+      }
 
       p.stroke(215); p.strokeWeight(1);
-      if (col < COLS - 1) p.line(ox + cellW, oy, ox + cellW, oy + cellH);
-      if (row < ROWS - 1) p.line(ox, oy + cellH, ox + cellW, oy + cellH);
+      if (col < COLS - 1) p.line(ox + cellW, oy, ox + cellW, oy + miniCellH);
+      if (row < ROWS - 1) p.line(ox, oy + miniCellH, ox + cellW, oy + miniCellH);
     }
-  };
 
-  p.mouseMoved = function() {
-    const idx = Math.floor(p.mouseY / cellH) * COLS + Math.floor(p.mouseX / cellW);
-    hovered = (idx >= 0 && idx < WAVE_NAMES.length) ? idx : -1;
+    // ── Expanded focus panel ─────────────────────────────────
+    if (hasFocus) {
+      const fi = hovered;
+
+      p.noStroke(); p.fill(240);
+      p.rect(0, 0, p.width, EXP_H);
+
+      p.stroke(200); p.strokeWeight(0.5);
+      p.line(0, EXP_H / 2, p.width, EXP_H / 2);
+
+      p.stroke(0); p.strokeWeight(2); p.noFill();
+      p.beginShape();
+      for (let x = 0; x <= p.width; x += 2) {
+        const inputX = p.map(x, 0, p.width, 0, 28) + t * 28;
+        const v = Waves.wave(inputX, { wave: fi, range: [-EXP_H * 0.39, EXP_H * 0.39] });
+        p.vertex(x, EXP_H / 2 + v);
+      }
+      p.endShape();
+
+      // Playhead dot
+      const tFrac = (t * 0.5) % 1.0;
+      const dotV = Waves.wave(
+        p.map(tFrac, 0, 1, 0, p.width),
+        { wave: fi, t: t, range: [EXP_H * 0.11, EXP_H * 0.89] }
+      );
+      p.noStroke(); p.fill(0);
+      p.circle(tFrac * p.width, dotV, 8);
+
+      p.noStroke(); p.fill(0);
+      p.textSize(10); p.textAlign(p.LEFT, p.TOP);
+      p.text(fi + '  ' + WAVE_NAMES[fi], 10, 9);
+    }
+
+    // ── Hover detection (uses current layout vars) ────────────
+    let newFocus = -1;
+    if (p.mouseX >= 0 && p.mouseX < p.width) {
+      if (hasFocus && p.mouseY >= 0 && p.mouseY < EXP_H) {
+        newFocus = hovered;
+      } else if (p.mouseY >= miniY0 && p.mouseY < p.height) {
+        const mc = Math.floor(p.mouseX / cellW);
+        const mr = Math.floor((p.mouseY - miniY0) / miniCellH);
+        const mi = mr * COLS + mc;
+        if (mi >= 0 && mi < WAVE_NAMES.length) newFocus = mi;
+      }
+    }
+    hovered = newFocus;
   };
 
   p.mouseExited = function() { hovered = -1; };
