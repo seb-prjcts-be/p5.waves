@@ -53,12 +53,12 @@ function draw() {
     }
   }
 
-  var mix = phase === 'morph'
+  var morphMix = phase === 'morph'
     ? morphFrame / MORPH_DURATION
     : 0;
 
   // Ease in–out for a smooth transition
-  mix = mix * mix * (3 - 2 * mix);
+  morphMix = morphMix * morphMix * (3 - 2 * morphMix);
 
   // ── Draw the wave ──
   stroke(0);
@@ -67,7 +67,7 @@ function draw() {
   for (var y = 0; y <= height; y += 3) {
     var x = Waves.wave(y * 0.012, {
       wave:      [Waves.data[waveA].name, Waves.data[waveB].name],
-      mix:       mix,
+      mix:       morphMix,
       t:         t,
       amplitude: AMP,
       frequency: FREQ
@@ -86,7 +86,7 @@ function draw() {
   text(nameA, width / 2, height - 30);
 
   if (phase === 'morph') {
-    fill(0, 0, 0, map(mix, 0, 1, 0, 160));
+    fill(0, 0, 0, map(morphMix, 0, 1, 0, 160));
     text(nameB, width / 2, height - 16);
 
     // progress bar
@@ -95,6 +95,6 @@ function draw() {
     fill(220);
     rect(barX, height - 7, barW, 2);
     fill(0);
-    rect(barX, height - 7, barW * mix, 2);
+    rect(barX, height - 7, barW * morphMix, 2);
   }
 }
