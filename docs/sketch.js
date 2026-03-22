@@ -665,7 +665,7 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     p.background(245);
     const t    = p.frameCount * terrainSpeed;
     const size = Math.min(p.width, p.height) * 0.85;
-    const step = size / TERRAIN_N;
+    const cellSz = size / TERRAIN_N;
 
     p.rotateX(-0.55); p.rotateY(0.35);
     p.translate(-size / 2, 0, -size / 2);
@@ -674,14 +674,14 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     for (let z = 0; z <= TERRAIN_N; z++) {
       H[z] = [];
       for (let x = 0; x <= TERRAIN_N; x++) {
-        H[z][x] = samplerX.sample(x * step * 0.3, t) + samplerZ.sample(z * step * 0.3, t * 1.3);
+        H[z][x] = samplerX.sample(x * cellSz * 0.3, t) + samplerZ.sample(z * cellSz * 0.3, t * 1.3);
       }
     }
 
     for (let gz = 0; gz < TERRAIN_N; gz++) {
       for (let gx = 0; gx < TERRAIN_N; gx++) {
-        const x0 = gx * step, x1 = (gx + 1) * step;
-        const z0 = gz * step, z1 = (gz + 1) * step;
+        const x0 = gx * cellSz, x1 = (gx + 1) * cellSz;
+        const z0 = gz * cellSz, z1 = (gz + 1) * cellSz;
         const h00 = H[gz][gx], h10 = H[gz][gx+1], h01 = H[gz+1][gx], h11 = H[gz+1][gx+1];
         const avgH = (h00 + h10 + h01 + h11) / 4;
         const g = grayFor(avgH, gx, gz);
