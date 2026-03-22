@@ -545,9 +545,9 @@ reg('wild-canvas', new p5(function(p) {
     for (let li = 0; li < NUM_LINES; li++) {
       const unpred = (li / (NUM_LINES - 1)) * wildnessMax;
       const g     = Math.round(p.lerp(0, 170, li / (NUM_LINES - 1)));
-      const alpha = Math.round(p.lerp(220, 130, li / (NUM_LINES - 1)));
+      const strokeA = Math.round(p.lerp(220, 130, li / (NUM_LINES - 1)));
 
-      p.stroke(g, g, g, alpha); p.strokeWeight(1.6); p.noFill();
+      p.stroke(g, g, g, strokeA); p.strokeWeight(1.6); p.noFill();
       p.beginShape();
       for (let x = 0; x <= p.width; x += 3) {
         p.vertex(x, p.height * 0.5 + Waves.wave(x * 0.4, {
