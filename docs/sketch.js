@@ -587,7 +587,7 @@ reg('terrain-canvas', new p5(function(p) {
   const TERRAIN_N = 35;
   let terrainH = 100, terrainSpeed = 0.023;
   let waveX = 'grow random', waveZ = 'bumpy sine';
-  let colorMode = 'height', wireframe = true, solid = false;
+  let terrainColor = 'height', wireframe = true, solid = false;
   let samplerX, samplerZ;
 
   function buildSamplers() {
@@ -602,12 +602,12 @@ reg('terrain-canvas', new p5(function(p) {
 `const sx = Waves.createSampler({ wave: '${waveX}', seed: 0, amplitude: ${terrainH}, frequency: 1 });
 const sz = Waves.createSampler({ wave: '${waveZ}', seed: 1, amplitude: ${terrainH}, frequency: 1 });
 const t = frameCount * ${terrainSpeed.toFixed(3)};
-// display: '${colorMode}', wireframe: ${wireframe}, solid: ${solid}`;
+// display: '${terrainColor}', wireframe: ${wireframe}, solid: ${solid}`;
   }
 
   function grayFor(v, gx, gz) {
     const n = p.constrain((v + terrainH * 2) / (terrainH * 4), 0, 1);
-    switch (colorMode) {
+    switch (terrainColor) {
       case 'height':  return Math.round(p.lerp(210, 20,  n));
       case 'inverse': return Math.round(p.lerp(20,  210, n));
       case 'contour': {
@@ -650,7 +650,7 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
       terrainSpeed = document.getElementById('terrain-speed').value / 1000;
       document.getElementById('val-terrain-speed').textContent = terrainSpeed.toFixed(3);
     });
-    bind('terrain-color', function() { colorMode = document.getElementById('terrain-color').value; });
+    bind('terrain-color', function() { terrainColor = document.getElementById('terrain-color').value; });
     bind('terrain-wireframe', function() {
       wireframe = document.getElementById('terrain-wireframe').checked;
       if (!wireframe && !solid) { solid = true; document.getElementById('terrain-solid').checked = true; }
