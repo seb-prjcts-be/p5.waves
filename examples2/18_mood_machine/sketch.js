@@ -83,5 +83,5 @@ function buildButtons() {
     bar.appendChild(btn);
   }
   var container = document.getElementById('sketch-container');
-  container.parentNode.insertBefore(bar, container);
+  container.parentNode.appendChild(bar);
 }

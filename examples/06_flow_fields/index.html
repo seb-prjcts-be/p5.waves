@@ -32,10 +32,13 @@
         <pre><code>// Four samplers with distinct wave shapes steer 120 particles.
 // Each particle uses its assigned sampler for x and y velocity.
 
-samplers = ['classic sine', 'wobble sine', 'pulse', 'meta sine']
-  .map((w, i) =&gt; Waves.createSampler({
-    wave: w, seed: i * 11, range: [-1.8, 1.8]
+var waveNames = ['classic sine', 'wobble sine', 'pulse', 'meta sine'];
+var samplers  = [];
+for (var i = 0; i &lt; waveNames.length; i++) {
+  samplers.push(Waves.createSampler({
+    wave: waveNames[i], seed: i * 11, range: [-1.8, 1.8]
   }));
+}
 
 // In draw():
 p.x += samplers[p.s].sample(p.y * 0.009, t) * 2.2;

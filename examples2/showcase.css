@@ -193,6 +193,13 @@ footer a:hover { color: #000; }
   white-space: pre;
 }
 
+/* ── Right column: canvas + settings stacked ── */
+.demo-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 /* ── Canvas panel ── */
 .demo-canvas {
   border: 1px solid rgba(0, 0, 0, 0.15);

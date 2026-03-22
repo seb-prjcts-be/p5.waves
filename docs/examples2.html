@@ -203,7 +203,7 @@
 
   // ── 20. One Scene, 34 Moods (thumbnail) ────────────────────
   new p5(function(p) {
-    var GRID = 8, waveIdx = 0;
+    var CELLS = 8, waveIdx = 0;
     p.setup = function() {
       var w = cw('ex20');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex20');
@@ -213,13 +213,13 @@
       p.background(245);
       if (p.frameCount % 90 === 0) waveIdx = (waveIdx + 1) % Waves.count;
       var t = p.frameCount * 0.012;
-      var cellW = p.width / GRID, cellH = p.height / GRID;
+      var cellW = p.width / CELLS, cellH = p.height / CELLS;
       var maxR = Math.min(cellW, cellH) * 0.36;
-      for (var row = 0; row < GRID; row++) {
-        for (var col = 0; col < GRID; col++) {
+      for (var row = 0; row < CELLS; row++) {
+        for (var col = 0; col < CELLS; col++) {
           var cx = col * cellW + cellW * 0.5;
           var cy = row * cellH + cellH * 0.5;
-          var idx = row * GRID + col;
+          var idx = row * CELLS + col;
           var size = Waves.wave(idx * 0.6, { wave: waveIdx, t: t, range: [maxR * 0.2, maxR] });
           var bri  = Waves.wave(idx * 0.9, { wave: waveIdx, t: t * 0.7, range: [30, 210] });
           var lift = Waves.wave(idx * 0.4, { wave: waveIdx, t: t * 1.3, range: [-cellH * 0.1, cellH * 0.1] });
@@ -341,8 +341,8 @@
       var charW = innerW / (title.length + 1);
       for (var i = 0; i < title.length; i++) {
         var lift = Waves.wave(i * 2.5, { wave: waveIdx, t: t, amplitude: 8 });
-        var alpha = Waves.wave(i * 3.0, { wave: waveIdx, t: t * 1.2, range: [120, 255] });
-        p.fill(0, alpha);
+        var posterAlpha = Waves.wave(i * 3.0, { wave: waveIdx, t: t * 1.2, range: [120, 255] });
+        p.fill(0, posterAlpha);
         p.textSize(Math.round(innerW * 0.1));
         p.textAlign(p.CENTER, p.CENTER);
         p.text(title[i], margin + charW * (i + 0.75), baseY + lift);
