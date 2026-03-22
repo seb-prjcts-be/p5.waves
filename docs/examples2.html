@@ -123,10 +123,10 @@
   // ── 18. Mood Machine (thumbnail) ───────────────────────────
   new p5(function(p) {
     var MOODS = [
-      { wave: 'classic sine',  color: [90,140,180],  bg: [240,245,250], speed: 0.004, amp: 35, lines: 12, freq: 0.8  },
-      { wave: 'fuzzy pulse',   color: [200,60,60],   bg: [250,240,238], speed: 0.035, amp: 50, lines: 18, freq: 2.2  },
-      { wave: 'wobble sine',   color: [240,140,50],  bg: [255,250,240], speed: 0.018, amp: 45, lines: 14, freq: 1.4  },
-      { wave: 'noise',         color: [140,120,190], bg: [245,242,255], speed: 0.005, amp: 40, lines: 10, freq: 0.6  }
+      { wave: 'classic sine',  speed: 0.004, amp: 35, lines: 12, freq: 0.8 },
+      { wave: 'fuzzy pulse',   speed: 0.035, amp: 50, lines: 18, freq: 2.2 },
+      { wave: 'wobble sine',   speed: 0.018, amp: 45, lines: 14, freq: 1.4 },
+      { wave: 'noise',         speed: 0.005, amp: 40, lines: 10, freq: 0.6 }
     ];
     var current = 0, t = 0;
     p.setup = function() {
@@ -138,20 +138,27 @@
       if (p.frameCount % 180 === 0) current = (current + 1) % MOODS.length;
       var m = MOODS[current];
       t += m.speed;
-      p.background(m.bg[0], m.bg[1], m.bg[2]);
+      p.background(248);
       var cx = p.width / 2, cy = p.height / 2;
       var maxR = Math.min(p.width, p.height) * 0.40;
+      var step = 0.06;
       for (var i = 0; i < m.lines; i++) {
         var frac = i / m.lines;
         var r = maxR * (0.15 + frac * 0.85);
-        p.stroke(m.color[0], m.color[1], m.color[2], p.map(i, 0, m.lines-1, 40, 200));
-        p.strokeWeight(p.map(i, 0, m.lines-1, 0.5, 1.8));
-        p.beginShape();
-        for (var a = 0; a <= p.TWO_PI; a += 0.06) {
+        p.stroke(0, p.map(i, 0, m.lines - 1, 30, 200));
+        p.strokeWeight(p.map(i, 0, m.lines - 1, 0.5, 1.8));
+        var pts = [];
+        for (var a = 0; a < p.TWO_PI; a += step) {
           var off = Waves.wave(a * 4 + i * 0.7, { wave: m.wave, t: t + i * 0.3, amplitude: m.amp * frac, frequency: m.freq });
-          p.vertex(cx + Math.cos(a) * (r + off), cy + Math.sin(a) * (r + off));
+          pts.push([cx + Math.cos(a) * (r + off), cy + Math.sin(a) * (r + off)]);
         }
-        p.endShape(p.CLOSE);
+        var n = pts.length;
+        p.beginShape();
+        p.curveVertex(pts[n - 1][0], pts[n - 1][1]);
+        for (var j = 0; j < n; j++) { p.curveVertex(pts[j][0], pts[j][1]); }
+        p.curveVertex(pts[0][0], pts[0][1]);
+        p.curveVertex(pts[1][0], pts[1][1]);
+        p.endShape();
       }
     };
     p.windowResized = function() { var w = cw('ex18'); p.resizeCanvas(w, Math.round(w * 2/3)); };
