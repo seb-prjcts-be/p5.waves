@@ -7,7 +7,8 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
   <style>
-    .mood-bar { display:flex; flex-wrap:wrap; gap:0.25rem; margin-bottom:1rem; }
+    .demo-right { display:flex; flex-direction:column; gap:0.75rem; }
+    .mood-bar { display:flex; flex-wrap:wrap; gap:0.25rem; }
     .mood-bar button {
       font-family:'Oswald',sans-serif; font-size:0.65rem; font-weight:500;
       width:1.6rem; height:1.6rem; padding:0; border:1px solid rgba(0,0,0,0.2);
@@ -55,7 +56,9 @@ var spacing = Waves.wave(i * 0.8, {
   range: [8, 14]
 });</code></pre>
       </div>
-      <div class="demo-canvas" id="sketch-container"></div>
+      <div class="demo-right">
+        <div class="demo-canvas" id="sketch-container"></div>
+      </div>
     </div>
   </main>
 
