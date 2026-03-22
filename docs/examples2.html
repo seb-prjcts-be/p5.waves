@@ -141,23 +141,21 @@
       p.background(248);
       var cx = p.width / 2, cy = p.height / 2;
       var maxR = Math.min(p.width, p.height) * 0.40;
-      var step = 0.06;
+      var numPt = 80;
       for (var i = 0; i < m.lines; i++) {
         var frac = i / m.lines;
         var r = maxR * (0.15 + frac * 0.85);
         p.stroke(0, p.map(i, 0, m.lines - 1, 30, 200));
         p.strokeWeight(p.map(i, 0, m.lines - 1, 0.5, 1.8));
         var pts = [];
-        for (var a = 0; a < p.TWO_PI; a += step) {
+        for (var j = 0; j < numPt; j++) {
+          var a = p.TWO_PI * j / numPt;
           var off = Waves.wave(a * 4 + i * 0.7, { wave: m.wave, t: t + i * 0.3, amplitude: m.amp * frac, frequency: m.freq });
           pts.push([cx + Math.cos(a) * (r + off), cy + Math.sin(a) * (r + off)]);
         }
-        var n = pts.length;
         p.beginShape();
-        p.curveVertex(pts[n - 1][0], pts[n - 1][1]);
-        for (var j = 0; j < n; j++) { p.curveVertex(pts[j][0], pts[j][1]); }
-        p.curveVertex(pts[0][0], pts[0][1]);
-        p.curveVertex(pts[1][0], pts[1][1]);
+        for (var k = 0; k < numPt; k++) { p.vertex(pts[k][0], pts[k][1]); }
+        p.vertex(pts[0][0], pts[0][1]);
         p.endShape();
       }
     };
