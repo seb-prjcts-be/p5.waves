@@ -28,10 +28,10 @@ function draw() {
 
   background(248);
 
-  var cx   = width / 2;
-  var cy   = height / 2;
-  var maxR = min(width, height) * 0.42;
-  var step = 0.05;
+  var cx    = width / 2;
+  var cy    = height / 2;
+  var maxR  = min(width, height) * 0.42;
+  var numPt = 120;
 
   for (var i = 0; i < m.lines; i++) {
     var frac  = i / m.lines;
@@ -44,7 +44,8 @@ function draw() {
 
     // Pre-compute ring vertices
     var pts = [];
-    for (var a = 0; a < TWO_PI; a += step) {
+    for (var j = 0; j < numPt; j++) {
+      var a = TWO_PI * j / numPt;
       var offset = Waves.wave(a * 4 + i * 0.7, {
         wave:      m.wave,
         t:         t + i * 0.3,
@@ -54,16 +55,12 @@ function draw() {
       pts.push([cx + cos(a) * (r + offset), cy + sin(a) * (r + offset)]);
     }
 
-    var n = pts.length;
-
-    // Catmull-Rom spline: phantom first = last, phantom last = first
+    // Close back to exact first point — no seam
     beginShape();
-    curveVertex(pts[n - 1][0], pts[n - 1][1]);
-    for (var j = 0; j < n; j++) {
-      curveVertex(pts[j][0], pts[j][1]);
+    for (var k = 0; k < numPt; k++) {
+      vertex(pts[k][0], pts[k][1]);
     }
-    curveVertex(pts[0][0], pts[0][1]);
-    curveVertex(pts[1][0], pts[1][1]);
+    vertex(pts[0][0], pts[0][1]);
     endShape();
   }
 
