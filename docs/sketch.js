@@ -2,7 +2,7 @@
    p5.waves Ultimate Showcase – sketch.js  (B&W edition)
    - IntersectionObserver: pauses off-screen sketches
    - frameRate caps to reduce idle CPU usage
-   - Terrain GRID=35, 4 real B&W color modes
+   - Terrain TERRAIN_N=35, 4 real B&W color modes
    ============================================================ */
 
 // ── WAVE NAMES ──────────────────────────────────────────────
@@ -342,7 +342,7 @@ s.sample(x, t * ${params.speed.toFixed(3)})`;
 
 
 // ═════════════════════════════════════════════════════════════
-// 4a. GRID – Binary threshold (B&W cells)
+// 4a. TERRAIN_N – Binary threshold (B&W cells)
 // ═════════════════════════════════════════════════════════════
 reg('grid-binary-canvas', new p5(function(p) {
   const COLS = 24, ROWS = 18;
@@ -414,7 +414,7 @@ const cells = g.sample(t); // Uint8Array`;
 
 
 // ═════════════════════════════════════════════════════════════
-// 4b. GRID – Continuous Float32 (grayscale)
+// 4b. TERRAIN_N – Continuous Float32 (grayscale)
 // ═════════════════════════════════════════════════════════════
 reg('grid-float-canvas', new p5(function(p) {
   const COLS = 24, ROWS = 18;
@@ -581,10 +581,10 @@ reg('wild-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 6. 3D TERRAIN – WEBGL, GRID=35, 4 real B&W color modes
+// 6. 3D TERRAIN – WEBGL, TERRAIN_N=35, 4 real B&W color modes
 // ═════════════════════════════════════════════════════════════
 reg('terrain-canvas', new p5(function(p) {
-  const GRID = 35;
+  const TERRAIN_N = 35;
   let terrainH = 100, terrainSpeed = 0.023;
   let waveX = 'grow random', waveZ = 'bumpy sine';
   let colorMode = 'height', wireframe = true, solid = false;
@@ -615,7 +615,7 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
         return Math.round(p.lerp(200, 20, band));
       }
       case 'fog': {
-        const depth = gz / GRID;
+        const depth = gz / TERRAIN_N;
         const base  = Math.round(p.lerp(210, 20, n));
         return Math.round(p.lerp(base, 210, depth * 0.65));
       }
@@ -665,21 +665,21 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     p.background(245);
     const t    = p.frameCount * terrainSpeed;
     const size = Math.min(p.width, p.height) * 0.85;
-    const step = size / GRID;
+    const step = size / TERRAIN_N;
 
     p.rotateX(-0.55); p.rotateY(0.35);
     p.translate(-size / 2, 0, -size / 2);
 
     const H = [];
-    for (let z = 0; z <= GRID; z++) {
+    for (let z = 0; z <= TERRAIN_N; z++) {
       H[z] = [];
-      for (let x = 0; x <= GRID; x++) {
+      for (let x = 0; x <= TERRAIN_N; x++) {
         H[z][x] = samplerX.sample(x * step * 0.3, t) + samplerZ.sample(z * step * 0.3, t * 1.3);
       }
     }
 
-    for (let gz = 0; gz < GRID; gz++) {
-      for (let gx = 0; gx < GRID; gx++) {
+    for (let gz = 0; gz < TERRAIN_N; gz++) {
+      for (let gx = 0; gx < TERRAIN_N; gx++) {
         const x0 = gx * step, x1 = (gx + 1) * step;
         const z0 = gz * step, z1 = (gz + 1) * step;
         const h00 = H[gz][gx], h10 = H[gz][gx+1], h01 = H[gz+1][gx], h11 = H[gz+1][gx+1];
@@ -708,9 +708,6 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     }
 
     p.resetMatrix();
-    p.noStroke(); p.fill(160); p.textSize(10);
-    p.textAlign(p.LEFT, p.TOP);
-    p.text('X: ' + waveX + '  ·  Z: ' + waveZ + '  ·  display: ' + colorMode, -p.width/2 + 10, -p.height/2 + 10);
   };
 
   p.windowResized = function() {
