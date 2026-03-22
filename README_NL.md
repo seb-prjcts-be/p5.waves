@@ -180,7 +180,8 @@ Zelfstandige voorbeelden:
 - `03_basic_wave_instance` — range-normalisatie
 - `04_basic_wave_p2d` — P2D renderer
 - `05_basic_wave_webgl` — WEBGL, twee samplers
-- `06_seconds_param` — seconds param
+- `06_flow_fields` — flow fields (createSampler × 4)
+- `07_wave_params` — amplitude · frequentie · fase
 - `08_triangle_domain` — klein invoerdomein
 - `09_range_0_1` — range [0, 1]
 - `10_wave_override` — wild-modus

@@ -203,7 +203,7 @@
   </section>
 
   <!-- 12. MORPH WAVE -->
-  <section id="opacity" class="section section-dark">
+  <section id="morph" class="section section-dark">
     <div class="section-header">
       <div class="section-tag">feature: wave: [a, b] · mix — crossfade between formulas</div>
       <h2>Morph <span class="accent">Wave</span></h2>
@@ -590,12 +590,12 @@
     };
     p.draw = function() {
       var t = p.frameCount * 0.007;
-      var step = 10;
-      for (var y = 0; y < p.height; y += step) {
-        for (var x = 0; x < p.width; x += step) {
+      var blockSz = 10;
+      for (var y = 0; y < p.height; y += blockSz) {
+        for (var x = 0; x < p.width; x += blockSz) {
           var hue = Waves.wave(x * 0.007 + y * 0.005, { wave: 'meta sine',   t: t,       range: [0, 360] });
           var bri = Waves.wave(x * 0.005 - y * 0.007, { wave: 'wobble sine', t: t * 0.6, range: [45, 95] });
-          p.fill(hue, 72, bri); p.rect(x, y, step, step);
+          p.fill(hue, 72, bri); p.rect(x, y, blockSz, blockSz);
         }
       }
     };
@@ -706,18 +706,18 @@
       var t  = p.frameCount * 0.012;
       var pw = p.width / PAIRS.length;
       for (var i = 0; i < PAIRS.length; i++) {
-        var mix = (Math.sin(p.frameCount * SPEEDS[i]) + 1) * 0.5;
+        var morphMix = (Math.sin(p.frameCount * SPEEDS[i]) + 1) * 0.5;
         var cx  = pw * i + pw * 0.5;
         p.stroke(0, 0, 0, 35); p.strokeWeight(0.5); p.line(pw * i, 0, pw * i, p.height);
         p.stroke(0); p.strokeWeight(1.4);
         p.beginShape();
         for (var y = 8; y < p.height - 16; y += 3) {
-          p.vertex(cx + Waves.wave(y * 0.014, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: mix, t: t, amplitude: pw * 0.38 }), y);
+          p.vertex(cx + Waves.wave(y * 0.014, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: morphMix, t: t, amplitude: pw * 0.38 }), y);
         }
         p.endShape();
         p.noStroke(); p.fill(0);
         p.textAlign(p.CENTER);
-        p.text(p.nf(mix, 1, 2), cx, p.height - 6);
+        p.text(p.nf(morphMix, 1, 2), cx, p.height - 6);
         p.stroke(0); p.noFill();
       }
     };
