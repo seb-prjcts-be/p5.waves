@@ -467,6 +467,26 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
   margin-top: 1rem;
 }
 
+/* ── POSTER ── */
+.poster-layout {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#poster-canvas {
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+#poster-canvas canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+.poster-code-preview {
+  margin-top: 1rem;
+}
+
 /* ── WILD ── */
 .wild-layout {
   max-width: 1200px;

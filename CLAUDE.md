@@ -124,7 +124,7 @@ new CSS classes, layout structures, or JS patterns when existing ones cover the 
 Reuse what is there. The codebase has an established visual language;
 extend it, do not compete with it.
 
-- `examples/showcase.css` and `examples2/showcase.css` are the shared style bases
+- `examples/showcase.css` is the shared style base for example pages
 - `docs/style.css` governs all documentation pages
 - Before adding a style rule, check if an existing rule already applies
 - Before adding a helper function, check if the pattern already exists in the sketch
@@ -188,7 +188,7 @@ A change at any level must be applied to all three before the work is done.
 
 | Level | Location | What it contains |
 |---|---|---|
-| Gallery thumbnail | `docs/examples.html` or `docs/examples2.html` | Inline p5 sketch (small canvas) + short description |
+| Gallery thumbnail | `docs/examples.html` | Inline p5 sketch (small canvas) + short description |
 | Standalone page | `examples/NN_name/index.html` | Full code visible on page, full-size canvas |
 | Downloadable folder | `examples/NN_name/sketch.js` | The actual working sketch file |
 
@@ -202,14 +202,9 @@ A change at any level must be applied to all three before the work is done.
 - If a variable is renamed in the sketch, rename it everywhere:
   gallery inline code, standalone index.html code block, and sketch.js
 
-### Examples 2
-
-`examples2/` follows the same rule with its own gallery at `docs/examples2.html`.
-Treat examples2 as a parallel system with identical sync obligations.
-
 ### Verification checklist before finishing any example change
 
-- [ ] `docs/examples.html` or `docs/examples2.html` gallery section updated
+- [ ] `docs/examples.html` gallery section updated
 - [ ] `examples/NN_name/index.html` standalone page updated
 - [ ] `examples/NN_name/sketch.js` working file updated
 - [ ] No console errors in any of the three
@@ -269,13 +264,6 @@ Write examples as if the reader knows p5.js basics but has never seen
 this library. Do not assume knowledge of instance mode, samplers, or
 advanced options on first encounter. Complexity may increase across
 the example series — never within a single example.
-
-### 6.6 Examples 2 — creative showcases
-
-`examples2/` (18–23) are creative showcases, not API tutorials.
-They demonstrate the library as a behaviour and character engine.
-The bar is higher: each must feel like a finished piece, not a demo.
-Variation, atmosphere, and surprise are mandatory — not optional.
 
 ---
 
@@ -436,18 +424,10 @@ examples/
   15_opacity/
   16_wave_chart/
   17_3d_wave_volume/
-
-examples2/
-  18_mood_machine/
-  19_wave_zoo/
-  20_one_scene_34_moods/
-  21_fabric/
-  22_particle_forces/
-  23_poster_generator/
 ```
 
 Each folder contains at minimum: `index.html`, `sketch.js`.
-Shared styles live in `examples/showcase.css` and `examples2/showcase.css` —
+Shared styles live in `examples/showcase.css` —
 never duplicate style rules into individual example folders.
 
 ### 9.4 Gallery pages
@@ -455,7 +435,6 @@ never duplicate style rules into individual example folders.
 | File | Covers |
 |---|---|
 | `docs/examples.html` | Examples 00–17 (14 shown as thumbnails, curated) |
-| `docs/examples2.html` | Examples 18–23 |
 
 Gallery thumbnails are small inline p5 sketches — not iframes, not screenshots.
 They must match the standalone sketch in concept and API usage.

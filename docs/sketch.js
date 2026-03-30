@@ -809,3 +809,209 @@ const t = frameCount * ${terrainSpeed.toFixed(3)};
     p.resizeCanvas(container.offsetWidth || 800, 480);
   };
 }, 'terrain-canvas'));
+
+
+// ═════════════════════════════════════════════════════════════
+// 7. POSTER GENERATOR – Wave-driven graphic design with shift
+// ═════════════════════════════════════════════════════════════
+reg('poster-canvas', new p5(function(p) {
+  var t = 0;
+  var titleText = 'WAVES';
+  var subText   = 'structured surprise';
+  var canvasW = 460, canvasH = 460;
+
+  function wOpts(extra) {
+    var opts = { shift: true, shiftInterval: 4, shiftDuration: 1.5, t: t };
+    for (var k in extra) { opts[k] = extra[k]; }
+    return opts;
+  }
+
+  function updatePosterCode() {
+    var el = document.getElementById('poster-code');
+    if (!el) return;
+    el.textContent =
+      '// Breathing border\n' +
+      'Waves.wave(x * 0.03, {\n' +
+      '  shift: true, t: t, amplitude: 3\n' +
+      '});\n\n' +
+      '// Title letter lift\n' +
+      'Waves.wave(i * 2.5, {\n' +
+      '  shift: true, t: t, amplitude: 12\n' +
+      '});\n\n' +
+      '// Ornament with wild mode\n' +
+      'Waves.wave(x * 0.015, {\n' +
+      '  shift: true, t: t,\n' +
+      '  amplitude: 20, mode: \'wild\',\n' +
+      '  unpredictability: 0.3\n' +
+      '});';
+  }
+
+  p.setup = function() {
+    var container = document.getElementById('poster-canvas');
+    if (container && container.offsetWidth > 0) {
+      canvasW = Math.min(460, container.offsetWidth);
+      canvasH = canvasW;
+    }
+    p.createCanvas(canvasW, canvasH).parent('poster-canvas');
+    p.textFont('monospace');
+    updatePosterCode();
+  };
+
+  p.draw = function() {
+    t += 0.008;
+    p.background(245);
+
+    var margin = canvasW * 0.087;
+    var innerW = canvasW - margin * 2;
+    var innerH = canvasH - margin * 2;
+
+    drawBorder(margin, innerW, innerH);
+    drawOrnaments(margin, innerW, innerH);
+    drawTitle(margin, innerW, innerH);
+    drawSubtitle(margin, innerW, innerH);
+    drawFooterLines(margin, innerW, innerH);
+    drawWaveName(margin, innerW, innerH);
+  };
+
+  function drawBorder(margin, innerW, innerH) {
+    p.noFill();
+    p.stroke(0, 40);
+    p.strokeWeight(1);
+    // top
+    p.beginShape();
+    for (var x = margin; x <= margin + innerW; x += 3) {
+      p.vertex(x, margin + Waves.wave(x * 0.03, wOpts({ amplitude: 3 })));
+    }
+    p.endShape();
+    // bottom
+    p.beginShape();
+    for (var x = margin; x <= margin + innerW; x += 3) {
+      p.vertex(x, margin + innerH + Waves.wave(x * 0.03, wOpts({ amplitude: 3, phase: 5 })));
+    }
+    p.endShape();
+    // left
+    p.beginShape();
+    for (var y = margin; y <= margin + innerH; y += 3) {
+      p.vertex(margin + Waves.wave(y * 0.03, wOpts({ amplitude: 3, phase: 2 })), y);
+    }
+    p.endShape();
+    // right
+    p.beginShape();
+    for (var y = margin; y <= margin + innerH; y += 3) {
+      p.vertex(margin + innerW + Waves.wave(y * 0.03, wOpts({ amplitude: 3, phase: 7 })), y);
+    }
+    p.endShape();
+  }
+
+  function drawOrnaments(margin, innerW, innerH) {
+    p.noFill();
+    var ornY = margin + innerH * 0.35;
+    for (var layer = 0; layer < 3; layer++) {
+      var posterAlpha = p.map(layer, 0, 2, 25, 60);
+      p.stroke(0, posterAlpha);
+      p.strokeWeight(0.6);
+      p.beginShape();
+      for (var x = margin + 20; x <= margin + innerW - 20; x += 2) {
+        var v = Waves.wave(x * 0.015, wOpts({
+          amplitude:       15 + layer * 8,
+          frequency:       1.2 - layer * 0.2,
+          phase:           layer * 1.5,
+          mode:            layer === 2 ? 'wild' : 'stable',
+          unpredictability: layer === 2 ? 0.3 : 0
+        }));
+        p.vertex(x, ornY + v + layer * 5);
+      }
+      p.endShape();
+    }
+  }
+
+  function drawTitle(margin, innerW, innerH) {
+    p.noStroke();
+    var baseY = margin + innerH * 0.55;
+    var baseSize = canvasW * 0.113;
+    var charW = baseSize * 0.65;
+    var totalW = titleText.length * charW;
+    var startX = margin + (innerW - totalW) * 0.5;
+
+    for (var i = 0; i < titleText.length; i++) {
+      var lift = Waves.wave(i * 2.5, wOpts({
+        amplitude: 12, frequency: 0.8
+      }));
+
+      var sizeOff = Waves.wave(i * 1.8, wOpts({
+        range: [-6, 6], phase: 0.7
+      }));
+
+      var titleAlpha = Waves.wave(i * 3.0, wOpts({
+        range: [120, 255], phase: 1.2
+      }));
+
+      p.fill(0, titleAlpha);
+      p.textSize(baseSize + sizeOff);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.text(titleText[i], startX + i * charW + charW * 0.5, baseY + lift);
+    }
+  }
+
+  function drawSubtitle(margin, innerW, innerH) {
+    p.noStroke();
+    var baseY = margin + innerH * 0.72;
+
+    for (var i = 0; i < subText.length; i++) {
+      var spacing = Waves.wave(i * 0.8, wOpts({
+        range: [8, 14], phase: 0.5
+      }));
+
+      var subAlpha = Waves.wave(i * 1.2, wOpts({
+        range: [60, 200], phase: 0.9
+      }));
+
+      p.fill(0, subAlpha);
+      p.textSize(12);
+      p.textAlign(p.LEFT, p.CENTER);
+      var xPos = margin + 30;
+      for (var j = 0; j < i; j++) {
+        xPos += Waves.wave(j * 0.8, wOpts({ range: [8, 14], phase: 0.5 }));
+      }
+      if (xPos < margin + innerW - 20) {
+        p.text(subText[i], xPos, baseY);
+      }
+    }
+  }
+
+  function drawFooterLines(margin, innerW, innerH) {
+    p.stroke(0, 30);
+    p.strokeWeight(0.5);
+    var footY = margin + innerH * 0.88;
+    for (var l = 0; l < 4; l++) {
+      var y = footY + l * 8;
+      var lineW = Waves.wave(l * 3, wOpts({ range: [innerW * 0.3, innerW * 0.9] }));
+      var xOff  = Waves.wave(l * 2, wOpts({ range: [0, innerW * 0.3], phase: 0.6 }));
+      p.line(margin + xOff, y, margin + xOff + lineW, y);
+    }
+  }
+
+  function drawWaveName(margin, innerW, innerH) {
+    // Use wave() with shift to discover current formula name
+    // We call it once just to get the side effect of which wave is active
+    var probe = Waves.wave(0, wOpts({ range: [0, 1] }));
+    // Display the shift era's wave — derive from t
+    var cycleDur = 4 + 1.5;
+    var era = Math.floor(t / cycleDur);
+    var idx = Math.abs(era * 7 + 3) % Waves.count;
+    p.noStroke();
+    p.fill(0, 0, 0, 40);
+    p.textSize(7);
+    p.textAlign(p.RIGHT, p.BOTTOM);
+    p.text('p5.waves', margin + innerW - 2, margin + innerH - 2);
+  }
+
+  p.windowResized = function() {
+    var container = document.getElementById('poster-canvas');
+    if (container && container.offsetWidth > 0) {
+      canvasW = Math.min(460, container.offsetWidth);
+      canvasH = canvasW;
+      p.resizeCanvas(canvasW, canvasH);
+    }
+  };
+}, 'poster-canvas'));
