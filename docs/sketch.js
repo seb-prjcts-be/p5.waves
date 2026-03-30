@@ -54,22 +54,23 @@ function reg(id, sketch) {
 // 1. HERO – Cascading landscape + wave lines with shift (B&W)
 // ═════════════════════════════════════════════════════════════
 reg('hero-canvas', new p5(function(p) {
-  // Background landscape layers — soft filled silhouettes
+  // Background landscape — soft filled silhouettes
   var BG = [
-    { yPct: 0.62, range: [-30, 30], freq: 0.006, speed: 0.005, phase: 0,   gray: 230, fillAlpha: 15, seed: 10 },
-    { yPct: 0.72, range: [-25, 25], freq: 0.009, speed: 0.008, phase: 1.4, gray: 210, fillAlpha: 20, seed: 11 },
-    { yPct: 0.82, range: [-20, 20], freq: 0.012, speed: 0.010, phase: 2.8, gray: 185, fillAlpha: 25, seed: 12 },
-    { yPct: 0.92, range: [-15, 15], freq: 0.016, speed: 0.014, phase: 0.6, gray: 155, fillAlpha: 35, seed: 13 }
+    { yPct: 0.60, range: [-45, 45], freq: 0.006, phase: 0,   gray: 225, fillAlpha: 18, seed: 10 },
+    { yPct: 0.70, range: [-40, 40], freq: 0.009, phase: 1.4, gray: 205, fillAlpha: 22, seed: 11 },
+    { yPct: 0.80, range: [-35, 35], freq: 0.012, phase: 2.8, gray: 180, fillAlpha: 28, seed: 12 },
+    { yPct: 0.90, range: [-25, 25], freq: 0.016, phase: 0.6, gray: 150, fillAlpha: 40, seed: 13 }
   ];
-  // Foreground wave lines — visible, characterful, shifting
+  // Foreground wave lines — visible, characterful, shifting fast
   var FG = [
-    { yPct: 0.64, range: [-40, 40], freq: 0.007, speed: 0.006, phase: 0.3, gray: 0, lineAlpha: 30, weight: 1.5, seed: 20 },
-    { yPct: 0.71, range: [-35, 35], freq: 0.010, speed: 0.009, phase: 1.8, gray: 0, lineAlpha: 40, weight: 1.8, seed: 21, wild: true, unpr: 0.15 },
-    { yPct: 0.78, range: [-30, 30], freq: 0.013, speed: 0.011, phase: 3.2, gray: 0, lineAlpha: 55, weight: 2.0, seed: 22 },
-    { yPct: 0.85, range: [-28, 28], freq: 0.015, speed: 0.013, phase: 0.9, gray: 0, lineAlpha: 70, weight: 2.2, seed: 23, wild: true, unpr: 0.25 },
-    { yPct: 0.92, range: [-22, 22], freq: 0.018, speed: 0.016, phase: 2.1, gray: 0, lineAlpha: 90, weight: 2.5, seed: 24, wild: true, unpr: 0.3 }
+    { yPct: 0.62, range: [-55, 55], freq: 0.007, phase: 0.3, gray: 60,  lineAlpha: 35, weight: 1.5, seed: 20 },
+    { yPct: 0.70, range: [-50, 50], freq: 0.010, phase: 1.8, gray: 40,  lineAlpha: 50, weight: 1.8, seed: 21, wild: true, unpr: 0.15 },
+    { yPct: 0.78, range: [-45, 45], freq: 0.013, phase: 3.2, gray: 30,  lineAlpha: 65, weight: 2.0, seed: 22 },
+    { yPct: 0.86, range: [-40, 40], freq: 0.015, phase: 0.9, gray: 20,  lineAlpha: 80, weight: 2.2, seed: 23, wild: true, unpr: 0.2 },
+    { yPct: 0.93, range: [-30, 30], freq: 0.018, phase: 2.1, gray: 0,   lineAlpha: 100, weight: 2.5, seed: 24, wild: true, unpr: 0.3 }
   ];
   var bgSamplers = [], fgSamplers = [];
+  var heroT = 0;
 
   p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight).parent('hero-canvas');
@@ -79,14 +80,14 @@ reg('hero-canvas', new p5(function(p) {
     for (var i = 0; i < BG.length; i++) {
       var b = BG[i];
       bgSamplers.push(Waves.createSampler({
-        shift: true, shiftInterval: 8 + i * 3, shiftDuration: 2.5,
+        shift: true, shiftInterval: 4 + i, shiftDuration: 1.5,
         seed: b.seed, range: b.range, frequency: b.freq, phase: b.phase
       }));
     }
     for (var i = 0; i < FG.length; i++) {
       var f = FG[i];
       fgSamplers.push(Waves.createSampler({
-        shift: true, shiftInterval: 5 + i * 2, shiftDuration: 1.5,
+        shift: true, shiftInterval: 3 + i, shiftDuration: 1.2,
         seed: f.seed, range: f.range, frequency: f.freq, phase: f.phase,
         mode: f.wild ? 'wild' : 'stable',
         unpredictability: f.unpr || 0
@@ -96,35 +97,33 @@ reg('hero-canvas', new p5(function(p) {
 
   p.draw = function() {
     p.background(245);
-    var t = p.frameCount * 0.01;
+    heroT += 0.018;
 
     // Background silhouettes
     for (var i = 0; i < BG.length; i++) {
       var b = BG[i];
       var baseY = p.height * b.yPct;
-      var tVal = t * b.speed * 100;
       p.noStroke();
       p.fill(b.gray, b.fillAlpha);
       p.beginShape();
       p.vertex(0, p.height);
       for (var x = 0; x <= p.width; x += 6) {
-        p.vertex(x, baseY + bgSamplers[i].sample(x * 0.4, tVal));
+        p.vertex(x, baseY + bgSamplers[i].sample(x * 0.4, heroT));
       }
       p.vertex(p.width, p.height);
       p.endShape(p.CLOSE);
     }
 
-    // Foreground wave lines — the stars
+    // Foreground wave lines
     for (var i = 0; i < FG.length; i++) {
       var f = FG[i];
       var baseY = p.height * f.yPct;
-      var tVal = t * f.speed * 100;
       p.noFill();
       p.stroke(f.gray, f.lineAlpha);
       p.strokeWeight(f.weight);
       p.beginShape();
       for (var x = 0; x <= p.width; x += 3) {
-        p.vertex(x, baseY + fgSamplers[i].sample(x * 0.4, tVal));
+        p.vertex(x, baseY + fgSamplers[i].sample(x * 0.4, heroT));
       }
       p.endShape();
     }
