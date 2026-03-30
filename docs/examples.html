@@ -277,7 +277,7 @@
       var x;
 
       // Row 1: minimal — wave(y) with no options
-      p.stroke(0); p.strokeWeight(1.5);
+      p.noFill(); p.stroke(0); p.strokeWeight(1.5);
       p.beginShape();
       for (x = 0; x <= p.width; x += 5) {
         p.vertex(x, rowH * 0.5 + Waves.wave(x * 0.016));
