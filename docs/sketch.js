@@ -51,74 +51,74 @@ function reg(id, sketch) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 1. HERO – Multi-wave layered background (B&W)
+// 1. HERO – Cascading wave landscape with shift (B&W)
 // ═════════════════════════════════════════════════════════════
 reg('hero-canvas', new p5(function(p) {
-  const LAYERS = [
-    { wave: 'classic sine',   gray: 30,  amp: 90,  freq: 0.008, speed: 0.008, weight: 2.0 },
-    { wave: 'mountain peaks', gray: 80,  amp: 70,  freq: 0.010, speed: 0.012, weight: 1.5 },
-    { wave: 'triangle',       gray: 120, amp: 55,  freq: 0.015, speed: 0.006, weight: 1.2 },
-    { wave: 'bumpy sine',     gray: 50,  amp: 45,  freq: 0.012, speed: 0.015, weight: 1.0 },
-    { wave: 'wobble sine',    gray: 160, amp: 35,  freq: 0.018, speed: 0.010, weight: 0.8 },
-    { wave: 'stepped sine',   gray: 20,  amp: 60,  freq: 0.007, speed: 0.005, weight: 1.8 },
-    { wave: 'batman',         gray: 100, amp: 40,  freq: 0.020, speed: 0.018, weight: 0.8 },
-    { wave: 'valleys',        gray: 70,  amp: 50,  freq: 0.009, speed: 0.009, weight: 1.2 },
+  // 6 cascading layers using shift, range, wild mode, and phase
+  var LAYERS = [
+    { yPct: 0.60, range: [-35, 35], freq: 0.006, speed: 0.005, phase: 0,   gray: 230, fillAlpha: 12, seed: 0, wild: false, unpr: 0   },
+    { yPct: 0.67, range: [-30, 30], freq: 0.008, speed: 0.007, phase: 1.2, gray: 210, fillAlpha: 15, seed: 1, wild: false, unpr: 0   },
+    { yPct: 0.74, range: [-28, 28], freq: 0.010, speed: 0.009, phase: 2.5, gray: 185, fillAlpha: 18, seed: 2, wild: false, unpr: 0   },
+    { yPct: 0.80, range: [-25, 25], freq: 0.012, speed: 0.011, phase: 0.8, gray: 155, fillAlpha: 22, seed: 3, wild: true,  unpr: 0.1 },
+    { yPct: 0.87, range: [-22, 22], freq: 0.014, speed: 0.013, phase: 3.1, gray: 120, fillAlpha: 28, seed: 4, wild: true,  unpr: 0.2 },
+    { yPct: 0.93, range: [-18, 18], freq: 0.018, speed: 0.016, phase: 1.7, gray: 80,  fillAlpha: 35, seed: 5, wild: true,  unpr: 0.3 }
   ];
-  let samplers = [], particles = [];
+  var samplers = [];
 
   p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight).parent('hero-canvas');
-    p.colorMode(p.RGB, 255, 255, 255, 255);
     p.frameRate(30);
     samplers = [];
-    for (let i = 0; i < LAYERS.length; i++) {
-      samplers.push(Waves.createSampler({ wave: LAYERS[i].wave, amplitude: LAYERS[i].amp, frequency: LAYERS[i].freq }));
-    }
-    for (let i = 0; i < 50; i++) {
-      particles.push({ x: p.random(p.width), li: Math.floor(p.random(LAYERS.length)), size: p.random(2, 4), alpha: p.random(60, 160) });
+    for (var i = 0; i < LAYERS.length; i++) {
+      var l = LAYERS[i];
+      samplers.push(Waves.createSampler({
+        shift:           true,
+        shiftInterval:   6 + i * 2,
+        shiftDuration:   2,
+        seed:            l.seed,
+        range:           l.range,
+        frequency:       l.freq,
+        phase:           l.phase,
+        mode:            l.wild ? 'wild' : 'stable',
+        unpredictability: l.unpr
+      }));
     }
   };
 
   p.draw = function() {
-    p.background(245, 245, 245, 35);
-    const t = p.frameCount * 0.01;
-    const waveY = p.height * 0.82;
-    for (let i = 0; i < LAYERS.length; i++) {
-      const l = LAYERS[i];
-      if (i % 2 === 0) {
-        p.noStroke(); p.fill(l.gray, l.gray, l.gray, 8);
-        p.beginShape();
-        p.vertex(0, p.height);
-        for (let x = 0; x <= p.width; x += 7) p.vertex(x, waveY + samplers[i].sample(x * 0.4, t * l.speed * 100));
-        p.vertex(p.width, p.height);
-        p.endShape(p.CLOSE);
+    p.background(245);
+    var t = p.frameCount * 0.01;
+
+    for (var i = 0; i < LAYERS.length; i++) {
+      var l = LAYERS[i];
+      var baseY = p.height * l.yPct;
+      var tVal = t * l.speed * 100;
+
+      // Filled silhouette
+      p.noStroke();
+      p.fill(l.gray, l.fillAlpha);
+      p.beginShape();
+      p.vertex(0, p.height);
+      for (var x = 0; x <= p.width; x += 5) {
+        p.vertex(x, baseY + samplers[i].sample(x * 0.4, tVal));
       }
-      const strokeA = 140 + Math.sin(t * 1.5 + i) * 40;
-      p.stroke(l.gray, l.gray, l.gray, 18); p.strokeWeight(l.weight * 5); p.noFill();
+      p.vertex(p.width, p.height);
+      p.endShape(p.CLOSE);
+
+      // Crisp line on top
+      p.noFill();
+      p.stroke(l.gray, 50 + i * 15);
+      p.strokeWeight(0.8);
       p.beginShape();
-      for (let x = 0; x <= p.width; x += 8) p.vertex(x, waveY + samplers[i].sample(x * 0.4, t * l.speed * 100));
+      for (var x = 0; x <= p.width; x += 3) {
+        p.vertex(x, baseY + samplers[i].sample(x * 0.4, tVal));
+      }
       p.endShape();
-      p.stroke(l.gray, l.gray, l.gray, strokeA); p.strokeWeight(l.weight); p.noFill();
-      p.beginShape();
-      for (let x = 0; x <= p.width; x += 3) p.vertex(x, waveY + samplers[i].sample(x * 0.4, t * l.speed * 100));
-      p.endShape();
-    }
-    for (let i = 0; i < particles.length; i++) {
-      const pt = particles[i];
-      const l = LAYERS[pt.li];
-      const y = waveY + samplers[pt.li].sample(pt.x * 0.4, t * l.speed * 100);
-      pt.x += 0.7 + pt.li * 0.15;
-      if (pt.x > p.width + 10) pt.x = -10;
-      p.noStroke(); p.fill(l.gray, l.gray, l.gray, pt.alpha);
-      p.ellipse(pt.x, y, pt.size, pt.size);
     }
   };
 
   p.windowResized = function() {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].x = p.random(p.width);
-    }
   };
 }, 'hero-canvas'));
 
