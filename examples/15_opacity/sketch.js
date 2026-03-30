@@ -42,7 +42,7 @@ function draw() {
         wave: [PAIRS[i][0], PAIRS[i][1]],
         mix:  mix,
         t:    t,
-        amplitude: pw * 0.40
+        amplitude: pw * 0.18
       });
       vertex(cx + x, y);
     }

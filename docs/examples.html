@@ -26,7 +26,7 @@
 
   <!-- HEADER -->
   <div class="ex-page-header">
-    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v2.1.1</div>
+    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v1.0.0</div>
     <h1>p5.<span class="accent">waves</span> Examples</h1>
     <p>Animated gallery — each thumbnail spotlights a distinct API feature. Click <strong>→ full example</strong> for code, description, and full-quality canvas.</p>
     <a class="ex-lab-card" href="../examples/00_wave_lab/" target="_blank">
@@ -281,7 +281,7 @@
       // Row 3: full options object
       p.beginShape();
       for (x = 0; x <= p.width; x += 5) {
-        p.vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, { wave: 'wobble sine', t: t, amplitude: rowH * 0.36 }));
+        p.vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, { wave: 'wobble sine', t: t, amplitude: rowH * 0.16 }));
       }
       p.endShape();
 
@@ -301,7 +301,7 @@
 
   // ── 1. Wave Shift ────────────────────────────────────────
   new p5(function(p) {
-    var sampler = Waves.createSampler({ shift: true, amplitude: 80, frequency: 0.6 });
+    var sampler = Waves.createSampler({ shift: true, amplitude: 35, frequency: 0.6 });
     var t = 0;
     p.setup = function() {
       var w = cw('ex1');
@@ -336,7 +336,7 @@
       p.noFill(); p.stroke(0); p.strokeWeight(1.5);
       p.beginShape();
       for (var x = 0; x <= p.width; x += 4) {
-        p.vertex(x, p.height / 2 + Waves.wave(x * 0.02, { seed: period, t: t, amplitude: 60 }));
+        p.vertex(x, p.height / 2 + Waves.wave(x * 0.02, { seed: period, t: t, amplitude: 25 }));
       }
       p.endShape();
       p.noStroke(); p.fill(0, 0, 0, 80);
@@ -362,7 +362,7 @@
 
       // Row 1: amplitude
       for (i = 0; i < N; i++) {
-        amp = p.map(i, 0, N - 1, 4, rowH * 0.42);
+        amp = p.map(i, 0, N - 1, 2, rowH * 0.2);
         p.stroke(0, 0, 0, p.map(i, 0, N - 1, 40, 200));
         p.strokeWeight(1.2);
         p.beginShape();
@@ -379,7 +379,7 @@
         p.strokeWeight(1.2);
         p.beginShape();
         for (x = 0; x <= p.width; x += 5) {
-          p.vertex(x, rowH * 1.5 + Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.22, frequency: freq }));
+          p.vertex(x, rowH * 1.5 + Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.10, frequency: freq }));
         }
         p.endShape();
       }
@@ -391,7 +391,7 @@
         p.strokeWeight(1.2);
         p.beginShape();
         for (x = 0; x <= p.width; x += 5) {
-          p.vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.22, frequency: 1.2, phase: ph }));
+          p.vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.10, frequency: 1.2, phase: ph }));
         }
         p.endShape();
       }
@@ -426,7 +426,7 @@
         p.stroke(0, 0, 0, 190 - i * 30); p.strokeWeight(1.3);
         p.beginShape();
         for (var x = 0; x <= p.width; x += 4) {
-          p.vertex(x, y0 + Waves.wave(x * 0.018, { wave: types[i], t: t, amplitude: 30, seed: 3 }));
+          p.vertex(x, y0 + Waves.wave(x * 0.018, { wave: types[i], t: t, amplitude: 14, seed: 3 }));
         }
         p.endShape();
       }
@@ -550,7 +550,7 @@
         p.stroke(0, 0, 0, p.map(i, 0, 9, 200, 30)); p.strokeWeight(p.map(i, 0, 9, 1.8, 0.5));
         p.beginShape();
         for (var x = 0; x <= p.width; x += 5) {
-          p.vertex(x, y0 + Waves.wave(x * 0.015, { wave: 'classic sine', t: t, amplitude: 45 }));
+          p.vertex(x, y0 + Waves.wave(x * 0.015, { wave: 'classic sine', t: t, amplitude: 20 }));
         }
         p.endShape();
       }
@@ -689,7 +689,7 @@
         p.stroke(0); p.strokeWeight(1.4);
         p.beginShape();
         for (var y = 8; y < p.height - 16; y += 3) {
-          p.vertex(cx + Waves.wave(y * 0.014, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: morphMix, t: t, amplitude: pw * 0.38 }), y);
+          p.vertex(cx + Waves.wave(y * 0.014, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: morphMix, t: t, amplitude: pw * 0.18 }), y);
         }
         p.endShape();
         p.noStroke(); p.fill(0);
@@ -777,8 +777,8 @@
       p.beginShape(p.POINTS);
       for (var xi = 0; xi < N; xi++) {
         for (var zi = 0; zi < N; zi++) {
-          var wv = Waves.wave(xi * 0.38, { wave: waveX, t: t, amplitude: 6 })
-                 + Waves.wave(zi * 0.38, { wave: waveZ, t: t * 0.85, amplitude: 6 });
+          var wv = Waves.wave(xi * 0.38, { wave: waveX, t: t, amplitude: 3 })
+                 + Waves.wave(zi * 0.38, { wave: waveZ, t: t * 0.85, amplitude: 3 });
           var yi = Math.max(0, Math.min(N - 1, Math.round(N / 2 + wv / 2)));
           p.vertex(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
         }

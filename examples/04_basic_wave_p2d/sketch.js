@@ -25,13 +25,13 @@ function draw() {
       beginShape();
       for (let x = 0; x <= width; x += 4) {
         const dy = Waves.wave(x * 0.011, {
-          wave: 'wobble sine', t: t + phase, amplitude: 45, frequency: 2.4
+          wave: 'wobble sine', t: t + phase, amplitude: 20, frequency: 2.4
         });
         vertex(x, y0 + dy);
       }
       for (let x = width; x >= 0; x -= 4) {
         const dy = Waves.wave(x * 0.011, {
-          wave: 'wobble sine', t: t + phase + 0.24, amplitude: 45, frequency: 2.4
+          wave: 'wobble sine', t: t + phase + 0.24, amplitude: 20, frequency: 2.4
         });
         vertex(x, y1 + dy);
       }
@@ -52,7 +52,7 @@ function draw() {
     beginShape();
     for (let x = 0; x <= width; x += 4) {
       const dy = Waves.wave(x * 0.011, {
-        wave: 'wobble sine', t: t + phase, amplitude: 45, frequency: 2.4
+        wave: 'wobble sine', t: t + phase, amplitude: 20, frequency: 2.4
       });
       vertex(x, y0 + dy);
     }

@@ -269,7 +269,7 @@ reg('shift-canvas', new p5(function(p) {
       shift: true,
       shiftInterval: shiftInterval,
       shiftDuration: shiftDuration,
-      amplitude: 120,
+      amplitude: 50,
       frequency: 0.6
     });
     t = 0;
@@ -283,7 +283,7 @@ reg('shift-canvas', new p5(function(p) {
       '  shift:         true,\n' +
       '  shiftInterval: ' + shiftInterval + ',\n' +
       '  shiftDuration: ' + shiftDuration + ',\n' +
-      '  amplitude:     120,\n' +
+      '  amplitude:     50,\n' +
       '  frequency:     0.6\n' +
       '});\n\n' +
       '// In draw:\n' +
@@ -355,7 +355,7 @@ reg('shift-canvas', new p5(function(p) {
 // 3. INTERACTIVE – Live wave lab
 // ═════════════════════════════════════════════════════════════
 reg('interactive-canvas', new p5(function(p) {
-  let params = { wave: 'classic sine', amplitude: 136, frequency: 0.060, speed: 0.020, phase: 0, lines: 5, fill: false, dots: false };
+  let params = { wave: 'classic sine', amplitude: 55, frequency: 0.060, speed: 0.020, phase: 0, lines: 5, fill: false, dots: false };
   const GRAYS = [0, 40, 80, 120, 160, 30, 70, 110, 20, 50, 90, 140];
   let sampler;
 
@@ -598,7 +598,7 @@ const cells = g.sample(t); // Float32Array`;
 // ═════════════════════════════════════════════════════════════
 reg('wild-canvas', new p5(function(p) {
   const NUM_LINES = 8;
-  let wave = 'classic sine', speed = 0.008, amplitude = 100, frequency = 0.010, wildnessMax = 0.95;
+  let wave = 'classic sine', speed = 0.008, amplitude = 45, frequency = 0.010, wildnessMax = 0.95;
 
   function updateWildCode() {
     const el = document.getElementById('wild-code');
@@ -848,12 +848,12 @@ reg('poster-canvas', new p5(function(p) {
       '});\n\n' +
       '// Title letter lift\n' +
       'Waves.wave(i * 2.5, {\n' +
-      '  shift: true, t: t, amplitude: 12\n' +
+      '  shift: true, t: t, amplitude: 5\n' +
       '});\n\n' +
       '// Ornament with wild mode\n' +
       'Waves.wave(x * 0.015, {\n' +
       '  shift: true, t: t,\n' +
-      '  amplitude: 20, mode: \'wild\',\n' +
+      '  amplitude: 10, mode: \'wild\',\n' +
       '  unpredictability: 0.3\n' +
       '});';
   }
@@ -925,11 +925,11 @@ reg('poster-canvas', new p5(function(p) {
       p.beginShape();
       for (var x = margin + 20; x <= margin + innerW - 20; x += 2) {
         var v = Waves.wave(x * 0.015, wOpts({
-          amplitude:       15 + layer * 8,
+          amplitude:       8 + layer * 4,
           frequency:       1.2 - layer * 0.2,
           phase:           layer * 1.5,
-          mode:            layer === 2 ? 'wild' : 'stable',
-          unpredictability: layer === 2 ? 0.3 : 0
+          mode:            layer > 0 ? 'wild' : 'stable',
+          unpredictability: layer * 0.2
         }));
         p.vertex(x, ornY + v + layer * 5);
       }
@@ -947,7 +947,7 @@ reg('poster-canvas', new p5(function(p) {
 
     for (var i = 0; i < titleText.length; i++) {
       var lift = Waves.wave(i * 2.5, wOpts({
-        amplitude: 12, frequency: 0.8
+        amplitude: 5, frequency: 0.8
       }));
 
       var sizeOff = Waves.wave(i * 1.8, wOpts({
