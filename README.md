@@ -74,6 +74,22 @@ const sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
 const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 ```
 
+Auto-shift through random formulas with smooth transitions:
+```js
+const s = Waves.createSampler({ shift: true, amplitude: 120 });
+// In draw:
+s.sample(y, t);      // auto-cycles every 3 s, morphs over 1 s
+s.waveName;          // current formula name
+s.targetName;        // next formula name (during morph)
+s.shifting;          // true while morphing
+```
+
+| option | default | meaning |
+|---|---|---|
+| `shift` | `false` | enable auto-cycling |
+| `shiftInterval` | `3` | seconds to hold each wave |
+| `shiftDuration` | `1` | seconds for the morph transition |
+
 ---
 
 ### `Waves.createGrid(cols, rows, options)`

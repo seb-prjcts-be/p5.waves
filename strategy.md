@@ -28,16 +28,27 @@ p5.js global naming conflicts found and fixed: `GRID` → `CELLS`, `brightness` 
 
 ## Examples 1 Review (2026-03-20) — Use Case I
 
-Example 01 redesigned from "Wave Curtain" (50-thread complexity) to **"Wave Shift"** — a single wave that randomly morphs into a new formula every few seconds using the library's built-in lerp (`wave: ['a', 'b']` + `mix`).
+Example 01 redesigned from "Wave Curtain" (50-thread complexity) to **"Wave Shift"** — a single wave that randomly shifts into a new formula every few seconds using `createSampler({ shift: true })`.
 
 | Aspect | Before | After |
 |---|---|---|
 | Usability | Complex (50 threads, multiple params) | One wave, one concept, easy to copy |
 | Beauty | Busy curtain effect | Clean single-line morph with smooth easing |
-| Simplicity | Many moving parts | Minimal state machine: hold → morph → hold |
-| Originality | Generic multi-thread demo | Showcases the unique morph/lerp API as the first thing new users see |
+| Simplicity | Many moving parts | ~40 lines, zero boilerplate — shift handles timing, picking, easing |
+| Originality | Generic multi-thread demo | Showcases the shift API as the first thing new users see |
 
-Changes: `sketch.js` rewritten, `index.html` updated (title, description, code snippet), `docs/examples.html` gallery section and inline thumbnail sketch updated. Legacy `js/` and `css/` subfolders removed.
+Changes: `sketch.js` rewritten to use `createSampler({ shift: true })`, `index.html` updated (title, description, code snippet), `docs/examples.html` gallery section and inline thumbnail sketch updated.
+
+### Library enhancement: `shift` option (2026-03-30)
+
+The morph state machine (hold/morph phases, frame counting, easing) was user-side boilerplate. Added `shift: true` to both `wave()` and `createSampler()`:
+
+- `wave()` — stateless: derives era, wave picks, and mix from `t` alone
+- `createSampler()` — cached: pre-compiles per era, exposes `waveName`, `targetName`, `mix`, `shifting` getters
+- Smoothstep easing built in, deterministic wave sequence via `seed + '.' + era`, no-repeat guarantee
+- Tuneable via `shiftInterval` (default 3) and `shiftDuration` (default 1)
+
+Example 01 went from ~85 lines (manual state machine) to ~40 lines.
 
 ### Remaining observations (non-blocking)
 

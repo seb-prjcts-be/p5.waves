@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="docs/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
   <script src="p5.waves.js"></script>
 </head>
 <body>
@@ -21,6 +21,7 @@
     <ul class="nav-links">
       <li><a href="#hero">Home</a></li>
       <li><a href="#gallery">All Waves</a></li>
+      <li><a href="#shift">Shift</a></li>
       <li><a href="#interactive">Interactive</a></li>
       <li><a href="#grid">Grid</a></li>
       <li><a href="#wild">Wild Mode</a></li>
@@ -59,6 +60,27 @@
       <p class="section-desc">Every wave type rendered live. Hover to highlight. Each formula has its own character — but they all keep a recognizable, periodic shape. Switch between them for structured surprise, not chaos.</p>
     </div>
     <div id="gallery-canvas"></div>
+  </section>
+
+  <!-- WAVE SHIFT -->
+  <section id="shift" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">feature: createSampler({ shift: true })</div>
+      <h2>Wave <span class="accent">Shift</span></h2>
+      <p class="section-desc">Auto-cycle through random formulas with smooth transitions. Pass <code>shift: true</code> — the library picks, times, and eases for you. Zero boilerplate, infinite variation.</p>
+    </div>
+    <div class="shift-layout">
+      <div id="shift-canvas"></div>
+      <div class="shift-controls">
+        <label>Hold time: <span id="val-shift-interval">3</span>s
+          <input type="range" id="ctrl-shift-interval" min="1" max="8" value="3" step="0.5" style="width:120px">
+        </label>
+        <label>Morph time: <span id="val-shift-duration">1</span>s
+          <input type="range" id="ctrl-shift-duration" min="0.3" max="3" value="1" step="0.1" style="width:120px">
+        </label>
+      </div>
+      <div class="code-preview shift-code-preview"><code id="shift-code"></code></div>
+    </div>
   </section>
 
   <!-- INTERACTIVE -->

@@ -426,6 +426,47 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
   cursor: pointer;
 }
 
+/* ── SHIFT ── */
+.shift-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#shift-canvas {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-mid);
+  overflow: hidden;
+}
+
+#shift-canvas canvas {
+  display: block;
+  width: 100% !important;
+}
+
+.shift-controls {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.shift-controls label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.shift-controls input[type="range"] {
+  accent-color: #fff;
+  cursor: pointer;
+}
+
+.shift-code-preview {
+  margin-top: 1rem;
+}
+
 /* ── WILD ── */
 .wild-layout {
   max-width: 1200px;

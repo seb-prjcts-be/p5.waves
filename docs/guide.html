@@ -38,7 +38,7 @@
     <!-- ═══════════════════════════════════ INSTALL -->
     <h2>Installation</h2>
     <p>Load p5.js first, then p5.waves. Order matters.</p>
-    <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"&gt;&lt;/script&gt;
+    <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
 &lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.js"&gt;&lt;/script&gt;
 &lt;script src="sketch.js"&gt;&lt;/script&gt;</div>
 
@@ -190,6 +190,45 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
     }
   }
 }</div>
+
+
+    <h3>Shift — auto-cycle through random formulas</h3>
+    <p>Pass <code>shift: true</code> and the sampler automatically picks a new random wave every few seconds, morphing smoothly between them. Time (<code>t</code>) stays explicit — the shift is derived from the <code>t</code> you pass.</p>
+
+    <div class="code-block"><span class="kw">var</span> sampler = Waves.createSampler({
+  shift:         <span class="nb">true</span>,
+  amplitude:     <span class="nb">120</span>,
+  frequency:     <span class="nb">0.6</span>
+});
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  background(<span class="nb">245</span>);
+  t += <span class="nb">0.014</span>;
+  beginShape();
+  <span class="kw">for</span> (<span class="kw">var</span> y = <span class="nb">0</span>; y &lt;= height; y += <span class="nb">3</span>) {
+    vertex(width / <span class="nb">2</span> + sampler.sample(y, t), y);
+  }
+  endShape();
+}</div>
+
+    <table class="opts-table">
+      <tr><th>Option</th><th>Description</th><th>Default</th></tr>
+      <tr><td><code>shift</code></td><td>Enable auto-cycling</td><td><code>false</code></td></tr>
+      <tr><td><code>shiftInterval</code></td><td>Seconds to hold each wave</td><td><code>3</code></td></tr>
+      <tr><td><code>shiftDuration</code></td><td>Seconds for the morph transition</td><td><code>1</code></td></tr>
+    </table>
+
+    <p>The shift sampler exposes getters for UI feedback:</p>
+    <table class="opts-table">
+      <tr><th>Getter</th><th>Returns</th></tr>
+      <tr><td><code>.waveName</code></td><td>Current formula name</td></tr>
+      <tr><td><code>.targetName</code></td><td>Next formula name (during morph)</td></tr>
+      <tr><td><code>.mix</code></td><td>Morph progress 0–1</td></tr>
+      <tr><td><code>.shifting</code></td><td><code>true</code> while morphing</td></tr>
+      <tr><td><code>.waveIndex</code></td><td>Current formula index</td></tr>
+    </table>
+
+    <div class="callout"><p>Shift also works on <code>Waves.wave()</code> directly — pass <code>shift: true</code> in the options object. The sampler version is preferred because it caches per-era compilations and exposes the getters above.</p></div>
 
 
     <!-- ═══════════════════════════════════ CREATEGRID -->
@@ -360,7 +399,7 @@ Waves.data     <span class="cm">// → raw WAVES array</span></div>
 
     <!-- ═══════════════════════════════════ P5.JS VERSION -->
     <h2>p5.js Version Compatibility</h2>
-    <p>p5.waves targets <strong>p5.js 2.x</strong>. All examples in this showcase run on <code>p5@2.1.1</code>. No deprecated APIs are used — the library is a plain IIFE that adds three methods to <code>p5.prototype</code> and exports a global <code>Waves</code> object.</p>
+    <p>p5.waves targets <strong>p5.js 2.x</strong>. All examples in this showcase run on <code>p5@2.2.2</code>. No deprecated APIs are used — the library is a plain IIFE that adds three methods to <code>p5.prototype</code> and exports a global <code>Waves</code> object.</p>
     <div class="callout"><p>The library does not call any p5.js internals. As long as <code>p5.prototype</code> exists when the script loads, it will work.</p></div>
 
 

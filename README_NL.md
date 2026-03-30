@@ -74,6 +74,22 @@ const sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
 const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 ```
 
+Automatisch wisselen tussen willekeurige formules met vloeiende overgangen:
+```js
+const s = Waves.createSampler({ shift: true, amplitude: 120 });
+// In draw:
+s.sample(y, t);      // wisselt elke 3 s, morft over 1 s
+s.waveName;          // huidige formulenaam
+s.targetName;        // volgende formulenaam (tijdens morph)
+s.shifting;          // true tijdens morphing
+```
+
+| optie | standaard | betekenis |
+|---|---|---|
+| `shift` | `false` | automatisch wisselen inschakelen |
+| `shiftInterval` | `3` | seconden vasthouden per wave |
+| `shiftDuration` | `1` | seconden voor de morph-overgang |
+
 ---
 
 ### `Waves.createGrid(cols, rows, opties)`

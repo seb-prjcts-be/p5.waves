@@ -22,27 +22,23 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 01 — wave: [a, b] + mix</div>
+      <div class="demo-number">Example 01 — createSampler({ shift: true })</div>
       <h1>Wave Shift</h1>
-      <p>One wave line that smoothly morphs into a randomly chosen formula every few seconds — using the library's built-in lerp: <code>wave: ['a', 'b']</code> with an animated <code>mix</code> value.</p>
+      <p>One wave line that smoothly morphs into a randomly chosen formula every few seconds. Pass <code>shift: true</code> — the library handles timing, random picking, and smooth easing internally.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// mix 0 → fully waveA,  mix 1 → fully waveB
-var mix = morphFrame / MORPH_DURATION;
-mix = mix * mix * (3 - 2 * mix);  // ease in-out
+        <pre><code>var sampler = Waves.createSampler({
+  shift:     true,       // auto-shift to random waves
+  amplitude: 120,
+  frequency: 0.6
+});
 
+// In draw — that's it:
 beginShape();
 for (var y = 0; y &lt;= height; y += 3) {
-  var x = Waves.wave(y * 0.012, {
-    wave:      [nameA, nameB],   // two formulas
-    mix:       mix,              // lerp position
-    t:         t,
-    amplitude: 120,
-    frequency: 1.2
-  });
-  vertex(width / 2 + x, y);
+  vertex(width / 2 + sampler.sample(y, t), y);
 }
 endShape();</code></pre>
       </div>
@@ -55,10 +51,10 @@ endShape();</code></pre>
       <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
       <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
     </p>
-    <p class="footer-sub">p5.waves v2.1.1 &nbsp;&middot;&nbsp; p5.js v2.1.1</p>
+    <p class="footer-sub">p5.waves v2.1.1 &nbsp;&middot;&nbsp; p5.js v2.2.2</p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
   <script src="../../p5.waves.min.js"></script>
   <script src="sketch.js"></script>
 </body>
