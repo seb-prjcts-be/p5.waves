@@ -6,10 +6,10 @@ Wave-sampling hulpfuncties voor p5.js. Geeft altijd een getal terug.
 
 **Installeren**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v1.0.0/p5.waves.min.js"></script>
 ```
 
-Vervang `v2.1.1` door de [laatste tag](https://github.com/seb-prjcts-be/p5.waves/tags).
+Vervang `v1.0.0` door de [laatste tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — verken alle 34 golven interactief.
 
@@ -45,7 +45,7 @@ Opties:
 | `wave` | naam of index | bepaald door seed |
 | `seed` | selecteert golf via FNV-1a hash | `0` |
 | `t` | tijdverschuiving (`millis()/1000`) | `0` |
-| `amplitude` | snelle schaal, geen normalisatie | `100` |
+| `amplitude` | Schaalt genormaliseerde output. Bereik: [-amplitude, +amplitude]. | `100` |
 | `range` | `[min, max]` — normaliseert uitvoer | `null` |
 | `frequency` | invoervermenigvuldiger | `1` |
 | `phase` | invoerverschuiving | `0` |
@@ -53,6 +53,8 @@ Opties:
 | `unpredictability` | `0..1`, alleen wild-modus | `0` |
 
 > `Waves.wave(y, 3)` — 3 is een **seed** (via hash omgezet naar een golf). `Waves.wave(y, { wave: 3 })` — 3 is een directe **index**.
+
+Alle 34 golfformules worden intern genormaliseerd naar [-1, 1] voordat amplitude wordt toegepast. `amplitude: 100` betekent altijd output in [-100, 100], ongeacht de formule.
 
 Als `range` is ingesteld, wordt `amplitude` genegeerd. `t` wordt opgeteld bij `y` vóór evaluatie: `x = (y + t) * frequency + phase`.
 
@@ -76,7 +78,7 @@ const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 
 Automatisch wisselen tussen willekeurige formules met vloeiende overgangen:
 ```js
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
+const s = Waves.createSampler({ shift: true, amplitude: 50 });
 // In draw:
 s.sample(y, t);      // wisselt elke 3 s, morft over 1 s
 s.waveName;          // huidige formulenaam

@@ -27,7 +27,7 @@
 
   <div class="guide-wrap">
 
-    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v2.1.1</div>
+    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v1.0.0</div>
     <h1>p5.<span class="accent">waves</span> Guide</h1>
     <p class="guide-intro">
       Everything you need to use the library — from installation to advanced patterns.
@@ -38,7 +38,7 @@
     <h2>Installation</h2>
     <p>Load p5.js first, then p5.waves. Order matters.</p>
     <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v1.0.0/p5.waves.js"&gt;&lt;/script&gt;
 &lt;script src="sketch.js"&gt;&lt;/script&gt;</div>
 
 
@@ -105,13 +105,15 @@ Waves.wave(y, { wave: <span class="st">'triangle'</span> })      <span class="cm
       <tr><td>wave</td><td>Wave name (string) or index (number 0–33)</td><td>seed-determined</td></tr>
       <tr><td>seed</td><td>Integer — deterministically picks a wave via hashing. Use for stable variety across objects.</td><td>0</td></tr>
       <tr><td>t</td><td>Time offset — drives animation. Pass <code>frameCount * 0.01</code> or <code>millis()/1000</code>.</td><td>0</td></tr>
-      <tr><td>amplitude</td><td>Output multiplier. Ignored when <code>range</code> is set.</td><td>100</td></tr>
+      <tr><td>amplitude</td><td>Scales normalized output to [-amplitude, +amplitude]. Ignored when <code>range</code> is set.</td><td>100</td></tr>
       <tr><td>range</td><td><code>[min, max]</code> — normalises output to this interval.</td><td>null</td></tr>
       <tr><td>frequency</td><td>Input multiplier — tighter or looser wave cycles.</td><td>1</td></tr>
       <tr><td>phase</td><td>Input offset — shifts the wave left or right.</td><td>0</td></tr>
       <tr><td>mode</td><td><code>'stable'</code> or <code>'wild'</code> — wild injects position-varying noise.</td><td>'stable'</td></tr>
       <tr><td>unpredictability</td><td>0–1 intensity for wild mode. Has no effect in stable mode.</td><td>0</td></tr>
     </table>
+
+    <p>All 34 wave formulas are internally normalized to &lbrack;-1,&nbsp;1&rbrack; before amplitude is applied. This means <code>amplitude: 100</code> always produces output in &lbrack;-100,&nbsp;100&rbrack;, regardless of which formula is active. Switching formulas — manually or via <code>shift</code> — never causes scale jumps.</p>
 
     <div class="callout">
       <p><span class="note warn">note</span> <strong>Seed vs index — two different numbers:</strong><br>
@@ -196,7 +198,7 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
 
     <div class="code-block"><span class="kw">var</span> sampler = Waves.createSampler({
   shift:         <span class="nb">true</span>,
-  amplitude:     <span class="nb">120</span>,
+  amplitude:     <span class="nb">50</span>,
   frequency:     <span class="nb">0.6</span>
 });
 
@@ -296,6 +298,8 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
   });
   circle(width / <span class="nb">2</span> + x, y, <span class="nb">5</span>);
 }</div>
+
+    <p>With internal normalization, wild mode is now predictable across all formulas. Higher <code>unpredictability</code> values are safe — the output stays within the amplitude bounds.</p>
 
     <div class="callout"><p>Works identically with <code>createSampler()</code> — just add <code>mode: 'wild'</code> and <code>unpredictability</code> to the options.</p></div>
 

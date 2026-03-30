@@ -17,9 +17,9 @@
 | `Waves.createGrid(cols, rows, opts)` | `{ sample(t) → Float32Array or Uint8Array }` |
 | `Waves.list()` | Array of `{ index, name, algo }` |
 
-## Defaults (v2.1.1)
+## Defaults (v1.0.0)
 
-- `amplitude`: **100** (changed from 1 in v2.1.0; docs corrected in v2.1.1)
+- `amplitude`: **100** — output range [-100, 100]. All formulas normalized to [-1, 1] internally since v1.0.0.
 - `frequency`: 1
 - `phase`: 0
 - `mode`: 'stable'
