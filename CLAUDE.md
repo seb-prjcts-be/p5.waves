@@ -34,7 +34,8 @@ The difference: instead of one Perlin field, you have 34 curated formulas,
 each with a recognisable character. Switching between them produces
 variation that is always structured — never random noise, never chaos.
 
-**Version:** 2.1.1 (current stable, deployed via CDN and GitHub Pages)
+**Version:** 2.1.1 (current stable on `p5.waves` repo)
+**Normalized fork:** `p5.waves_normalized` at v1.0.0 — all formulas normalized to [-1, 1]
 **License:** MIT
 **File:** single-file IIFE — `p5.waves.js` with a hand-maintained `p5.waves.min.js`
 **No build pipeline. No package.json. No test suite.**
@@ -100,7 +101,9 @@ They must remain accessible. They must also be switchable off.
 
 - `mode: 'stable'` is the safe default
 - `mode: 'wild'` with `unpredictability: 0..1` is the chaos dial
-- Never remove or suppress extreme behaviour in the formulas themselves
+- In the main repo: raw formula output is preserved (tan artifacts etc.)
+- In `p5.waves_normalized`: output is clamped to [-1, 1] — chaos character
+  is preserved within bounds, making wild mode usable at higher values
 - Document chaos-prone formulas; do not sanitise them silently
 
 ### 3.3 Transitions are first-class
@@ -153,8 +156,9 @@ Introduce features in this order only:
 3. `Waves.wave(y, { wave: 'triangle', t: millis()/1000 })` — add time
 4. `Waves.wave(y, { range: [-80, 80] })` — normalise output
 5. `Waves.createSampler(opts)` — reuse config across calls
-6. `Waves.createGrid(cols, rows, opts)` — 2D grid sampling
-7. `mode: 'wild'`, `unpredictability` — controlled chaos
+6. `Waves.createSampler({ shift: true })` — auto-cycle through random formulas
+7. `Waves.createGrid(cols, rows, opts)` — 2D grid sampling
+8. `mode: 'wild'`, `unpredictability` — controlled chaos
 
 Never lead with instance mode, createSampler, or createGrid
 when a simpler form of the API solves the problem.
@@ -176,6 +180,30 @@ or automatic time increments as defaults — always show explicit `t`.
 `Waves.wave(y, 3)` — `3` is a **seed** (hashed to select a formula).
 `Waves.wave(y, { wave: 3 })` — `3` is a direct **index**.
 These are not the same. Never conflate them in documentation or examples.
+
+### 4.6 Shift — auto-cycling formulas
+
+`shift: true` auto-cycles through random wave formulas with smooth
+transitions. Available on both `wave()` (stateless) and `createSampler()`
+(cached, with getters). Time (`t`) stays explicit — shift is derived
+from the `t` value the user passes.
+
+```js
+var sampler = Waves.createSampler({
+  shift: true,           // auto-shift to random waves
+  shiftInterval: 3,      // seconds to hold each wave (default)
+  shiftDuration: 1,      // seconds for the morph transition (default)
+  amplitude: 50
+});
+sampler.sample(y, t);    // auto-cycles every 3s
+sampler.waveName;        // current formula name
+sampler.targetName;      // next formula name (during morph)
+sampler.shifting;        // true while morphing
+sampler.mix;             // morph progress 0–1
+```
+
+Shift uses smoothstep easing and deterministic wave picking via
+`seed + '.' + era`. Consecutive eras never repeat the same wave.
 
 ---
 
@@ -363,11 +391,14 @@ Before writing a new CSS rule, check `showcase.css` and `docs/style.css`.
 Before writing a helper function, check if the pattern already exists in the sketch.
 Reuse first. Add only what is genuinely absent.
 
-### 8.9 Never suppress or sanitise chaos
+### 8.9 Never suppress or sanitise chaos (main repo)
 
 Tan artifacts, wild mode extremes, and discontinuous formula switches
 are features. Do not clamp, smooth, or remove them silently.
 If they must be controllable, expose the control — do not hide the behaviour.
+
+**Exception:** In `p5.waves_normalized`, output is clamped to [-1, 1]
+by design. The chaos character is preserved within those bounds.
 
 ### 8.10 Never write `wave()` without a prefix or context
 
@@ -447,6 +478,13 @@ They must match the standalone sketch in concept and API usage.
 | `docs/sketch.js` | All p5 sketches powering the showcase |
 | `docs/style.css` | Shared styles for all docs pages |
 
+Showcase sections (in order): Hero (cascading wave landscape),
+All 34 Waves (gallery grid), Wave Shift (auto-cycling demo),
+Interactive (parameter tuning), Grid (binary + continuous),
+Wild Mode, 3D Terrain, Poster Generator, Examples CTA.
+
+Navbar shows: Showcase, Examples, Guide, About, GitHub.
+
 ### 9.6 CI / Deployment
 
 | Trigger | Result |
@@ -507,10 +545,33 @@ never assumed as part of a routine task.
 evaluated values. `range` is intentionally not applied in morph mode.
 This is a confirmed design decision (commit `b3dea93`). Do not "fix" it.
 
+**Note:** In `p5.waves_normalized` (v1.0.0), the morph path normalises
+both values independently before interpolation, which is an improvement.
+If the normalized fork is merged into main, update this section.
+
 ### 10.7 No AGENTS.md
 
 The file was intentionally deleted. Do not recreate it.
 `CLAUDE.md` is the AI briefing document for this project.
+
+### 10.8 Shift feature — library-level auto-cycling
+
+`shift: true` on `wave()` and `createSampler()` auto-cycles through
+random formulas with smooth transitions. This is the library's key
+differentiator. Time remains explicit — shift derives era/mix from `t`.
+Options: `shiftInterval` (default 3), `shiftDuration` (default 1).
+
+### 10.9 Normalization (p5.waves_normalized fork)
+
+The `p5.waves_normalized` repo (v1.0.0) normalises all 34 formulas
+to [-1, 1] before amplitude scaling via `normalizeVal()`. This
+guarantees `amplitude: N` produces output in [-N, N] regardless of
+formula. The normalization uses `getStats()` min/max sampling (2048
+points over [-200, 200]) with clamping for tan-based formulas.
+This enables reliable shift transitions and consistent wild mode.
+
+If/when merged into main, this becomes a breaking change: all example
+amplitude values need reduction (~50%) to compensate for full-range output.
 
 ---
 
@@ -518,7 +579,7 @@ The file was intentionally deleted. Do not recreate it.
 
 ### 11.1 Target version
 
-Everything in this project must work on **p5.js 2.x**.
+Everything in this project must work on **p5.js 2.x** (currently using 2.2.2).
 Do not use deprecated 1.x patterns. Test against p5.js 2.x before committing.
 
 ### 11.2 API call forms — never confuse these
@@ -552,6 +613,8 @@ Known past conflicts (renamed to resolve):
 - `WORD` → `LETTERS`
 - `GRID` → `CELLS`
 - `brightness` → `luma`
+- `hue` → `wHue`
+- `blend` → `morphBlend`
 
 When in doubt, prefix with a context word. Triple-check after every rename:
 search the full repo, not just the file being edited.
