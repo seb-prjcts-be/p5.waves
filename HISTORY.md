@@ -1,18 +1,5 @@
 # p5.waves — Version History
 
-## v2.2.0
-
-### Internal normalization
-
-All 34 wave formulas are now internally normalized to [-1, 1] before amplitude scaling.
-
-- `amplitude: N` guarantees output in [-N, N] for every formula
-- Shift transitions are smooth — no scale jumps between formulas
-- Wild mode is more predictable and usable at higher unpredictability values
-- `range` works as before — unaffected by the change
-- Amplitude default remains 100
-- p5.js updated to 2.2.2
-
 ## 2.1.1
 
 - Examples page redesigned as a lightweight animated gallery: 14 small thumbnail sketches replace the previous layout of full code panels + full-size canvases running simultaneously. Each thumbnail links to its standalone example page where the full code lives.

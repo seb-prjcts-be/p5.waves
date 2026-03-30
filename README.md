@@ -6,10 +6,10 @@ Wave sampling helpers for p5.js. Always returns a number.
 
 **Install**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v1.0.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.min.js"></script>
 ```
 
-Replace `v1.0.0` with the [latest tag](https://github.com/seb-prjcts-be/p5.waves/tags).
+Replace `v2.1.1` with the [latest tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — explore all 34 waves interactively.
 
@@ -45,7 +45,7 @@ Options:
 | `wave` | name or index | seed-determined |
 | `seed` | selects wave via FNV-1a hash | `0` |
 | `t` | time offset (`millis()/1000`) | `0` |
-| `amplitude` | Scales normalized output. Output range: [-amplitude, +amplitude]. | `100` |
+| `amplitude` | fast scale, no normalisation | `100` |
 | `range` | `[min, max]` — normalises output | `null` |
 | `frequency` | input multiplier | `1` |
 | `phase` | input offset | `0` |
@@ -53,8 +53,6 @@ Options:
 | `unpredictability` | `0..1`, wild mode only | `0` |
 
 > `Waves.wave(y, 3)` — 3 is a **seed** (hashed to pick a wave). `Waves.wave(y, { wave: 3 })` — 3 is a direct **index**.
-
-All 34 wave formulas are internally normalized to [-1, 1] before amplitude is applied. `amplitude: 100` always means output in [-100, 100], regardless of formula.
 
 When `range` is set, `amplitude` is ignored. `t` adds to `y` before evaluation: `x = (y + t) * frequency + phase`.
 
@@ -78,7 +76,7 @@ const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 
 Auto-shift through random formulas with smooth transitions:
 ```js
-const s = Waves.createSampler({ shift: true, amplitude: 50 });
+const s = Waves.createSampler({ shift: true, amplitude: 120 });
 // In draw:
 s.sample(y, t);      // auto-cycles every 3 s, morphs over 1 s
 s.waveName;          // current formula name

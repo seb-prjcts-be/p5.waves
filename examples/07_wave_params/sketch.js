@@ -44,7 +44,7 @@ function draw() {
     beginShape();
     for (x = 0; x <= width; x += 4) {
       vertex(x, rowH * 1.5 + Waves.wave(x * 0.016, {
-        wave: WAVE, t: t, amplitude: rowH * 0.10, frequency: freq
+        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: freq
       }));
     }
     endShape();
@@ -58,7 +58,7 @@ function draw() {
     beginShape();
     for (x = 0; x <= width; x += 4) {
       vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, {
-        wave: WAVE, t: t, amplitude: rowH * 0.10, frequency: 1.2, phase: ph
+        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: 1.2, phase: ph
       }));
     }
     endShape();

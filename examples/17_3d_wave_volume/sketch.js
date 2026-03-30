@@ -35,8 +35,8 @@ function draw() {
   beginShape(POINTS);
   for (var xi = 0; xi < N; xi++) {
     for (var zi = 0; zi < N; zi++) {
-      var wv = Waves.wave(xi * 0.38, { wave: [waveX, nextX], t: t,        amplitude: 3.5, mix: mix })
-             + Waves.wave(zi * 0.38, { wave: [waveZ, nextZ], t: t * 0.85, amplitude: 3.5, mix: mix });
+      var wv = Waves.wave(xi * 0.38, { wave: [waveX, nextX], t: t,        amplitude: 7.5, mix: mix })
+             + Waves.wave(zi * 0.38, { wave: [waveZ, nextZ], t: t * 0.85, amplitude: 7.5, mix: mix });
       var yi = Math.max(0, Math.min(N - 1, Math.round(N / 2 + wv / 2)));
       vertex(
         -half + xi * SPACING,
