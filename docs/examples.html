@@ -633,7 +633,7 @@
       var cellW = p.width  / COLS;
       var cellH = p.height / ROWS;
       var era   = p.floor(t / INTERVAL);
-      var blend = p.constrain(p.map(t % INTERVAL, 0, INTERVAL * 0.35, 0, 1), 0, 1);
+      var morphBlend = p.constrain(p.map(t % INTERVAL, 0, INTERVAL * 0.35, 0, 1), 0, 1);
       for (var row = 0; row < ROWS; row++) {
         for (var col = 0; col < COLS; col++) {
           var k  = row * COLS + col;
@@ -646,7 +646,7 @@
             var wB  = (idx * 7 + era + 1) % Waves.count;
             var szA = Waves.wave(idx * 0.6, { wave: wA, range: [6, 20], t: t });
             var szB = Waves.wave(idx * 0.6, { wave: wB, range: [6, 20], t: t });
-            sizes.push(szA + (szB - szA) * blend);
+            sizes.push(szA + (szB - szA) * morphBlend);
           }
           var totalW = 0;
           for (var l = 0; l < NLET; l++) totalW += sizes[l] * 0.72;
@@ -659,8 +659,8 @@
             var liftB  = Waves.wave(idx * 0.6, { wave: wB, seed: idx + 20, range: [-8, 8],   t: t });
             var alpA   = Waves.wave(idx * 1.1, { wave: wA, seed: idx + 40, range: [60, 255], t: t });
             var alpB   = Waves.wave(idx * 1.1, { wave: wB, seed: idx + 40, range: [60, 255], t: t });
-            p.textSize(sizes[l]); p.fill(0, 0, 0, alpA + (alpB - alpA) * blend);
-            p.text(LETTERS[l], x, cy + liftA + (liftB - liftA) * blend);
+            p.textSize(sizes[l]); p.fill(0, 0, 0, alpA + (alpB - alpA) * morphBlend);
+            p.text(LETTERS[l], x, cy + liftA + (liftB - liftA) * morphBlend);
             x += sizes[l] * 0.72;
           }
         }
