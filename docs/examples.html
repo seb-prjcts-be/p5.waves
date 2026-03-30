@@ -570,9 +570,9 @@
       var blockSz = 10;
       for (var y = 0; y < p.height; y += blockSz) {
         for (var x = 0; x < p.width; x += blockSz) {
-          var hue = Waves.wave(x * 0.007 + y * 0.005, { wave: 'meta sine',   t: t,       range: [0, 360] });
-          var bri = Waves.wave(x * 0.005 - y * 0.007, { wave: 'wobble sine', t: t * 0.6, range: [45, 95] });
-          p.fill(hue, 72, bri); p.rect(x, y, blockSz, blockSz);
+          var wHue = Waves.wave(x * 0.007 + y * 0.005, { wave: 'meta sine',   t: t,       range: [0, 360] });
+          var wBri = Waves.wave(x * 0.005 - y * 0.007, { wave: 'wobble sine', t: t * 0.6, range: [45, 95] });
+          p.fill(wHue, 72, wBri); p.rect(x, y, blockSz, blockSz);
         }
       }
     };
