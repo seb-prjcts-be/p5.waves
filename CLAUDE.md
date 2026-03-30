@@ -34,7 +34,7 @@ The difference: instead of one Perlin field, you have 34 curated formulas,
 each with a recognisable character. Switching between them produces
 variation that is always structured — never random noise, never chaos.
 
-**Version:** 1.0.0 (current stable, deployed via CDN and GitHub Pages)
+**Version:** 2.1.1 (current stable, deployed via CDN and GitHub Pages)
 **License:** MIT
 **File:** single-file IIFE — `p5.waves.js` with a hand-maintained `p5.waves.min.js`
 **No build pipeline. No package.json. No test suite.**
@@ -501,21 +501,11 @@ Minification is done manually. Do not introduce npm, bundlers, or test runners.
 If tooling is ever added, it must be proposed and approved explicitly —
 never assumed as part of a routine task.
 
-### 10.6 Morph path normalises both values before lerp
+### 10.6 Morph path does not apply range normalisation
 
 `wave: ['a', 'b']` with `mix` performs linear interpolation between two
-evaluated values. As of v1.0.0, both values are independently normalised
-(via internal [-1, 1] mapping) before interpolation. This replaces the
-previous raw-value behaviour (commit `b3dea93`) and produces consistent
-morph output regardless of formula amplitude differences.
-
-### 10.8 All formulas are internally normalized to [-1, 1]
-
-Every wave formula's raw output is mapped to [-1, 1] via `normalizeVal()` before
-amplitude scaling. This guarantees `amplitude: N` produces output in [-N, N]
-regardless of formula. The normalization uses `getStats()` min/max sampling
-(2048 points over [-200, 200]) with clamping for tan-based formulas.
-This decision enables reliable `shift` transitions and consistent `wild` mode.
+evaluated values. `range` is intentionally not applied in morph mode.
+This is a confirmed design decision (commit `b3dea93`). Do not "fix" it.
 
 ### 10.7 No AGENTS.md
 

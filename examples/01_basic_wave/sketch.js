@@ -4,7 +4,7 @@
 
 var sampler = Waves.createSampler({
   shift:     true,
-  amplitude: 50,
+  amplitude: 120,
   frequency: 0.6
 });
 

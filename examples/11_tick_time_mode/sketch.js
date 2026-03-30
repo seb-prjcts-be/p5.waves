@@ -28,7 +28,7 @@ function draw() {
       const dy = Waves.wave(x * 0.015, {
         wave:      'classic sine',
         t:         t,
-        amplitude: 25
+        amplitude: 55
       });
       vertex(x, y0 + dy);
     }
