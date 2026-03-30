@@ -39,6 +39,16 @@ Several identifiers were renamed to avoid collisions with p5.js globals:
 - Morph path (`wave: ['a', 'b']`) performs linear interpolation: `(valA + (valB - valA) * mix) * amplitude`.
 - Morph path does **not** apply `range` normalisation — this is by design after the fix in commit `b3dea93`.
 
+## Shift Feature
+
+- `shift: true` auto-cycles through random wave formulas with smooth transitions.
+- Available on both `wave()` (stateless, derived from `t`) and `createSampler()` (cached, with getters).
+- `createSampler({ shift: true })` exposes: `waveName`, `targetName`, `mix`, `shifting`, `waveIndex`.
+- Options: `shiftInterval` (hold time, default 3), `shiftDuration` (morph time, default 1). Units match `t`.
+- Wave sequence is deterministic via `seed + '.' + era`. Consecutive eras never repeat the same wave.
+- Supports `range` normalisation during shift transitions (per-wave stats computed independently).
+- Smoothstep easing built in: `m * m * (3 - 2 * m)`.
+
 ## File Layout
 
 | Path | Purpose |

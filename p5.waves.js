@@ -255,6 +255,7 @@
   function wave(y, secondParam) {
     let waveRef, seed = 0, t = 0, amplitude = 100, range = null;
     let frequency = 1, phase = 0, mode = 'stable', unpredictability = 0;
+    let shift = false, shiftInterval = 3, shiftDuration = 1;
 
     if (secondParam != null) {
       if (typeof secondParam === 'number') {
@@ -273,10 +274,43 @@
         if (Array.isArray(secondParam.range) && secondParam.range.length >= 2) {
           range = [toNumber(secondParam.range[0], -1), toNumber(secondParam.range[1], 1)];
         }
+        shift         = !!secondParam.shift;
+        shiftInterval = toNumber(secondParam.shiftInterval, 3);
+        shiftDuration = toNumber(secondParam.shiftDuration, 1);
       }
     }
 
     const internalSeed = seedFrom(seed);
+
+    // ─── Shift: auto-cycle through random waves ──────────────
+    if (shift) {
+      const cycleDur = shiftInterval + shiftDuration;
+      const era      = Math.floor(t / cycleDur);
+      const progress = t - era * cycleDur;
+
+      const userIdx = waveRef !== undefined ? resolveWave(waveRef) : -1;
+      const idxA = (era === 0 && userIdx >= 0) ? userIdx : pickWaveIndex(seed + '.' + era);
+      const fnA  = compile(WAVES[idxA].algo);
+      const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
+
+      if (progress >= shiftInterval) {
+        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndex(seed + '.1') : pickWaveIndex(seed + '.' + (era + 1));
+        if (idxB === idxA) idxB = (idxB + 1) % WAVES.length;
+        const fnB  = compile(WAVES[idxB].algo);
+        const valB = evalKernel(fnB, y, t, frequency, phase, internalSeed, mode, unpredictability);
+        let m = clamp((progress - shiftInterval) / shiftDuration, 0, 1);
+        m = m * m * (3 - 2 * m);
+        if (range !== null) {
+          const nA = mapToRange(valA, getStats(idxA, internalSeed), range);
+          const nB = mapToRange(valB, getStats(idxB, internalSeed), range);
+          return nA + (nB - nA) * m;
+        }
+        return (valA + (valB - valA) * m) * amplitude;
+      }
+
+      if (range !== null) return mapToRange(valA, getStats(idxA, internalSeed), range);
+      return valA * amplitude;
+    }
 
     // ─── Morph: wave: ['nameA', 'nameB'], mix: 0–1 ───────────
     if (Array.isArray(waveRef)) {
@@ -352,6 +386,70 @@
     const fn    = compile(WAVES[waveIndexA].algo);
     const fnB   = waveIndexB >= 0 ? compile(WAVES[waveIndexB].algo) : null;
     const stats = range !== null && !isMorph ? getStats(waveIndexA, internalSeed) : null;
+
+    // ─── Shift mode ──────────────────────────────────────────
+    if (opts.shift) {
+      const shiftInt = toNumber(opts.shiftInterval, 3);
+      const shiftDur = toNumber(opts.shiftDuration, 1);
+      const cycleDur = shiftInt + shiftDur;
+      const hasUserWave = opts.wave !== undefined && !Array.isArray(opts.wave);
+
+      let cachedEra = -Infinity;
+      let curIdx = waveIndexA, nxtIdx = -1;
+      let curFn = fn, nxtFn = null;
+      let curName = WAVES[waveIndexA].name, nxtName = '';
+      let lastMix = 0;
+
+      function pickForEra(era) {
+        if (era === 0 && hasUserWave) return waveIndexA;
+        return pickWaveIndex(seed + '.' + era);
+      }
+
+      function ensureEra(era) {
+        if (era === cachedEra) return;
+        cachedEra = era;
+        curIdx  = pickForEra(era);
+        nxtIdx  = pickForEra(era + 1);
+        if (nxtIdx === curIdx) nxtIdx = (nxtIdx + 1) % WAVES.length;
+        curFn   = compile(WAVES[curIdx].algo);
+        nxtFn   = compile(WAVES[nxtIdx].algo);
+        curName = WAVES[curIdx].name;
+        nxtName = WAVES[nxtIdx].name;
+      }
+
+      return {
+        get waveIndex()  { return curIdx; },
+        get waveName()   { return curName; },
+        get targetName() { return nxtName; },
+        get mix()        { return lastMix; },
+        get shifting()   { return lastMix > 0; },
+        sample: function (y, t) {
+          const tVal     = t !== undefined ? toNumber(t, 0) : t0;
+          const era      = Math.floor(tVal / cycleDur);
+          ensureEra(era);
+
+          const progress = tVal - era * cycleDur;
+          const valA     = evalKernel(curFn, y, tVal, frequency, phase, internalSeed, mode, unpredictability);
+
+          if (progress >= shiftInt) {
+            let m = clamp((progress - shiftInt) / shiftDur, 0, 1);
+            m = m * m * (3 - 2 * m);
+            lastMix = m;
+            const valB = evalKernel(nxtFn, y, tVal, frequency, phase, internalSeed, mode, unpredictability);
+            if (range !== null) {
+              const nA = mapToRange(valA, getStats(curIdx, internalSeed), range);
+              const nB = mapToRange(valB, getStats(nxtIdx, internalSeed), range);
+              return nA + (nB - nA) * m;
+            }
+            return (valA + (valB - valA) * m) * amplitude;
+          }
+
+          lastMix = 0;
+          if (range !== null) return mapToRange(valA, getStats(curIdx, internalSeed), range);
+          return valA * amplitude;
+        }
+      };
+    }
 
     return {
       waveIndex: isMorph ? [waveIndexA, waveIndexB] : waveIndexA,

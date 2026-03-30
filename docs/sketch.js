@@ -246,6 +246,100 @@ reg('gallery-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
+// 2b. WAVE SHIFT – Auto-cycling demo
+// ═════════════════════════════════════════════════════════════
+reg('shift-canvas', new p5(function(p) {
+  var shiftInterval = 3, shiftDuration = 1;
+  var sampler, t = 0;
+
+  function buildSampler() {
+    sampler = Waves.createSampler({
+      shift: true,
+      shiftInterval: shiftInterval,
+      shiftDuration: shiftDuration,
+      amplitude: 120,
+      frequency: 0.6
+    });
+    t = 0;
+  }
+
+  function updateShiftCode() {
+    var el = document.getElementById('shift-code');
+    if (!el) return;
+    el.textContent =
+      'var sampler = Waves.createSampler({\n' +
+      '  shift:         true,\n' +
+      '  shiftInterval: ' + shiftInterval + ',\n' +
+      '  shiftDuration: ' + shiftDuration + ',\n' +
+      '  amplitude:     120,\n' +
+      '  frequency:     0.6\n' +
+      '});\n\n' +
+      '// In draw:\n' +
+      'sampler.sample(y, t);\n' +
+      'sampler.waveName;    // "' + sampler.waveName + '"\n' +
+      'sampler.shifting;    // ' + sampler.shifting;
+  }
+
+  p.setup = function() {
+    var container = document.getElementById('shift-canvas');
+    var w = container ? container.offsetWidth : 600;
+    p.createCanvas(w, Math.round(w * 0.6)).parent('shift-canvas');
+    p.strokeCap(p.ROUND);
+    p.textFont('monospace');
+    p.textAlign(p.CENTER, p.CENTER);
+    buildSampler();
+    updateShiftCode();
+
+    var intEl = document.getElementById('ctrl-shift-interval');
+    var durEl = document.getElementById('ctrl-shift-duration');
+    if (intEl) intEl.addEventListener('input', function() {
+      shiftInterval = +this.value;
+      document.getElementById('val-shift-interval').textContent = this.value;
+      buildSampler();
+    });
+    if (durEl) durEl.addEventListener('input', function() {
+      shiftDuration = +this.value;
+      document.getElementById('val-shift-duration').textContent = this.value;
+      buildSampler();
+    });
+  };
+
+  p.draw = function() {
+    p.background(30);
+    t += 0.014;
+
+    p.noFill();
+    p.stroke(255);
+    p.strokeWeight(2);
+    p.beginShape();
+    for (var y = 0; y <= p.height; y += 3) {
+      p.vertex(p.width / 2 + sampler.sample(y, t), y);
+    }
+    p.endShape();
+
+    // Labels
+    p.noStroke();
+    p.fill(255, 255, 255, 200);
+    p.textSize(12);
+    p.text(sampler.waveName, p.width / 2, p.height - 36);
+
+    if (sampler.shifting) {
+      p.fill(255, 255, 255, p.map(sampler.mix, 0, 1, 0, 200));
+      p.text(sampler.targetName, p.width / 2, p.height - 18);
+    }
+
+    updateShiftCode();
+  };
+
+  p.windowResized = function() {
+    var container = document.getElementById('shift-canvas');
+    var w = container ? container.offsetWidth : 600;
+    p.resizeCanvas(w, Math.round(w * 0.6));
+  };
+}, 'shift-canvas'));
+
+
+// ═════════════════════════════════════════════════════════════
 // 3. INTERACTIVE – Live wave lab
 // ═════════════════════════════════════════════════════════════
 reg('interactive-canvas', new p5(function(p) {
