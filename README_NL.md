@@ -292,7 +292,6 @@ Zelfstandige voorbeelden:
 - `12_color_spectrum` — wave output als hue / saturatie (HSB)
 - `14_typography` — wave output als lettergrootte, lift en doorzichtigheid
 - `15_opacity` — wave output als alpha, twee interfererende lagen
-- `16_wave_chart` — alle 34 formules als live geanimeerde bars
 - `17_3d_wave_volume` — 3D puntrooster, golfcycling (WEBGL)
 
 ---

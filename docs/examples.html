@@ -201,19 +201,6 @@
     </div>
   </section>
 
-  <!-- 13. WAVE CHART -->
-  <section id="wavechart" class="section">
-    <div class="section-header">
-      <div class="section-tag">reference: all 34 formulas at once — wave: i</div>
-      <h2>Wave <span class="accent">chart</span></h2>
-      <p class="section-desc">All 34 formulas as scrolling waveforms in a 6×6 grid — each cell shows the formula's full shape, not just a single value. Hover any cell to expand it and read the name from <code>Waves.list()</code>.</p>
-    </div>
-    <div class="ex-preview">
-      <div id="ex13" class="ex-canvas"></div>
-      <a class="ex-full-link" href="../examples/16_wave_chart/" target="_blank">→ full example 16</a>
-    </div>
-  </section>
-
   <!-- 14. 3D WAVE VOLUME -->
   <section id="wavevolume" class="section section-dark">
     <div class="section-header">
@@ -698,64 +685,6 @@
     };
     p.windowResized = function() { var w = cw('ex12'); p.resizeCanvas(w, Math.round(w * 2/3)); };
   }, 'ex12');
-
-  // ── 13. Wave chart ────────────────────────────────────────
-  new p5(function(p) {
-    var COLS = 6;
-    var N    = 0;
-    var PW   = 0;
-    var PH   = 0;
-    p.setup = function() {
-      var w = cw('ex13');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex13');
-      N  = Waves.count;
-      PW = p.floor(p.width / COLS);
-      PH = p.floor(p.height / p.ceil(N / COLS));
-      p.strokeCap(p.ROUND);
-      p.textFont('monospace');
-    };
-    p.draw = function() {
-      p.background(245);
-      var t    = p.frameCount * 0.012;
-      var rows = p.ceil(N / COLS);
-      p.colorMode(p.HSB, N, 100, 100);
-      for (var i = 0; i < N; i++) {
-        var col  = i % COLS;
-        var row  = p.floor(i / COLS);
-        var px   = col * PW;
-        var py   = row * PH;
-        var pw   = PW - 2;
-        var ph   = PH - 2;
-        var midY = py + 1 + ph * 0.5;
-        var amp  = ph * 0.30 * 0.5;
-        var stride = p.max(1, p.floor(pw / 60));
-        p.noStroke();
-        p.fill(i, 18, 97);
-        p.rect(px + 1, py + 1, pw, ph);
-        p.stroke(i, 65, 58);
-        p.strokeWeight(1);
-        p.noFill();
-        p.beginShape();
-        for (var x = 0; x <= pw; x += stride) {
-          var v = Waves.wave(p.map(x, 0, pw, 0, 28) + t * 28, { wave: i, range: [-amp, amp] });
-          p.vertex(px + 1 + x, midY + v);
-        }
-        p.endShape();
-        p.noStroke();
-        p.fill(0, 0, 45, 70);
-        p.textSize(5);
-        p.textAlign(p.LEFT, p.BOTTOM);
-        p.text(i, px + 3, py + ph - 1);
-      }
-      p.colorMode(p.RGB, 255);
-    };
-    p.windowResized = function() {
-      var w = cw('ex13');
-      p.resizeCanvas(w, Math.round(w * 2/3));
-      PW = p.floor(p.width / COLS);
-      PH = p.floor(p.height / p.ceil(N / COLS));
-    };
-  }, 'ex13');
 
   // ── 14. 3D Wave Volume ────────────────────────────────────
   new p5(function(p) {

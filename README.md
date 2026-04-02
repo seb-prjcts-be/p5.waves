@@ -292,7 +292,6 @@ Standalone examples:
 - `12_color_spectrum` — wave output as hue / saturation (HSB)
 - `14_typography` — wave output as font size, lift and opacity
 - `15_opacity` — wave output as alpha, two interfering layers
-- `16_wave_chart` — all 34 formulas as live animated bars
 - `17_3d_wave_volume` — 3D point lattice, wave cycling (WEBGL)
 
 ---
