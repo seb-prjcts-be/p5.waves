@@ -29,17 +29,7 @@
         <h1>Wave Lab</h1>
         <p class="subtitle">p5.waves v2 playground</p>
 
-        <section class="control-group">
-          <h2>Preview</h2>
-          <label>
-            Preview Mode
-            <select id="preview-mode">
-              <option value="line" selected>Line Field</option>
-              <option value="grid">Grid 14×14</option>
-            </select>
-          </label>
-        </section>
-
+        <!-- 1. WAVE KEUZE — altijd zichtbaar -->
         <section class="control-group">
           <h2>Wave</h2>
           <label>
@@ -48,46 +38,53 @@
           </label>
           <label>
             Seed
-            <input id="seed" type="range" min="0" max="120" step="1" value="0" />
+            <input id="seed" type="range" min="0" max="500" step="1" value="0" />
             <span id="seed-value" class="value"></span>
           </label>
         </section>
 
+        <!-- 2. SHAPE — altijd zichtbaar -->
         <section class="control-group">
-          <h2>Shift</h2>
+          <h2>Shape</h2>
+          <label>
+            Amplitude
+            <input id="amplitude" type="range" min="0" max="800" step="1" value="350" />
+            <span id="amplitude-value" class="value"></span>
+          </label>
+          <label>
+            Frequency
+            <input id="frequency" type="range" min="0.01" max="12" step="0.01" value="1" />
+            <span id="frequency-value" class="value"></span>
+          </label>
+          <label>
+            Phase
+            <input id="phase" type="range" min="-20" max="20" step="0.05" value="0" />
+            <span id="phase-value" class="value"></span>
+          </label>
+        </section>
+
+        <!-- 3. SHIFT — uitklapbaar -->
+        <details class="control-group">
+          <summary><h2>Shift</h2></summary>
           <label class="inline">
             <input id="shift-enable" type="checkbox" />
             Enable Shift (auto-cycle formulas)
           </label>
           <label>
             Hold Time (s)
-            <input id="shift-interval" type="range" min="1" max="8" step="0.5" value="3" />
+            <input id="shift-interval" type="range" min="0.5" max="20" step="0.5" value="3" />
             <span id="shift-interval-value" class="value"></span>
           </label>
           <label>
             Morph Time (s)
-            <input id="shift-duration" type="range" min="0.3" max="3" step="0.1" value="1" />
+            <input id="shift-duration" type="range" min="0.1" max="8" step="0.1" value="1" />
             <span id="shift-duration-value" class="value"></span>
           </label>
-        </section>
+        </details>
 
-        <section class="control-group">
-          <h2>Sampler</h2>
-          <label>
-            Amplitude
-            <input id="amplitude" type="range" min="0" max="220" step="1" value="88" />
-            <span id="amplitude-value" class="value"></span>
-          </label>
-          <label>
-            Frequency
-            <input id="frequency" type="range" min="0.1" max="4" step="0.01" value="1" />
-            <span id="frequency-value" class="value"></span>
-          </label>
-          <label>
-            Phase
-            <input id="phase" type="range" min="-8" max="8" step="0.05" value="0" />
-            <span id="phase-value" class="value"></span>
-          </label>
+        <!-- 4. WILD MODE — uitklapbaar -->
+        <details class="control-group">
+          <summary><h2>Wild Mode</h2></summary>
           <label>
             Mode
             <select id="mode">
@@ -100,6 +97,11 @@
             <input id="unpredictability" type="range" min="0" max="1" step="0.01" value="0.35" />
             <span id="unpredictability-value" class="value"></span>
           </label>
+        </details>
+
+        <!-- 5. RANGE — uitklapbaar -->
+        <details class="control-group">
+          <summary><h2>Range</h2></summary>
           <label class="inline">
             <input id="range-enable" type="checkbox" checked />
             Normalise with range
@@ -114,40 +116,51 @@
             <input id="range-max" type="range" min="-1.5" max="2" step="0.05" value="1" />
             <span id="range-max-value" class="value"></span>
           </label>
-        </section>
+        </details>
 
-        <section class="control-group" id="grid-controls">
-          <h2>Grid</h2>
+        <!-- 6. GRID — uitklapbaar -->
+        <details class="control-group" id="grid-details">
+          <summary><h2>Grid</h2></summary>
           <label>
-            Wave Row
-            <select id="wave-row"></select>
+            Preview Mode
+            <select id="preview-mode">
+              <option value="line" selected>Line Field</option>
+              <option value="grid">Grid 14x14</option>
+            </select>
           </label>
-          <label>
-            Wave Col
-            <select id="wave-col"></select>
-          </label>
-          <label>
-            Threshold
-            <input id="threshold" type="range" min="-2" max="2" step="0.01" value="0" />
-            <span id="threshold-value" class="value"></span>
-          </label>
-        </section>
+          <div id="grid-controls">
+            <label>
+              Wave Row
+              <select id="wave-row"></select>
+            </label>
+            <label>
+              Wave Col
+              <select id="wave-col"></select>
+            </label>
+            <label>
+              Threshold
+              <input id="threshold" type="range" min="-4" max="4" step="0.01" value="0" />
+              <span id="threshold-value" class="value"></span>
+            </label>
+          </div>
+        </details>
 
-        <section class="control-group">
-          <h2>Render</h2>
+        <!-- 7. RENDER — uitklapbaar -->
+        <details class="control-group">
+          <summary><h2>Render</h2></summary>
           <label>
             Time Speed
-            <input id="time-speed" type="range" min="0" max="0.2" step="0.001" value="0.02" />
+            <input id="time-speed" type="range" min="0" max="0.5" step="0.001" value="0.02" />
             <span id="time-speed-value" class="value"></span>
           </label>
           <label>
-            Frame Rate
+            Simulation Speed
             <select id="frame-rate">
-              <option value="60" selected>60 fps</option>
-              <option value="30">30 fps</option>
-              <option value="12">12 fps</option>
-              <option value="6">6 fps (slow)</option>
-              <option value="2">2 fps (capture)</option>
+              <option value="60" selected>real-time</option>
+              <option value="30">half</option>
+              <option value="12">slow</option>
+              <option value="6">very slow</option>
+              <option value="2">frame-by-frame</option>
             </select>
           </label>
           <label>
@@ -167,17 +180,10 @@
             <input id="show-grid" type="checkbox" checked />
             Show grid
           </label>
-          <button id="surprise" type="button">Surprise Me</button>
-        </section>
+        </details>
 
-        <section class="control-group">
-          <h2>Copy This Sample</h2>
-          <p class="code-note">
-            Live export of your current <code>Waves.wave()</code>, <code>createSampler({ shift })</code>, or <code>createGrid()</code> setup.
-          </p>
-          <textarea id="code-output" class="code-output" readonly spellcheck="false"></textarea>
-          <button id="copy-code" type="button">Copy Snippet</button>
-        </section>
+        <!-- 8. SURPRISE ME -->
+        <button id="surprise" type="button">Surprise Me</button>
       </aside>
 
       <main class="stage">
@@ -188,10 +194,19 @@
           <span class="badge" id="active-behavior">mode: stable (0.00)</span>
         </div>
         <div id="canvas-wrap"></div>
-        <p class="hint">
-          Tip: try <code>mode=wild</code> + <code>unpredictability</code> for organic variation,
-          or switch to Grid and adjust the threshold.
-        </p>
+
+        <!-- LIVE CODE EDITOR -->
+        <section class="editor-section">
+          <div class="editor-bar">
+            <h2>Live Code</h2>
+            <div class="editor-actions">
+              <button id="run-code" type="button">Run</button>
+              <button id="reset-code" type="button">Reset</button>
+              <button id="copy-code" type="button">Copy</button>
+            </div>
+          </div>
+          <textarea id="code-output" class="code-output" spellcheck="false"></textarea>
+        </section>
       </main>
     </div>
 

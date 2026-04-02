@@ -57,6 +57,8 @@ body {
   color: #666;
 }
 
+/* ─── Control groups (section + details) ─────────────────────────── */
+
 .control-group {
   border: 1px solid var(--black);
   border-radius: 0;
@@ -73,7 +75,70 @@ body {
   font-size: 0.94rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  display: inline;
 }
+
+/* ─── Details/summary uitklapbare secties ─────────────────────────── */
+
+details.control-group {
+  padding: 0;
+}
+
+details.control-group > summary {
+  padding: 10px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+details.control-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.control-group > summary::after {
+  content: '+';
+  font-family: var(--code);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+details[open].control-group > summary::after {
+  content: '\2212';
+}
+
+details.control-group > summary:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+details.control-group > :not(summary) {
+  padding: 0 10px;
+  margin-bottom: 9px;
+}
+
+details.control-group > label,
+details.control-group > div {
+  padding: 0 10px;
+}
+
+details.control-group > label:last-child,
+details.control-group > div:last-child {
+  margin-bottom: 10px;
+}
+
+/* ─── Grid sub-controls ─────────────────────────── */
+
+#grid-controls {
+  display: grid;
+  gap: 9px;
+}
+
+/* ─── Form elements ─────────────────────────── */
 
 label {
   display: grid;
@@ -85,16 +150,6 @@ label.inline {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-#mod-fields {
-  display: grid;
-  gap: 9px;
-}
-
-#mod-fields.hidden,
-.hidden {
-  display: none;
 }
 
 label.disabled-control {
@@ -113,6 +168,10 @@ button.disabled-control:hover {
   background: var(--black);
   border-color: var(--black);
   color: var(--white);
+}
+
+.hidden {
+  display: none !important;
 }
 
 select,
@@ -142,39 +201,7 @@ input[type="checkbox"] {
   font-size: 0.84rem;
 }
 
-.mode-note {
-  margin: 2px 0 0;
-  padding: 6px 8px;
-  border-left: 3px solid var(--red);
-  background: var(--white);
-  font-family: var(--code);
-  font-size: 0.78rem;
-}
-
-.code-note {
-  margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.4;
-}
-
-.code-output {
-  width: 100%;
-  min-height: 260px;
-  border: 1px solid var(--black);
-  border-radius: 0;
-  padding: 10px;
-  resize: vertical;
-  background: var(--white);
-  color: var(--black);
-  font-family: var(--code);
-  font-size: 0.8rem;
-  line-height: 1.45;
-}
-
-.code-output:focus {
-  outline: 2px solid var(--black);
-  outline-offset: 1px;
-}
+/* ─── Buttons ─────────────────────────── */
 
 button {
   border: 1px solid var(--black);
@@ -200,10 +227,13 @@ button:active {
   color: var(--white);
 }
 
+/* ─── Stage (canvas + editor) ─────────────────────────── */
+
 .stage {
   display: grid;
-  grid-template-rows: auto minmax(380px, 1fr) auto;
-  gap: 10px;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  height: calc(100vh - 80px);
 }
 
 .stage-bar {
@@ -225,28 +255,80 @@ button:active {
   border-radius: 0;
   overflow: hidden;
   border: 1px solid var(--black);
-  min-height: 420px;
+  min-height: 200px;
   background: var(--white);
+}
+
+#canvas-wrap canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 canvas {
   display: block;
 }
 
-.hint {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #555;
+/* ─── Live Code Editor ─────────────────────────── */
+
+.editor-section {
+  border: 1px solid var(--black);
+  background: var(--white);
 }
 
-.hint code {
-  font-family: var(--code);
-  font-size: 0.9em;
-  color: var(--black);
-  background: #e8e8e8;
-  padding: 0.05em 0.3em;
+.editor-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--black);
+  background: var(--gray-245);
 }
+
+.editor-bar h2 {
+  margin: 0;
+  font-family: var(--title);
+  font-weight: 400;
+  font-size: 0.94rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.editor-actions button {
+  width: auto;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+}
+
+.code-output {
+  width: 100%;
+  min-height: 220px;
+  border: none;
+  border-radius: 0;
+  padding: 10px;
+  resize: vertical;
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--code);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.code-output:focus {
+  outline: 2px solid var(--black);
+  outline-offset: -2px;
+}
+
+.code-output.user-edited {
+  border-top: 2px solid var(--red);
+}
+
+/* ─── Responsive ─────────────────────────── */
 
 @media (max-width: 1024px) {
   .page-shell {

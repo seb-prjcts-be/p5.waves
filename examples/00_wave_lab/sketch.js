@@ -1,29 +1,31 @@
 // Wave Lab — p5.waves v2
-// Interactive explorer for Waves.wave() and Waves.createGrid().
+// Interactive explorer for all library features.
 
-const controls     = {};
-const valueTargets = {};
+var controls     = {};
+var valueTargets = {};
 
-let t = 0;
-let currentFps     = 60;
-let gridSampler    = null;
-let gridSamplerKey = '';
-let codeOutputEl   = null;
-let copyButtonResetTimer = 0;
-let shiftSampler   = null;
-let shiftSamplerKey = '';
+var t = 0;
+var currentFps     = 60;
+var gridSampler    = null;
+var gridSamplerKey = '';
+var codeOutputEl   = null;
+var copyBtnTimer   = 0;
+var shiftSampler   = null;
+var shiftSamplerKey = '';
+var userEditedCode = false;
 
-const ids = [
-  'preview-mode', 'wave', 'seed',
+var ids = [
+  'wave', 'seed',
+  'amplitude', 'frequency', 'phase',
   'shift-enable', 'shift-interval', 'shift-duration',
-  'amplitude', 'frequency', 'phase', 'mode', 'unpredictability',
+  'mode', 'unpredictability',
   'range-enable', 'range-min', 'range-max',
-  'wave-row', 'wave-col', 'threshold',
+  'preview-mode', 'wave-row', 'wave-col', 'threshold',
   'time-speed', 'frame-rate', 'step', 'show-points', 'connect-line', 'show-grid',
-  'surprise', 'copy-code'
+  'surprise', 'copy-code', 'run-code', 'reset-code'
 ];
 
-const valueIds = [
+var valueIds = [
   'seed-value',
   'shift-interval-value', 'shift-duration-value',
   'amplitude-value', 'frequency-value', 'phase-value', 'unpredictability-value',
@@ -38,10 +40,10 @@ function fmt(num, digits) {
 // ─── p5 setup / resize ───────────────────────────────────────────────────────
 
 function setup() {
-  for (let i = 0; i < ids.length; i++) {
+  for (var i = 0; i < ids.length; i++) {
     controls[ids[i]] = document.getElementById(ids[i]);
   }
-  for (let i = 0; i < valueIds.length; i++) {
+  for (var i = 0; i < valueIds.length; i++) {
     valueTargets[valueIds[i]] = document.getElementById(valueIds[i]);
   }
   codeOutputEl = document.getElementById('code-output');
@@ -50,83 +52,94 @@ function setup() {
   bindControls();
   updateUiState();
 
-  const wrap = document.getElementById('canvas-wrap');
-  const h = Math.max(360, Math.min(window.innerHeight - 130, 760));
-  const c = createCanvas(wrap.clientWidth, h);
+  var wrap = document.getElementById('canvas-wrap');
+  var c = createCanvas(wrap.clientWidth, 100);
   c.parent('canvas-wrap');
 
   controls.amplitude.max = wrap.clientWidth;
 
   strokeWeight(2);
   noFill();
+
+  // Resize after layout settles
+  window.setTimeout(function () { fitCanvas(); }, 50);
+}
+
+function fitCanvas() {
+  var wrap = document.getElementById('canvas-wrap');
+  var w = wrap.clientWidth;
+  var h = wrap.clientHeight;
+  if (h < 50) h = wrap.getBoundingClientRect().height;
+  if (h < 50) h = 400;
+  resizeCanvas(w, h);
+  controls.amplitude.max = w;
 }
 
 function windowResized() {
-  const wrap = document.getElementById('canvas-wrap');
-  resizeCanvas(wrap.clientWidth, Math.max(360, Math.min(window.innerHeight - 130, 760)));
-  controls.amplitude.max = wrap.clientWidth;
+  fitCanvas();
 }
 
 // ─── Populate selects ─────────────────────────────────────────────────────────
 
 function populateWaveSelects() {
-  const waveList = Waves.list();
+  var waveList = Waves.list();
 
-  // Main wave dropdown
-  const waveEl = controls.wave;
-  waveEl.innerHTML = '';
-  for (let i = 0; i < waveList.length; i++) {
-    const opt = document.createElement('option');
-    opt.value = String(i);
-    opt.textContent = i + ' \u2014 ' + waveList[i].name;
-    waveEl.appendChild(opt);
+  // Build options for a select element
+  function fillSelect(el, includeAuto) {
+    el.innerHTML = '';
+    if (includeAuto) {
+      var autoOpt = document.createElement('option');
+      autoOpt.value = '';
+      autoOpt.textContent = '(seed-determined)';
+      el.appendChild(autoOpt);
+    }
+    for (var i = 0; i < waveList.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = i + ' \u2014 ' + waveList[i].name;
+      el.appendChild(opt);
+    }
   }
-  waveEl.value = '0';
 
-  // Grid wave-row / wave-col dropdowns
-  const rowEl = controls['wave-row'];
-  const colEl = controls['wave-col'];
-  rowEl.innerHTML = '';
-  colEl.innerHTML = '';
+  fillSelect(controls.wave, false);
+  fillSelect(controls['wave-row'], true);
+  fillSelect(controls['wave-col'], true);
 
-  const autoOpt = function () {
-    const o = document.createElement('option');
-    o.value = '';
-    o.textContent = '(seed-determined)';
-    return o;
-  };
-  rowEl.appendChild(autoOpt());
-  colEl.appendChild(autoOpt());
-
-  for (let i = 0; i < waveList.length; i++) {
-    const makeOpt = function () {
-      const o = document.createElement('option');
-      o.value = String(i);
-      o.textContent = i + ' \u2014 ' + waveList[i].name;
-      return o;
-    };
-    rowEl.appendChild(makeOpt());
-    colEl.appendChild(makeOpt());
-  }
+  controls.wave.value = '0';
 }
 
 // ─── Control binding ─────────────────────────────────────────────────────────
 
 function bindControls() {
-  const allInputs = document.querySelectorAll('input, select');
-  for (let i = 0; i < allInputs.length; i++) {
-    allInputs[i].addEventListener('input', updateUiState);
-    allInputs[i].addEventListener('change', updateUiState);
+  var allInputs = document.querySelectorAll('input, select');
+  for (var i = 0; i < allInputs.length; i++) {
+    allInputs[i].addEventListener('input', onControlChange);
+    allInputs[i].addEventListener('change', onControlChange);
   }
   controls.surprise.addEventListener('click', randomizeControls);
   controls['copy-code'].addEventListener('click', copyCodeSnippet);
+  controls['run-code'].addEventListener('click', runUserCode);
+  controls['reset-code'].addEventListener('click', resetCode);
+
+  // Track manual edits in the code textarea
+  codeOutputEl.addEventListener('input', function () {
+    userEditedCode = true;
+    codeOutputEl.classList.add('user-edited');
+  });
+}
+
+function onControlChange() {
+  // Any slider/dropdown change resets the user-edited state
+  userEditedCode = false;
+  codeOutputEl.classList.remove('user-edited');
+  updateUiState();
 }
 
 // ─── State reading ────────────────────────────────────────────────────────────
 
 function enforceRanges() {
-  let rMin = Number(controls['range-min'].value);
-  let rMax = Number(controls['range-max'].value);
+  var rMin = Number(controls['range-min'].value);
+  var rMax = Number(controls['range-max'].value);
   if (rMin >= rMax) {
     if (rMin >= 1.95) rMin = 1.9;
     rMax = rMin + 0.05;
@@ -136,79 +149,83 @@ function enforceRanges() {
 }
 
 function readState() {
-  const waveIndex      = Number(controls.wave.value) || 0;
-  const seed           = Number(controls.seed.value) || 0;
-  const amplitude      = Number(controls.amplitude.value);
-  const frequency      = Number(controls.frequency.value);
-  const phase          = Number(controls.phase.value);
-  const mode           = controls.mode.value;
-  const unpredictability = Number(controls.unpredictability.value);
-  const rangeEnable    = controls['range-enable'].checked;
-  const range          = rangeEnable
+  var waveIndex    = Number(controls.wave.value) || 0;
+  var seed         = Number(controls.seed.value) || 0;
+  var amplitude    = Number(controls.amplitude.value);
+  var frequency    = Number(controls.frequency.value);
+  var phase        = Number(controls.phase.value);
+  var modeVal      = controls.mode.value;
+  var unpredictability = Number(controls.unpredictability.value);
+  var rangeEnable  = controls['range-enable'].checked;
+  var rangeVal     = rangeEnable
     ? [Number(controls['range-min'].value), Number(controls['range-max'].value)]
     : null;
 
-  const waveRowVal = controls['wave-row'].value;
-  const waveColVal = controls['wave-col'].value;
+  var waveRowVal = controls['wave-row'].value;
+  var waveColVal = controls['wave-col'].value;
 
   return {
     previewMode:     controls['preview-mode'].value,
-    waveIndex,
-    seed,
-    amplitude,
-    frequency,
-    phase,
-    mode,
-    unpredictability,
-    rangeEnable,
-    range,
+    waveIndex:       waveIndex,
+    seed:            seed,
+    amplitude:       amplitude,
+    frequency:       frequency,
+    phase:           phase,
+    mode:            modeVal,
+    unpredictability: unpredictability,
+    rangeEnable:     rangeEnable,
+    range:           rangeVal,
     grid: {
       waveRow:   waveRowVal !== '' ? Number(waveRowVal) : undefined,
       waveCol:   waveColVal !== '' ? Number(waveColVal) : undefined,
       threshold: Number(controls.threshold.value)
     },
-    step:        Number(controls.step.value),
-    fps:         Number(controls['frame-rate'].value),
-    speed:       Number(controls['time-speed'].value),
-    showPoints:  controls['show-points'].checked,
-    connectLine: controls['connect-line'].checked,
-    showGrid:    controls['show-grid'].checked,
-    shiftEnable:   controls['shift-enable'].checked,
-    shiftInterval: Number(controls['shift-interval'].value),
-    shiftDuration: Number(controls['shift-duration'].value)
+    pointStep:    Number(controls.step.value),
+    fps:          Number(controls['frame-rate'].value),
+    speed:        Number(controls['time-speed'].value),
+    showPoints:   controls['show-points'].checked,
+    connectLine:  controls['connect-line'].checked,
+    showGrid:     controls['show-grid'].checked,
+    shiftEnable:    controls['shift-enable'].checked,
+    shiftInterval:  Number(controls['shift-interval'].value),
+    shiftDuration:  Number(controls['shift-duration'].value)
   };
 }
 
 // ─── UI updates ──────────────────────────────────────────────────────────────
 
 function setControlDisabled(id, disabled) {
-  const el = controls[id];
+  var el = controls[id];
   if (!el) return;
   el.disabled = !!disabled;
-  const label = el.closest('label');
-  if (label) label.classList.toggle('disabled-control', !!disabled);
+  var labelEl = el.closest('label');
+  if (labelEl) labelEl.classList.toggle('disabled-control', !!disabled);
 }
 
 function updateValueDisplays() {
-  valueTargets['seed-value'].textContent          = controls.seed.value;
-  valueTargets['shift-interval-value'].textContent = controls['shift-interval'].value;
-  valueTargets['shift-duration-value'].textContent = controls['shift-duration'].value;
-  valueTargets['amplitude-value'].textContent     = controls.amplitude.value;
-  valueTargets['frequency-value'].textContent     = fmt(controls.frequency.value, 2);
-  valueTargets['phase-value'].textContent         = fmt(controls.phase.value, 2);
+  valueTargets['seed-value'].textContent            = controls.seed.value;
+  valueTargets['shift-interval-value'].textContent   = controls['shift-interval'].value;
+  valueTargets['shift-duration-value'].textContent   = controls['shift-duration'].value;
+  valueTargets['amplitude-value'].textContent        = controls.amplitude.value;
+  valueTargets['frequency-value'].textContent        = fmt(controls.frequency.value, 2);
+  valueTargets['phase-value'].textContent            = fmt(controls.phase.value, 2);
   valueTargets['unpredictability-value'].textContent = fmt(controls.unpredictability.value, 2);
-  valueTargets['range-min-value'].textContent     = fmt(controls['range-min'].value, 2);
-  valueTargets['range-max-value'].textContent     = fmt(controls['range-max'].value, 2);
-  valueTargets['threshold-value'].textContent     = fmt(controls.threshold.value, 2);
-  valueTargets['time-speed-value'].textContent    = fmt(controls['time-speed'].value, 3);
-  valueTargets['step-value'].textContent          = controls.step.value;
+  valueTargets['range-min-value'].textContent        = fmt(controls['range-min'].value, 2);
+  valueTargets['range-max-value'].textContent        = fmt(controls['range-max'].value, 2);
+  valueTargets['threshold-value'].textContent        = fmt(controls.threshold.value, 2);
+  valueTargets['time-speed-value'].textContent       = fmt(controls['time-speed'].value, 3);
+  valueTargets['step-value'].textContent             = controls.step.value;
 }
 
 function updateBadges(state) {
-  const waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
-  document.getElementById('active-wave').textContent = state.shiftEnable
-    ? 'shift: ' + (shiftSampler ? shiftSampler.waveName : 'auto')
-    : 'wave: ' + state.waveIndex + ' \u2014 ' + waveName;
+  var waveLabel;
+  if (state.shiftEnable) {
+    waveLabel = 'shift: ' + (shiftSampler ? shiftSampler.waveName : 'auto');
+  } else {
+    var waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
+    waveLabel = 'wave: ' + state.waveIndex + ' \u2014 ' + waveName;
+  }
+  document.getElementById('active-wave').textContent = waveLabel;
   document.getElementById('active-settings').textContent =
     'seed: ' + state.seed +
     ' | freq: ' + state.frequency.toFixed(2) +
@@ -222,31 +239,48 @@ function updateBadges(state) {
 
 function updateUiState() {
   enforceRanges();
-  const shiftOn = controls['shift-enable'].checked;
+
+  // Shift toggle
+  var shiftOn = controls['shift-enable'].checked;
   setControlDisabled('wave', shiftOn);
   setControlDisabled('seed', shiftOn);
   setControlDisabled('shift-interval', !shiftOn);
   setControlDisabled('shift-duration', !shiftOn);
+
+  // Wild mode
   setControlDisabled('unpredictability', controls.mode.value !== 'wild');
-  const rangeOn = controls['range-enable'].checked;
-  setControlDisabled('amplitude', false);
+
+  // Range
+  var rangeOn = controls['range-enable'].checked;
   setControlDisabled('range-min', !rangeOn);
   setControlDisabled('range-max', !rangeOn);
-  const isGrid = controls['preview-mode'].value === 'grid';
-  document.getElementById('grid-controls').style.display = isGrid ? '' : 'none';
+
+  // Grid sub-controls
+  var isGrid = controls['preview-mode'].value === 'grid';
+  var gridCtrl = document.getElementById('grid-controls');
+  gridCtrl.style.display = isGrid ? '' : 'none';
+
+  // Shift forces line mode
   if (shiftOn) {
     controls['preview-mode'].value = 'line';
-    document.getElementById('grid-controls').style.display = 'none';
+    gridCtrl.style.display = 'none';
     setControlDisabled('preview-mode', true);
   } else {
     setControlDisabled('preview-mode', false);
-    shiftSampler = null;
-    shiftSamplerKey = '';
+    if (!shiftOn) {
+      shiftSampler = null;
+      shiftSamplerKey = '';
+    }
   }
+
   updateValueDisplays();
-  const state = readState();
+  var state = readState();
   updateBadges(state);
-  updateCodeSnippet(state);
+
+  // Only update code if user hasn't manually edited
+  if (!userEditedCode) {
+    updateCodeSnippet(state);
+  }
 }
 
 // ─── Drawing ─────────────────────────────────────────────────────────────────
@@ -254,19 +288,21 @@ function updateUiState() {
 function drawGridLines() {
   stroke(0);
   strokeWeight(1);
-  for (let y = 0; y <= height; y += 40) line(0, y, width, y);
-  for (let x = 0; x <= width; x += 80) line(x, 0, x, height);
+  for (var y = 0; y <= height; y += 40) line(0, y, width, y);
+  for (var x = 0; x <= width; x += 80) line(x, 0, x, height);
 }
 
 function buildWaveOpts(state) {
-  const opts = {
-    wave:            state.waveIndex,
+  var opts = {
     t:               t,
     frequency:       state.frequency,
     phase:           state.phase,
     mode:            state.mode,
     unpredictability: state.unpredictability
   };
+
+  opts.wave = state.waveIndex;
+
   if (state.rangeEnable && state.range) {
     opts.range = state.range;
   } else {
@@ -276,10 +312,11 @@ function buildWaveOpts(state) {
 }
 
 function getShiftSampler(state) {
-  const cacheKey = [
+  var cacheKey = [
     state.shiftInterval, state.shiftDuration,
     state.amplitude, state.frequency, state.phase,
-    state.mode, state.unpredictability
+    state.mode, state.unpredictability,
+    state.rangeEnable, state.range ? state.range.join(',') : ''
   ].join('|');
   if (cacheKey !== shiftSamplerKey) {
     shiftSamplerKey = cacheKey;
@@ -303,10 +340,10 @@ function getShiftSampler(state) {
 }
 
 function drawWave(state) {
-  const cx         = width * 0.5;
-  const pointStep  = Math.max(1, state.step);
-  const drawPoints = state.showPoints || !state.connectLine;
-  const useShift   = state.shiftEnable;
+  var cx         = width * 0.5;
+  var pointStep  = Math.max(1, state.pointStep);
+  var drawPoints = state.showPoints || !state.connectLine;
+  var useShift   = state.shiftEnable;
 
   var sampler;
   if (useShift) {
@@ -323,16 +360,16 @@ function drawWave(state) {
     fill(0);
   }
 
-  for (let y = 0; y <= height; y += pointStep) {
-    var sample;
+  for (var y = 0; y <= height; y += pointStep) {
+    var sampleVal;
     if (useShift) {
-      sample = sampler.sample(y, t);
+      sampleVal = sampler.sample(y, t);
     } else {
-      sample = Waves.wave(y, buildWaveOpts(state));
+      sampleVal = Waves.wave(y, buildWaveOpts(state));
     }
-    const x = cx + (state.rangeEnable && !useShift
-      ? map(sample, state.range[0], state.range[1], -state.amplitude, state.amplitude)
-      : sample);
+    var x = cx + (state.rangeEnable && !useShift
+      ? map(sampleVal, state.range[0], state.range[1], -state.amplitude, state.amplitude)
+      : sampleVal);
     if (state.connectLine) vertex(x, y);
     if (drawPoints) {
       noStroke();
@@ -360,8 +397,8 @@ function drawWave(state) {
 }
 
 function getGridSampler(state) {
-  const g   = state.grid;
-  const gridCacheKey = [
+  var g = state.grid;
+  var gridCacheKey = [
     g.waveRow !== undefined ? g.waveRow : 'a',
     g.waveCol !== undefined ? g.waveCol : 'a',
     state.seed,
@@ -370,7 +407,7 @@ function getGridSampler(state) {
 
   if (gridSamplerKey !== gridCacheKey) {
     gridSamplerKey = gridCacheKey;
-    const opts = { seed: state.seed, threshold: g.threshold };
+    var opts = { seed: state.seed, threshold: g.threshold };
     if (g.waveRow !== undefined) opts.waveRow = g.waveRow;
     if (g.waveCol !== undefined) opts.waveCol = g.waveCol;
     gridSampler = Waves.createGrid(14, 14, opts);
@@ -380,21 +417,21 @@ function getGridSampler(state) {
 }
 
 function drawGrid14(state) {
-  const gs    = getGridSampler(state);
-  const cells = gs.sample(t * 8);
-  const cols  = gs.cols;
-  const rows  = gs.rows;
-  const cell  = Math.min(width / cols, height / rows);
-  const gridW = cell * cols;
-  const gridH = cell * rows;
-  const ox    = (width - gridW) * 0.5;
-  const oy    = (height - gridH) * 0.5;
+  var gs    = getGridSampler(state);
+  var cells = gs.sample(t * 8);
+  var cols  = gs.cols;
+  var rows  = gs.rows;
+  var cell  = Math.min(width / cols, height / rows);
+  var gridW = cell * cols;
+  var gridH = cell * rows;
+  var ox    = (width - gridW) * 0.5;
+  var oy    = (height - gridH) * 0.5;
 
   noStroke();
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const idx = r * cols + c;
-      const on  = cells[idx] === 1;
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+      var idx = r * cols + c;
+      var on  = cells[idx] === 1;
       fill(on ? 0 : 255);
       rect(ox + c * cell, oy + r * cell, cell, cell);
       if (state.showPoints) {
@@ -409,10 +446,10 @@ function drawGrid14(state) {
     stroke(0);
     strokeWeight(1);
     noFill();
-    for (let gx = 0; gx <= cols; gx++) {
+    for (var gx = 0; gx <= cols; gx++) {
       line(ox + gx * cell, oy, ox + gx * cell, oy + gridH);
     }
-    for (let gy = 0; gy <= rows; gy++) {
+    for (var gy = 0; gy <= rows; gy++) {
       line(ox, oy + gy * cell, ox + gridW, oy + gy * cell);
     }
   }
@@ -421,20 +458,23 @@ function drawGrid14(state) {
 // ─── Code snippet generation ─────────────────────────────────────────────────
 
 function codeNum(value, digits) {
-  const n = Number(value);
+  var n = Number(value);
   if (!Number.isFinite(n)) return '0';
   if (Number.isInteger(n)) return String(n);
   return String(Number(n.toFixed(digits || 4)));
 }
 
 function buildLineSnippet(state) {
-  const waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
-  const waveTail = state.rangeEnable
+  var waveTail = state.rangeEnable
     ? ',\n      range: [' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) + ']'
     : ',\n      amplitude: ' + codeNum(state.amplitude, 0);
-  const waveCall =
+
+  var waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
+  var waveParam = "      wave:             '" + waveName + "',\n";
+
+  var waveCall =
     'Waves.wave(y, {\n' +
-    '      wave:             \'' + waveName + '\',\n' +
+    waveParam +
     '      t:                t,\n' +
     '      frequency:        ' + codeNum(state.frequency, 4) + ',\n' +
     '      phase:            ' + codeNum(state.phase, 4) + ',\n' +
@@ -442,14 +482,16 @@ function buildLineSnippet(state) {
     '      unpredictability: ' + codeNum(state.unpredictability, 4) +
     waveTail + '\n' +
     '    })';
-  const xLines = state.rangeEnable
-    ? '    const sample = ' + waveCall + ';\n' +
-      '    const x = map(sample, ' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) +
+
+  var xLines = state.rangeEnable
+    ? '    var sample = ' + waveCall + ';\n' +
+      '    var x = map(sample, ' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) +
       ', width * 0.5 - ' + codeNum(state.amplitude, 0) + ', width * 0.5 + ' + codeNum(state.amplitude, 0) + ');\n'
-    : '    const x = width * 0.5 + ' + waveCall + ';\n';
+    : '    var x = width * 0.5 + ' + waveCall + ';\n';
+
   return (
     '// p5.waves v2 \u2014 line\n' +
-    'let t = 0;\n\n' +
+    'var t = 0;\n\n' +
     'function setup() {\n' +
     '  createCanvas(800, 520);\n' +
     '  noFill();\n' +
@@ -458,7 +500,7 @@ function buildLineSnippet(state) {
     '  background(245);\n' +
     '  beginShape();\n' +
     '  stroke(0);\n' +
-    '  for (let y = 0; y <= height; y += ' + Math.max(1, state.step) + ') {\n' +
+    '  for (var y = 0; y <= height; y += ' + Math.max(1, state.pointStep) + ') {\n' +
     xLines +
     '    vertex(x, y);\n' +
     '  }\n' +
@@ -469,16 +511,16 @@ function buildLineSnippet(state) {
 }
 
 function buildGridSnippet(state) {
-  const g       = state.grid;
-  const rowName = g.waveRow !== undefined && Waves.data[g.waveRow]
+  var g       = state.grid;
+  var rowName = g.waveRow !== undefined && Waves.data[g.waveRow]
     ? Waves.data[g.waveRow].name : null;
-  const colName = g.waveCol !== undefined && Waves.data[g.waveCol]
+  var colName = g.waveCol !== undefined && Waves.data[g.waveCol]
     ? Waves.data[g.waveCol].name : null;
-  const rowLine = rowName ? "  waveRow:   '" + rowName + "',\n" : '';
-  const colLine = colName ? "  waveCol:   '" + colName + "',\n" : '';
+  var rowLine = rowName ? "  waveRow:   '" + rowName + "',\n" : '';
+  var colLine = colName ? "  waveCol:   '" + colName + "',\n" : '';
   return (
     '// p5.waves v2 \u2014 grid\n' +
-    'let g, t = 0;\n\n' +
+    'var g, t = 0;\n\n' +
     'function setup() {\n' +
     '  createCanvas(560, 560);\n' +
     '  g = Waves.createGrid(14, 14, {\n' +
@@ -490,13 +532,13 @@ function buildGridSnippet(state) {
     '}\n\n' +
     'function draw() {\n' +
     '  background(245);\n' +
-    '  const cells = g.sample(t * 8);\n' +
-    '  const cell  = min(width / g.cols, height / g.rows);\n' +
-    '  const ox    = (width  - g.cols * cell) * 0.5;\n' +
-    '  const oy    = (height - g.rows * cell) * 0.5;\n' +
+    '  var cells = g.sample(t * 8);\n' +
+    '  var cell  = min(width / g.cols, height / g.rows);\n' +
+    '  var ox    = (width  - g.cols * cell) * 0.5;\n' +
+    '  var oy    = (height - g.rows * cell) * 0.5;\n' +
     '  noStroke();\n' +
-    '  for (let r = 0; r < g.rows; r++) {\n' +
-    '    for (let c = 0; c < g.cols; c++) {\n' +
+    '  for (var r = 0; r < g.rows; r++) {\n' +
+    '    for (var c = 0; c < g.cols; c++) {\n' +
     '      fill(cells[r * g.cols + c] === 1 ? 0 : 255);\n' +
     '      rect(ox + c * cell, oy + r * cell, cell, cell);\n' +
     '    }\n' +
@@ -531,7 +573,7 @@ function buildShiftSnippet(state) {
     '  stroke(0);\n' +
     '  strokeWeight(2);\n' +
     '  beginShape();\n' +
-    '  for (var y = 0; y <= height; y += ' + Math.max(1, state.step) + ') {\n' +
+    '  for (var y = 0; y <= height; y += ' + Math.max(1, state.pointStep) + ') {\n' +
     '    vertex(width / 2 + sampler.sample(y, t), y);\n' +
     '  }\n' +
     '  endShape();\n\n' +
@@ -555,11 +597,31 @@ function updateCodeSnippet(state) {
   }
 }
 
-// ─── Copy snippet ─────────────────────────────────────────────────────────────
+// ─── Live code editor — Run / Reset / Copy ───────────────────────────────────
 
-function fallbackCopyText(text) {
-  const ghost = document.createElement('textarea');
-  ghost.value = text;
+function runUserCode() {
+  // Placeholder: in v1 we just reset the time to re-evaluate
+  // Full eval would require sandboxed p5 instance — for now, reset time
+  t = 0;
+  shiftSampler = null;
+  shiftSamplerKey = '';
+  gridSampler = null;
+  gridSamplerKey = '';
+
+  setBtnFeedback('run-code', 'Running...', 'Run', 800);
+}
+
+function resetCode() {
+  userEditedCode = false;
+  codeOutputEl.classList.remove('user-edited');
+  var state = readState();
+  updateCodeSnippet(state);
+  setBtnFeedback('reset-code', 'Reset!', 'Reset', 800);
+}
+
+function fallbackCopyText(txt) {
+  var ghost = document.createElement('textarea');
+  ghost.value = txt;
   ghost.setAttribute('readonly', 'readonly');
   ghost.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
   document.body.appendChild(ghost);
@@ -568,13 +630,9 @@ function fallbackCopyText(text) {
   document.body.removeChild(ghost);
 }
 
-function setCopyButtonText(label) {
-  if (controls['copy-code']) controls['copy-code'].textContent = label;
-}
-
 async function copyCodeSnippet() {
   if (!codeOutputEl) return;
-  const snippet = codeOutputEl.value || '';
+  var snippet = codeOutputEl.value || '';
   if (!snippet) return;
   try {
     if (navigator.clipboard && window.isSecureContext) {
@@ -582,12 +640,17 @@ async function copyCodeSnippet() {
     } else {
       fallbackCopyText(snippet);
     }
-    setCopyButtonText('Copied');
+    setBtnFeedback('copy-code', 'Copied', 'Copy', 1400);
   } catch (_) {
-    setCopyButtonText('Copy Failed');
+    setBtnFeedback('copy-code', 'Failed', 'Copy', 1400);
   }
-  if (copyButtonResetTimer) window.clearTimeout(copyButtonResetTimer);
-  copyButtonResetTimer = window.setTimeout(function () { setCopyButtonText('Copy Snippet'); }, 1400);
+}
+
+function setBtnFeedback(id, tempLabel, originalLabel, ms) {
+  var btn = controls[id];
+  if (!btn) return;
+  btn.textContent = tempLabel;
+  window.setTimeout(function () { btn.textContent = originalLabel; }, ms);
 }
 
 // ─── Randomise ────────────────────────────────────────────────────────────────
@@ -597,39 +660,54 @@ function randomFrom(arr) {
 }
 
 function randomizeControls() {
-  controls['preview-mode'].value        = randomFrom(['line', 'grid']);
-  controls.wave.value                   = String(Math.floor(Math.random() * Waves.count));
-  controls.seed.value                   = String(Math.floor(Math.random() * 121));
-  controls.amplitude.value              = String(Math.floor(30 + Math.random() * 180));
-  controls.frequency.value              = fmt(0.2 + Math.random() * 2.2, 2);
-  controls.phase.value                  = fmt(-2 + Math.random() * 4, 2);
-  controls.mode.value                   = Math.random() > 0.5 ? 'wild' : 'stable';
-  controls.unpredictability.value       = fmt(Math.random(), 2);
-  controls['range-enable'].checked      = Math.random() > 0.3;
-  controls['range-min'].value           = fmt(-1 - Math.random() * 0.5, 2);
-  controls['range-max'].value           = fmt(0.5 + Math.random() * 1.0, 2);
+  var n = Waves.count;
 
-  const n = Waves.count;
+  controls.wave.value = String(Math.floor(Math.random() * n));
+  controls.seed.value = String(Math.floor(Math.random() * 501));
+  controls.amplitude.value = String(Math.floor(30 + Math.random() * 180));
+  controls.frequency.value = fmt(0.2 + Math.random() * 4, 2);
+  controls.phase.value = fmt(-6 + Math.random() * 12, 2);
+  controls.mode.value = Math.random() > 0.5 ? 'wild' : 'stable';
+  controls.unpredictability.value = fmt(Math.random(), 2);
+  controls['range-enable'].checked = Math.random() > 0.3;
+  controls['range-min'].value = fmt(-1 - Math.random() * 0.5, 2);
+  controls['range-max'].value = fmt(0.5 + Math.random() * 1.0, 2);
+
+  // Shift: 20% chance
+  var doShift = Math.random() > 0.8;
+  controls['shift-enable'].checked = doShift;
+  controls['shift-interval'].value = fmt(1 + Math.random() * 8, 1);
+  controls['shift-duration'].value = fmt(0.3 + Math.random() * 3, 1);
+
+  // Grid: only when not shifting
+  if (!doShift) {
+    controls['preview-mode'].value = Math.random() > 0.7 ? 'grid' : 'line';
+  } else {
+    controls['preview-mode'].value = 'line';
+  }
+
   controls['wave-row'].value = Math.random() > 0.3
     ? String(Math.floor(Math.random() * n)) : '';
   controls['wave-col'].value = Math.random() > 0.3
     ? String(Math.floor(Math.random() * n)) : '';
-  controls.threshold.value              = fmt(-0.35 + Math.random() * 0.7, 2);
+  controls.threshold.value = fmt(-1 + Math.random() * 2, 2);
 
-  controls['time-speed'].value          = fmt(0.005 + Math.random() * 0.045, 3);
-  controls.step.value                   = String(Math.floor(4 + Math.random() * 10));
-  controls['connect-line'].checked      = Math.random() > 0.25;
-  controls['show-points'].checked       = Math.random() > 0.25;
+  controls['time-speed'].value = fmt(0.005 + Math.random() * 0.06, 3);
+  controls.step.value = String(Math.floor(4 + Math.random() * 10));
+  controls['connect-line'].checked = Math.random() > 0.25;
+  controls['show-points'].checked = Math.random() > 0.25;
   if (!controls['connect-line'].checked) controls['show-points'].checked = true;
-  controls['show-grid'].checked         = Math.random() > 0.2;
+  controls['show-grid'].checked = Math.random() > 0.2;
 
+  userEditedCode = false;
+  codeOutputEl.classList.remove('user-edited');
   updateUiState();
 }
 
 // ─── Main draw loop ───────────────────────────────────────────────────────────
 
 function draw() {
-  const state = readState();
+  var state = readState();
   if (state.fps !== currentFps) {
     currentFps = state.fps;
     frameRate(currentFps);
