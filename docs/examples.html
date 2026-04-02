@@ -664,7 +664,7 @@
     };
     p.draw = function() {
       p.background(250);
-      t += 0.025;
+      t += 0.0375;
       var centre = (Math.sin(t * 0.3) + 1) * 0.5;
       var rowH = p.height / ROWS;
       for (var row = 0; row < ROWS; row++) {
@@ -680,7 +680,8 @@
         p.strokeWeight(0.8 + morphMix * 1.2);
         p.beginShape();
         for (var x = 0; x < p.width; x += 4) {
-          p.vertex(x, yBase + Waves.wave(x, { wave: [WA, WB], mix: morphMix, t: t + row * 0.06, frequency: 0.08, amplitude: rowH * 1.6 }));
+          var wv = Waves.wave(x, { wave: [WA, WB], mix: morphMix, t: t + row * 0.06, frequency: 0.08, amplitude: rowH * 1.6 });
+          p.vertex(x, yBase + p.constrain(wv, -rowH * 0.45, rowH * 0.45));
         }
         p.endShape();
       }

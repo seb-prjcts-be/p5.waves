@@ -14,7 +14,7 @@ function setup() {
 
 function draw() {
   background(250);
-  t += 0.025;
+  t += 0.0375;
 
   // the morph centre sweeps up and down
   var centre = (sin(t * 0.3) + 1) * 0.5;
@@ -45,7 +45,7 @@ function draw() {
         frequency: 0.08,
         amplitude: rowH * 1.8
       });
-      vertex(x, yBase + waveY);
+      vertex(x, yBase + constrain(waveY, -rowH * 0.45, rowH * 0.45));
     }
     endShape();
   }
