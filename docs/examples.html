@@ -656,12 +656,12 @@
 
   // ── 12. Morph Wave ────────────────────────────────────────
   new p5(function(p) {
-    var PAIRS  = [['classic sine', 'triangle'], ['mountain peaks', 'noise'], ['stepped sine', 'wobble sine'], ['sharp peaks', 'smooth solid sine']];
-    var SPEEDS = [0.008, 0.013, 0.006, 0.010];
+    var PAIRS  = [['classic sine', 'triangle'], ['mountain peaks', 'wobble sine'], ['stepped sine', 'bumpy sine'], ['sharp peaks', 'smooth solid sine']];
+    var SPEEDS = [0.025, 0.018, 0.022, 0.015];
     p.setup = function() {
       var w = cw('ex12');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex12');
-      p.noFill(); p.textFont('monospace'); p.textSize(7);
+      p.textFont('monospace'); p.textSize(7);
     };
     p.draw = function() {
       p.background(245);
@@ -671,16 +671,15 @@
         var morphMix = (Math.sin(p.frameCount * SPEEDS[i]) + 1) * 0.5;
         var cx  = pw * i + pw * 0.5;
         p.stroke(0, 0, 0, 35); p.strokeWeight(0.5); p.line(pw * i, 0, pw * i, p.height);
-        p.stroke(0); p.strokeWeight(1.4);
+        p.noFill(); p.stroke(0); p.strokeWeight(1.4);
         p.beginShape();
         for (var y = 8; y < p.height - 16; y += 3) {
-          p.vertex(cx + Waves.wave(y * 0.014, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: morphMix, t: t, amplitude: pw * 0.38 }), y);
+          p.vertex(cx + Waves.wave(y * 0.05, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: morphMix, t: t, amplitude: pw * 0.35 }), y);
         }
         p.endShape();
         p.noStroke(); p.fill(0);
         p.textAlign(p.CENTER);
         p.text(p.nf(morphMix, 1, 2), cx, p.height - 6);
-        p.stroke(0); p.noFill();
       }
     };
     p.windowResized = function() { var w = cw('ex12'); p.resizeCanvas(w, Math.round(w * 2/3)); };
