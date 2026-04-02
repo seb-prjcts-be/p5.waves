@@ -614,7 +614,7 @@
       briS = Waves.createSampler({ wave: 'wobble sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [55, 90], seed: 7 });
     };
     p.draw = function() {
-      t += 0.007;
+      t += 0.035;
       var blockSz = 10;
       for (var y = 0; y < p.height; y += blockSz) {
         for (var x = 0; x < p.width; x += blockSz) {

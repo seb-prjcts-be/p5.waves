@@ -30,7 +30,7 @@ function setup() {
 }
 
 function draw() {
-  t += 0.007;
+  t += 0.035;
   var cellSz = 4;
 
   for (var y = 0; y < height; y += cellSz) {
