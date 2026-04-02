@@ -2,19 +2,18 @@
 // wave: ['a', 'b'] + animated mix crossfades between two formulas.
 // Each panel morphs a different pair at its own speed.
 
-const PAIRS = [
+var PAIRS = [
   ['classic sine',  'triangle'],
-  ['mountain peaks','noise'],
-  ['stepped sine',  'wobble sine'],
+  ['mountain peaks','wobble sine'],
+  ['stepped sine',  'bumpy sine'],
   ['sharp peaks',   'smooth solid sine']
 ];
-const SPEEDS = [0.008, 0.013, 0.006, 0.010];
+var SPEEDS = [0.025, 0.018, 0.022, 0.015];
 
-let t = 0;
+var t = 0;
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
-  noFill();
   textFont('monospace');
   textSize(8);
 }
@@ -22,11 +21,11 @@ function setup() {
 function draw() {
   background(245);
   t += 0.012;
-  const pw = width / PAIRS.length;
+  var pw = width / PAIRS.length;
 
-  for (let i = 0; i < PAIRS.length; i++) {
-    const mix = (sin(frameCount * SPEEDS[i]) + 1) * 0.5;
-    const cx  = pw * i + pw * 0.5;
+  for (var i = 0; i < PAIRS.length; i++) {
+    var morphMix = (sin(frameCount * SPEEDS[i]) + 1) * 0.5;
+    var cx = pw * i + pw * 0.5;
 
     // panel divider
     stroke(0, 0, 0, 35);
@@ -36,16 +35,16 @@ function draw() {
     // wave line
     noFill();
     stroke(0);
-    strokeWeight(1.4);
+    strokeWeight(1.6);
     beginShape();
-    for (let y = 10; y < height - 28; y += 2) {
-      const x = Waves.wave(y * 0.014, {
+    for (var y = 10; y < height - 28; y += 2) {
+      var waveX = Waves.wave(y * 0.05, {
         wave: [PAIRS[i][0], PAIRS[i][1]],
-        mix:  mix,
+        mix:  morphMix,
         t:    t,
-        amplitude: pw * 0.40
+        amplitude: (i === 3) ? pw * 0.80 : pw * 0.35
       });
-      vertex(cx + x, y);
+      vertex(cx + waveX, y);
     }
     endShape();
 
@@ -57,12 +56,12 @@ function draw() {
     text(PAIRS[i][1], cx, height - 10);
 
     // mix progress bar
-    const barW = pw - 16;
-    const barX = pw * i + 8;
+    var barW = pw - 16;
+    var barX = pw * i + 8;
     fill(220);
     noStroke();
     rect(barX, height - 33, barW, 3);
     fill(0);
-    rect(barX, height - 33, barW * mix, 3);
+    rect(barX, height - 33, barW * morphMix, 3);
   }
 }

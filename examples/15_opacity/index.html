@@ -28,14 +28,14 @@
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// mix 0 = fully waveA, mix 1 = fully waveB
-const mix = (sin(frameCount * 0.008) + 1) * 0.5;
+        <pre><code>// morphMix 0 = fully waveA, 1 = fully waveB
+var morphMix = (sin(frameCount * 0.025) + 1) * 0.5;
 
-const x = Waves.wave(y * 0.014, {
+var waveX = Waves.wave(y * 0.05, {
   wave:      ['classic sine', 'triangle'],
-  mix:       mix,
+  mix:       morphMix,
   t:         t,
-  amplitude: 45
+  amplitude: 40
 });</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
