@@ -76,12 +76,32 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
 
 .nav-links a:hover { color: #000; }
 
+/* All content above the fixed bg-canvas */
+#hero, .section, .showcase-section, footer {
+  position: relative;
+  z-index: 1;
+}
+
 /* ── HERO ── */
 #hero {
   position: relative;
+  z-index: 1;
   height: 100vh;
   min-height: 580px;
   overflow: hidden;
+}
+
+/* Full-page background animation — fixed, behind everything */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#bg-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 #hero-canvas {
