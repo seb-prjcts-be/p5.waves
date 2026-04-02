@@ -23,23 +23,27 @@
     <div class="demo-header">
       <div class="demo-number">Example 01 — createSampler({ shift: true })</div>
       <h1>Wave Shift</h1>
-      <p>One wave line that smoothly morphs into a randomly chosen formula every few seconds. Pass <code>shift: true</code> — the library handles timing, random picking, and smooth easing internally.</p>
+      <p>A curtain of wave lines that auto-shift between random formulas. Each line has its own phase offset, creating an organic ripple. Pass <code>shift: true</code> — the library handles timing, picking, and easing.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
         <pre><code>var sampler = Waves.createSampler({
   shift:     true,       // auto-shift to random waves
-  amplitude: 120,
+  amplitude: 100,
   frequency: 0.6
 });
 
-// In draw — that's it:
-beginShape();
-for (var y = 0; y &lt;= height; y += 3) {
-  vertex(width / 2 + sampler.sample(y, t), y);
-}
-endShape();</code></pre>
+// In draw — 10 lines, each with its own phase offset:
+for (var i = 0; i &lt; 10; i++) {
+  var phaseOff = i * 0.35;
+  stroke(40 + i * 14);
+  beginShape();
+  for (var y = 0; y &lt;= height; y += 3) {
+    vertex(width/2 + sampler.sample(y + phaseOff*60, t + phaseOff*0.2), y);
+  }
+  endShape();
+}</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

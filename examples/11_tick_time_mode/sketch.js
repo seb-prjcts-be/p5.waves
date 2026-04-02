@@ -1,45 +1,55 @@
 // 11 — Time Strata
 // Time is a plain number — full manual control.
 // Mouse X scrubs a time window; each layer is frozen at its own t.
+// Layers are filled ribbons with HSB color, creating geological strata.
 
-const LAYERS      = 16;
-const WAVE_WINDOW = 6;
+var LAYERS      = 16;
+var WAVE_WINDOW = 6;
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
-  noFill();
+  colorMode(HSB, 360, 100, 100, 255);
 }
 
 function draw() {
-  background(245);
-  const timeBase = map(mouseX, 0, width, 0, 8);
+  background(0, 0, 96);
+  var timeBase = map(mouseX, 0, width, 0, 8);
 
-  for (let i = 0; i < LAYERS; i++) {
-    const t     = timeBase + (i / LAYERS) * WAVE_WINDOW;
-    const y0    = map(i, 0, LAYERS - 1, 40, height - 40);
-    const alpha = map(i, 0, LAYERS - 1, 200, 40);
-    const sw    = map(i, 0, LAYERS - 1, 2,   0.5);
+  noStroke();
+  for (var i = LAYERS - 1; i >= 0; i--) {
+    var layerT = timeBase + (i / LAYERS) * WAVE_WINDOW;
+    var y0     = map(i, 0, LAYERS - 1, 50, height - 50);
+    var wHue   = (i * 22) % 360;
+    var alphaVal = map(i, 0, LAYERS - 1, 200, 60);
 
-    stroke(0, 0, 0, alpha);
-    strokeWeight(sw);
-
+    fill(wHue, 40, 85, alphaVal);
     beginShape();
-    for (let x = 0; x <= width; x += 3) {
-      const dy = Waves.wave(x * 0.015, {
+    for (var x = 0; x <= width; x += 3) {
+      var dy = Waves.wave(x * 0.015, {
         wave:      'classic sine',
-        t:         t,
-        amplitude: 55
+        t:         layerT,
+        amplitude: 40
       });
       vertex(x, y0 + dy);
     }
-    endShape();
+    // close along the bottom edge of this band
+    for (var x2 = width; x2 >= 0; x2 -= 3) {
+      var dy2 = Waves.wave(x2 * 0.015, {
+        wave:      'classic sine',
+        t:         layerT + 0.3,
+        amplitude: 25
+      });
+      vertex(x2, y0 + dy2 + 22);
+    }
+    endShape(CLOSE);
   }
 
   // time cursor label
+  fill(0, 0, 30);
   noStroke();
-  fill(0, 0, 0, 90);
   textSize(10);
   textAlign(LEFT);
   textFont('monospace');
-  text('t = ' + map(mouseX, 0, width, 0, 8).toFixed(2), 12, 14);
+  text('t = ' + nf(map(mouseX, 0, width, 0, 8), 1, 2), 12, 20);
+  text('move mouse', 12, 34);
 }
