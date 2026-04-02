@@ -34,6 +34,7 @@ function draw() {
     line(pw * i, 0, pw * i, height);
 
     // wave line
+    noFill();
     stroke(0);
     strokeWeight(1.4);
     beginShape();
