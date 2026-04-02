@@ -15,7 +15,7 @@ function setup() {
     shift:         true,
     shiftInterval: 4,
     shiftDuration: 2,
-    range:         [0, 360],
+    range:         [160, 320],
     seed:          0
   });
 
@@ -24,7 +24,7 @@ function setup() {
     shift:         true,
     shiftInterval: 4,
     shiftDuration: 2,
-    range:         [45, 95],
+    range:         [55, 90],
     seed:          7
   });
 }
