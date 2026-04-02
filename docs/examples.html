@@ -175,19 +175,6 @@
     </div>
   </section>
 
-  <!-- 10. SOUND OUTPUT -->
-  <section id="sound" class="section section-dark">
-    <div class="section-header">
-      <div class="section-tag">output: oscillator frequency — Web Audio API</div>
-      <h2>Wave as <span class="accent">sound</span></h2>
-      <p class="section-desc">Three <code>createSampler()</code> calls with Hz ranges drive Web Audio oscillators. A moving cursor reads the wave as a score — what you see is what you hear. No p5.sound needed.</p>
-    </div>
-    <div class="ex-preview">
-      <div id="ex10" class="ex-canvas"></div>
-      <a class="ex-full-link" href="../examples/13_sound/" target="_blank">→ full example 13</a>
-    </div>
-  </section>
-
   <!-- 11. TYPOGRAPHY OUTPUT -->
   <section id="typography" class="section">
     <div class="section-header">
@@ -625,42 +612,6 @@
     };
     p.windowResized = function() { var w = cw('ex9'); p.resizeCanvas(w, Math.round(w * 2/3)); };
   }, 'ex9');
-
-  // ── 10. Sound ─────────────────────────────────────────────
-  new p5(function(p) {
-    var WAVE_NAMES = ['classic sine', 'triangle', 'stepped sine'];
-    var RANGES     = [[110, 330], [220, 550], [330, 770]];
-    var COLORS     = ['#e05540', '#4466ee', '#33bb88'];
-    var samplers   = [
-      Waves.createSampler({ wave: WAVE_NAMES[0], seed:  0, range: RANGES[0] }),
-      Waves.createSampler({ wave: WAVE_NAMES[1], seed:  5, range: RANGES[1] }),
-      Waves.createSampler({ wave: WAVE_NAMES[2], seed: 10, range: RANGES[2] }),
-    ];
-    p.setup = function() {
-      var w = cw('ex10');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex10');
-      p.textFont('monospace');
-    };
-    p.draw = function() {
-      p.background(18);
-      var t = p.frameCount * 0.012;
-      var hw = p.height * 0.12;
-      for (var i = 0; i < 3; i++) {
-        var cy = p.height * (0.2 + i * 0.3);
-        p.noFill(); p.stroke(COLORS[i]); p.strokeWeight(1.4);
-        p.beginShape();
-        for (var x = 0; x < p.width; x += 4) {
-          var freq = samplers[i].sample(x * 0.018, t);
-          p.vertex(x, p.map(freq, RANGES[i][0], RANGES[i][1], cy + hw, cy - hw));
-        }
-        p.endShape();
-      }
-      p.noStroke(); p.fill(255, 100);
-      p.textSize(8); p.textAlign(p.CENTER);
-      p.text('click for sound', p.width / 2, p.height - 8);
-    };
-    p.windowResized = function() { var w = cw('ex10'); p.resizeCanvas(w, Math.round(w * 2/3)); };
-  }, 'ex10');
 
   // ── 11. Typography ────────────────────────────────────────
   new p5(function(p) {

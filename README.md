@@ -290,7 +290,6 @@ Standalone examples:
 - `10_wave_override` — wild mode
 - `11_tick_time_mode` — manual time control
 - `12_color_spectrum` — wave output as hue / saturation (HSB)
-- `13_sound` — wave output as oscillator frequency (Web Audio)
 - `14_typography` — wave output as font size, lift and opacity
 - `15_opacity` — wave output as alpha, two interfering layers
 - `16_wave_chart` — all 34 formulas as live animated bars
