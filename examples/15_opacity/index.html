@@ -23,19 +23,21 @@
     <div class="demo-header">
       <div class="demo-number">Example 15 — wave: [a, b] + mix</div>
       <h1>Morph Wave</h1>
-      <p>Pass <strong>two wave names</strong> as an array and animate <code>mix</code> from 0 to 1 to crossfade between formulas. Each panel morphs a different pair at its own speed.</p>
+      <p>Pass <code>wave: ['nameA', 'nameB']</code> with a <code>mix</code> value (0&ndash;1) to crossfade between any two formulas. Animate <code>mix</code> to smoothly morph the shape over time.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// morphMix 0 = fully waveA, 1 = fully waveB
-var morphMix = (sin(frameCount * 0.025) + 1) * 0.5;
+        <pre><code>// 50 rows — each row's mix depends on distance from a sweeping centre
+var centre = (sin(t * 0.3) + 1) * 0.5;
+var morphMix = constrain(1 - abs(rowFrac - centre) * 3, 0, 1);
 
-var waveX = Waves.wave(y * 0.05, {
-  wave:      ['classic sine', 'triangle'],
-  mix:       morphMix,
-  t:         t,
-  amplitude: 40
+var waveY = Waves.wave(x, {
+  wave:      ['wobble sine', 'meta sine'],
+  mix:       morphMix,        // 0 = pure A, 1 = pure B
+  t:         t + row * 0.06,
+  frequency: 0.08,
+  amplitude: rowH * 1.8
 });</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>

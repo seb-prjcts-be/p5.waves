@@ -656,30 +656,33 @@
 
   // ── 12. Morph Wave ────────────────────────────────────────
   new p5(function(p) {
-    var PAIRS  = [['classic sine', 'triangle'], ['mountain peaks', 'wobble sine'], ['stepped sine', 'bumpy sine'], ['sharp peaks', 'smooth solid sine']];
-    var SPEEDS = [0.025, 0.018, 0.022, 0.015];
+    var WA = 'wobble sine', WB = 'meta sine', ROWS = 30;
+    var t = 0;
     p.setup = function() {
       var w = cw('ex12');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex12');
-      p.textFont('monospace'); p.textSize(7);
     };
     p.draw = function() {
-      p.background(245);
-      var t  = p.frameCount * 0.012;
-      var pw = p.width / PAIRS.length;
-      for (var i = 0; i < PAIRS.length; i++) {
-        var morphMix = (Math.sin(p.frameCount * SPEEDS[i]) + 1) * 0.5;
-        var cx  = pw * i + pw * 0.5;
-        p.stroke(0, 0, 0, 35); p.strokeWeight(0.5); p.line(pw * i, 0, pw * i, p.height);
-        p.noFill(); p.stroke(0); p.strokeWeight(1.4);
+      p.background(250);
+      t += 0.025;
+      var centre = (Math.sin(t * 0.3) + 1) * 0.5;
+      var rowH = p.height / ROWS;
+      for (var row = 0; row < ROWS; row++) {
+        var rowFrac = row / (ROWS - 1);
+        var dist = p.abs(rowFrac - centre);
+        var morphMix = p.constrain(1 - dist * 3, 0, 1);
+        var yBase = row * rowH + rowH * 0.5;
+        var r = p.lerp(40, 210, morphMix);
+        var gn = p.lerp(90, 60, morphMix);
+        var b = p.lerp(200, 100, morphMix);
+        p.noFill();
+        p.stroke(r, gn, b, 50 + (1 - dist) * 160);
+        p.strokeWeight(0.8 + morphMix * 1.2);
         p.beginShape();
-        for (var y = 8; y < p.height - 16; y += 3) {
-          p.vertex(cx + Waves.wave(y * 0.05, { wave: [PAIRS[i][0], PAIRS[i][1]], mix: morphMix, t: t, amplitude: pw * 0.35 }), y);
+        for (var x = 0; x < p.width; x += 4) {
+          p.vertex(x, yBase + Waves.wave(x, { wave: [WA, WB], mix: morphMix, t: t + row * 0.06, frequency: 0.08, amplitude: rowH * 1.6 }));
         }
         p.endShape();
-        p.noStroke(); p.fill(0);
-        p.textAlign(p.CENTER);
-        p.text(p.nf(morphMix, 1, 2), cx, p.height - 6);
       }
     };
     p.windowResized = function() { var w = cw('ex12'); p.resizeCanvas(w, Math.round(w * 2/3)); };
