@@ -1,7 +1,6 @@
 // 07 — Amplitude · Frequency · Phase
-// Three rows of stacked waves, each isolating one parameter.
-// Light to dark: values increase from small to large.
-// All rows use classic sine — only the highlighted parameter changes.
+// Three rows isolate each parameter as filled wave ribbons.
+// Each row uses a distinct hue; light to dark shows increasing values.
 
 var WAVE = 'classic sine';
 var N    = 5;
@@ -9,8 +8,6 @@ var t    = 0;
 
 function setup() {
   createCanvas(460, 460).parent('sketch-container');
-  noFill();
-  strokeCap(ROUND);
   textFont('monospace');
   textAlign(LEFT, TOP);
 }
@@ -20,48 +17,75 @@ function draw() {
   t += 0.012;
 
   var rowH = height / 3;
-  var i, x, amp, freq, ph;
+  var i, x, amp, freq, ph, waveY;
+
+  // row colors: warm red, cool blue, green
+  var hues = [[200, 60, 50], [50, 80, 200], [50, 170, 80]];
 
   // ── Row 1: amplitude ──────────────────────────────────────
   for (i = 0; i < N; i++) {
-    amp = map(i, 0, N - 1, 5, rowH * 0.42);
-    stroke(0, 0, 0, map(i, 0, N - 1, 45, 210));
-    strokeWeight(1.2);
+    amp = map(i, 0, N - 1, 8, rowH * 0.42);
+    var alphaVal = map(i, 0, N - 1, 30, 120);
+    fill(hues[0][0], hues[0][1], hues[0][2], alphaVal);
+    noStroke();
     beginShape();
-    for (x = 0; x <= width; x += 4) {
-      vertex(x, rowH * 0.5 + Waves.wave(x * 0.016, {
+    for (x = 0; x <= width; x += 3) {
+      waveY = Waves.wave(x * 0.016, {
         wave: WAVE, t: t, amplitude: amp, frequency: 1.2
-      }));
+      });
+      vertex(x, rowH * 0.5 + waveY);
     }
-    endShape();
+    for (x = width; x >= 0; x -= 3) {
+      waveY = Waves.wave(x * 0.016, {
+        wave: WAVE, t: t, amplitude: amp, frequency: 1.2
+      });
+      vertex(x, rowH * 0.5 - waveY);
+    }
+    endShape(CLOSE);
   }
 
   // ── Row 2: frequency ─────────────────────────────────────
   for (i = 0; i < N; i++) {
     freq = map(i, 0, N - 1, 0.4, 2.8);
-    stroke(0, 0, 0, map(i, 0, N - 1, 45, 210));
-    strokeWeight(1.2);
+    var alphaVal2 = map(i, 0, N - 1, 30, 120);
+    fill(hues[1][0], hues[1][1], hues[1][2], alphaVal2);
+    noStroke();
     beginShape();
-    for (x = 0; x <= width; x += 4) {
-      vertex(x, rowH * 1.5 + Waves.wave(x * 0.016, {
+    for (x = 0; x <= width; x += 3) {
+      waveY = Waves.wave(x * 0.016, {
         wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: freq
-      }));
+      });
+      vertex(x, rowH * 1.5 + waveY);
     }
-    endShape();
+    for (x = width; x >= 0; x -= 3) {
+      waveY = Waves.wave(x * 0.016, {
+        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: freq
+      });
+      vertex(x, rowH * 1.5 - waveY);
+    }
+    endShape(CLOSE);
   }
 
   // ── Row 3: phase ─────────────────────────────────────────
   for (i = 0; i < N; i++) {
     ph = map(i, 0, N - 1, 0, TWO_PI * 0.85);
-    stroke(0, 0, 0, map(i, 0, N - 1, 45, 210));
-    strokeWeight(1.2);
+    var alphaVal3 = map(i, 0, N - 1, 30, 120);
+    fill(hues[2][0], hues[2][1], hues[2][2], alphaVal3);
+    noStroke();
     beginShape();
-    for (x = 0; x <= width; x += 4) {
-      vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, {
+    for (x = 0; x <= width; x += 3) {
+      waveY = Waves.wave(x * 0.016, {
         wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: 1.2, phase: ph
-      }));
+      });
+      vertex(x, rowH * 2.5 + waveY);
     }
-    endShape();
+    for (x = width; x >= 0; x -= 3) {
+      waveY = Waves.wave(x * 0.016, {
+        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: 1.2, phase: ph
+      });
+      vertex(x, rowH * 2.5 - waveY);
+    }
+    endShape(CLOSE);
   }
 
   // ── Dividers & labels ────────────────────────────────────
@@ -71,7 +95,7 @@ function draw() {
   line(0, rowH * 2, width, rowH * 2);
 
   noStroke();
-  fill(0, 0, 0, 70);
+  fill(0, 0, 0, 90);
   textSize(9);
   text('amplitude', 6, rowH * 0 + 6);
   text('frequency', 6, rowH * 1 + 6);
