@@ -52,6 +52,9 @@
   const COMPILE_CACHE = new Map();
   const STATS_CACHE   = new Map();
 
+  // Runtime entropy for wave() shift — stable per page load, different each session
+  const _waveShiftEntropy = Math.floor(Math.random() * 100000);
+
   // ─── Math helpers ────────────────────────────────────────────────────────────
 
   function radians(deg) { return deg * (Math.PI / 180); }
@@ -319,14 +322,17 @@
       const cycleDur = shiftInterval + shiftDuration;
       const era      = Math.floor(t / cycleDur);
       const progress = t - era * cycleDur;
+      // Runtime entropy — stateless wave() has no persistent state,
+      // but the entropy is stable within a single page load via closure
+      const waveShiftEntropy = _waveShiftEntropy;
 
       const userIdx = waveRef !== undefined ? resolveWave(waveRef) : -1;
-      const idxA = (era === 0 && userIdx >= 0) ? userIdx : pickWaveIndex(seed + '.' + era);
+      const idxA = (era === 0 && userIdx >= 0) ? userIdx : pickWaveIndex(seed + '.' + waveShiftEntropy + '.' + era);
       const fnA  = compile(WAVES[idxA].algo);
       const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
 
       if (progress >= shiftInterval) {
-        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndex(seed + '.1') : pickWaveIndex(seed + '.' + (era + 1));
+        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndex(seed + '.' + waveShiftEntropy + '.1') : pickWaveIndex(seed + '.' + waveShiftEntropy + '.' + (era + 1));
         if (idxB === idxA) idxB = (idxB + 1) % WAVES.length;
         const fnB  = compile(WAVES[idxB].algo);
         const valB = evalKernel(fnB, y, t, frequency, phase, internalSeed, mode, unpredictability);
@@ -425,6 +431,8 @@
       const shiftDur = toNumber(opts.shiftDuration, 1);
       const cycleDur = shiftInt + shiftDur;
       const hasUserWave = opts.wave !== undefined && !Array.isArray(opts.wave);
+      // Runtime entropy so each session produces a different sequence
+      const shiftEntropy = Math.floor(Math.random() * 100000);
 
       let cachedEra = -Infinity;
       let curIdx = waveIndexA, nxtIdx = -1;
@@ -434,7 +442,7 @@
 
       function pickForEra(era) {
         if (era === 0 && hasUserWave) return waveIndexA;
-        return pickWaveIndex(seed + '.' + era);
+        return pickWaveIndex(seed + '.' + shiftEntropy + '.' + era);
       }
 
       function ensureEra(era) {
