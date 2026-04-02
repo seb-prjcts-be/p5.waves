@@ -51,6 +51,52 @@ function reg(id, sketch) {
 
 
 // ═════════════════════════════════════════════════════════════
+// 0. BACKGROUND – Subtle full-page wave silhouettes (fixed)
+// ═════════════════════════════════════════════════════════════
+reg('bg-canvas', new p5(function(p) {
+  var layers = [];
+  var bgT = 0;
+
+  p.setup = function() {
+    p.createCanvas(p.windowWidth, p.windowHeight).parent('bg-canvas');
+    p.frameRate(20);
+    for (var i = 0; i < 4; i++) {
+      layers.push(Waves.createSampler({
+        shift: true,
+        shiftInterval: 8 + i * 3,
+        shiftDuration: 3,
+        seed: 50 + i,
+        range: [-40 + i * 5, 40 - i * 5],
+        frequency: 0.004 + i * 0.002,
+        phase: i * 1.5
+      }));
+    }
+  };
+
+  p.draw = function() {
+    p.clear();
+    bgT += 0.005;
+    for (var i = 0; i < layers.length; i++) {
+      var baseY = p.height * (0.2 + i * 0.2);
+      p.noStroke();
+      p.fill(210 + i * 8, 10 + i * 2);
+      p.beginShape();
+      p.vertex(0, p.height);
+      for (var x = 0; x <= p.width; x += 8) {
+        p.vertex(x, baseY + layers[i].sample(x * 0.3, bgT + i * 0.5));
+      }
+      p.vertex(p.width, p.height);
+      p.endShape(p.CLOSE);
+    }
+  };
+
+  p.windowResized = function() {
+    p.resizeCanvas(p.windowWidth, p.windowHeight);
+  };
+}, 'bg-canvas'));
+
+
+// ═════════════════════════════════════════════════════════════
 // 1. HERO – Cascading landscape + wave lines with shift (B&W)
 // ═════════════════════════════════════════════════════════════
 reg('hero-canvas', new p5(function(p) {
