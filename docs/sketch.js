@@ -51,47 +51,98 @@ function reg(id, sketch) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 0. BACKGROUND – Subtle full-page wave silhouettes (fixed)
+// 0. BACKGROUND – Living full-page wave landscape (fixed)
+//    Combines: wave silhouettes, grid dots, and drifting lines
 // ═════════════════════════════════════════════════════════════
 reg('bg-canvas', new p5(function(p) {
-  var layers = [];
+  var silhouettes = [];
+  var driftLines = [];
+  var grid;
   var bgT = 0;
 
   p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight).parent('bg-canvas');
-    p.frameRate(20);
-    for (var i = 0; i < 4; i++) {
-      layers.push(Waves.createSampler({
-        shift: true,
-        shiftInterval: 8 + i * 3,
-        shiftDuration: 3,
-        seed: 50 + i,
-        range: [-40 + i * 5, 40 - i * 5],
-        frequency: 0.004 + i * 0.002,
-        phase: i * 1.5
+    p.frameRate(24);
+
+    // 3 filled silhouette layers with shift
+    for (var i = 0; i < 3; i++) {
+      silhouettes.push(Waves.createSampler({
+        shift: true, shiftInterval: 6 + i * 4, shiftDuration: 2.5,
+        seed: 50 + i, range: [-50 + i * 10, 50 - i * 10],
+        frequency: 0.005 + i * 0.002, phase: i * 2
       }));
     }
+
+    // 5 drifting wave lines — each a different formula via shift
+    for (var j = 0; j < 5; j++) {
+      driftLines.push(Waves.createSampler({
+        shift: true, shiftInterval: 5 + j * 2, shiftDuration: 2,
+        seed: 60 + j, frequency: 0.008 + j * 0.003,
+        amplitude: 25 + j * 8
+      }));
+    }
+
+    // subtle grid — low-res binary pattern
+    grid = Waves.createGrid(
+      p.floor(p.width / 40), p.floor(p.height / 40),
+      { seed: 77, speed: 0.4, threshold: 0.05 }
+    );
   };
 
   p.draw = function() {
     p.clear();
-    bgT += 0.005;
-    for (var i = 0; i < layers.length; i++) {
-      var baseY = p.height * (0.2 + i * 0.2);
+    bgT += 0.018;
+
+    // Layer 1: grid dots — very faint
+    var cells = grid.sample(bgT);
+    var gCols = grid.cols;
+    var gRows = grid.rows;
+    var cw = p.width / gCols;
+    var ch = p.height / gRows;
+    p.noStroke();
+    for (var r = 0; r < gRows; r++) {
+      for (var c = 0; c < gCols; c++) {
+        if (cells[r * gCols + c] === 1) {
+          p.fill(180, 8);
+          p.circle(c * cw + cw * 0.5, r * ch + ch * 0.5, 3);
+        }
+      }
+    }
+
+    // Layer 2: filled silhouettes
+    for (var i = 0; i < silhouettes.length; i++) {
+      var baseY = p.height * (0.25 + i * 0.25);
       p.noStroke();
-      p.fill(210 + i * 8, 10 + i * 2);
+      p.fill(215 + i * 8, 8 + i * 3);
       p.beginShape();
       p.vertex(0, p.height);
-      for (var x = 0; x <= p.width; x += 8) {
-        p.vertex(x, baseY + layers[i].sample(x * 0.3, bgT + i * 0.5));
+      for (var x = 0; x <= p.width; x += 6) {
+        p.vertex(x, baseY + silhouettes[i].sample(x * 0.3, bgT + i * 0.6));
       }
       p.vertex(p.width, p.height);
       p.endShape(p.CLOSE);
+    }
+
+    // Layer 3: drifting wave lines
+    p.noFill();
+    for (var j = 0; j < driftLines.length; j++) {
+      var lineY = p.height * (0.15 + j * 0.18);
+      p.stroke(190, 6 + j * 2);
+      p.strokeWeight(0.8);
+      p.beginShape();
+      for (var lx = 0; lx <= p.width; lx += 5) {
+        p.vertex(lx, lineY + driftLines[j].sample(lx, bgT + j * 0.8));
+      }
+      p.endShape();
     }
   };
 
   p.windowResized = function() {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
+    grid = Waves.createGrid(
+      p.floor(p.width / 40), p.floor(p.height / 40),
+      { seed: 77, speed: 0.4, threshold: 0.05 }
+    );
   };
 }, 'bg-canvas'));
 
