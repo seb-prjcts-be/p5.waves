@@ -78,14 +78,29 @@
 
   // ─── Seeding (FNV-1a 32-bit) ─────────────────────────────────────────────────
 
+  const _seedCacheKeys = new Array(16);
+  const _seedCacheVals = new Array(16);
+  let _seedCachePtr = 0, _seedCacheFill = 0;
+
   function seedFrom(value) {
+    // Check small ring-buffer cache first
+    for (let i = 0; i < _seedCacheFill; i++) {
+      if (_seedCacheKeys[i] === value) return _seedCacheVals[i];
+    }
+    // Compute FNV-1a
     const str = String(value == null ? 0 : value);
     let h = 2166136261;
     for (let i = 0; i < str.length; i++) {
       h ^= str.charCodeAt(i);
       h  = Math.imul(h, 16777619);
     }
-    return h >>> 0;
+    h = h >>> 0;
+    // Store in ring buffer
+    _seedCacheKeys[_seedCachePtr] = value;
+    _seedCacheVals[_seedCachePtr] = h;
+    _seedCachePtr = (_seedCachePtr + 1) & 15;
+    if (_seedCacheFill < 16) _seedCacheFill++;
+    return h;
   }
 
   function mulberry32(a) {
@@ -130,8 +145,10 @@
   // ─── Deterministic random / noise ────────────────────────────────────────────
 
   function hash01(n) {
-    const s = Math.sin(n) * 43758.5453123;
-    return s - Math.floor(s);
+    let h = (n * 127.1 + 311.7) | 0;
+    h = ((h << 13) ^ h) | 0;
+    h = (Math.imul(h, Math.imul(h, h) * 15731 + 789221) + 1376312589) | 0;
+    return ((h & 0x7fffffff) / 0x7fffffff);
   }
 
   function rand01(seed, x, i) {
@@ -165,23 +182,24 @@
     return fn;
   }
 
+  // Module-scope state for evaluate — avoids closure allocation on every call
+  let _evalSeed = 0, _evalX = 0, _evalCalls = 0;
+
+  function _evalRandom(min, max) {
+    const r = rand01(_evalSeed, _evalX, _evalCalls++);
+    if (min === undefined) return r;
+    if (max === undefined) { max = min; min = 0; }
+    if (max < min) { const tmp = max; max = min; min = tmp; }
+    return min + r * (max - min);
+  }
+
+  function _evalNoise(n) { return noise1D(n, _evalSeed); }
+
   function evaluate(fn, x, t, seed) {
-    let calls = 0;
-    const tVal = toNumber(t, 0);
-
-    const random = function (min, max) {
-      const r = rand01(seed, x, calls++);
-      if (min === undefined) return r;
-      if (max === undefined) { max = min; min = 0; }
-      if (max < min) { const tmp = max; max = min; min = tmp; }
-      return min + r * (max - min);
-    };
-
-    const noise = function (n) { return noise1D(n, seed); };
-
+    _evalSeed = seed; _evalX = x; _evalCalls = 0;
     const out = fn(
-      x, tVal,
-      random, noise,
+      x, toNumber(t, 0),
+      _evalRandom, _evalNoise,
       Math.sin, Math.cos, Math.tan, Math.abs, Math.ceil, Math.round, Math.floor, Math.min, Math.max,
       Math.log, sq, radians, Math.PI
     );
@@ -231,6 +249,10 @@
     if (!Number.isFinite(mn) || !Number.isFinite(mx) || mn === mx) { mn = -1; mx = 1; }
     const stats = { min: mn, max: mx };
     STATS_CACHE.set(key, stats);
+    // Evict oldest entry when cache exceeds limit
+    if (STATS_CACHE.size > 256) {
+      STATS_CACHE.delete(STATS_CACHE.keys().next().value);
+    }
     return stats;
   }
 
@@ -253,32 +275,42 @@
   // ─── wave() ──────────────────────────────────────────────────────────────────
 
   function wave(y, secondParam) {
-    let waveRef, seed = 0, t = 0, amplitude = 100, range = null;
-    let frequency = 1, phase = 0, mode = 'stable', unpredictability = 0;
-    let shift = false, shiftInterval = 3, shiftDuration = 1;
-
-    if (secondParam != null) {
-      if (typeof secondParam === 'number') {
-        seed = secondParam;
-      } else if (typeof secondParam === 'string') {
-        waveRef = secondParam;
-      } else if (typeof secondParam === 'object') {
-        if (secondParam.wave !== undefined) waveRef = secondParam.wave;
-        seed            = toNumber(secondParam.seed, 0);
-        t               = toNumber(secondParam.t, 0);
-        amplitude       = toNumber(secondParam.amplitude, 100);
-        frequency       = toNumber(secondParam.frequency, 1);
-        phase           = toNumber(secondParam.phase, 0);
-        mode            = normalizeName(secondParam.mode || 'stable') === 'wild' ? 'wild' : 'stable';
-        unpredictability = toUnit(secondParam.unpredictability, 0);
-        if (Array.isArray(secondParam.range) && secondParam.range.length >= 2) {
-          range = [toNumber(secondParam.range[0], -1), toNumber(secondParam.range[1], 1)];
-        }
-        shift         = !!secondParam.shift;
-        shiftInterval = toNumber(secondParam.shiftInterval, 3);
-        shiftDuration = toNumber(secondParam.shiftDuration, 1);
-      }
+    // ─── Fast path: wave(y) — no params ──────────────────────
+    if (secondParam == null) {
+      const idx = pickWaveIndex(0);
+      return evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, seedFrom(0)) * 100;
     }
+    // ─── Fast path: wave(y, number) — seed only ──────────────
+    if (typeof secondParam === 'number') {
+      const iSeed = seedFrom(secondParam);
+      const idx   = pickWaveIndex(secondParam);
+      return evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, iSeed) * 100;
+    }
+    // ─── Fast path: wave(y, 'name') — wave name only ─────────
+    if (typeof secondParam === 'string') {
+      const r   = resolveWave(secondParam);
+      const idx = r >= 0 ? r : pickWaveIndex(0);
+      return evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, seedFrom(0)) * 100;
+    }
+
+    // ─── Full path: wave(y, { ... }) ─────────────────────────
+    let waveRef;
+    if (secondParam.wave !== undefined) waveRef = secondParam.wave;
+    const seed           = toNumber(secondParam.seed, 0);
+    const t              = toNumber(secondParam.t, 0);
+    const amplitude      = toNumber(secondParam.amplitude, 100);
+    const frequency      = toNumber(secondParam.frequency, 1);
+    const phase          = toNumber(secondParam.phase, 0);
+    const rawMode        = secondParam.mode;
+    const mode           = (rawMode === 'wild' || rawMode === 'Wild' || rawMode === 'WILD') ? 'wild' : 'stable';
+    const unpredictability = toUnit(secondParam.unpredictability, 0);
+    let range = null;
+    if (Array.isArray(secondParam.range) && secondParam.range.length >= 2) {
+      range = [toNumber(secondParam.range[0], -1), toNumber(secondParam.range[1], 1)];
+    }
+    const shift         = !!secondParam.shift;
+    const shiftInterval = toNumber(secondParam.shiftInterval, 3);
+    const shiftDuration = toNumber(secondParam.shiftDuration, 1);
 
     const internalSeed = seedFrom(seed);
 
@@ -472,10 +504,17 @@
 
   // ─── createGrid() ────────────────────────────────────────────────────────────
 
+  const MAX_GRID_CELLS = 62500; // 250×250
+
   function createGrid(cols, rows, options) {
     const opts      = options || {};
     const c         = Math.max(1, Math.floor(toNumber(cols, 10)));
     const r         = Math.max(1, Math.floor(toNumber(rows, 10)));
+    if (c * r > MAX_GRID_CELLS) {
+      console.warn('p5.waves: createGrid(' + c + ', ' + r + ') = ' +
+        (c * r) + ' cells exceeds recommended maximum of ' + MAX_GRID_CELLS +
+        '. This may cause performance issues.');
+    }
     const seed      = toNumber(opts.seed, 0);
     const speed     = toNumber(opts.speed, 1);
     const cellCount = c * r;
@@ -527,37 +566,37 @@
       stats = { min: mn, max: mx };
     }
 
+    // Pre-allocate output buffers — reused on every .sample() call
+    const _gridBuf = hasThreshold ? new Uint8Array(cellCount) : new Float32Array(cellCount);
+
     return {
       cols: c,
       rows: r,
       sample: function (t) {
         const time = toNumber(t, 0);
+        let idx = 0;
 
         if (hasThreshold) {
-          const out = new Uint8Array(cellCount);
-          let idx = 0;
           for (let row = 0; row < r; row++) {
             const ri = (row / r) * TWO_PI + time * speed;
             for (let col = 0; col < c; col++) {
               const ci  = (col / c) * TWO_PI + time * speed;
               const val = evaluate(rowFn, ri, time, rowSeed) + evaluate(colFn, ci, time, colSeed);
-              out[idx++] = val > threshold ? 1 : 0;
+              _gridBuf[idx++] = val > threshold ? 1 : 0;
             }
           }
-          return out;
+          return _gridBuf;
         }
 
-        const out = new Float32Array(cellCount);
-        let idx = 0;
         for (let row = 0; row < r; row++) {
           const ri = (row / r) * TWO_PI + time * speed;
           for (let col = 0; col < c; col++) {
             const ci  = (col / c) * TWO_PI + time * speed;
             const val = evaluate(rowFn, ri, time, rowSeed) + evaluate(colFn, ci, time, colSeed);
-            out[idx++] = (range && stats) ? mapToRange(val, stats, range) : val;
+            _gridBuf[idx++] = (range && stats) ? mapToRange(val, stats, range) : val;
           }
         }
-        return out;
+        return _gridBuf;
       }
     };
   }
@@ -570,6 +609,22 @@
     });
   }
 
+  // ─── Benchmark ───────────────────────────────────────────────────────────────
+
+  function benchmark(config, iterations) {
+    const n  = iterations || 10000;
+    const t0 = performance.now();
+    for (let i = 0; i < n; i++) {
+      wave(i * 0.1, config);
+    }
+    const elapsed = performance.now() - t0;
+    return {
+      iterations: n,
+      ms:         Math.round(elapsed * 100) / 100,
+      callsPerMs: Math.round(n / elapsed)
+    };
+  }
+
   // ─── Public API ──────────────────────────────────────────────────────────────
 
   const Waves = {
@@ -578,7 +633,8 @@
     list:          list,
     wave:          wave,
     createSampler: createSampler,
-    createGrid:    createGrid
+    createGrid:    createGrid,
+    benchmark:     benchmark
   };
 
   // ─── p5 prototype extensions ─────────────────────────────────────────────────
