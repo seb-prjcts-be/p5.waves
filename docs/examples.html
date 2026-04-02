@@ -223,6 +223,8 @@
   <script src="../p5.waves.js"></script>
   <script>
   function cw(id) { return document.getElementById(id).offsetWidth || 320; }
+  // Random wave index per page load — makes thumbnails look different each visit
+  function rw() { return Math.floor(Math.random() * Waves.count); }
 
   // ── 0. First call ─────────────────────────────────────────
   new p5(function(p) {
@@ -430,10 +432,11 @@
   // ── 4. Wild mode ──────────────────────────────────────────
   new p5(function(p) {
     var LINE_COUNT = 14;
-    var t = 0;
+    var t = 0, wildWave;
     p.setup = function() {
       var w = cw('ex4');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex4');
+      wildWave = rw();
     };
     p.draw = function() {
       p.background(238); t += 0.012;
@@ -441,19 +444,17 @@
       for (var i = 0; i < LINE_COUNT; i++) {
         var shade = 30 + (i / (LINE_COUNT - 1)) * 150;
         var phaseOff = i * 0.25;
-        // smooth left
         p.stroke(shade, shade * 0.9, shade * 1.1); p.strokeWeight(1);
         p.beginShape();
         for (var y = 0; y <= p.height - 20; y += 4) {
-          var xs = Waves.wave(y * 0.014 + phaseOff, { wave: 'mountain peaks', t: t + phaseOff * 0.15, amplitude: 60 });
+          var xs = Waves.wave(y * 0.014 + phaseOff, { wave: wildWave, t: t + phaseOff * 0.15, amplitude: 60 });
           p.vertex(p.width / 4 + xs * 0.4, y);
         }
         p.endShape();
-        // wild right
         p.stroke(shade * 0.8, shade * 0.6, shade);
         p.beginShape();
         for (var y2 = 0; y2 <= p.height - 20; y2 += 4) {
-          var xw = Waves.wave(y2 * 0.014 + phaseOff, { wave: 'mountain peaks', t: t + phaseOff * 0.15, mode: 'wild', unpredictability: 0.6, amplitude: 60 });
+          var xw = Waves.wave(y2 * 0.014 + phaseOff, { wave: wildWave, t: t + phaseOff * 0.15, mode: 'wild', unpredictability: 0.6, amplitude: 60 });
           p.vertex(3 * p.width / 4 + xw * 0.4, y2);
         }
         p.endShape();
@@ -474,8 +475,8 @@
       var w = cw('ex5');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex5');
       p.noStroke();
-      sx = Waves.createSampler({ wave: 'classic sine', seed: 3, range: [-1, 1] });
-      sy = Waves.createSampler({ wave: 'wobble sine',  seed: 9, range: [-1, 1] });
+      sx = Waves.createSampler({ wave: rw(), seed: 3, range: [-1, 1] });
+      sy = Waves.createSampler({ wave: rw(), seed: 9, range: [-1, 1] });
     };
     p.draw = function() {
       p.background(245, 245, 245, 20);
@@ -522,10 +523,10 @@
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex7');
       p.noStroke();
       samplers = [
-        Waves.createSampler({ wave: 'classic sine', seed:  0, range: [-2, 2] }),
-        Waves.createSampler({ wave: 'wobble sine',  seed: 11, range: [-2, 2] }),
-        Waves.createSampler({ wave: 'pulse',        seed: 22, range: [-2, 2] }),
-        Waves.createSampler({ wave: 'meta sine',    seed: 33, range: [-2, 2] }),
+        Waves.createSampler({ wave: rw(), seed:  0, range: [-2, 2] }),
+        Waves.createSampler({ wave: rw(), seed: 11, range: [-2, 2] }),
+        Waves.createSampler({ wave: rw(), seed: 22, range: [-2, 2] }),
+        Waves.createSampler({ wave: rw(), seed: 33, range: [-2, 2] }),
       ];
       for (var i = 0; i < 100; i++) pts.push({ x: p.random(p.width), y: p.random(p.height), s: i % 4 });
     };
@@ -546,10 +547,12 @@
 
   // ── 8. Time is a number ───────────────────────────────────
   new p5(function(p) {
+    var strataWave;
     p.setup = function() {
       var w = cw('ex8');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex8');
       p.colorMode(p.HSB, 360, 100, 100, 255);
+      strataWave = rw();
     };
     p.draw = function() {
       p.background(0, 0, 96);
@@ -564,11 +567,11 @@
         p.fill(wHue, 40, 85, alphaVal);
         p.beginShape();
         for (var x = 0; x <= p.width; x += 4) {
-          var dy = Waves.wave(x * 0.015, { wave: 'classic sine', t: layerT, amplitude: 30 });
+          var dy = Waves.wave(x * 0.015, { wave: strataWave, t: layerT, amplitude: 30 });
           p.vertex(x, y0 + dy);
         }
         for (var x2 = p.width; x2 >= 0; x2 -= 4) {
-          var dy2 = Waves.wave(x2 * 0.015, { wave: 'classic sine', t: layerT + 0.3, amplitude: 18 });
+          var dy2 = Waves.wave(x2 * 0.015, { wave: strataWave, t: layerT + 0.3, amplitude: 18 });
           p.vertex(x2, y0 + dy2 + 16);
         }
         p.endShape(p.CLOSE);
@@ -656,7 +659,7 @@
 
   // ── 12. Morph Wave ────────────────────────────────────────
   new p5(function(p) {
-    var WA = 'wobble sine', WB = 'meta sine', ROWS = 30;
+    var WA = rw(), WB = rw(), ROWS = 30;
     var t = 0;
     p.setup = function() {
       var w = cw('ex12');
