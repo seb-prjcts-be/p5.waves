@@ -155,10 +155,12 @@ Introduce features in this order only:
 2. `Waves.wave(y, 'triangle')` — pick a formula by name
 3. `Waves.wave(y, { wave: 'triangle', t: millis()/1000 })` — add time
 4. `Waves.wave(y, { range: [-80, 80] })` — normalise output
-5. `Waves.createSampler(opts)` — reuse config across calls
-6. `Waves.createSampler({ shift: true })` — auto-cycle through random formulas
-7. `Waves.createGrid(cols, rows, opts)` — 2D grid sampling
-8. `mode: 'wild'`, `unpredictability` — controlled chaos
+5. `Waves.wave(y, { wave: ['sine', 'triangle'], mix: 0.5 })` — morph two waves
+6. `Waves.createSampler(opts)` — reuse config across calls
+7. `Waves.createSampler({ shift: true })` — auto-cycle through random formulas
+8. `Waves.createGrid(cols, rows, opts)` — 2D grid sampling
+9. `mode: 'wild'`, `unpredictability` — controlled chaos
+10. `Waves.benchmark(config, iterations)` — measure performance
 
 Never lead with instance mode, createSampler, or createGrid
 when a simpler form of the API solves the problem.
@@ -371,7 +373,7 @@ Check for errors after every change, not just after major rewrites.
 
 Before naming any variable, check it against p5.js globals, methods,
 and constants. Known past conflicts: `step`, `focused`, `WORD`,
-`colorMode`, `alpha`, `mix`, `brightness`, `GRID`.
+`colorMode`, `alpha`, `mix`, `brightness`, `GRID`, `hue`, `blend`.
 When in doubt, prefix with a context word (`waveAlpha`, not `alpha`).
 
 ### 8.6 Never make the user's code more complex to work around a library limitation
