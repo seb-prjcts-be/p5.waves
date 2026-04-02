@@ -605,19 +605,21 @@
 
   // ── 9. Wave Color Field ───────────────────────────────────
   new p5(function(p) {
+    var hueS, briS, t = 0;
     p.setup = function() {
       var w = cw('ex9');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex9');
       p.noStroke(); p.colorMode(p.HSB, 360, 100, 100);
+      hueS = Waves.createSampler({ wave: 'meta sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [0, 360], seed: 0 });
+      briS = Waves.createSampler({ wave: 'wobble sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [45, 95], seed: 7 });
     };
     p.draw = function() {
-      var t = p.frameCount * 0.007;
+      t += 0.007;
       var blockSz = 10;
       for (var y = 0; y < p.height; y += blockSz) {
         for (var x = 0; x < p.width; x += blockSz) {
-          var wHue = Waves.wave(x * 0.007 + y * 0.005, { wave: 'meta sine',   t: t,       range: [0, 360] });
-          var wBri = Waves.wave(x * 0.005 - y * 0.007, { wave: 'wobble sine', t: t * 0.6, range: [45, 95] });
-          p.fill(wHue, 72, wBri); p.rect(x, y, blockSz, blockSz);
+          p.fill(hueS.sample(x * 0.007 + y * 0.005, t), 72, briS.sample(x * 0.005 - y * 0.007, t * 0.6));
+          p.rect(x, y, blockSz, blockSz);
         }
       }
     };
