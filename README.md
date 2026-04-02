@@ -27,7 +27,26 @@ Waves.wave(y, { wave: 'classic sine', range: [-1, 1], t: millis() / 1000 })
 
 ---
 
-## API
+## API Overview
+
+Three ways to access the same functions:
+
+| context | wave | sampler | grid |
+|---|---|---|---|
+| Namespace (always) | `Waves.wave(y, opts)` | `Waves.createSampler(opts)` | `Waves.createGrid(c, r, opts)` |
+| p5 global mode | `waves(y, opts)` | `createWaveSampler(opts)` | `createWaveGrid(c, r, opts)` |
+| p5 instance mode | `p.waves(y, opts)` | `p.createWaveSampler(opts)` | `p.createWaveGrid(c, r, opts)` |
+
+Additional properties on the `Waves` object:
+
+| property / method | returns | description |
+|---|---|---|
+| `Waves.list()` | `[{ index, name, algo }, ...]` | All 34 wave formulas |
+| `Waves.count` | `34` | Number of formulas |
+| `Waves.data` | `[{ name, algo }, ...]` | Raw internal WAVES array |
+| `Waves.benchmark(config, n)` | `{ iterations, ms, callsPerMs }` | Measure performance of a wave config |
+
+---
 
 ### `Waves.wave(y, secondParam)`
 
@@ -37,36 +56,77 @@ Waves.wave(y, { wave: 'classic sine', range: [-1, 1], t: millis() / 1000 })
 | `Waves.wave(y, 3)` | seed 3 selects wave |
 | `Waves.wave(y, 'triangle')` | wave by name |
 | `Waves.wave(y, { wave: 'triangle' })` | options object |
+| `Waves.wave(y, { wave: ['sine', 'triangle'], mix: 0.5 })` | morph between two waves |
 
-Options:
+All options:
 
-| option | description | default |
-| --- | --- | --- |
-| `wave` | name or index | seed-determined |
-| `seed` | selects wave via FNV-1a hash | `0` |
-| `t` | time offset (`millis()/1000`) | `0` |
-| `amplitude` | fast scale, no normalisation | `100` |
-| `range` | `[min, max]` — normalises output | `null` |
-| `frequency` | input multiplier | `1` |
-| `phase` | input offset | `0` |
-| `mode` | `'stable'` or `'wild'` | `'stable'` |
-| `unpredictability` | `0..1`, wild mode only | `0` |
+| option | type | description | default |
+| --- | --- | --- | --- |
+| `wave` | string, number, or array | Name, index (0–33), or morph pair `['a', 'b']` | seed-determined |
+| `seed` | number | Selects wave via FNV-1a hash | `0` |
+| `t` | number | Time offset — drives animation. Pass `millis()/1000`. The library never increments `t` internally. | `0` |
+| `amplitude` | number | Output multiplier. Ignored when `range` is set. | `100` |
+| `range` | `[min, max]` | Normalises output to this interval. Overrides `amplitude`. | `null` |
+| `frequency` | number | Input multiplier — tighter or looser wave cycles. | `1` |
+| `phase` | number | Input offset — shifts the wave left or right. | `0` |
+| `mode` | string | `'stable'` or `'wild'` — wild injects position-varying noise. | `'stable'` |
+| `unpredictability` | number | 0–1 intensity for wild mode. No effect in stable mode. | `0` |
+| `mix` | number | 0–1 blend factor when `wave` is an array. 0 = first wave, 1 = second. | `0.5` |
+| `shift` | boolean | Auto-cycle through random formulas with smooth morph transitions. | `false` |
+| `shiftInterval` | number | Seconds to hold each wave before morphing. | `3` |
+| `shiftDuration` | number | Seconds for the morph transition. | `1` |
 
 > `Waves.wave(y, 3)` — 3 is a **seed** (hashed to pick a wave). `Waves.wave(y, { wave: 3 })` — 3 is a direct **index**.
 
-When `range` is set, `amplitude` is ignored. `t` adds to `y` before evaluation: `x = (y + t) * frequency + phase`.
+Returns a single number. Internally: `x = (y + t) × frequency + phase`. When `range` is set, `amplitude` is ignored.
+
+**Morph:** pass `wave: ['sine', 'triangle']` with `mix: 0..1` to blend two formulas. `range` normalisation is intentionally not applied in morph mode — output is scaled by `amplitude` only.
 
 ---
 
 ### `Waves.createSampler(options)`
 
-Config resolved once, reused on every call. Accepts the same options as `Waves.wave()`.
+Config resolved once, reused on every `.sample()` call. Accepts all the same options as `Waves.wave()`.
 
 ```js
 const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
-s.sample(y)      // → number
-s.sample(y, t)   // → number with time offset
+s.sample(y)          // → number
+s.sample(y, t)       // → number with time offset
+s.sample(y, t, mix)  // → number with time and morph blend (morph mode only)
 ```
+
+**Standard sampler return:**
+
+| property / method | description |
+|---|---|
+| `.sample(y)` | Evaluate at position y (uses default t from creation) |
+| `.sample(y, t)` | Evaluate with explicit time |
+| `.sample(y, t, mix)` | Morph mode — override blend factor per call |
+| `.waveIndex` | Resolved wave index (number, or `[a, b]` for morph) |
+| `.waveName` | Resolved wave name (shows `'sine → triangle'` for morph) |
+
+**Shift sampler** — pass `shift: true` to auto-cycle through random formulas:
+
+```js
+const s = Waves.createSampler({ shift: true, amplitude: 120 });
+s.sample(y, t);      // auto-cycles every 3 s, morphs over 1 s
+```
+
+| option | default | meaning |
+|---|---|---|
+| `shift` | `false` | Enable auto-cycling |
+| `shiftInterval` | `3` | Seconds to hold each wave |
+| `shiftDuration` | `1` | Seconds for the morph transition |
+
+Shift sampler additional getters:
+
+| getter | returns |
+|---|---|
+| `.waveIndex` | Current formula index |
+| `.waveName` | Current formula name |
+| `.targetName` | Next formula name (during morph) |
+| `.mix` | Morph progress 0–1 |
+| `.shifting` | `true` while morphing |
 
 For two independent axes (e.g. WEBGL x/z), use two samplers with different seeds:
 ```js
@@ -74,27 +134,11 @@ const sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
 const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 ```
 
-Auto-shift through random formulas with smooth transitions:
-```js
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
-// In draw:
-s.sample(y, t);      // auto-cycles every 3 s, morphs over 1 s
-s.waveName;          // current formula name
-s.targetName;        // next formula name (during morph)
-s.shifting;          // true while morphing
-```
-
-| option | default | meaning |
-|---|---|---|
-| `shift` | `false` | enable auto-cycling |
-| `shiftInterval` | `3` | seconds to hold each wave |
-| `shiftDuration` | `1` | seconds for the morph transition |
-
 ---
 
 ### `Waves.createGrid(cols, rows, options)`
 
-`.sample(t)` returns a typed array.
+`.sample(t)` returns a typed array. The output array is **reused** between calls — copy it if you need to keep a snapshot: `new Float32Array(g.sample(t))`.
 
 ```js
 const g = Waves.createGrid(20, 20, { range: [0, 1] });
@@ -103,36 +147,57 @@ g.sample(t)  // → Float32Array, length cols×rows
 
 With `threshold`, returns `Uint8Array` of 0/1 values (overrides `range`).
 
-| option | description | default |
-| --- | --- | --- |
-| `waveRow` | wave for row direction | seed-determined |
-| `waveCol` | wave for col direction | seed-determined (different) |
-| `seed` | wave selection | `0` |
-| `range` | `[min, max]` → Float32Array | `null` |
-| `threshold` | → Uint8Array (0/1) | `null` |
-| `speed` | time scale | `1` |
+Options:
 
-Cell value = sum of `waveRow` at the row position + `waveCol` at the column position, both mapped to `[0, 2π]`.
+| option | type | description | default |
+| --- | --- | --- | --- |
+| `waveRow` | string or number | Wave for row direction (name or index) | seed-determined |
+| `waveCol` | string or number | Wave for col direction (name or index) | seed-determined (different) |
+| `seed` | number | Auto-selects two different waves | `0` |
+| `range` | `[min, max]` | Normalises output → `Float32Array` | `null` |
+| `threshold` | number | Cells above → 1, below → 0 → `Uint8Array`. Overrides `range`. | `null` |
+| `speed` | number | Time scale factor for `.sample(t)` | `1` |
+
+Return value:
+
+| property / method | description |
+|---|---|
+| `.cols` | Number of columns |
+| `.rows` | Number of rows |
+| `.sample(t)` | Evaluate full grid at time t → `Float32Array` or `Uint8Array`, length = cols × rows |
+
+Cell value = sum of `waveRow` at the row position + `waveCol` at the column position, both mapped to `[0, 2π]`. Grid size is soft-limited to 250×250 (62,500 cells) — larger grids trigger a console warning.
 
 ---
 
-### Discovery
+### `Waves.benchmark(config, iterations)`
+
+Measure performance of any wave configuration.
 
 ```js
-Waves.list()   // → [{ index, name, algo }, ...]
-Waves.count    // → 34
-Waves.data     // → raw WAVES array
+Waves.benchmark()                                           // → default wave, 10000 iterations
+Waves.benchmark({ wave: 'sine', range: [-1, 1] })           // → specific config
+Waves.benchmark({ mode: 'wild', unpredictability: 1 }, 50000) // → custom iteration count
+// Returns: { iterations: 50000, ms: 52.1, callsPerMs: 960 }
 ```
 
-### p5 prototype methods
+---
 
-```js
-p.waves(y, secondParam)
-p.createWaveSampler(opts)
-p.createWaveGrid(cols, rows, opts)
-```
+## Performance
 
-Available without `p.` in global mode.
+| feature | relative cost | notes |
+|---|---|---|
+| `wave(y)` | 1× | Baseline — single formula evaluation |
+| `wave(y, { range })` | ~1.2× | Adds a stats lookup (cached after first call) |
+| `wave(y, { wave: ['a','b'], mix })` | 2× | Two formula evaluations + interpolation |
+| `wave(y, { shift: true })` during transition | 2× | Two formulas + smoothstep blending |
+| `wave(y, { mode: 'wild' })` | ~5× | 4 extra noise evaluations per sample |
+| `createGrid(n, m).sample(t)` | n × m × above | Every cell is a full evaluation |
+
+Tips:
+- Use `createSampler()` when calling the same config repeatedly — resolves parameters once.
+- `createGrid()` reuses its output array. Copy it if you need to keep it.
+- Use `Waves.benchmark()` to measure your specific configuration.
 
 ---
 
@@ -141,7 +206,7 @@ Available without `p.` in global mode.
 **`Waves.wave()`**
 ```js
 const x = Waves.wave(y, {
-  wave:                'classic sine',  // name or index (0–33); see Waves.list()
+  wave:                'classic sine',  // name, index 0–33, or ['a', 'b'] for morph
   // seed:             0,               // alternative: select wave via seed
   // t:                millis() / 1000, // drives animation
   // amplitude:        100,             // fast scale; ignored when range is set
@@ -150,6 +215,10 @@ const x = Waves.wave(y, {
   // phase:            0,               // shift wave left or right
   // mode:             'stable',        // 'stable' or 'wild'
   // unpredictability: 0,               // 0..1; wild mode only
+  // mix:              0.5,             // 0..1; morph blend (when wave is array)
+  // shift:            false,           // auto-cycle through random waves
+  // shiftInterval:    3,               // seconds to hold each wave
+  // shiftDuration:    1,               // seconds for morph transition
 });
 ```
 
@@ -158,15 +227,23 @@ const x = Waves.wave(y, {
 const s = Waves.createSampler({
   wave:                'classic sine',
   // seed:             0,
+  // t:                0,               // default t when .sample(y) is called without t
   // amplitude:        100,
   // range:            [-80, 80],
   // frequency:        1,
   // phase:            0,
   // mode:             'stable',
   // unpredictability: 0,
+  // mix:              0.5,             // default morph blend
+  // shift:            false,
+  // shiftInterval:    3,
+  // shiftDuration:    1,
 });
-s.sample(y);      // → number
-s.sample(y, t);   // → number with time
+s.sample(y);          // → number (uses default t)
+s.sample(y, t);       // → number with explicit time
+s.sample(y, t, mix);  // → number with time and morph blend
+s.waveIndex;          // → resolved wave index
+s.waveName;           // → resolved wave name
 ```
 
 **`Waves.createGrid()`**
@@ -179,7 +256,17 @@ const g = Waves.createGrid(cols, rows, {
   // threshold: 0.5,
   // speed:     1,
 });
-const cells = g.sample(t);  // cells[row * g.cols + col]
+const cells = g.sample(t);  // → Float32Array or Uint8Array (reused buffer)
+g.cols;                      // → number of columns
+g.rows;                      // → number of rows
+```
+
+**`Waves.benchmark()`**
+```js
+Waves.benchmark()                                           // → default, 10000 iterations
+Waves.benchmark({ wave: 'sine', range: [-1, 1] })           // → specific config
+Waves.benchmark({ mode: 'wild', unpredictability: 1 }, 50000) // → custom count
+// Returns: { iterations, ms, callsPerMs }
 ```
 
 ---
