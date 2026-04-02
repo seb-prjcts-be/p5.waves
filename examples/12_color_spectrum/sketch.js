@@ -1,6 +1,6 @@
 // 12 — Wave Color Field
 // Two wave samplers with shift drive hue and brightness across a 2D field.
-// Every 4 seconds the formulas morph into new ones over 2 seconds.
+// Hue shifts every 4s, brightness every 5s — desynchronised for variety.
 
 var hueSampler, briSampler;
 var t = 0;
@@ -22,7 +22,7 @@ function setup() {
   briSampler = Waves.createSampler({
     wave:          'wobble sine',
     shift:         true,
-    shiftInterval: 4,
+    shiftInterval: 5,
     shiftDuration: 2,
     range:         [55, 90],
     seed:          7

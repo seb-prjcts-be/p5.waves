@@ -611,7 +611,7 @@
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex9');
       p.noStroke(); p.colorMode(p.HSB, 360, 100, 100);
       hueS = Waves.createSampler({ wave: 'meta sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [160, 320], seed: 0 });
-      briS = Waves.createSampler({ wave: 'wobble sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [55, 90], seed: 7 });
+      briS = Waves.createSampler({ wave: 'wobble sine', shift: true, shiftInterval: 5, shiftDuration: 2, range: [55, 90], seed: 7 });
     };
     p.draw = function() {
       t += 0.035;
