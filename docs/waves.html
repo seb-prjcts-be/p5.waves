@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The 34 Waves – p5.waves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .waves-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+    .waves-wrap h1 { font-family: 'Oswald', sans-serif; font-size: 2.8rem; margin-bottom: 0.4rem; }
+    .waves-wrap h2 { font-family: 'Oswald', sans-serif; font-size: 1.4rem; margin: 3rem 0 0.8rem; text-transform: uppercase; letter-spacing: .05em; border-bottom: 2px solid #000; padding-bottom: 0.3rem; }
+    .waves-wrap h3 { font-family: 'Oswald', sans-serif; font-size: 1.05rem; margin: 2rem 0 0.5rem; text-transform: uppercase; letter-spacing: .04em; }
+    .waves-wrap p  { line-height: 1.7; margin-bottom: 0.8rem; color: var(--text-muted); }
+    .waves-wrap a  { color: #000; text-decoration: underline; }
+    .waves-wrap a:hover { color: #555; }
+    .waves-wrap code { font-family: 'Courier New', monospace; font-size: 0.88em; background: #ebebeb; padding: 0.1em 0.35em; }
+
+    .waves-intro {
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 2rem;
+      max-width: 700px;
+    }
+
+    /* building blocks grid */
+    .blocks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 2rem;
+    }
+    .block-card {
+      border: 1px solid #e0e0e0;
+      padding: 1rem 1.2rem;
+      background: #fafafa;
+    }
+    .block-card strong {
+      display: block;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+    .block-card code {
+      display: inline-block;
+      font-size: 0.82rem;
+      background: #111;
+      color: #ccc;
+      padding: 0.15em 0.5em;
+      margin-bottom: 0.35rem;
+    }
+    .block-card p { margin: 0; font-size: 0.84rem; line-height: 1.5; }
+
+    /* family sections */
+    .family-section {
+      margin-bottom: 2.5rem;
+    }
+    .family-tag {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border: 1px solid var(--border-mid);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-family: 'Consolas', monospace;
+      margin-bottom: 0.5rem;
+    }
+    .family-desc {
+      font-size: 0.92rem;
+      margin-bottom: 1rem;
+    }
+
+    /* wave cards */
+    .wave-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .wave-card {
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      overflow: hidden;
+    }
+    .wave-card-canvas {
+      height: 80px;
+      background: #111;
+      overflow: hidden;
+    }
+    .wave-card-canvas canvas {
+      display: block !important;
+      width: 100% !important;
+      height: 80px !important;
+    }
+    .wave-card-body {
+      padding: 0.8rem 1rem;
+    }
+    .wave-card-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+    .wave-card-idx {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--text-faint);
+      min-width: 1.4rem;
+    }
+    .wave-card-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .wave-card-algo {
+      display: block;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #555;
+      background: #f0f0f0;
+      padding: 0.25rem 0.5rem;
+      margin: 0.35rem 0;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+    .wave-card-mood {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo">p5.<span>waves</span></div>
+    <button class="nav-hamburger" aria-label="Toggle menu" onclick="this.closest('nav').classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="../index.html">Showcase</a></li>
+      <li><a href="examples.html">Examples</a></li>
+      <li><a href="guide.html">Guide</a></li>
+      <li><a href="waves.html" class="active">Waves</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <div class="waves-wrap">
+
+    <div class="section-tag" style="margin-bottom:0.6rem">Open source math · MIT</div>
+    <h1>The 34 <span class="accent">Waves</span></h1>
+    <p class="waves-intro">
+      Every wave in this library is a short math expression. No magic, no black boxes.
+      Stacking sines, cosines, tangents, absolute values, and modulo operations — that is all it takes
+      to give a number a personality. Here is every formula, laid open.
+    </p>
+
+    <h2>Building Blocks</h2>
+    <p>
+      Six mathematical operations. Combined in different ways, they produce 34 distinct wave characters.
+      Each operation adds a specific quality — a mood, a rhythm, a texture.
+    </p>
+
+    <div class="blocks-grid">
+      <div class="block-card">
+        <code>sin(x)</code>
+        <strong>Sine — the smooth oscillator</strong>
+        <p>The foundation. Smooth, continuous, periodic. Every wave that flows uses sine somewhere. It is the default mood: calm, predictable, organic.</p>
+      </div>
+      <div class="block-card">
+        <code>cos(x)</code>
+        <strong>Cosine — the phase partner</strong>
+        <p>Same shape as sine, shifted by a quarter cycle. When multiplied with sine, it creates interference patterns — wobble, beating, complexity from simplicity.</p>
+      </div>
+      <div class="block-card">
+        <code>tan(x)</code>
+        <strong>Tangent — the wild card</strong>
+        <p>Smooth until it isn't. Tangent spikes to infinity at regular intervals, creating sudden bursts and unpredictable energy. The source of controlled chaos.</p>
+      </div>
+      <div class="block-card">
+        <code>abs(x)</code>
+        <strong>Absolute — the mirror</strong>
+        <p>Folds negative values up. Applied to sine, it creates sharp peaks — mountain ridges where valleys used to be. Reflections and inversions.</p>
+      </div>
+      <div class="block-card">
+        <code>x % n</code>
+        <strong>Modulo — the fragmenter</strong>
+        <p>Remainder after division. Wraps values into repeating ranges, creating sawtooth sweeps, zig-zag textures, and fragmented patterns from smooth inputs.</p>
+      </div>
+      <div class="block-card">
+        <code>ceil(x) round(x)</code>
+        <strong>Stepping — the quantizer</strong>
+        <p>Snaps continuous values to integers. Smooth curves become staircase patterns — a digital feel, hard edges, binary decisions from analog input.</p>
+      </div>
+    </div>
+
+    <h2>The Families</h2>
+    <p>
+      The 34 formulas group into families by character. Each family shares a mood —
+      a way of moving, a texture, a temperament. Within each family, individual formulas
+      add their own twist.
+    </p>
+
+    <!-- FAMILY: Pure Sine -->
+    <div class="family-section">
+      <div class="family-tag">Pure Sine</div>
+      <h3>The smooth foundation</h3>
+      <p class="family-desc">
+        Pure sine waves at different frequencies and amplitudes. Calm, flowing, organic.
+        The simplest formulas — and often the most musical. This is the baseline mood:
+        everything else is a departure from here.
+      </p>
+      <div class="wave-cards" id="family-pure-sine"></div>
+    </div>
+
+    <!-- FAMILY: Layered Sine -->
+    <div class="family-section">
+      <div class="family-tag">Layered Sine</div>
+      <h3>Interference and complexity</h3>
+      <p class="family-desc">
+        Two or more trigonometric functions multiplied or added together. When sine meets cosine
+        at different frequencies, they create beating patterns, wobble, and organic complexity.
+        The mood shifts from calm to restless — still smooth, but with internal tension.
+      </p>
+      <div class="wave-cards" id="family-layered-sine"></div>
+    </div>
+
+    <!-- FAMILY: Amplitude Modulated -->
+    <div class="family-section">
+      <div class="family-tag">Amplitude Modulated</div>
+      <h3>Shape-shifting over position</h3>
+      <p class="family-desc">
+        Sine multiplied by a ramp or modulo expression. The wave's intensity changes across
+        the input range — it breathes, swells, fades. These formulas have a sense of
+        direction and narrative that static oscillators lack.
+      </p>
+      <div class="wave-cards" id="family-amplitude-mod"></div>
+    </div>
+
+    <!-- FAMILY: Peak & Valley -->
+    <div class="family-section">
+      <div class="family-tag">Peak &amp; Valley</div>
+      <h3>Reflections and inversions</h3>
+      <p class="family-desc">
+        Absolute value folds the wave. Negative halves become positive, creating sharp peaks
+        and hard transitions. The mood is angular, geological — ridges and canyons
+        carved from smooth oscillation.
+      </p>
+      <div class="wave-cards" id="family-peak-valley"></div>
+    </div>
+
+    <!-- FAMILY: Stepped -->
+    <div class="family-section">
+      <div class="family-tag">Stepped &amp; Quantized</div>
+      <h3>Digital from analog</h3>
+      <p class="family-desc">
+        <code>ceil()</code>, <code>round()</code>, and <code>floor()</code> snap smooth curves into staircases.
+        The mood is mechanical, decisive — a smooth world forced into binary choices.
+        Combined with tangent, the steps become unpredictable and dramatic.
+      </p>
+      <div class="wave-cards" id="family-stepped"></div>
+    </div>
+
+    <!-- FAMILY: Sawtooth & Ramp -->
+    <div class="family-section">
+      <div class="family-tag">Sawtooth &amp; Ramp</div>
+      <h3>Linear sweep</h3>
+      <p class="family-desc">
+        Modulo drives a linear climb that resets at regular intervals — the sawtooth.
+        These waves have directional energy, a sense of effort and release.
+        Triangle is the bidirectional version: up and down, symmetric and restless.
+      </p>
+      <div class="wave-cards" id="family-sawtooth"></div>
+    </div>
+
+    <!-- FAMILY: Square & Pulse -->
+    <div class="family-section">
+      <div class="family-tag">Square &amp; Pulse</div>
+      <h3>Binary rhythm</h3>
+      <p class="family-desc">
+        On or off, high or low. These formulas use conditional logic or modulo thresholds
+        to create hard-switching patterns. The mood is rhythmic, percussive, digital.
+      </p>
+      <div class="wave-cards" id="family-square-pulse"></div>
+    </div>
+
+    <!-- FAMILY: Modulo Patterns -->
+    <div class="family-section">
+      <div class="family-tag">Modulo Patterns</div>
+      <h3>Texture from remainder</h3>
+      <p class="family-desc">
+        Sine or position put through modulo creates fragmented, aliased textures. The original
+        wave is still there, but chopped and wrapped — producing unexpected rhythms
+        and visual noise from clean mathematical operations.
+      </p>
+      <div class="wave-cards" id="family-modulo"></div>
+    </div>
+
+    <!-- FAMILY: Chaos & Noise -->
+    <div class="family-section">
+      <div class="family-tag">Chaos &amp; Noise</div>
+      <h3>Controlled unpredictability</h3>
+      <p class="family-desc">
+        Tangent spikes, Perlin noise, and random values. These formulas embrace unpredictability
+        as a feature. The mood ranges from jittery to organic randomness — all useful
+        precisely because they break the pattern.
+      </p>
+      <div class="wave-cards" id="family-chaos"></div>
+    </div>
+
+    <!-- FAMILY: Special -->
+    <div class="family-section">
+      <div class="family-tag">Special</div>
+      <h3>Unique character</h3>
+      <p class="family-desc">
+        Formulas that don't fit neatly into a family — logarithmic decay, squared sine,
+        conditional switching. Each has a personality all its own.
+      </p>
+      <div class="wave-cards" id="family-special"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
+    <p class="footer-sub">34 wave formulas · open math · MIT license</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.min.js"></script>
+  <script src="../p5.waves.js"></script>
+  <script>
+  // Wave data with family assignments and personality descriptions
+  var waveData = [
+    { idx: 0,  name: 'classic sine',      algo: 'sin(x*.1)*.4',                                    family: 'pure-sine',     mood: 'Broad, gentle oscillation. The widest swing of the sine family — slow, confident, architectural.' },
+    { idx: 1,  name: 'sine',              algo: 'sin(x*.2)*.25',                                   family: 'pure-sine',     mood: 'Tighter, more contained. The default wave — familiar, reliable, the sound of "normal."' },
+    { idx: 2,  name: 'sharp peaks',       algo: 'abs(sin(x*.1))*.5',                               family: 'peak-valley',   mood: 'Valleys folded into peaks. No negative space — only ridges, only mountains. Relentlessly positive.' },
+    { idx: 3,  name: 'square',            algo: '(x*.025)%1 < .5 ? -.5 : .5',                      family: 'square-pulse',  mood: 'Hard switch. On/off, black/white, yes/no. No transition, no ambiguity, pure digital rhythm.' },
+    { idx: 4,  name: 'pulse',             algo: '(x*.5)%20 < 1 ? -.5 : .5',                        family: 'square-pulse',  mood: 'Brief spike in a long flat line. A heartbeat. Mostly silence, then a sudden jolt.' },
+    { idx: 5,  name: 'stepped sine',      algo: 'ceil(sin(x*.1))*.25',                             family: 'stepped',       mood: 'Sine quantized to two levels. The smooth curve made binary — a gentle idea forced into a hard decision.' },
+    { idx: 6,  name: 'mountain peaks',    algo: 'abs(cos(x*.1))*.35 + sin(x*.1)*.25',              family: 'peak-valley',   mood: 'Cosine peaks riding on a sine base. Geological — ridgelines with shifting elevation.' },
+    { idx: 7,  name: 'valleys',           algo: 'abs(cos(x*.1))*-.35 + sin(x*.1)*.25',             family: 'peak-valley',   mood: 'The inverse of mountain peaks. Canyons and riverbeds — depth instead of height.' },
+    { idx: 8,  name: 'zig-zag sine',      algo: 'sin(x*.1)*.25 % .15',                             family: 'modulo',        mood: 'Sine wrapped through modulo. The smooth curve is still there but sliced into repeating fragments — aliased, textured.' },
+    { idx: 9,  name: 'batman',            algo: 'sin(x*.1)*.7 % .4',                               family: 'modulo',        mood: 'Wider sine, tighter wrap. The modulo creates a bat-eared silhouette — dramatic, recognizable, playful.' },
+    { idx: 10, name: 'offset sine',       algo: 'ceil(cos(x*.1))*.25 - sin(x*.1)*.25',             family: 'peak-valley',   mood: 'Quantized cosine minus smooth sine. Two opposing forces — stepped structure and flowing counter-movement.' },
+    { idx: 11, name: 'steps down',        algo: 'ceil(tan(x*.1))*.25',                             family: 'stepped',       mood: 'Tangent through ceiling. Dramatic staircases with sudden jumps — the most theatrical of the stepped family.' },
+    { idx: 12, name: 'steps',             algo: 'round(sin(-x*.1))*.25',                           family: 'stepped',       mood: 'Reversed sine rounded to integers. Clean alternation between two values — minimal, binary, clock-like.' },
+    { idx: 13, name: 'squared sine',      algo: 'sq(sin(x*.1))*.25',                               family: 'special',       mood: 'Sine squared always stays positive. The peaks are softer, the rhythm doubled — a gentle pulse, no negative dip.' },
+    { idx: 14, name: 'bumpy sine',        algo: 'sin(x*.1)*.25 + sin(x*.5)*.1',                    family: 'layered-sine',  mood: 'Slow sine with a fast ripple on top. Like a calm sea with wind chop — two time scales coexisting.' },
+    { idx: 15, name: 'wobble sine',       algo: 'sin(x*.1)*cos(x*.2)*.5',                          family: 'layered-sine',  mood: 'Sine modulated by cosine. The amplitude swells and fades — a tremolo, a wavering voice, uncertainty.' },
+    { idx: 16, name: 'up down noise',     algo: 'x*sin(x*.1) % .5',                                family: 'modulo',        mood: 'Position times sine, wrapped. Growing oscillation chopped into fragments — increasingly frantic, then reset.' },
+    { idx: 17, name: 'meta sine',         algo: 'sin(x*.45 + radians(x))*cos(x*.4)*.5',            family: 'layered-sine',  mood: 'Phase offset by the input itself. The wave second-guesses itself — self-referential, complex, evolving.' },
+    { idx: 18, name: 'triangle',          algo: 'abs((x*.03) % (.5*2) - .5)',                       family: 'sawtooth',      mood: 'Linear up, linear down, repeat. No curves, no rest — pure angular momentum. The geometric cousin of sine.' },
+    { idx: 19, name: 'ramp',              algo: '-1*(x*.02%1)/1 + 0.5',                            family: 'sawtooth',      mood: 'Steady descent that resets. A countdown, a winding clock, a saw blade moving in one direction.' },
+    { idx: 20, name: 'saw down',          algo: 'x*.03 % .5',                                      family: 'sawtooth',      mood: 'Linear climb with a sudden drop. Effort, effort, effort — then release. Asymmetric and relentless.' },
+    { idx: 21, name: 'saw up',            algo: '-x*.03 % .5',                                     family: 'sawtooth',      mood: 'The mirror of saw down. A slide that resets upward — falling, catching, falling again.' },
+    { idx: 22, name: 'fade out',          algo: 'log(x)*.1',                                       family: 'special',       mood: 'Logarithmic rise — fast at first, then ever slower. Diminishing returns. The sound of things winding down.' },
+    { idx: 23, name: 'grow random',       algo: 'random(x*.003)',                                  family: 'chaos',         mood: 'Random values scaled by position. Quiet at the origin, louder as you move away — a noise floor that rises.' },
+    { idx: 24, name: 'noise',             algo: 'noise(x*.1) - .5',                                family: 'chaos',         mood: 'Perlin noise. Organic randomness — coherent, cloud-like, the texture of natural terrain and weather.' },
+    { idx: 25, name: 'fuzzy pulse',       algo: 'tan(x*20)*.05',                                   family: 'chaos',         mood: 'Dense tangent spikes. A wall of vertical lines — the most aggressive formula. Static, interference, overload.' },
+    { idx: 26, name: 'up down pulse',     algo: 'tan(x*.1)*.05',                                   family: 'chaos',         mood: 'Slow tangent. Long calm stretches punctuated by sudden spikes — suspense and surprise.' },
+    { idx: 27, name: 'bald patch',        algo: 'sq(x*.05) % .5',                                  family: 'modulo',        mood: 'Position squared, wrapped. Parabolic growth fragmented into repeating segments — accelerating texture.' },
+    { idx: 28, name: 'fuzzy peak sine',   algo: 'sin(x*.1) < 0 ? random(-.2, .2) : sin(x*.1)*.5', family: 'special',       mood: 'Sine on top, random noise below zero. Half structured, half chaos — a wave that dissolves into static at its valleys.' },
+    { idx: 29, name: 'ramp up sine',      algo: 'sin(x)*(x*.01%.5)',                               family: 'amplitude-mod', mood: 'Sine scaled by a sawtooth ramp. Builds intensity, then drops to silence — crescendo and cut.' },
+    { idx: 30, name: 'triangle sine',     algo: 'sin(x)*(x*.01%1-.5)',                             family: 'amplitude-mod', mood: 'Sine scaled by a triangle wave. Symmetrical breathing — growing louder, softer, louder again.' },
+    { idx: 31, name: 'round linked sine', algo: 'sin(x*.1)*cos(x*1)*.5',                          family: 'layered-sine',  mood: 'Slow sine carrying a fast cosine. A vibrato so rapid it becomes texture — the wave shivers.' },
+    { idx: 32, name: 'half sine',         algo: 'sin(x*.05)*(x*.1%.5)',                            family: 'amplitude-mod', mood: 'Very slow sine modulated by a fast ramp. Long breathing arc with rhythmic internal pulsing.' },
+    { idx: 33, name: 'smooth solid sine', algo: 'sin(x*3.1)*.25',                                 family: 'pure-sine',     mood: 'High-frequency sine. Tight, dense oscillation — like a vibrating string seen up close.' }
+  ];
+
+  // Family container IDs
+  var familyMap = {
+    'pure-sine':     'family-pure-sine',
+    'layered-sine':  'family-layered-sine',
+    'amplitude-mod': 'family-amplitude-mod',
+    'peak-valley':   'family-peak-valley',
+    'stepped':       'family-stepped',
+    'sawtooth':      'family-sawtooth',
+    'square-pulse':  'family-square-pulse',
+    'modulo':        'family-modulo',
+    'chaos':         'family-chaos',
+    'special':       'family-special'
+  };
+
+  // Build cards
+  for (var i = 0; i < waveData.length; i++) {
+    var w = waveData[i];
+    var container = document.getElementById(familyMap[w.family]);
+    if (!container) continue;
+
+    var card = document.createElement('div');
+    card.className = 'wave-card';
+
+    var canvasId = 'wc-' + w.idx;
+    card.innerHTML =
+      '<div class="wave-card-canvas" id="' + canvasId + '"></div>' +
+      '<div class="wave-card-body">' +
+        '<div class="wave-card-head">' +
+          '<span class="wave-card-idx">' + w.idx + '</span>' +
+          '<span class="wave-card-name">' + w.name + '</span>' +
+        '</div>' +
+        '<code class="wave-card-algo">' + w.algo + '</code>' +
+        '<p class="wave-card-mood">' + w.mood + '</p>' +
+      '</div>';
+
+    container.appendChild(card);
+  }
+
+  // Create mini p5 canvases for each wave
+  for (var j = 0; j < waveData.length; j++) {
+    (function(wave) {
+      new p5(function(p) {
+        var wIdx = wave.idx;
+        p.setup = function() {
+          var parent = document.getElementById('wc-' + wIdx);
+          var canvas = p.createCanvas(parent.offsetWidth, 80);
+          canvas.parent(parent);
+          p.frameRate(30);
+        };
+        p.draw = function() {
+          p.background(17);
+          p.stroke(200);
+          p.strokeWeight(1.5);
+          p.noFill();
+
+          var t = p.millis() / 1000;
+          var midY = p.height / 2;
+
+          p.beginShape();
+          for (var px = 0; px < p.width; px += 2) {
+            var y = px * 0.8;
+            var val = Waves.wave(y, { wave: wIdx, t: t, amplitude: 30 });
+            p.vertex(px, midY - val);
+          }
+          p.endShape();
+        };
+      });
+    })(waveData[j]);
+  }
+  </script>
+</body>
+</html>
