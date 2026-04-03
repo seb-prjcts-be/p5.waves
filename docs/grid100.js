@@ -181,8 +181,8 @@ reg('grid100-canvas', new p5(function(p) {
       for(var i=0;i<25;i++){
         var freq=0.01+i*0.008;
         var h=W(t,{wave:'sine',seed:90+i,range:[2,40],frequency:freq*20});
-        var hue=W(i*0.1,{seed:91,t:t,range:[0,255]});
-        p.fill(hue,150,255); p.rect(i*2,50-h,2,h);
+        var wHue=W(i*0.1,{seed:91,t:t,range:[0,255]});
+        p.fill(wHue,150,255); p.rect(i*2,50-h,2,h);
       }
     };
 
@@ -378,9 +378,9 @@ reg('grid100-canvas', new p5(function(p) {
     FRAMES[24] = (t) => {
       for(var i=0;i<6;i++){
         var y=8+i*7;
-        var hue=W(i,{wave:'saw up',t:t,seed:240,range:[0,255]});
+        var wHue=W(i,{wave:'saw up',t:t,seed:240,range:[0,255]});
         for(var g=4;g>=0;g--){
-          p.stroke(hue,100+g*30,255,50-g*10); p.strokeWeight(1+g*1.5);
+          p.stroke(wHue,100+g*30,255,50-g*10); p.strokeWeight(1+g*1.5);
           var y1=y+W(0,{wave:'noise',t:t+i,seed:241+i,range:[-2,2]});
           var y2=y+W(1,{wave:'noise',t:t+i,seed:242+i,range:[-2,2]});
           p.line(3,y1,47,y2);
@@ -943,9 +943,9 @@ reg('grid100-canvas', new p5(function(p) {
         if(alive<3||s.age>200){for(var i=0;i<625;i++)s.g[i]=p.random()<0.35?1:0;s.age=0;}
       }
       p.noStroke();
-      var hue=W(t,{wave:'ramp',seed:601,range:[0,255]});
+      var wHue=W(t,{wave:'ramp',seed:601,range:[0,255]});
       for(var y=0;y<25;y++)for(var x=0;x<25;x++)
-        if(s.g[y*25+x]){p.fill(hue,255,150);p.rect(x*2,y*2,2,2);}
+        if(s.g[y*25+x]){p.fill(wHue,255,150);p.rect(x*2,y*2,2,2);}
     };
 
     // 61: Reaction-diffusion — wave modulates kill rate
