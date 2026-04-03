@@ -437,7 +437,7 @@
           p.beginShape();
           for (var px = 0; px < p.width; px += 2) {
             var y = px * 0.8;
-            var val = Waves.wave(y, { wave: wIdx, t: t, amplitude: 30 });
+            var val = Waves.wave(y, { wave: wIdx, t: t, amplitude: 15 });
             p.vertex(px, midY - val);
           }
           p.endShape();
