@@ -42,17 +42,30 @@ samplerX = Waves.createSampler({
   frequency: 0.3,
   seed: 42
 });
+samplerZ = Waves.createSampler({
+  shift: true,
+  shiftInterval: 5,
+  range: [-3, 3],
+  frequency: 0.35,
+  seed: 77
+});
 
-var dy = samplerY.sample(xi * 0.9 + zi * 0.6, t);
-var dx = samplerX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
+const dy = samplerY.sample(xi * 0.9 + zi * 0.6, t);
+const dx = samplerX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
+const dz = samplerZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
 
-var surfaceRow = N / 2 + dy;
-for (var yi = 0; yi &lt; N; yi++) {
-  var gap = Math.abs(yi - surfaceRow);
+const surfaceRow = N / 2 + dy;
+for (let yi = 0; yi &lt; N; yi++) {
+  const gap = Math.abs(yi - surfaceRow);
   if (gap &lt; 2.5) {
-    var glow = 1 - gap / 2.5;
+    const glow = 1 - gap / 2.5;
+    const bright = Math.round(80 + (yi / (N - 1)) * 175);
     stroke(bright, bright, 255, 255 * glow);
-    vertex(x + dx * SPACING * 0.4, y, z);
+    vertex(
+      -half + xi * SPACING + dx * SPACING * 0.4,
+      -half + yi * SPACING,
+      -half + zi * SPACING + dz * SPACING * 0.4
+    );
   }
 }</code></pre>
       </div>
