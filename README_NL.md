@@ -89,7 +89,7 @@ Geeft altijd één getal terug. Intern: `x = (y + t) × frequency + phase`. Als 
 Configuratie eenmalig opgelost, hergebruikt bij elke `.sample()`-aanroep. Accepteert alle opties van `Waves.wave()`.
 
 ```js
-var s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
+const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
 s.sample(y)          // → getal
 s.sample(y, t)       // → getal met tijdsverschuiving
 s.sample(y, t, mix)  // → getal met tijd en morph-blend (alleen morph-modus)
@@ -108,7 +108,7 @@ s.sample(y, t, mix)  // → getal met tijd en morph-blend (alleen morph-modus)
 **Shift-sampler** — geef `shift: true` mee om automatisch te wisselen:
 
 ```js
-var s = Waves.createSampler({ shift: true, amplitude: 120 });
+const s = Waves.createSampler({ shift: true, amplitude: 120 });
 s.sample(y, t);      // wisselt elke 3 s, morft over 1 s
 ```
 
@@ -130,8 +130,8 @@ Extra getters van de shift-sampler:
 
 Voor twee onafhankelijke assen (bv. WEBGL x/z), gebruik twee samplers met verschillende seeds:
 ```js
-var sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
-var sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
+const sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
+const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 ```
 
 ---
@@ -141,7 +141,7 @@ var sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 `.sample(t)` geeft een getypeerde array terug. De uitvoerarray wordt **hergebruikt** tussen aanroepen — kopieer als je een snapshot wilt bewaren: `new Float32Array(g.sample(t))`.
 
 ```js
-var g = Waves.createGrid(20, 20, { range: [0, 1] });
+const g = Waves.createGrid(20, 20, { range: [0, 1] });
 g.sample(t)  // → Float32Array, lengte cols×rows
 ```
 
@@ -209,7 +209,7 @@ Tips:
 Waves.wave(y, 'triangle')
 Waves.wave(y, { wave: 'sine', t: millis() / 1000, range: [-1, 1] })
 
-var s = Waves.createSampler({ shift: true, amplitude: 120 });
+const s = Waves.createSampler({ shift: true, amplitude: 120 });
 s.sample(y, t);
 ```
 
@@ -217,7 +217,7 @@ s.sample(y, t);
 
 **`Waves.wave()`**
 ```js
-var x = Waves.wave(y, {
+const x = Waves.wave(y, {
   wave:                'classic sine',  // naam, index 0–33, of ['a', 'b'] voor morph
   // seed:             0,               // alternatief: kies golf via seed
   // t:                millis() / 1000, // drijft animatie
@@ -236,7 +236,7 @@ var x = Waves.wave(y, {
 
 **`Waves.createSampler()`**
 ```js
-var s = Waves.createSampler({
+const s = Waves.createSampler({
   wave:                'classic sine',
   // seed:             0,
   // t:                0,               // standaard t als .sample(y) zonder t wordt aangeroepen
@@ -260,7 +260,7 @@ s.waveName;           // → opgeloste golfnaam
 
 **`Waves.createGrid()`**
 ```js
-var g = Waves.createGrid(cols, rows, {
+const g = Waves.createGrid(cols, rows, {
   // waveRow:   'classic sine',
   // waveCol:   'triangle',
   // seed:      0,
@@ -268,7 +268,7 @@ var g = Waves.createGrid(cols, rows, {
   // threshold: 0.5,
   // speed:     1,
 });
-var cells = g.sample(t);  // → Float32Array of Uint8Array (hergebruikte buffer)
+const cells = g.sample(t);  // → Float32Array of Uint8Array (hergebruikte buffer)
 g.cols;                      // → aantal kolommen
 g.rows;                      // → aantal rijen
 ```
