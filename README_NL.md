@@ -203,9 +203,21 @@ Tips:
 
 ## Copy-paste templates
 
+### Compact — snelle one-liners
+
+```js
+Waves.wave(y, 'triangle')
+Waves.wave(y, { wave: 'sine', t: millis() / 1000, range: [-1, 1] })
+
+var s = Waves.createSampler({ shift: true, amplitude: 120 });
+s.sample(y, t);
+```
+
+### Volledig — één argument per lijn
+
 **`Waves.wave()`**
 ```js
-const x = Waves.wave(y, {
+var x = Waves.wave(y, {
   wave:                'classic sine',  // naam, index 0–33, of ['a', 'b'] voor morph
   // seed:             0,               // alternatief: kies golf via seed
   // t:                millis() / 1000, // drijft animatie
@@ -224,7 +236,7 @@ const x = Waves.wave(y, {
 
 **`Waves.createSampler()`**
 ```js
-const s = Waves.createSampler({
+var s = Waves.createSampler({
   wave:                'classic sine',
   // seed:             0,
   // t:                0,               // standaard t als .sample(y) zonder t wordt aangeroepen
