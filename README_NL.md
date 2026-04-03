@@ -89,7 +89,7 @@ Geeft altijd één getal terug. Intern: `x = (y + t) × frequency + phase`. Als 
 Configuratie eenmalig opgelost, hergebruikt bij elke `.sample()`-aanroep. Accepteert alle opties van `Waves.wave()`.
 
 ```js
-const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
+var s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
 s.sample(y)          // → getal
 s.sample(y, t)       // → getal met tijdsverschuiving
 s.sample(y, t, mix)  // → getal met tijd en morph-blend (alleen morph-modus)
@@ -108,7 +108,7 @@ s.sample(y, t, mix)  // → getal met tijd en morph-blend (alleen morph-modus)
 **Shift-sampler** — geef `shift: true` mee om automatisch te wisselen:
 
 ```js
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
+var s = Waves.createSampler({ shift: true, amplitude: 120 });
 s.sample(y, t);      // wisselt elke 3 s, morft over 1 s
 ```
 
@@ -130,8 +130,8 @@ Extra getters van de shift-sampler:
 
 Voor twee onafhankelijke assen (bv. WEBGL x/z), gebruik twee samplers met verschillende seeds:
 ```js
-const sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
-const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
+var sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
+var sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 ```
 
 ---
@@ -141,7 +141,7 @@ const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 `.sample(t)` geeft een getypeerde array terug. De uitvoerarray wordt **hergebruikt** tussen aanroepen — kopieer als je een snapshot wilt bewaren: `new Float32Array(g.sample(t))`.
 
 ```js
-const g = Waves.createGrid(20, 20, { range: [0, 1] });
+var g = Waves.createGrid(20, 20, { range: [0, 1] });
 g.sample(t)  // → Float32Array, lengte cols×rows
 ```
 
@@ -260,7 +260,7 @@ s.waveName;           // → opgeloste golfnaam
 
 **`Waves.createGrid()`**
 ```js
-const g = Waves.createGrid(cols, rows, {
+var g = Waves.createGrid(cols, rows, {
   // waveRow:   'classic sine',
   // waveCol:   'triangle',
   // seed:      0,
@@ -268,7 +268,7 @@ const g = Waves.createGrid(cols, rows, {
   // threshold: 0.5,
   // speed:     1,
 });
-const cells = g.sample(t);  // → Float32Array of Uint8Array (hergebruikte buffer)
+var cells = g.sample(t);  // → Float32Array of Uint8Array (hergebruikte buffer)
 g.cols;                      // → aantal kolommen
 g.rows;                      // → aantal rijen
 ```

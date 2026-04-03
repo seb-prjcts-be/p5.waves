@@ -89,7 +89,7 @@ Returns a single number. Internally: `x = (y + t) × frequency + phase`. When `r
 Config resolved once, reused on every `.sample()` call. Accepts all the same options as `Waves.wave()`.
 
 ```js
-const s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
+var s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
 s.sample(y)          // → number
 s.sample(y, t)       // → number with time offset
 s.sample(y, t, mix)  // → number with time and morph blend (morph mode only)
@@ -108,7 +108,7 @@ s.sample(y, t, mix)  // → number with time and morph blend (morph mode only)
 **Shift sampler** — pass `shift: true` to auto-cycle through random formulas:
 
 ```js
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
+var s = Waves.createSampler({ shift: true, amplitude: 120 });
 s.sample(y, t);      // auto-cycles every 3 s, morphs over 1 s
 ```
 
@@ -130,8 +130,8 @@ Shift sampler additional getters:
 
 For two independent axes (e.g. WEBGL x/z), use two samplers with different seeds:
 ```js
-const sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
-const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
+var sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
+var sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 ```
 
 ---
@@ -141,7 +141,7 @@ const sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 `.sample(t)` returns a typed array. The output array is **reused** between calls — copy it if you need to keep a snapshot: `new Float32Array(g.sample(t))`.
 
 ```js
-const g = Waves.createGrid(20, 20, { range: [0, 1] });
+var g = Waves.createGrid(20, 20, { range: [0, 1] });
 g.sample(t)  // → Float32Array, length cols×rows
 ```
 
@@ -260,7 +260,7 @@ s.waveName;           // → resolved wave name
 
 **`Waves.createGrid()`**
 ```js
-const g = Waves.createGrid(cols, rows, {
+var g = Waves.createGrid(cols, rows, {
   // waveRow:   'classic sine',
   // waveCol:   'triangle',
   // seed:      0,
@@ -268,7 +268,7 @@ const g = Waves.createGrid(cols, rows, {
   // threshold: 0.5,
   // speed:     1,
 });
-const cells = g.sample(t);  // → Float32Array or Uint8Array (reused buffer)
+var cells = g.sample(t);  // → Float32Array or Uint8Array (reused buffer)
 g.cols;                      // → number of columns
 g.rows;                      // → number of rows
 ```
