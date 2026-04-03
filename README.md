@@ -6,10 +6,10 @@ Wave sampling helpers for p5.js. Always returns a number.
 
 **Install**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.0.0/p5.waves.min.js"></script>
 ```
 
-Replace `v2.1.1` with the [latest tag](https://github.com/seb-prjcts-be/p5.waves/tags).
+Replace `v3.0.0` with the [latest tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — explore all 34 waves interactively.
 
@@ -35,7 +35,7 @@ function draw() {
     let y = Waves.wave(x, {
       wave: 'classic sine',
       t: millis() / 1000,
-      amplitude: 80
+      amplitude: 40
     });
     vertex(x, height / 2 + y);
   }
@@ -83,7 +83,7 @@ All options:
 | `wave` | string, number, or array | Name, index (0–33), or morph pair `['a', 'b']` | seed-determined |
 | `seed` | number | Selects wave via FNV-1a hash | `0` |
 | `t` | number | Time offset — drives animation. Pass `millis()/1000`. The library never increments `t` internally. | `0` |
-| `amplitude` | number | Output multiplier. Ignored when `range` is set. | `100` |
+| `amplitude` | number | Output multiplier. All formulas are normalised to [-1, 1] first, then scaled: `amplitude: N` → [-N, N]. Ignored when `range` is set. | `100` |
 | `range` | `[min, max]` | Normalises output to this interval. Overrides `amplitude`. | `null` |
 | `frequency` | number | Input multiplier — tighter or looser wave cycles. | `1` |
 | `phase` | number | Input offset — shifts the wave left or right. | `0` |
@@ -96,9 +96,9 @@ All options:
 
 > `Waves.wave(y, 3)` — 3 is a **seed** (hashed to pick a wave). `Waves.wave(y, { wave: 3 })` — 3 is a direct **index**.
 
-Returns a single number. Internally: `x = (y + t) × frequency + phase`. When `range` is set, `amplitude` is ignored.
+Returns a single number. All formulas are silently normalised to [-1, 1] before amplitude scaling. Internally: `x = (y + t) × frequency + phase`. When `range` is set, `amplitude` is ignored.
 
-**Morph:** pass `wave: ['sine', 'triangle']` with `mix: 0..1` to blend two formulas. `range` normalisation is intentionally not applied in morph mode — output is scaled by `amplitude` only.
+**Morph:** pass `wave: ['sine', 'triangle']` with `mix: 0..1` to blend two formulas. Both values are normalised independently before interpolation. `range` is supported in morph mode.
 
 ---
 
@@ -126,7 +126,7 @@ s.sample(y, t, mix)  // → number with time and morph blend (morph mode only)
 **Shift sampler** — pass `shift: true` to auto-cycle through random formulas:
 
 ```js
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
+const s = Waves.createSampler({ shift: true, amplitude: 60 });
 s.sample(y, t);      // auto-cycles every 3 s, morphs over 1 s
 ```
 
@@ -227,7 +227,7 @@ Tips:
 Waves.wave(y, 'triangle')
 Waves.wave(y, { wave: 'sine', t: millis() / 1000, range: [-1, 1] })
 
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
+const s = Waves.createSampler({ shift: true, amplitude: 60 });
 s.sample(y, t);
 ```
 

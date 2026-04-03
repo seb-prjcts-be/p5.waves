@@ -6,10 +6,10 @@ Wave-sampling hulpfuncties voor p5.js. Geeft altijd een getal terug.
 
 **Installeren**
 ```html
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.0.0/p5.waves.min.js"></script>
 ```
 
-Vervang `v2.1.1` door de [laatste tag](https://github.com/seb-prjcts-be/p5.waves/tags).
+Vervang `v3.0.0` door de [laatste tag](https://github.com/seb-prjcts-be/p5.waves/tags).
 
 **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)** — verken alle 34 golven interactief.
 
@@ -35,7 +35,7 @@ function draw() {
     let y = Waves.wave(x, {
       wave: 'classic sine',
       t: millis() / 1000,
-      amplitude: 80
+      amplitude: 40
     });
     vertex(x, height / 2 + y);
   }
@@ -83,7 +83,7 @@ Alle opties:
 | `wave` | string, number, of array | Naam, index (0–33), of morph-paar `['a', 'b']` | bepaald door seed |
 | `seed` | number | Selecteert golf via FNV-1a hash | `0` |
 | `t` | number | Tijdverschuiving — drijft animatie. Geef `millis()/1000` mee. De library verhoogt `t` nooit intern. | `0` |
-| `amplitude` | number | Uitvoervermenigvuldiger. Genegeerd als `range` is ingesteld. | `100` |
+| `amplitude` | number | Uitvoervermenigvuldiger. Alle formules worden genormaliseerd naar [-1, 1], daarna geschaald: `amplitude: N` → [-N, N]. Genegeerd als `range` is ingesteld. | `100` |
 | `range` | `[min, max]` | Normaliseert uitvoer naar dit interval. Overschrijft `amplitude`. | `null` |
 | `frequency` | number | Invoervermenigvuldiger — nauwere of lossere golfcycli. | `1` |
 | `phase` | number | Invoerverschuiving — verschuift de golf links of rechts. | `0` |
@@ -96,9 +96,9 @@ Alle opties:
 
 > `Waves.wave(y, 3)` — 3 is een **seed** (via hash omgezet naar een golf). `Waves.wave(y, { wave: 3 })` — 3 is een directe **index**.
 
-Geeft altijd één getal terug. Intern: `x = (y + t) × frequency + phase`. Als `range` is ingesteld, wordt `amplitude` genegeerd.
+Geeft altijd één getal terug. Alle formules worden stilzwijgend genormaliseerd naar [-1, 1] vóór amplitudeschaling. Intern: `x = (y + t) × frequency + phase`. Als `range` is ingesteld, wordt `amplitude` genegeerd.
 
-**Morph:** geef `wave: ['sine', 'triangle']` mee met `mix: 0..1` om twee formules te blenden. `range`-normalisatie wordt bewust niet toegepast in morph-modus — de uitvoer wordt alleen geschaald door `amplitude`.
+**Morph:** geef `wave: ['sine', 'triangle']` mee met `mix: 0..1` om twee formules te blenden. Beide waarden worden onafhankelijk genormaliseerd vóór interpolatie. `range` wordt ondersteund in morph-modus.
 
 ---
 
@@ -126,7 +126,7 @@ s.sample(y, t, mix)  // → getal met tijd en morph-blend (alleen morph-modus)
 **Shift-sampler** — geef `shift: true` mee om automatisch te wisselen:
 
 ```js
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
+const s = Waves.createSampler({ shift: true, amplitude: 60 });
 s.sample(y, t);      // wisselt elke 3 s, morft over 1 s
 ```
 
@@ -227,7 +227,7 @@ Tips:
 Waves.wave(y, 'triangle')
 Waves.wave(y, { wave: 'sine', t: millis() / 1000, range: [-1, 1] })
 
-const s = Waves.createSampler({ shift: true, amplitude: 120 });
+const s = Waves.createSampler({ shift: true, amplitude: 60 });
 s.sample(y, t);
 ```
 

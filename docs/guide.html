@@ -28,7 +28,7 @@
 
   <div class="guide-wrap">
 
-    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v2.1.1</div>
+    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v3.0.0</div>
     <h1>p5.<span class="accent">waves</span> Guide</h1>
     <p class="guide-intro">
       Everything you need to use the library — from installation to advanced patterns.
@@ -39,7 +39,7 @@
     <h2>Installation</h2>
     <p>Load p5.js first, then p5.waves. Order matters.</p>
     <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.0.0/p5.waves.js"&gt;&lt;/script&gt;
 &lt;script src="sketch.js"&gt;&lt;/script&gt;</div>
 
 
@@ -126,7 +126,7 @@ Waves.wave(y, { wave: [<span class="st">'sine'</span>, <span class="st">'triangl
       <tr><td><code>wave</code></td><td>string, number, or array</td><td>Wave name (string), index (number 0–33), or morph pair <code>['a', 'b']</code>.</td><td>seed-determined</td></tr>
       <tr><td><code>seed</code></td><td>number</td><td>Integer — deterministically picks a wave via hashing. Use for stable variety across objects.</td><td><code>0</code></td></tr>
       <tr><td><code>t</code></td><td>number</td><td>Time offset — drives animation. Pass <code>millis()/1000</code> or your own counter. The library never increments <code>t</code> internally.</td><td><code>0</code></td></tr>
-      <tr><td><code>amplitude</code></td><td>number</td><td>Output multiplier. Ignored when <code>range</code> is set.</td><td><code>100</code></td></tr>
+      <tr><td><code>amplitude</code></td><td>number</td><td>Output multiplier. All formulas are normalised to [-1, 1] first, then scaled: <code>amplitude: N</code> → [-N, N]. Ignored when <code>range</code> is set.</td><td><code>100</code></td></tr>
       <tr><td><code>range</code></td><td><code>[min, max]</code></td><td>Normalises output to this interval. Overrides <code>amplitude</code>.</td><td><code>null</code></td></tr>
       <tr><td><code>frequency</code></td><td>number</td><td>Input multiplier — tighter or looser wave cycles.</td><td><code>1</code></td></tr>
       <tr><td><code>phase</code></td><td>number</td><td>Input offset — shifts the wave left or right.</td><td><code>0</code></td></tr>
@@ -157,7 +157,7 @@ Waves.wave(y, { wave: [<span class="st">'sine'</span>, <span class="st">'triangl
     <span class="kw">const</span> x = width / <span class="nb">2</span> + Waves.wave(y, {
       wave:      <span class="st">'classic sine'</span>,
       t:         frameCount * <span class="nb">0.01</span>,
-      amplitude: <span class="nb">80</span>
+      amplitude: <span class="nb">40</span>
     });
     vertex(x, y);
   }
@@ -182,10 +182,10 @@ circle(x01 * width, y, <span class="nb">5</span>);</div>
   wave: [<span class="st">'sine'</span>, <span class="st">'triangle'</span>],
   mix:  mouseX / width,   <span class="cm">// 0 = pure sine, 1 = pure triangle</span>
   t:    frameCount * <span class="nb">0.01</span>,
-  amplitude: <span class="nb">80</span>
+  amplitude: <span class="nb">40</span>
 });</div>
 
-    <div class="callout"><p><span class="note warn">note</span> <code>range</code> normalisation is <strong>not applied</strong> in morph mode. The output is scaled by <code>amplitude</code> only. This is a deliberate design decision — interpolating normalised values would distort the morph shape.</p></div>
+    <div class="callout"><p><span class="note">note</span> In morph mode, both values are normalised independently before interpolation. <code>range</code> is fully supported in morph mode.</p></div>
 
 
     <!-- ═══════════════════════════════════ CREATESAMPLER -->
@@ -207,7 +207,7 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
       <tr><td><code>wave</code></td><td>string, number, or array</td><td>Wave name, index, or morph pair <code>['a', 'b']</code>.</td><td>seed-determined</td></tr>
       <tr><td><code>seed</code></td><td>number</td><td>Deterministically picks a wave via hashing.</td><td><code>0</code></td></tr>
       <tr><td><code>t</code></td><td>number</td><td>Default time offset — used when <code>.sample(y)</code> is called without a <code>t</code> argument.</td><td><code>0</code></td></tr>
-      <tr><td><code>amplitude</code></td><td>number</td><td>Output multiplier. Ignored when <code>range</code> is set.</td><td><code>100</code></td></tr>
+      <tr><td><code>amplitude</code></td><td>number</td><td>Output multiplier. All formulas are normalised to [-1, 1] first, then scaled: <code>amplitude: N</code> → [-N, N]. Ignored when <code>range</code> is set.</td><td><code>100</code></td></tr>
       <tr><td><code>range</code></td><td><code>[min, max]</code></td><td>Normalises output to this interval.</td><td><code>null</code></td></tr>
       <tr><td><code>frequency</code></td><td>number</td><td>Input multiplier.</td><td><code>1</code></td></tr>
       <tr><td><code>phase</code></td><td>number</td><td>Input offset.</td><td><code>0</code></td></tr>
@@ -276,7 +276,7 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
     <h3>Shift example</h3>
     <div class="code-block"><span class="kw">const</span> sampler = Waves.createSampler({
   shift:         <span class="nb">true</span>,
-  amplitude:     <span class="nb">120</span>,
+  amplitude:     <span class="nb">60</span>,
   frequency:     <span class="nb">0.6</span>,
   shiftInterval: <span class="nb">4</span>,     <span class="cm">// hold each wave for 4 seconds</span>
   shiftDuration: <span class="nb">1.5</span>    <span class="cm">// morph over 1.5 seconds</span>
@@ -443,7 +443,7 @@ s.sample(y, t);    <span class="cm">// → number at position y with time t</spa
       <span class="kw">const</span> x = p.width / <span class="nb">2</span> + p.waves(y, {
         wave:      <span class="st">'classic sine'</span>,
         t:         p.frameCount * <span class="nb">0.5</span>,
-        amplitude: <span class="nb">80</span>
+        amplitude: <span class="nb">40</span>
       });
       p.vertex(x, y);
     }
