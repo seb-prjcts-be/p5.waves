@@ -488,8 +488,8 @@
       var w = cw('ex5');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex5');
       p.noStroke();
-      sx = Waves.createSampler({ wave: rw(), seed: 3, range: [-1, 1] });
-      sy = Waves.createSampler({ wave: rw(), seed: 9, range: [-1, 1] });
+      sx = Waves.createSampler({ wave: rw(), seed: 3, range: [-1, 1], frequency: 0.8 });
+      sy = Waves.createSampler({ wave: rw(), seed: 9, range: [-1, 1], frequency: 0.8 });
     };
     p.draw = function() {
       p.background(245, 245, 245, 20);
