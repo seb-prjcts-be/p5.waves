@@ -752,6 +752,7 @@ section[id] {
 
 .ex-lab-card {
   display: inline-block;
+  text-align: left;
   text-decoration: none;
   border: 1px solid var(--border-hard);
   background: #000;
