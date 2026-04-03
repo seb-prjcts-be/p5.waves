@@ -647,7 +647,7 @@ section[id] {
 
 /* ── GUIDE ── */
 .guide-wrap {
-  max-width: 820px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 6rem 2rem 5rem;
 }
@@ -742,7 +742,7 @@ section[id] {
 
 /* ── EXAMPLES PAGE ── */
 .ex-page-header {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 7rem 2rem 3rem;
   text-align: center;
