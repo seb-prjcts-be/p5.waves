@@ -2,11 +2,11 @@
 // 16×16 grid with 3 shift-samplers — one per axis.
 // Every axis breathes independently, creating a living 3D volume.
 
-var N       = 16;
-var SPACING = 22;
-var half    = (N - 1) * SPACING / 2;
+const N       = 16;
+const SPACING = 22;
+const half    = (N - 1) * SPACING / 2;
 
-var samplerY, samplerX, samplerZ;
+let samplerY, samplerX, samplerZ;
 
 function setup() {
   createCanvas(460, 460, WEBGL).parent('sketch-container');
@@ -49,29 +49,29 @@ function draw() {
   rotateX(-0.5);
   rotateY(frameCount * 0.005);
 
-  var t = millis() / 1000;
+  const t = millis() / 1000;
 
   beginShape(POINTS);
-  for (var xi = 0; xi < N; xi++) {
-    for (var zi = 0; zi < N; zi++) {
+  for (let xi = 0; xi < N; xi++) {
+    for (let zi = 0; zi < N; zi++) {
       // Y: main surface displacement — full range across the cube
-      var dy = samplerY.sample(xi * 0.9 + zi * 0.6, t);
+      const dy = samplerY.sample(xi * 0.9 + zi * 0.6, t);
 
       // X: horizontal breathing — points drift sideways
-      var dx = samplerX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
+      const dx = samplerX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
 
       // Z: depth warping — grid pulses in and out
-      var dz = samplerZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
+      const dz = samplerZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
 
       // Map dy to a grid row and spread points around the surface
-      var surfaceRow = N / 2 + dy;
-      var thick = 2.5;
+      const surfaceRow = N / 2 + dy;
+      const thick = 2.5;
 
-      for (var yi = 0; yi < N; yi++) {
-        var gap = Math.abs(yi - surfaceRow);
+      for (let yi = 0; yi < N; yi++) {
+        const gap = Math.abs(yi - surfaceRow);
         if (gap < thick) {
-          var glow = 1 - gap / thick;
-          var bright = Math.round(80 + (yi / (N - 1)) * 175);
+          const glow = 1 - gap / thick;
+          const bright = Math.round(80 + (yi / (N - 1)) * 175);
           stroke(bright, bright, 255, 255 * glow);
           vertex(
             -half + xi * SPACING + dx * SPACING * 0.4,

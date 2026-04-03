@@ -695,10 +695,10 @@
 
   // ── 14. 3D Wave Volume ────────────────────────────────────
   new p5(function(p) {
-    var N = 12, SPACING = 18, half = (N - 1) * SPACING / 2;
-    var sY, sX, sZ;
+    const N = 12, SPACING = 18, half = (N - 1) * SPACING / 2;
+    let sY, sX, sZ;
     p.setup = function() {
-      var w = cw('ex14');
+      const w = cw('ex14');
       p.createCanvas(w, Math.round(w * 2/3), p.WEBGL).parent('ex14');
       p.frameRate(24); p.noFill(); p.strokeWeight(3);
       sY = Waves.createSampler({
@@ -729,19 +729,19 @@
     p.draw = function() {
       p.background(12);
       p.rotateX(-0.5); p.rotateY(p.frameCount * 0.006);
-      var t = p.millis() / 1000;
+      const t = p.millis() / 1000;
       p.beginShape(p.POINTS);
-      for (var xi = 0; xi < N; xi++) {
-        for (var zi = 0; zi < N; zi++) {
-          var dy = sY.sample(xi * 0.9 + zi * 0.6, t);
-          var dx = sX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
-          var dz = sZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
-          var surfaceRow = N / 2 + dy;
-          for (var yi = 0; yi < N; yi++) {
-            var gap = Math.abs(yi - surfaceRow);
+      for (let xi = 0; xi < N; xi++) {
+        for (let zi = 0; zi < N; zi++) {
+          const dy = sY.sample(xi * 0.9 + zi * 0.6, t);
+          const dx = sX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
+          const dz = sZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
+          const surfaceRow = N / 2 + dy;
+          for (let yi = 0; yi < N; yi++) {
+            const gap = Math.abs(yi - surfaceRow);
             if (gap < 2.5) {
-              var glow = 1 - gap / 2.5;
-              var bright = Math.round(80 + (yi / (N - 1)) * 175);
+              const glow = 1 - gap / 2.5;
+              const bright = Math.round(80 + (yi / (N - 1)) * 175);
               p.stroke(bright, bright, 255, 255 * glow);
               p.vertex(-half + xi * SPACING + dx * SPACING * 0.4, -half + yi * SPACING, -half + zi * SPACING + dz * SPACING * 0.4);
             }
@@ -750,7 +750,7 @@
       }
       p.endShape();
     };
-    p.windowResized = function() { var w = cw('ex14'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { const w = cw('ex14'); p.resizeCanvas(w, Math.round(w * 2/3)); };
   }, 'ex14');
   </script>
 
