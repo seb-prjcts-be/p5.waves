@@ -25,6 +25,24 @@ Waves.wave(y, 'triangle')
 Waves.wave(y, { wave: 'classic sine', range: [-1, 1], t: millis() / 1000 })
 ```
 
+One x in, one number out. Use it in a loop to draw a wave line:
+
+```js
+function draw() {
+  background(245);
+  beginShape();
+  for (let x = 0; x < width; x += 4) {
+    let y = Waves.wave(x, {
+      wave: 'classic sine',
+      t: millis() / 1000,
+      amplitude: 80
+    });
+    vertex(x, height / 2 + y);
+  }
+  endShape();
+}
+```
+
 ---
 
 ## API Overview
