@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About – p5.waves</title>
+  <title>About – p5.waves – Origin &amp; Story</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -18,53 +18,41 @@
     .about-wrap p  { line-height: 1.7; margin-bottom: 0.8rem; color: var(--text-secondary, #555); }
     .about-wrap a  { color: #000; text-decoration: underline; }
     .about-wrap a:hover { color: #555; }
-    .highlight-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1.2rem;
+    .story-block {
+      border-left: 3px solid #000;
+      padding: 0.8rem 1.2rem;
+      background: #f5f5f5;
+      margin: 1rem 0 1.5rem;
+    }
+    .story-block p { margin: 0; font-size: 0.9rem; }
+    .story-block code { font-family: 'Courier New', monospace; font-size: 0.86em; background: #e2e2e2; padding: 0.1em 0.35em; }
+    .origin-grid-wrap {
       margin: 1.5rem 0;
+      border: 1px solid var(--border-mid, rgba(0,0,0,0.2));
+      background: #fff;
+      overflow: hidden;
     }
-    .highlight-card {
-      border: 1px solid #e0e0e0;
-      padding: 1.2rem 1.4rem;
-      background: #fafafa;
+    .origin-grid-wrap canvas { display: block !important; width: 100% !important; height: auto !important; }
+    .origin-grid-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 1rem;
+      border-top: 1px solid var(--border-mid, rgba(0,0,0,0.2));
+      background: #f5f5f5;
+      font-family: 'Consolas', monospace;
+      font-size: 0.78rem;
+      color: #666;
     }
-    .highlight-card .card-tag {
+    .origin-grid-info span { color: #000; font-weight: 500; }
+    .origin-label {
+      display: inline-block;
       font-family: 'Oswald', sans-serif;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       letter-spacing: .1em;
       text-transform: uppercase;
       color: #999;
-      margin-bottom: 0.4rem;
-    }
-    .highlight-card strong {
-      display: block;
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
-    }
-    .highlight-card p { margin: 0; font-size: 0.88rem; }
-    .api-list {
-      list-style: none;
-      padding: 0;
-      margin: 0.8rem 0 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .api-list li {
-      border-left: 3px solid #000;
-      padding: 0.5rem 1rem;
-      background: #f5f5f5;
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
-    }
-    .api-list li span {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.8rem;
-      color: #666;
-      margin-top: 0.2rem;
+      margin-bottom: 0.5rem;
     }
     .credits-block {
       border-top: 1px solid #e0e0e0;
@@ -87,6 +75,7 @@
       <li><a href="../index.html">Showcase</a></li>
       <li><a href="examples.html">Examples</a></li>
       <li><a href="guide.html">Guide</a></li>
+      <li><a href="waves.html">Waves</a></li>
       <li><a href="about.html" class="active">About</a></li>
       <li><a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">GitHub</a></li>
     </ul>
@@ -94,81 +83,84 @@
 
   <div class="about-wrap">
 
-    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v2.1.1</div>
-    <h1>p5.<span class="accent">waves</span></h1>
-    <p style="font-size:1.1rem; color:#333;">
-      Wave sampling helpers for p5.js. <strong>Always returns a number.</strong><br>
-      34 formulas you can switch between for structured surprise — variation that keeps its rhythm, never degenerates into chaos.
-    </p>
-    <h2>What this library does</h2>
-    <p>
-      p5.waves gives you a curated list of <strong>34 wave formulas</strong> you can sample with a single number input.
-      Each formula is a small math expression that takes <code>x</code>. You pass your position (<code>y</code>)
-      and get a number back — ready to use as an offset, color value, size, or anything else.
-    </p>
-    <p>
-      The core idea is <strong>structured surprise</strong>: switching between formulas changes the shape of the wave, but never its fundamental nature. Every formula stays periodic and legible — you always recognise a wave. That makes formula-switching a creative tool, not a chaos generator.
+    <div class="section-tag" style="margin-bottom:0.6rem">Origin &amp; Story</div>
+    <h1>About p5.<span class="accent">waves</span></h1>
+    <p style="font-size:1.05rem; color:#333;">
+      How a list of 34 math expressions became a creative tool —
+      and why switching between wave formulas feels like unlocking variation in a deterministic world.
     </p>
 
-    <div class="highlight-grid">
-      <div class="highlight-card">
-        <div class="card-tag">Core</div>
-        <strong>34 wave formulas</strong>
-        <p>From classic sine and triangle to noise, fuzzy peaks and irregular pulses — each with its own character, all with recognizable periodic structure.</p>
-      </div>
-      <div class="highlight-card">
-        <div class="card-tag">Animation</div>
-        <strong>Time parameter <code>t</code></strong>
-        <p>Pass <code>t: frameCount * 0.01</code> and every wave animates smoothly — no extra code needed.</p>
-      </div>
-      <div class="highlight-card">
-        <div class="card-tag">Output</div>
-        <strong>Range normalisation</strong>
-        <p>With <code>range: [-80, 80]</code> the output maps automatically to your coordinate space.</p>
-      </div>
-      <div class="highlight-card">
-        <div class="card-tag">Variation</div>
-        <strong>Wild Mode</strong>
-        <p>Set <code>mode: 'wild'</code> to inject position-varying noise — the wave grows wilder, but never loses its shape entirely.</p>
-      </div>
-      <div class="highlight-card">
-        <div class="card-tag">2D</div>
-        <strong>createGrid()</strong>
-        <p>Generates a full grid in one call — as Float32Array (range) or Uint8Array (binary via threshold).</p>
-      </div>
-      <div class="highlight-card">
-        <div class="card-tag">Reusable</div>
-        <strong>createSampler()</strong>
-        <p>Configure once, sample hundreds of times. Two samplers with different seeds give independent axes — no correlation.</p>
+    <h2>The Dataset</h2>
+    <p>
+      It started with a shared list. A curated collection of wave formulas — short math expressions,
+      each producing a different oscillation pattern from a single input number.
+      Sine, cosine, tangent, modulo, absolute value, rounding — combined in dozens of ways.
+    </p>
+    <p>
+      The original dataset came from the creative coding community.
+      <strong>GenerativePunk</strong> and <strong>ffd8</strong> contributed the core set of formulas
+      that would become the foundation of this library. Each formula was small enough to read
+      in a single line, expressive enough to recognise by its shape.
+    </p>
+
+    <h2>The Origin Grid</h2>
+    <p>
+      The moment everything clicked was a 16&times;16 binary grid.
+      Two wave algorithms — one for rows, one for columns — combined into a black-and-white pattern.
+      When the grid went all-black or all-white, it auto-advanced to the next formula pair.
+    </p>
+
+    <div class="origin-label">Genuary 2025 · 16&times;16 challenge · live sketch</div>
+    <div class="origin-grid-wrap">
+      <div id="origin-grid-canvas"></div>
+      <div class="origin-grid-info">
+        <div>row: <span id="og-algo-a">0</span> · col: <span id="og-algo-b">10</span></div>
+        <div id="og-names"></div>
       </div>
     </div>
 
-    <h2>Core API</h2>
-    <ul class="api-list">
-      <li>
-        Waves.wave(y, options)
-        <span>Single-shot sampling — returns one number. Second param: number (seed), string (name), or options object.</span>
-      </li>
-      <li>
-        Waves.createSampler(options) → { sample(y, t) }
-        <span>Reusable sampler. Configuration is resolved once; ideal for loops and grids.</span>
-      </li>
-      <li>
-        Waves.createGrid(cols, rows, options) → { sample(t) }
-        <span>Returns Float32Array or Uint8Array for a full grid. Combines two waves (row + col direction).</span>
-      </li>
-      <li>
-        Waves.list() / Waves.count / Waves.data
-        <span>Discovery — inspect all 34 formulas with name, index and expression.</span>
-      </li>
-    </ul>
-
-    <h2>Installation</h2>
-    <p>Via CDN (script tag, load after p5.js):</p>
-    <div class="code-preview">
-      <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;<br>
-&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v2.1.1/p5.waves.js"&gt;&lt;/script&gt;</code>
+    <div class="story-block">
+      <p>
+        That sketch was about 30 lines of draw logic. But watching it run was a revelation:
+        predictable math producing patterns that felt alive. Each formula switch changed the
+        character of the grid — from stripes to checkers to organic clusters to total silence,
+        then back again. <strong>Structured surprise.</strong>
+      </p>
     </div>
+    <p>
+      This was the emotional benchmark. Every decision in the library since then has been measured
+      against that feeling: would this make the grid sketch simpler or more expressive?
+    </p>
+
+    <h2>From Predictable to Surprising</h2>
+    <p>
+      p5.js sketches are deterministic by default. Run the same code, get the same picture.
+      That is a feature for learning, but a limitation for creative expression.
+      The sketch looks identical every time — no variation, no discovery, no surprise.
+    </p>
+    <p>
+      p5.waves exists to change that. By giving you 34 formulas you can switch between,
+      every run can produce a different result. Not random chaos — structured variation.
+      The wave always has a recognisable shape. But which shape? That can change.
+    </p>
+    <p>
+      Seeding, morphing, shifting, wild mode — these are all mechanisms for the same idea:
+      the sketch should feel different every time you reload, while remaining legible and intentional.
+      A different result every run, but never a broken one.
+    </p>
+
+    <h2>Building the Library</h2>
+    <p>
+      The design decisions were driven by simplicity. One function, one number back:
+      <code>Waves.wave(y)</code>. No setup required. No configuration before you start.
+      The mental model mirrors <code>noise(y)</code> in p5.js — pass a coordinate, get a value.
+    </p>
+    <p>
+      Everything else layers on top: naming formulas, morphing between them, caching with samplers,
+      sampling grids. But the entry point is always the same single function call.
+      If user code becomes awkward to use the library, the fix belongs in the library — not in
+      instructions telling the user to write differently.
+    </p>
 
     <div class="credits-block">
       <h2 style="margin-top:0">Makers &amp; Contributors</h2>
@@ -198,5 +190,129 @@
     <p class="footer-sub">34 wave formulas · createSampler · createGrid · Wild Mode · 3D Terrain · Browser Presets</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.min.js"></script>
+  <script>
+  // Origin Grid — the original Genuary 16x16 sketch that inspired p5.waves
+  // Faithfully reproduced from the 2025 submission with all 37 original formulas
+
+  var ogWaveNames = [
+    'classic sine', 'sine', 'sharp peaks', 'abs sine sum', 'square', 'pulse',
+    'stepped sine', 'mountain peaks', 'valleys', 'zig-zag sine', 'batman',
+    'zig-zag cos-sin', 'offset sine', 'steps down', 'steps', 'sq shifted sine',
+    'squared sine', 'bumpy sine', 'wobble sine', 'up down noise', 'meta sine',
+    'triangle', 'ramp', 'saw down', 'saw up', 'fade out', 'grow random',
+    'noise', 'fuzzy pulse', 'up down pulse', 'bald patch', 'fuzzy peak sine',
+    'ramp up sine', 'triangle sine', 'round linked sine', 'half sine', 'smooth solid sine'
+  ];
+
+  new p5(function(p) {
+    var gridSize = 16;
+    var cellSz;
+    var tijd = 0;
+    var algoA = 0;
+    var algoB = 10;
+
+    p.setup = function() {
+      var parent = document.getElementById('origin-grid-canvas');
+      var w = parent.offsetWidth;
+      var canvas = p.createCanvas(w, w);
+      canvas.parent(parent);
+      cellSz = w / gridSize;
+      p.noStroke();
+      p.noSmooth();
+      p.frameRate(30);
+      updateInfo();
+    };
+
+    p.draw = function() {
+      p.background(255);
+      tijd += 0.02;
+
+      var zwart = 0;
+      var wit = 0;
+
+      for (var row = 0; row < gridSize; row++) {
+        for (var col = 0; col < gridSize; col++) {
+          var nx = col / gridSize * p.TWO_PI;
+          var ny = row / gridSize * p.TWO_PI;
+
+          var a = getWaveValue(algoA, nx + tijd);
+          var b = getWaveValue(algoB, ny - tijd);
+
+          var v = a + b;
+
+          if (v > 0) {
+            p.fill(0);
+            zwart++;
+          } else {
+            p.fill(245);
+            wit++;
+          }
+          p.rect(col * cellSz, row * cellSz, cellSz, cellSz);
+        }
+      }
+
+      if (zwart === 256 || wit === 256) {
+        algoA = (algoA + 1) % 37;
+        algoB = (algoA + 10) % 37;
+        tijd = 0;
+        updateInfo();
+      }
+    };
+
+    function updateInfo() {
+      var elA = document.getElementById('og-algo-a');
+      var elB = document.getElementById('og-algo-b');
+      var elNames = document.getElementById('og-names');
+      if (elA) elA.textContent = algoA;
+      if (elB) elB.textContent = algoB;
+      if (elNames) elNames.textContent = (ogWaveNames[algoA] || algoA) + ' + ' + (ogWaveNames[algoB] || algoB);
+    }
+
+    function getWaveValue(index, x) {
+      var y = 0;
+      switch (index) {
+        case 0: y = p.sin(x * 0.1) * 0.4; break;
+        case 1: y = p.sin(x * 0.2) * 0.25; break;
+        case 2: y = p.abs(p.sin(x * 0.1)) * 0.5; break;
+        case 3: y = p.abs(p.sin(x * 0.01 + x * 0.1)) * 0.5; break;
+        case 4: y = (x * 0.025) % 1 < 0.5 ? -0.5 : 0.5; break;
+        case 5: y = (x * 0.5) % 20 < 1 ? -0.5 : 0.5; break;
+        case 6: y = p.ceil(p.sin(x * 0.1)) * 0.25; break;
+        case 7: y = p.abs(p.cos(x * 0.1)) * 0.35 + p.sin(x * 0.1) * 0.25; break;
+        case 8: y = p.abs(p.cos(x * 0.1)) * -0.35 + p.sin(x * 0.1) * 0.25; break;
+        case 9: y = (p.sin(x * 0.1) * 0.25) % 0.15; break;
+        case 10: y = (p.sin(x * 0.1) * 0.7) % 0.4; break;
+        case 11: y = (p.sin(x * 0.1) * 0.25 - p.cos(x * 0.1) * 0.25) % 0.15; break;
+        case 12: y = p.ceil(p.cos(x * 0.1)) * 0.25 - p.sin(x * 0.1) * 0.25; break;
+        case 13: y = p.ceil(p.tan(x * 0.1)) * 0.25; break;
+        case 14: y = p.round(p.sin(-x * 0.1)) * 0.25; break;
+        case 15: y = p.sq(p.sin(p.PI / 2 + x * 0.1)) * 0.25; break;
+        case 16: y = p.sq(p.sin(x * 0.1)) * 0.25; break;
+        case 17: y = p.sin(x * 0.1) * 0.25 + p.sin(x * 0.5) * 0.1; break;
+        case 18: y = p.sin(x * 0.1) * p.cos(x * 0.2) * 0.5; break;
+        case 19: y = (x * p.sin(x * 0.1)) % 0.5; break;
+        case 20: y = p.sin(x * 0.45 + p.radians(x)) * p.cos(x * 0.4) * 0.5; break;
+        case 21: y = p.abs((x * 0.03) % 1 - 0.5); break;
+        case 22: y = -1 * (x * 0.02 % 1) + 0.5; break;
+        case 23: y = (x * 0.03) % 0.5; break;
+        case 24: y = (-x * 0.03) % 0.5; break;
+        case 25: y = x > 0 ? p.log(x) * 0.1 : 0; break;
+        case 26: y = p.random(x * 0.003); break;
+        case 27: y = p.noise(x * 0.1) - 0.5; break;
+        case 28: y = p.tan(x * 20) * 0.05; break;
+        case 29: y = p.tan(x * 0.1) * 0.05; break;
+        case 30: y = p.sq(x * 0.05) % 0.5; break;
+        case 31: y = p.sin(x * 0.1) < 0 ? p.random(-0.2, 0.2) : p.sin(x * 0.1) * 0.5; break;
+        case 32: y = p.sin(x) * (x * 0.01 % 0.5); break;
+        case 33: y = p.sin(x) * (x * 0.01 % 1 - 0.5); break;
+        case 34: y = p.sin(x * 0.1) * p.cos(x * 1) * 0.5; break;
+        case 35: y = p.sin(x * 0.05) * (x * 0.1 % 0.5); break;
+        case 36: y = p.sin(x * 3.1) * 0.25; break;
+      }
+      return isFinite(y) ? y : 0;
+    }
+  });
+  </script>
 </body>
 </html>
