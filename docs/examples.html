@@ -31,7 +31,7 @@
     <h1>p5.<span class="accent">waves</span> Examples</h1>
     <p>Animated gallery — each thumbnail spotlights a distinct API feature. Click <strong>→ full example</strong> for code, description, and full-quality canvas.</p>
     <a class="ex-lab-card" href="../examples/00_wave_lab/" target="_blank">
-      <div class="section-tag">Interactive playground</div>
+      <div class="section-tag">Interactive playground · shift</div>
       <strong>Wave Lab →</strong>
       <p>All 34 formulas. Morph, shift, wild mode. Live code editor with copy-paste export.</p>
     </a>
@@ -40,7 +40,7 @@
   <!-- 0. FIRST CALL -->
   <section id="firstcall" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">API: Waves.wave(y) · wave(y, seed) · wave(y, 'name') · wave(y, {…})</div>
+      <div class="section-tag">API: Waves.wave(y) · wave(y, seed) · wave(y, 'name') · wave(y, {…}) · stable</div>
       <h2>The <span class="accent">call</span></h2>
       <p class="section-desc">The second argument is optional. Pass a seed (number), a wave name (string), or a full options object — all three return the same kind of number. Start with whichever form fits.</p>
     </div>
@@ -52,7 +52,7 @@
   <!-- 1. WAVE SHIFT -->
   <section id="basics" class="section">
     <div class="section-header">
-      <div class="section-tag">feature: createSampler({ shift: true })</div>
+      <div class="section-tag">feature: createSampler({ shift: true }) · shift</div>
       <h2>Wave <span class="accent">Shift</span></h2>
       <p class="section-desc">One wave line that smoothly morphs into a randomly chosen formula every few seconds. Pass <code>shift: true</code> — the library handles timing, random picking, and smooth easing internally. Zero boilerplate.</p>
     </div>
@@ -65,7 +65,7 @@
   <!-- 1b. SEED × TIME — AUTO WAVE CYCLING -->
   <section id="seeding" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">feature: seed · floor(t / interval)</div>
+      <div class="section-tag">feature: seed · floor(t / interval) · stable</div>
       <h2>Seed as a <span class="accent">time dimension</span></h2>
       <p class="section-desc"><code>seed</code> deterministically picks a wave formula. Pass <code>floor(t / interval)</code> as seed and the wave rotates automatically — no state, no timers, no extra variables. The formula changes; the rhythm stays recognizable.</p>
     </div>
@@ -77,7 +77,7 @@
   <!-- 1c. AMPLITUDE · FREQUENCY · PHASE -->
   <section id="params" class="section">
     <div class="section-header">
-      <div class="section-tag">params: amplitude · frequency · phase</div>
+      <div class="section-tag">params: amplitude · frequency · phase · stable</div>
       <h2>Shape <span class="accent">parameters</span></h2>
       <p class="section-desc"><code>amplitude</code> scales the output height. <code>frequency</code> compresses or stretches the wave horizontally. <code>phase</code> shifts it sideways. Each row fans from small (light) to large (dark) — same formula, one parameter varies.</p>
     </div>
@@ -90,7 +90,7 @@
   <!-- 3. NOISE & RANDOM -->
   <section id="noise" class="section">
     <div class="section-header">
-      <div class="section-tag">waves: noise · grow random · fuzzy peak sine · fuzzy pulse</div>
+      <div class="section-tag">waves: noise · grow random · fuzzy peak sine · fuzzy pulse · stable</div>
       <h2>Noise &amp; <span class="accent">random</span> waves</h2>
       <p class="section-desc">Several formulas produce structurally different randomness — smooth noise, growing random values, fuzzy peaks, irregular pulses. Deterministic and surprising, but always wave-shaped: structured noise, not chaos.</p>
     </div>
@@ -102,7 +102,7 @@
   <!-- 4. WILD MODE -->
   <section id="wild" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">option: mode: 'wild' · unpredictability: 0–1</div>
+      <div class="section-tag">option: mode: 'wild' · unpredictability: 0–1 · stable</div>
       <h2>Wild <span class="accent">mode</span></h2>
       <p class="section-desc">Any wave can run in wild mode. Left: smooth. Right: <code>mode: 'wild'</code> with <code>unpredictability: 0.65</code>. Wild mode injects position-varying noise into frequency, phase and amplitude simultaneously.</p>
     </div>
@@ -115,7 +115,7 @@
   <!-- 5. CREATESAMPLER -->
   <section id="sampler" class="section">
     <div class="section-header">
-      <div class="section-tag">API: Waves.createSampler(options)</div>
+      <div class="section-tag">API: Waves.createSampler(options) · stable</div>
       <h2>Create<span class="accent">Sampler</span></h2>
       <p class="section-desc">Configure once, sample hundreds of times per frame. Two samplers with different wave shapes drive X and Y — each phase step traces an orbit unique to that combination.</p>
     </div>
@@ -128,7 +128,7 @@
   <!-- 6. CREATEGRID -->
   <section id="grid" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">API: Waves.createGrid(cols, rows, options)</div>
+      <div class="section-tag">API: Waves.createGrid(cols, rows, options) · stable</div>
       <h2>Create<span class="accent">Grid</span></h2>
       <p class="section-desc">One call generates a full 2D grid per frame. With <code>threshold</code> it returns a <code>Uint8Array</code> of 0/1 values — a binary pattern you can render any way you like.</p>
     </div>
@@ -140,7 +140,7 @@
   <!-- 7. FLOW FIELD -->
   <section id="flow" class="section">
     <div class="section-header">
-      <div class="section-tag">API: Waves.createSampler() × 4 — particles</div>
+      <div class="section-tag">API: Waves.createSampler() × 4 — particles · stable</div>
       <h2>Flow <span class="accent">fields</span></h2>
       <p class="section-desc">Four samplers — each a different wave — steer 100 particles. Configure once, sample every particle on every frame. Swap the wave names to change the flow pattern — the motion shifts character, not coherence.</p>
     </div>
@@ -153,7 +153,7 @@
   <!-- 8. MANUAL TIME -->
   <section id="time" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">feature: t is just a number</div>
+      <div class="section-tag">feature: t is just a number · stable</div>
       <h2>Time is a <span class="accent">number</span></h2>
       <p class="section-desc">There is no built-in clock. Pass any number as <code>t</code> — move the <strong>mouse</strong> to scrub through time. Freeze it, rewind it, slow it down for frame captures.</p>
     </div>
@@ -166,7 +166,7 @@
   <!-- 9. COLOR OUTPUT -->
   <section id="color" class="section">
     <div class="section-header">
-      <div class="section-tag">output: hue · brightness — colorMode(HSB) — 2D field</div>
+      <div class="section-tag">output: hue · brightness — colorMode(HSB) — 2D field · shift</div>
       <h2>Wave <span class="accent">Color Field</span></h2>
       <p class="section-desc">Two waves interfere across x and y to drive hue and brightness. Sampling <code>wave(x+y)</code> and <code>wave(x−y)</code> creates diagonal colour landscapes — a 2D field that flows as <code>t</code> advances.</p>
     </div>
@@ -179,7 +179,7 @@
   <!-- 11. TYPOGRAPHY OUTPUT -->
   <section id="typography" class="section">
     <div class="section-header">
-      <div class="section-tag">output: textSize · vertical lift · opacity</div>
+      <div class="section-tag">output: textSize · vertical lift · opacity · stable</div>
       <h2>Wave as <span class="accent">type</span></h2>
       <p class="section-desc">4×5 grid of WAVES — each letter an independent instance. Wave formula morphs smoothly every 2 seconds, crossfading size, lift, and opacity across all 100 letters simultaneously.</p>
     </div>
@@ -192,7 +192,7 @@
   <!-- 12. MORPH WAVE -->
   <section id="morph" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">feature: wave: [a, b] · mix — crossfade between formulas</div>
+      <div class="section-tag">feature: wave: [a, b] · mix — crossfade between formulas · stable</div>
       <h2>Morph <span class="accent">Wave</span></h2>
       <p class="section-desc">Pass <code>wave: ['nameA', 'nameB']</code> with a <code>mix</code> value (0–1) to crossfade between any two formulas. Animate <code>mix</code> to smoothly morph the shape over time.</p>
     </div>
