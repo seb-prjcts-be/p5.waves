@@ -685,14 +685,14 @@
       var rowH = p.height / ROWS;
       for (var row = 0; row < ROWS; row++) {
         var rowFrac = row / (ROWS - 1);
-        var dist = p.abs(rowFrac - centre);
-        var morphMix = p.constrain(1 - dist * 3, 0, 1);
+        var gap = p.abs(rowFrac - centre);
+        var morphMix = p.constrain(1 - gap * 3, 0, 1);
         var yBase = row * rowH + rowH * 0.5;
         var r = p.lerp(40, 210, morphMix);
         var gn = p.lerp(90, 60, morphMix);
         var b = p.lerp(200, 100, morphMix);
         p.noFill();
-        p.stroke(r, gn, b, 50 + (1 - dist) * 160);
+        p.stroke(r, gn, b, 50 + (1 - gap) * 160);
         p.strokeWeight(0.8 + morphMix * 1.2);
         p.beginShape();
         for (var x = 0; x < p.width; x += 4) {
