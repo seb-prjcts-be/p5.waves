@@ -205,9 +205,9 @@
   <!-- 14. 3D WAVE VOLUME -->
   <section id="wavevolume" class="section section-dark">
     <div class="section-header">
-      <div class="section-tag">WEBGL · 3D · wave cycling</div>
+      <div class="section-tag">WEBGL · 3D · shift</div>
       <h2>3D Wave <span class="accent">Volume</span></h2>
-      <p class="section-desc">12×12 point lattice. Two <code>Waves.wave()</code> calls — one along X, one along Z — define a floating wave surface. The formula cycles through all 34 types every 2 seconds.</p>
+      <p class="section-desc">12×12 grid with three <code>createSampler()</code> calls — one per axis, each with <code>shift:&nbsp;true</code> on its own cycle. Y drives the surface, X and Z warp the grid. Points near the surface glow.</p>
     </div>
     <div class="ex-preview">
       <div id="ex14" class="ex-canvas"></div>
@@ -695,26 +695,57 @@
 
   // ── 14. 3D Wave Volume ────────────────────────────────────
   new p5(function(p) {
-    var N = 12, SPACING = 18, CYCLE = 60;
+    var N = 12, SPACING = 18, half = (N - 1) * SPACING / 2;
+    var sY, sX, sZ;
     p.setup = function() {
       var w = cw('ex14');
       p.createCanvas(w, Math.round(w * 2/3), p.WEBGL).parent('ex14');
-      p.frameRate(24); p.noFill(); p.stroke(120, 160, 255); p.strokeWeight(3);
+      p.frameRate(24); p.noFill(); p.strokeWeight(3);
+      sY = Waves.createSampler({
+        shift: true,
+        shiftInterval: 3,
+        shiftDuration: 1.5,
+        range: [-5, 5],
+        frequency: 0.4,
+        seed: 0
+      });
+      sX = Waves.createSampler({
+        shift: true,
+        shiftInterval: 4,
+        shiftDuration: 1.2,
+        range: [-2.5, 2.5],
+        frequency: 0.3,
+        seed: 42
+      });
+      sZ = Waves.createSampler({
+        shift: true,
+        shiftInterval: 5,
+        shiftDuration: 1,
+        range: [-2.5, 2.5],
+        frequency: 0.35,
+        seed: 77
+      });
     };
     p.draw = function() {
       p.background(12);
-      p.rotateX(-0.5); p.rotateY(p.frameCount * 0.007);
-      var t     = p.frameCount * 0.008;
-      var half  = (N - 1) * SPACING / 2;
-      var waveX = Math.floor(p.frameCount / CYCLE) % Waves.count;
-      var waveZ = (waveX + 1) % Waves.count;
+      p.rotateX(-0.5); p.rotateY(p.frameCount * 0.006);
+      var t = p.millis() / 1000;
       p.beginShape(p.POINTS);
       for (var xi = 0; xi < N; xi++) {
         for (var zi = 0; zi < N; zi++) {
-          var wv = Waves.wave(xi * 0.38, { wave: waveX, t: t, amplitude: 6 })
-                 + Waves.wave(zi * 0.38, { wave: waveZ, t: t * 0.85, amplitude: 6 });
-          var yi = Math.max(0, Math.min(N - 1, Math.round(N / 2 + wv / 2)));
-          p.vertex(-half + xi * SPACING, -half + yi * SPACING, -half + zi * SPACING);
+          var dy = sY.sample(xi * 0.9 + zi * 0.6, t);
+          var dx = sX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
+          var dz = sZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
+          var surfaceRow = N / 2 + dy;
+          for (var yi = 0; yi < N; yi++) {
+            var gap = Math.abs(yi - surfaceRow);
+            if (gap < 2.5) {
+              var glow = 1 - gap / 2.5;
+              var bright = Math.round(80 + (yi / (N - 1)) * 175);
+              p.stroke(bright, bright, 255, 255 * glow);
+              p.vertex(-half + xi * SPACING + dx * SPACING * 0.4, -half + yi * SPACING, -half + zi * SPACING + dz * SPACING * 0.4);
+            }
+          }
         }
       }
       p.endShape();
