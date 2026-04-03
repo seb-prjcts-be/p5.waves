@@ -32,7 +32,7 @@
       background: #fff;
       overflow: hidden;
     }
-    .origin-grid-wrap canvas { display: block !important; width: 100% !important; height: auto !important; }
+    .origin-grid-wrap canvas { display: block !important; margin: 0 auto; }
     .origin-grid-info {
       display: flex;
       justify-content: space-between;
@@ -214,19 +214,18 @@
 
     p.setup = function() {
       var parent = document.getElementById('origin-grid-canvas');
-      var w = parent.offsetWidth;
+      var w = Math.floor(parent.offsetWidth / gridSize) * gridSize;
       var canvas = p.createCanvas(w, w);
       canvas.parent(parent);
       cellSz = w / gridSize;
       p.noStroke();
-      p.noSmooth();
       p.frameRate(30);
       updateInfo();
     };
 
     p.draw = function() {
       p.background(255);
-      tijd += 0.02;
+      tijd += 0.03;
 
       var zwart = 0;
       var wit = 0;
