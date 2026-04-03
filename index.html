@@ -94,8 +94,8 @@
           <select id="ctrl-wave"><!-- populated by JS --></select>
         </div>
         <div class="control-group">
-          <label>Amplitude <span id="val-amplitude">136</span></label>
-          <input type="range" id="ctrl-amplitude" min="10" max="200" value="136">
+          <label>Amplitude <span id="val-amplitude">68</span></label>
+          <input type="range" id="ctrl-amplitude" min="5" max="120" value="68">
         </div>
         <div class="control-group">
           <label>Frequency <span id="val-frequency">0.060</span></label>
@@ -225,6 +225,16 @@
     </div>
   </section>
 
+  <!-- 100X GRID -->
+  <section id="grid100" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">100 sketches · shift · wild · createGrid</div>
+      <h2>100 Ways to Use <span class="accent">p5.waves</span></h2>
+      <p class="section-desc">Every cell is a unique sketch powered by the library. Waveforms as engines for motion, color, shape, and pattern.</p>
+    </div>
+    <div id="grid100-canvas"></div>
+  </section>
+
   <!-- 3D TERRAIN -->
   <section id="terrain" class="section">
     <div class="section-header">
@@ -321,5 +331,6 @@
   </footer>
 
   <script src="docs/sketch.js"></script>
+  <script src="docs/grid100.js"></script>
 </body>
 </html>
