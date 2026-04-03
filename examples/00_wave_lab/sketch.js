@@ -688,7 +688,7 @@ function randomizeControls() {
 
   controls.wave.value = String(Math.floor(Math.random() * n));
   controls.seed.value = String(Math.floor(Math.random() * 501));
-  controls.amplitude.value = String(Math.floor(80 + Math.random() * 200));
+  controls.amplitude.value = String(Math.floor(30 + Math.random() * 90));
   controls.frequency.value = fmt(0.4 + Math.random() * 3, 2);
   controls.phase.value = fmt(-6 + Math.random() * 12, 2);
   controls.mode.value = Math.random() > 0.6 ? 'wild' : 'stable';
