@@ -24,7 +24,7 @@ function draw() {
 
   // ── Row 1: amplitude ──────────────────────────────────────
   for (i = 0; i < N; i++) {
-    amp = map(i, 0, N - 1, 8, rowH * 0.42);
+    amp = map(i, 0, N - 1, 4, rowH * 0.21);
     var alphaVal = map(i, 0, N - 1, 30, 120);
     fill(hues[0][0], hues[0][1], hues[0][2], alphaVal);
     noStroke();
@@ -53,13 +53,13 @@ function draw() {
     beginShape();
     for (x = 0; x <= width; x += 3) {
       waveY = Waves.wave(x * 0.016, {
-        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: freq
+        wave: WAVE, t: t, amplitude: rowH * 0.12, frequency: freq
       });
       vertex(x, rowH * 1.5 + waveY);
     }
     for (x = width; x >= 0; x -= 3) {
       waveY = Waves.wave(x * 0.016, {
-        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: freq
+        wave: WAVE, t: t, amplitude: rowH * 0.12, frequency: freq
       });
       vertex(x, rowH * 1.5 - waveY);
     }
@@ -75,13 +75,13 @@ function draw() {
     beginShape();
     for (x = 0; x <= width; x += 3) {
       waveY = Waves.wave(x * 0.016, {
-        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: 1.2, phase: ph
+        wave: WAVE, t: t, amplitude: rowH * 0.12, frequency: 1.2, phase: ph
       });
       vertex(x, rowH * 2.5 + waveY);
     }
     for (x = width; x >= 0; x -= 3) {
       waveY = Waves.wave(x * 0.016, {
-        wave: WAVE, t: t, amplitude: rowH * 0.23, frequency: 1.2, phase: ph
+        wave: WAVE, t: t, amplitude: rowH * 0.12, frequency: 1.2, phase: ph
       });
       vertex(x, rowH * 2.5 - waveY);
     }

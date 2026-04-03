@@ -5,7 +5,7 @@
 var LINE_COUNT = 10;
 var sampler = Waves.createSampler({
   shift:     true,
-  amplitude: 100,
+  amplitude: 50,
   frequency: 0.6
 });
 var t = 0;

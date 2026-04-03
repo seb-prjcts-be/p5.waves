@@ -30,7 +30,7 @@ function draw() {
     for (var y = 0; y <= height - 30; y += 3) {
       var xs = Waves.wave(y * 0.014 + phaseOff, {
         wave: WAVE, t: t + phaseOff * 0.15,
-        amplitude: 90
+        amplitude: 45
       });
       vertex(width / 4 + xs * 0.5, y);
     }
@@ -43,7 +43,7 @@ function draw() {
       var xw = Waves.wave(y2 * 0.014 + phaseOff, {
         wave: WAVE, t: t + phaseOff * 0.15,
         mode: 'wild', unpredictability: unpred,
-        amplitude: 90
+        amplitude: 45
       });
       vertex(3 * width / 4 + xw * 0.5, y2);
     }

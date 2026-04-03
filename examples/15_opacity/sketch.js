@@ -43,7 +43,7 @@ function draw() {
         mix:  morphMix,
         t:    t + row * 0.06,
         frequency: 0.08,
-        amplitude: rowH * 1.8
+        amplitude: rowH * 0.9
       });
       vertex(x, yBase + constrain(waveY, -rowH * 0.45, rowH * 0.45));
     }

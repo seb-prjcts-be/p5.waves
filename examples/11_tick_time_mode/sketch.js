@@ -28,7 +28,7 @@ function draw() {
       var dy = Waves.wave(x * 0.015, {
         wave:      'classic sine',
         t:         layerT,
-        amplitude: 40
+        amplitude: 20
       });
       vertex(x, y0 + dy);
     }
@@ -37,7 +37,7 @@ function draw() {
       var dy2 = Waves.wave(x2 * 0.015, {
         wave:      'classic sine',
         t:         layerT + 0.3,
-        amplitude: 25
+        amplitude: 12
       });
       vertex(x2, y0 + dy2 + 22);
     }
