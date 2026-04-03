@@ -1,7 +1,7 @@
 /*!
  * p5.waves
  * Wave sampling for p5.js. Always returns a number.
- * Version 2.1.1
+ * Version 3.0.0
  * Author: seb@prjcts
  * License: MIT
  */
@@ -233,7 +233,7 @@
   // ─── Normalization ────────────────────────────────────────────────────────────
 
   const STATS_DOMAIN  = [-200, 200];
-  const STATS_SAMPLES = 256;
+  const STATS_SAMPLES = 1024;
 
   function getStats(waveIndex, internalSeed) {
     const key = waveIndex + '|' + internalSeed;
@@ -265,6 +265,12 @@
     return range[0] + t * (range[1] - range[0]);
   }
 
+  function normalizeVal(rawVal, stats) {
+    if (stats.min === stats.max) return 0;
+    const n = (rawVal - stats.min) / (stats.max - stats.min) * 2 - 1;
+    return n < -1 ? -1 : n > 1 ? 1 : n;
+  }
+
   // ─── Shared evaluation kernel ─────────────────────────────────────────────────
 
   function evalKernel(fn, y, t, frequency, phase, seed, mode, unpredictability) {
@@ -280,20 +286,25 @@
   function wave(y, secondParam) {
     // ─── Fast path: wave(y) — no params ──────────────────────
     if (secondParam == null) {
-      const idx = pickWaveIndex(0);
-      return evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, seedFrom(0)) * 100;
+      const idx   = pickWaveIndex(0);
+      const iSeed = seedFrom(0);
+      const raw   = evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, iSeed);
+      return normalizeVal(raw, getStats(idx, iSeed)) * 100;
     }
     // ─── Fast path: wave(y, number) — seed only ──────────────
     if (typeof secondParam === 'number') {
       const iSeed = seedFrom(secondParam);
       const idx   = pickWaveIndex(secondParam);
-      return evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, iSeed) * 100;
+      const raw   = evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, iSeed);
+      return normalizeVal(raw, getStats(idx, iSeed)) * 100;
     }
     // ─── Fast path: wave(y, 'name') — wave name only ─────────
     if (typeof secondParam === 'string') {
-      const r   = resolveWave(secondParam);
-      const idx = r >= 0 ? r : pickWaveIndex(0);
-      return evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, seedFrom(0)) * 100;
+      const r     = resolveWave(secondParam);
+      const idx   = r >= 0 ? r : pickWaveIndex(0);
+      const iSeed = seedFrom(0);
+      const raw   = evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, iSeed);
+      return normalizeVal(raw, getStats(idx, iSeed)) * 100;
     }
 
     // ─── Full path: wave(y, { ... }) ─────────────────────────
@@ -343,11 +354,13 @@
           const nB = mapToRange(valB, getStats(idxB, internalSeed), range);
           return nA + (nB - nA) * m;
         }
-        return (valA + (valB - valA) * m) * amplitude;
+        const nA = normalizeVal(valA, getStats(idxA, internalSeed));
+        const nB = normalizeVal(valB, getStats(idxB, internalSeed));
+        return (nA + (nB - nA) * m) * amplitude;
       }
 
       if (range !== null) return mapToRange(valA, getStats(idxA, internalSeed), range);
-      return valA * amplitude;
+      return normalizeVal(valA, getStats(idxA, internalSeed)) * amplitude;
     }
 
     // ─── Morph: wave: ['nameA', 'nameB'], mix: 0–1 ───────────
@@ -361,7 +374,14 @@
       const fnB  = compile(WAVES[idxB].algo);
       const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
       const valB = evalKernel(fnB, y, t, frequency, phase, internalSeed, mode, unpredictability);
-      return (valA + (valB - valA) * mix) * amplitude;
+      if (range !== null) {
+        const rA_ = mapToRange(valA, getStats(idxA, internalSeed), range);
+        const rB_ = mapToRange(valB, getStats(idxB, internalSeed), range);
+        return rA_ + (rB_ - rA_) * mix;
+      }
+      const nA = normalizeVal(valA, getStats(idxA, internalSeed));
+      const nB = normalizeVal(valB, getStats(idxB, internalSeed));
+      return (nA + (nB - nA) * mix) * amplitude;
     }
 
     let waveIndex;
@@ -372,15 +392,12 @@
       waveIndex = pickWaveIndex(seed);
     }
 
-    const fn  = compile(WAVES[waveIndex].algo);
-    let val   = evalKernel(fn, y, t, frequency, phase, internalSeed, mode, unpredictability);
+    const fn    = compile(WAVES[waveIndex].algo);
+    const val   = evalKernel(fn, y, t, frequency, phase, internalSeed, mode, unpredictability);
+    const stats = getStats(waveIndex, internalSeed);
 
-    if (range !== null) {
-      const stats = getStats(waveIndex, internalSeed);
-      return mapToRange(val, stats, range);
-    }
-
-    return val * amplitude;
+    if (range !== null) return mapToRange(val, stats, range);
+    return normalizeVal(val, stats) * amplitude;
   }
 
   // ─── createSampler() ─────────────────────────────────────────────────────────
@@ -421,9 +438,10 @@
       waveIndexB = rB >= 0 ? rB : pickWaveIndex(seed);
     }
 
-    const fn    = compile(WAVES[waveIndexA].algo);
-    const fnB   = waveIndexB >= 0 ? compile(WAVES[waveIndexB].algo) : null;
-    const stats = range !== null && !isMorph ? getStats(waveIndexA, internalSeed) : null;
+    const fn     = compile(WAVES[waveIndexA].algo);
+    const fnB    = waveIndexB >= 0 ? compile(WAVES[waveIndexB].algo) : null;
+    const statsA = getStats(waveIndexA, internalSeed);
+    const statsB = waveIndexB >= 0 ? getStats(waveIndexB, internalSeed) : null;
 
     // ─── Shift mode ──────────────────────────────────────────
     if (opts.shift) {
@@ -481,12 +499,14 @@
               const nB = mapToRange(valB, getStats(nxtIdx, internalSeed), range);
               return nA + (nB - nA) * m;
             }
-            return (valA + (valB - valA) * m) * amplitude;
+            const nA = normalizeVal(valA, getStats(curIdx, internalSeed));
+            const nB = normalizeVal(valB, getStats(nxtIdx, internalSeed));
+            return (nA + (nB - nA) * m) * amplitude;
           }
 
           lastMix = 0;
           if (range !== null) return mapToRange(valA, getStats(curIdx, internalSeed), range);
-          return valA * amplitude;
+          return normalizeVal(valA, getStats(curIdx, internalSeed)) * amplitude;
         }
       };
     }
@@ -502,10 +522,17 @@
         if (fnB !== null) {
           const mixVal = mix !== undefined ? toUnit(mix, mixDefault) : mixDefault;
           const valB   = evalKernel(fnB, y, tVal, frequency, phase, internalSeed, mode, unpredictability);
-          return (val + (valB - val) * mixVal) * amplitude;
+          if (range !== null) {
+            const rA = mapToRange(val, statsA, range);
+            const rB = mapToRange(valB, statsB, range);
+            return rA + (rB - rA) * mixVal;
+          }
+          const nA = normalizeVal(val, statsA);
+          const nB = normalizeVal(valB, statsB);
+          return (nA + (nB - nA) * mixVal) * amplitude;
         }
-        if (range !== null && stats !== null) return mapToRange(val, stats, range);
-        return val * amplitude;
+        if (range !== null) return mapToRange(val, statsA, range);
+        return normalizeVal(val, statsA) * amplitude;
       }
     };
   }
