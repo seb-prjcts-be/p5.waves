@@ -19,7 +19,7 @@ var ids = [
   'amplitude', 'frequency', 'phase',
   'shift-enable', 'shift-interval', 'shift-duration',
   'mode', 'unpredictability',
-  'range-enable', 'range-min', 'range-max',
+  'range-enable', 'range-preset',
   'preview-mode', 'wave-row', 'wave-col', 'threshold',
   'time-speed', 'frame-rate', 'step', 'show-points', 'connect-line', 'show-grid',
   'surprise', 'copy-code', 'run-code', 'reset-code'
@@ -29,12 +29,28 @@ var valueIds = [
   'seed-value',
   'shift-interval-value', 'shift-duration-value',
   'amplitude-value', 'frequency-value', 'phase-value', 'unpredictability-value',
-  'range-min-value', 'range-max-value',
+  'range-value',
   'threshold-value', 'time-speed-value', 'step-value'
 ];
 
 function fmt(num, digits) {
   return Number(num).toFixed(digits);
+}
+
+var RANGE_PRESETS = {
+  color:      { range: [0, 255],   label: 'Color [0, 255]' },
+  opacity:    { range: [0, 1],     label: 'Opacity [0, 1]' },
+  position:   { range: null,       label: 'Position [0, width]' },
+  angle:      { range: [0, 360],   label: 'Angle [0, 360]' },
+  centered:   { range: [-100, 100], label: 'Centered [-100, 100]' },
+  normalized: { range: [-1, 1],    label: 'Normalized [-1, 1]' }
+};
+
+function resolveRangePreset(key) {
+  var preset = RANGE_PRESETS[key];
+  if (!preset) return [0, 255];
+  if (key === 'position') return [0, width];
+  return preset.range;
 }
 
 // ─── p5 setup / resize ───────────────────────────────────────────────────────
@@ -138,14 +154,7 @@ function onControlChange() {
 // ─── State reading ────────────────────────────────────────────────────────────
 
 function enforceRanges() {
-  var rMin = Number(controls['range-min'].value);
-  var rMax = Number(controls['range-max'].value);
-  if (rMin >= rMax) {
-    if (rMin >= 1.95) rMin = 1.9;
-    rMax = rMin + 0.05;
-    controls['range-min'].value = String(rMin);
-    controls['range-max'].value = String(rMax);
-  }
+  // Presets are always valid — no enforcement needed
 }
 
 function readState() {
@@ -157,9 +166,8 @@ function readState() {
   var modeVal      = controls.mode.value;
   var unpredictability = Number(controls.unpredictability.value);
   var rangeEnable  = controls['range-enable'].checked;
-  var rangeVal     = rangeEnable
-    ? [Number(controls['range-min'].value), Number(controls['range-max'].value)]
-    : null;
+  var rangePreset  = controls['range-preset'].value;
+  var rangeVal     = rangeEnable ? resolveRangePreset(rangePreset) : null;
 
   var waveRowVal = controls['wave-row'].value;
   var waveColVal = controls['wave-col'].value;
@@ -174,6 +182,7 @@ function readState() {
     mode:            modeVal,
     unpredictability: unpredictability,
     rangeEnable:     rangeEnable,
+    rangePreset:     rangePreset,
     range:           rangeVal,
     grid: {
       waveRow:   waveRowVal !== '' ? Number(waveRowVal) : undefined,
@@ -210,8 +219,8 @@ function updateValueDisplays() {
   valueTargets['frequency-value'].textContent        = fmt(controls.frequency.value, 2);
   valueTargets['phase-value'].textContent            = fmt(controls.phase.value, 2);
   valueTargets['unpredictability-value'].textContent = fmt(controls.unpredictability.value, 2);
-  valueTargets['range-min-value'].textContent        = fmt(controls['range-min'].value, 2);
-  valueTargets['range-max-value'].textContent        = fmt(controls['range-max'].value, 2);
+  var rng = resolveRangePreset(controls['range-preset'].value);
+  valueTargets['range-value'].textContent             = '[' + rng[0] + ', ' + rng[1] + ']';
   valueTargets['threshold-value'].textContent        = fmt(controls.threshold.value, 2);
   valueTargets['time-speed-value'].textContent       = fmt(controls['time-speed'].value, 3);
   valueTargets['step-value'].textContent             = controls.step.value;
@@ -231,7 +240,7 @@ function updateBadges(state) {
     ' | freq: ' + state.frequency.toFixed(2) +
     ' | phase: ' + state.phase.toFixed(2);
   document.getElementById('active-normalize').textContent = state.rangeEnable
-    ? 'range: [' + state.range[0].toFixed(2) + ', ' + state.range[1].toFixed(2) + '] x amp: ' + state.amplitude
+    ? 'range: [' + state.range[0] + ', ' + state.range[1] + '] (' + state.rangePreset + ')'
     : 'amplitude: ' + state.amplitude;
   document.getElementById('active-behavior').textContent =
     'mode: ' + state.mode + ' (' + state.unpredictability.toFixed(2) + ')';
@@ -252,8 +261,7 @@ function updateUiState() {
 
   // Range
   var rangeOn = controls['range-enable'].checked;
-  setControlDisabled('range-min', !rangeOn);
-  setControlDisabled('range-max', !rangeOn);
+  setControlDisabled('range-preset', !rangeOn);
 
   // Grid sub-controls
   var isGrid = controls['preview-mode'].value === 'grid';
@@ -340,6 +348,7 @@ function getShiftSampler(state) {
 }
 
 function drawWave(state) {
+  var LAYERS     = 8;
   var cx         = width * 0.5;
   var pointStep  = Math.max(1, state.pointStep);
   var drawPoints = state.showPoints || !state.connectLine;
@@ -350,36 +359,51 @@ function drawWave(state) {
     sampler = getShiftSampler(state);
   }
 
-  if (state.connectLine) {
-    stroke(0);
-    strokeWeight(2.1);
-    noFill();
-    beginShape();
-  } else {
-    noStroke();
-    fill(0);
-  }
+  noFill();
 
-  for (var y = 0; y <= height; y += pointStep) {
-    var sampleVal;
-    if (useShift) {
-      sampleVal = sampler.sample(y, t);
-    } else {
-      sampleVal = Waves.wave(y, buildWaveOpts(state));
-    }
-    var x = cx + (state.rangeEnable && !useShift
-      ? map(sampleVal, state.range[0], state.range[1], -state.amplitude, state.amplitude)
-      : sampleVal);
-    if (state.connectLine) vertex(x, y);
-    if (drawPoints) {
-      noStroke();
-      fill(0);
-      circle(x, y, 4);
-      if (state.connectLine) { noFill(); stroke(0); }
-    }
-  }
+  // Draw layers back to front — lightest first, darkest last
+  for (var layer = LAYERS - 1; layer >= 0; layer--) {
+    var norm     = layer / (LAYERS - 1);
+    var phaseOff = layer * 0.3;
+    var shade    = Math.round(200 - norm * 170);
+    var alphaVal = Math.round(30 + norm * 225);
 
-  if (state.connectLine) endShape();
+    if (state.connectLine) {
+      stroke(shade, shade, shade, alphaVal);
+      strokeWeight(1.8);
+      beginShape();
+    }
+
+    for (var y = 0; y <= height; y += pointStep) {
+      var sampleVal;
+      if (useShift) {
+        sampleVal = sampler.sample(y + phaseOff * 50, t + phaseOff * 0.15);
+      } else {
+        var opts = buildWaveOpts(state);
+        opts.phase = (opts.phase || 0) + phaseOff;
+        sampleVal = Waves.wave(y + phaseOff * 50, opts);
+      }
+      var x = cx + (state.rangeEnable && !useShift
+        ? map(sampleVal, state.range[0], state.range[1], -state.amplitude, state.amplitude)
+        : sampleVal);
+
+      if (state.connectLine) vertex(x, y);
+
+      // Points only on the front layer
+      if (drawPoints && layer === 0) {
+        noStroke();
+        fill(0, 0, 0, 200);
+        circle(x, y, 4);
+        if (state.connectLine) {
+          noFill();
+          stroke(shade, shade, shade, alphaVal);
+          strokeWeight(1.8);
+        }
+      }
+    }
+
+    if (state.connectLine) endShape();
+  }
 
   // Shift labels
   if (useShift && sampler) {
@@ -664,17 +688,15 @@ function randomizeControls() {
 
   controls.wave.value = String(Math.floor(Math.random() * n));
   controls.seed.value = String(Math.floor(Math.random() * 501));
-  controls.amplitude.value = String(Math.floor(30 + Math.random() * 180));
-  controls.frequency.value = fmt(0.2 + Math.random() * 4, 2);
+  controls.amplitude.value = String(Math.floor(80 + Math.random() * 200));
+  controls.frequency.value = fmt(0.4 + Math.random() * 3, 2);
   controls.phase.value = fmt(-6 + Math.random() * 12, 2);
-  controls.mode.value = Math.random() > 0.5 ? 'wild' : 'stable';
-  controls.unpredictability.value = fmt(Math.random(), 2);
-  controls['range-enable'].checked = Math.random() > 0.3;
-  controls['range-min'].value = fmt(-1 - Math.random() * 0.5, 2);
-  controls['range-max'].value = fmt(0.5 + Math.random() * 1.0, 2);
+  controls.mode.value = Math.random() > 0.6 ? 'wild' : 'stable';
+  controls.unpredictability.value = fmt(0.1 + Math.random() * 0.7, 2);
+  controls['range-enable'].checked = false;
 
-  // Shift: 20% chance
-  var doShift = Math.random() > 0.8;
+  // Shift: 50% chance
+  var doShift = Math.random() > 0.5;
   controls['shift-enable'].checked = doShift;
   controls['shift-interval'].value = fmt(1 + Math.random() * 8, 1);
   controls['shift-duration'].value = fmt(0.3 + Math.random() * 3, 1);
@@ -693,11 +715,10 @@ function randomizeControls() {
   controls.threshold.value = fmt(-1 + Math.random() * 2, 2);
 
   controls['time-speed'].value = fmt(0.005 + Math.random() * 0.06, 3);
-  controls.step.value = String(Math.floor(4 + Math.random() * 10));
-  controls['connect-line'].checked = Math.random() > 0.25;
-  controls['show-points'].checked = Math.random() > 0.25;
-  if (!controls['connect-line'].checked) controls['show-points'].checked = true;
-  controls['show-grid'].checked = Math.random() > 0.2;
+  controls.step.value = String(Math.floor(3 + Math.random() * 6));
+  controls['connect-line'].checked = true;
+  controls['show-points'].checked = false;
+  controls['show-grid'].checked = false;
 
   userEditedCode = false;
   codeOutputEl.classList.remove('user-edited');
@@ -712,7 +733,6 @@ function draw() {
     currentFps = state.fps;
     frameRate(currentFps);
   }
-  updateBadges(state);
   background(245);
 
   if (state.previewMode === 'grid') {
@@ -721,6 +741,9 @@ function draw() {
     if (state.showGrid) drawGridLines();
     drawWave(state);
   }
+
+  // Badges after draw so shift sampler exists
+  updateBadges(state);
 
   t += state.speed;
 }
