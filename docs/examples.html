@@ -413,16 +413,28 @@
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex3');
       p.noFill();
     };
+    var samplers = [];
     p.draw = function() {
+      if (samplers.length === 0) {
+        for (var i = 0; i < 4; i++) {
+          samplers.push(Waves.createSampler({
+            shift: true,
+            shiftInterval: 3 + i,
+            shiftDuration: 1.2,
+            amplitude: 15,
+            frequency: 1,
+            seed: 30 + i
+          }));
+        }
+      }
       p.background(245);
       var t = p.frameCount * 0.008;
-      var types = ['noise', 'grow random', 'fuzzy peak sine', 'fuzzy pulse'];
-      for (var i = 0; i < types.length; i++) {
+      for (var i = 0; i < 4; i++) {
         var y0 = p.map(i, 0, 3, 30, p.height - 30);
         p.stroke(0, 0, 0, 190 - i * 30); p.strokeWeight(1.3);
         p.beginShape();
         for (var x = 0; x <= p.width; x += 4) {
-          p.vertex(x, y0 + Waves.wave(x * 0.018, { wave: types[i], t: t, amplitude: 15, seed: 3 }));
+          p.vertex(x, y0 + samplers[i].sample(x * 0.018, t));
         }
         p.endShape();
       }
