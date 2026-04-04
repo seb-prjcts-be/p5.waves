@@ -190,97 +190,117 @@
 
   // ── The Call ──────────────────────────────────────────────
   new p5(function(p) {
+    var sampler;
+    var amp;
+    var opts = { wave: 'bounce', amplitude: 1, t: 0 };
     p.setup = function() {
       var w = cw('ex0');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex0');
-      p.noFill(); p.textFont('monospace');
+      p.textFont('monospace');
+      amp = p.height / 3 * 0.35;
+      opts.amplitude = amp;
+      sampler = Waves.createSampler({ wave: 'bounce', amplitude: amp });
     };
     p.draw = function() {
       p.background(238);
       var t    = p.frameCount * 0.012;
       var rowH = p.height / 3;
       var x;
+      opts.t = t;
 
       p.noFill(); p.stroke(0); p.strokeWeight(1.5);
+
       p.beginShape();
-      for (x = 0; x <= p.width; x += 5) {
-        p.vertex(x, rowH * 0.5 + Waves.wave(x * 0.016));
-      }
+      for (x = 0; x <= p.width; x += 4)
+        p.vertex(x, rowH * 0.5 + Waves.wave(x * 0.02, opts));
       p.endShape();
 
       p.beginShape();
-      for (x = 0; x <= p.width; x += 5) {
-        p.vertex(x, rowH * 1.5 + Waves.wave(x * 0.016, 'triangle'));
-      }
+      for (x = 0; x <= p.width; x += 4)
+        p.vertex(x, rowH * 1.5 + p.waves(x * 0.02, opts));
       p.endShape();
 
       p.beginShape();
-      for (x = 0; x <= p.width; x += 5) {
-        p.vertex(x, rowH * 2.5 + Waves.wave(x * 0.016, { wave: 'wobble sine', t: t, amplitude: rowH * 0.18 }));
-      }
+      for (x = 0; x <= p.width; x += 4)
+        p.vertex(x, rowH * 2.5 + sampler.sample(x * 0.02, t));
       p.endShape();
 
       p.stroke(0, 0, 0, 20); p.strokeWeight(1);
       p.line(0, rowH, p.width, rowH);
       p.line(0, rowH * 2, p.width, rowH * 2);
 
-      p.noStroke(); p.fill(0, 0, 0, 100); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
-      p.text("wave(x)",                6, rowH * 0 + 5);
-      p.text("wave(x, 'triangle')",    6, rowH * 1 + 5);
-      p.text("wave(x, { wave, t, amplitude })", 6, rowH * 2 + 5);
+      p.noStroke(); p.fill(0, 0, 0, 100); p.textSize(11); p.textAlign(p.LEFT, p.TOP);
+      p.text("Waves.wave(x, opts)",    6, rowH * 0 + 5);
+      p.text("p.waves(x, opts)",       6, rowH * 1 + 5);
+      p.text("sampler.sample(x, t)",   6, rowH * 2 + 5);
     };
-    p.windowResized = function() { var w = cw('ex0'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() {
+      var w = cw('ex0');
+      p.resizeCanvas(w, Math.round(w * 2/3));
+      amp = p.height / 3 * 0.35;
+      opts.amplitude = amp;
+      sampler = Waves.createSampler({ wave: 'bounce', amplitude: amp });
+    };
   }, 'ex0');
 
   // ── Wave Shift ───────────────────────────────────────────
   new p5(function(p) {
     var LINE_COUNT = 10;
-    var sampler = Waves.createSampler({ shift: true, amplitude: 35, frequency: 0.6 });
-    var t = 0;
+    var sampler = Waves.createSampler({ shift: true, amplitude: 70, frequency: 0.6 });
     p.setup = function() {
       var w = cw('ex1');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex1');
       p.strokeCap(p.ROUND);
     };
     p.draw = function() {
-      p.background(245); t += 0.014;
+      p.background(245);
+      var t = p.millis() / 1000;
       p.noFill();
       for (var i = 0; i < LINE_COUNT; i++) {
         var shade = 40 + (i / (LINE_COUNT - 1)) * 140;
         var phaseOff = i * 0.35;
         p.stroke(shade); p.strokeWeight(1.4);
         p.beginShape();
-        for (var y = 0; y <= p.height; y += 4) {
-          p.vertex(p.width / 2 + sampler.sample(y + phaseOff * 60, t + phaseOff * 0.2), y);
+        for (var x = 0; x <= p.width; x += 4) {
+          p.vertex(x, p.height / 2 + sampler.sample(x + phaseOff * 60, t + phaseOff * 0.2));
         }
         p.endShape();
       }
-      p.noStroke(); p.fill(0, 0, 0, 140); p.textFont('monospace'); p.textSize(8); p.textAlign(p.CENTER);
-      p.text(sampler.waveName, p.width / 2, p.height - 10);
+      p.noStroke(); p.fill(0, 0, 0, 140); p.textFont('monospace'); p.textSize(11); p.textAlign(p.LEFT);
+      p.text(sampler.waveName, 8, 16);
     };
     p.windowResized = function() { var w = cw('ex1'); p.resizeCanvas(w, Math.round(w * 2/3)); };
   }, 'ex1');
 
   // ── Seed as Clock ─────────────────────────────────────────
   new p5(function(p) {
+    var LINE_COUNT = 8;
     p.setup = function() {
       var w = cw('ex-seed');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex-seed');
-      p.noFill();
     };
     p.draw = function() {
       p.background(245);
       var t = p.frameCount * 0.01;
-      var period = Math.floor(t / 1.5);
-      p.noFill(); p.stroke(0); p.strokeWeight(1.5);
-      p.beginShape();
-      for (var x = 0; x <= p.width; x += 4) {
-        p.vertex(x, p.height / 2 + Waves.wave(x * 0.02, { seed: period, t: t, amplitude: 30 }));
+      var period = Math.floor(t / 2);
+      var amp = p.height * 0.3;
+
+      p.noFill();
+      for (var i = 0; i < LINE_COUNT; i++) {
+        var shade = p.map(i, 0, LINE_COUNT - 1, 210, 0);
+        var phase = i * 0.4;
+        var sw = p.map(i, 0, LINE_COUNT - 1, 0.5, 2);
+        p.stroke(shade); p.strokeWeight(sw);
+        p.beginShape();
+        for (var x = 0; x <= p.width; x += 4) {
+          p.vertex(x, p.height / 2 + Waves.wave(x * 0.02 + phase, { seed: period, t: t, amplitude: amp }));
+        }
+        p.endShape();
       }
-      p.endShape();
+
       p.noStroke(); p.fill(0, 0, 0, 80);
-      p.textFont('monospace'); p.textSize(9); p.textAlign(p.LEFT);
-      p.text(Waves.data[period % Waves.count].name, 8, 14);
+      p.textFont('monospace'); p.textSize(11); p.textAlign(p.LEFT);
+      p.text(Waves.data[period % Waves.count].name, 8, 16);
     };
     p.windowResized = function() { var w = cw('ex-seed'); p.resizeCanvas(w, Math.round(w * 2/3)); };
   }, 'ex-seed');
