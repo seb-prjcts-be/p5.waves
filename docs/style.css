@@ -91,18 +91,7 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
   overflow: hidden;
 }
 
-/* Full-page background animation — fixed, behind everything */
-#bg-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-#bg-canvas canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
+/* (bg-canvas removed) */
 
 #hero-canvas {
   position: absolute;
@@ -367,84 +356,7 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
   width: 100% !important;
 }
 
-/* ── GRID ── */
-.grid-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  align-items: stretch;
-}
-
-.grid-card {
-  background: var(--bg2);
-  border: 1px solid var(--border-mid);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.grid-card .code-preview {
-  margin-top: auto;
-}
-
-.grid-card h3 {
-  padding: 0.85rem 1.25rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-family: 'Oswald', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text);
-  border-bottom: 1px solid var(--border);
-}
-
-.grid-card h3 small {
-  color: var(--text-faint);
-  font-size: 0.7rem;
-  font-family: 'Consolas', monospace;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
-}
-
-.grid-card canvas {
-  display: block;
-  width: 100% !important;
-}
-
-.grid-controls {
-  padding: 0.85rem 1.25rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  border-top: 1px solid var(--border);
-  background: var(--bg2);
-}
-
-.grid-controls label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.grid-controls select,
-.grid-controls input {
-  background: var(--surface);
-  border: 1px solid var(--border-mid);
-  color: var(--text);
-  padding: 0.2rem 0.45rem;
-  font-size: 0.78rem;
-  border-radius: 0;
-}
-
-.grid-controls input[type="range"] {
-  accent-color: #000;
-  cursor: pointer;
-}
+/* (grid section removed) */
 
 /* ── SHIFT ── */
 .shift-layout {
@@ -487,76 +399,9 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
   margin-top: 1rem;
 }
 
-/* ── POSTER ── */
-.poster-layout {
-  max-width: 600px;
-  margin: 0 auto;
-}
+/* (poster section removed) */
 
-#poster-canvas {
-  margin-bottom: 1.5rem;
-  overflow: hidden;
-}
-
-#poster-canvas canvas {
-  display: block;
-  margin: 0 auto;
-}
-
-.poster-code-preview {
-  margin-top: 1rem;
-}
-
-/* ── WILD ── */
-.wild-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-#wild-canvas {
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--border-mid);
-  overflow: hidden;
-}
-
-#wild-canvas canvas {
-  display: block;
-  width: 100% !important;
-}
-
-.wild-controls {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.wild-controls label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.wild-controls select,
-.wild-controls input {
-  background: var(--surface);
-  border: 1px solid var(--border-mid);
-  color: var(--text);
-  padding: 0.3rem 0.55rem;
-  font-size: 0.82rem;
-  border-radius: 0;
-}
-
-.wild-controls input[type="range"] {
-  accent-color: #000;
-  cursor: pointer;
-}
-
-.wild-code-preview {
-  margin-top: 1rem;
-}
+/* (wild section removed) */
 
 /* ── TERRAIN ── */
 .terrain-layout {
@@ -566,18 +411,6 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
   max-width: 1200px;
   margin: 0 auto;
   align-items: start;
-}
-
-/* ── 100X GRID ── */
-#grid100-canvas {
-  max-width: 560px;
-  margin: 0 auto;
-  border: 1px solid var(--border-mid);
-  overflow: hidden;
-}
-#grid100-canvas canvas {
-  display: block;
-  width: 100% !important;
 }
 
 #terrain-canvas {
