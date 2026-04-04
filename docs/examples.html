@@ -46,6 +46,23 @@
     </div>
     <div class="ex-preview">
       <div id="ex0" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Three ways to call — all return a number
+
+// 1. Namespace form (always works)
+var y1 = Waves.wave(x * 0.02, {
+  wave: 'bounce', amplitude: 50, t: t
+});
+
+// 2. Global mode (p5 sketch)
+var y2 = waves(x * 0.02, {
+  wave: 'bounce', amplitude: 50, t: t
+});
+
+// 3. Sampler (configure once, sample many)
+var sampler = Waves.createSampler({
+  wave: 'bounce', amplitude: 50
+});
+var y3 = sampler.sample(x * 0.02, t);</pre>
     </div>
   </section>
 
@@ -58,6 +75,27 @@
     </div>
     <div class="ex-preview">
       <div id="ex1" class="ex-canvas"></div>
+      <pre class="ex-code-block">var sampler = Waves.createSampler({
+  shift:     true,   // auto-shift to random waves
+  amplitude: 70,
+  frequency: 0.6
+});
+
+function draw() {
+  background(245);
+  var t = millis() / 1000;
+  for (var i = 0; i &lt; 10; i++) {
+    var phaseOff = i * 0.35;
+    stroke(40 + i * 14);
+    beginShape();
+    for (var x = 0; x &lt;= width; x += 4) {
+      vertex(x, height/2 + sampler.sample(
+        x + phaseOff * 60, t + phaseOff * 0.2
+      ));
+    }
+    endShape();
+  }
+}</pre>
       <a class="ex-full-link" href="../examples/01_basic_wave/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -71,6 +109,25 @@
     </div>
     <div class="ex-preview">
       <div id="ex-seed" class="ex-canvas"></div>
+      <pre class="ex-code-block">function draw() {
+  background(245);
+  var t = frameCount * 0.01;
+  var period = Math.floor(t / 2);
+
+  for (var i = 0; i &lt; 8; i++) {
+    var phase = i * 0.4;
+    stroke(map(i, 0, 7, 210, 0));
+    beginShape();
+    for (var x = 0; x &lt;= width; x += 4) {
+      vertex(x, height/2 + Waves.wave(x * 0.02 + phase, {
+        seed: period,  // new seed = new wave
+        t: t,
+        amplitude: height * 0.3
+      }));
+    }
+    endShape();
+  }
+}</pre>
     </div>
   </section>
 
@@ -83,6 +140,20 @@
     </div>
     <div class="ex-preview">
       <div id="ex-params" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Same wave, one parameter varies per row
+var t = frameCount * 0.012;
+
+// Row 1: amplitude fans from small to large
+for (var i = 0; i &lt; 5; i++) {
+  var amp = map(i, 0, 4, 3, rowH * 0.21);
+  Waves.wave(x * 0.016, {
+    wave: 'classic sine', t: t,
+    amplitude: amp, frequency: 1.2
+  });
+}
+
+// Row 2: frequency from loose to tight
+// Row 3: phase shifts across the wave</pre>
       <a class="ex-full-link" href="../examples/07_wave_params/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -96,6 +167,20 @@
     </div>
     <div class="ex-preview">
       <div id="ex4" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Left: stable. Right: wild mode.
+var waveIdx = Math.floor(Math.random() * 34);
+
+// Stable side
+var yStable = Waves.wave(pos, {
+  wave: waveIdx, t: t, amplitude: 30
+});
+
+// Wild side — same wave, chaos added
+var yWild = Waves.wave(pos, {
+  wave: waveIdx, t: t, amplitude: 30,
+  mode: 'wild',
+  unpredictability: 0.6
+});</pre>
       <a class="ex-full-link" href="../examples/10_wave_override/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -109,6 +194,17 @@
     </div>
     <div class="ex-preview">
       <div id="ex7" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Four samplers steer 100 particles
+var samplers = [
+  Waves.createSampler({ wave: rw(), range: [-2, 2] }),
+  Waves.createSampler({ wave: rw(), range: [-2, 2] }),
+  Waves.createSampler({ wave: rw(), range: [-2, 2] }),
+  Waves.createSampler({ wave: rw(), range: [-2, 2] })
+];
+
+// Each particle follows its assigned sampler
+pt.x += samplers[pt.s].sample(pt.y * 0.009, t) * 2.5;
+pt.y += samplers[(pt.s+2)%4].sample(pt.x * 0.009, t) * 2.5;</pre>
       <a class="ex-full-link" href="../examples/06_flow_fields/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -122,6 +218,22 @@
     </div>
     <div class="ex-preview">
       <div id="ex8" class="ex-canvas"></div>
+      <pre class="ex-code-block">// No clock — t is whatever you pass
+// Move mouse to scrub through time
+var t = map(mouseX, 0, width, 0, 8);
+
+for (var i = 0; i &lt; 12; i++) {
+  var layerT = t + (i / 12) * 6;
+  beginShape();
+  for (var x = 0; x &lt;= width; x += 4) {
+    var dy = Waves.wave(x * 0.015, {
+      wave: strataWave, t: layerT,
+      amplitude: 15
+    });
+    vertex(x, y0 + dy);
+  }
+  endShape();
+}</pre>
       <a class="ex-full-link" href="../examples/11_tick_time_mode/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -135,6 +247,23 @@
     </div>
     <div class="ex-preview">
       <div id="ex9" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Two shift-samplers drive hue and brightness
+var hueS = Waves.createSampler({
+  wave: 'meta sine', shift: true,
+  shiftInterval: 4, shiftDuration: 2,
+  range: [160, 320]
+});
+var briS = Waves.createSampler({
+  wave: 'wobble sine', shift: true,
+  shiftInterval: 5, shiftDuration: 2,
+  range: [55, 90]
+});
+
+// Sample across x and y for a 2D color field
+colorMode(HSB, 360, 100, 100);
+fill(hueS.sample(x * 0.007 + y * 0.005, t),
+     72,
+     briS.sample(x * 0.005 - y * 0.007, t));</pre>
       <a class="ex-full-link" href="../examples/12_color_spectrum/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -148,6 +277,20 @@
     </div>
     <div class="ex-preview">
       <div id="ex12" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Blend two formulas with mix
+var wA = Math.floor(Math.random() * 34);
+var wB = Math.floor(Math.random() * 34);
+
+// mix: 0 = pure A, mix: 1 = pure B
+var morphMix = (Math.sin(t * 0.3) + 1) * 0.5;
+
+var wv = Waves.wave(x, {
+  wave: [wA, wB],    // morph between two waves
+  mix: morphMix,
+  t: t + row * 0.06,
+  frequency: 0.08,
+  amplitude: rowH * 0.8
+});</pre>
       <a class="ex-full-link" href="../examples/15_opacity/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -161,6 +304,20 @@
     </div>
     <div class="ex-preview">
       <div id="ex6" class="ex-canvas"></div>
+      <pre class="ex-code-block">// One call fills a 2D grid
+var grid = Waves.createGrid(28, 20, {
+  waveRow: 'smooth solid sine',
+  waveCol: 'ramp up sine',
+  threshold: 0,  // binary: on or off
+  speed: 1
+});
+
+// Sample once per frame
+var cells = grid.sample(frameCount * 0.004);
+
+// Draw: 1 = black, 0 = light
+fill(cells[row * 28 + col] === 1 ? 15 : 225);
+rect(col * cw, row * ch, cw, ch);</pre>
     </div>
   </section>
 
@@ -173,6 +330,22 @@
     </div>
     <div class="ex-preview">
       <div id="ex14" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Three shift-samplers — one per axis
+var sY = Waves.createSampler({
+  shift: true, shiftInterval: 3,
+  range: [-5, 5], frequency: 0.4
+});
+var sX = Waves.createSampler({
+  shift: true, shiftInterval: 4,
+  range: [-2.5, 2.5], frequency: 0.3
+});
+var sZ = Waves.createSampler({
+  shift: true, shiftInterval: 5,
+  range: [-2.5, 2.5], frequency: 0.35
+});
+
+// Points near the surface glow
+var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       <a class="ex-full-link" href="../examples/17_3d_wave_volume/" target="_blank">→ full example</a>
     </div>
   </section>
