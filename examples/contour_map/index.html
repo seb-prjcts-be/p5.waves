@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>12 — Wave Color Field | p5.waves examples</title>
+  <title>Contour Map | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -22,32 +22,31 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 12 — color output</div>
-      <h1>Wave Color Field</h1>
-      <p>Two wave samplers with <code>shift: true</code> drive <strong>hue and brightness</strong> across a 2D field. Every 4 seconds the formulas morph into new ones over 2 seconds — the colour landscape keeps evolving.</p>
+      <div class="demo-number">P2D Renderer</div>
+      <h1>Contour Map</h1>
+      <p>30 horizontal wave lines stacked with a progressive phase offset per row. The overlapping contours create a topographic map illusion. Explicit <code>P2D</code> renderer — confirms <code>Waves.wave()</code> works renderer-agnostic.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>var hueSampler = Waves.createSampler({
-  wave: 'meta sine', shift: true,
-  shiftInterval: 4, shiftDuration: 2,
-  range: [160, 320], seed: 0
-});
-var briSampler = Waves.createSampler({
-  wave: 'wobble sine', shift: true,
-  shiftInterval: 5, shiftDuration: 2,
-  range: [55, 90], seed: 7
-});
+        <pre><code>// P2D renderer — Waves.wave() is renderer-agnostic.
+// 30 contour lines, phase offset i * 0.24 staggers the rows.
 
-// In draw:
-for (var y = 0; y &lt; height; y += 4) {
-  for (var x = 0; x &lt; width; x += 4) {
-    fill(hueSampler.sample(x*0.007 + y*0.005, t),
-         72,
-         briSampler.sample(x*0.005 - y*0.007, t*0.6));
-    rect(x, y, 4, 4);
+createCanvas(460, 460, P2D).parent('sketch-container');
+
+// In draw():
+for (let i = 0; i &lt; LINES; i++) {
+  const y0    = map(i, 0, LINES-1, 30, height-30);
+  const phase = i * 0.24;
+
+  beginShape();
+  for (let x = 0; x &lt;= width; x += 4) {
+    const dy = Waves.wave(x * 0.011, {
+      wave: 'wobble sine', t: t + phase, amplitude: 13
+    });
+    vertex(x, y0 + dy);
   }
+  endShape();
 }</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>

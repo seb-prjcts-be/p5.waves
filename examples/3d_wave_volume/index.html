@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>09 — Luminance Field | p5.waves examples</title>
-  <link rel="stylesheet" href="style.css">
+  <title>3D Wave Volume | p5.waves examples</title>
   <link rel="stylesheet" href="../showcase.css">
 </head>
 <body>
@@ -22,27 +21,53 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 09 — Output Shaping</div>
-      <h1>Luminance Field</h1>
-      <p>Two wave layers (different speeds and directions) are summed and their average drives fill brightness via <code>range: [0, 1]</code>. No extra mapping needed — the output is used directly as a greyscale value.</p>
+      <div class="demo-number">WEBGL · 3D</div>
+      <h1>3D Wave Volume</h1>
+      <p>16×16 grid with three independent <code>createSampler()</code> calls — one per axis, each with <code>shift:&nbsp;true</code> on its own cycle. Y drives the surface height, X and Z warp the grid sideways and in depth. Points near the surface glow; the rest stay hidden. Drag to rotate.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// range: [0, 1] → use output directly as brightness (0–220).
-// Two wave layers at different speeds produce moving interference.
-
-const v1 = Waves.wave(gx * 0.12 + gy * 0.07, {
-  wave: 'smooth solid sine', t,
-  range: [0, 1]
+        <pre><code>samplerY = Waves.createSampler({
+  shift: true,
+  shiftInterval: 3,
+  range: [-6, 6],
+  frequency: 0.4,
+  seed: 0
 });
-const v2 = Waves.wave(gy * 0.1 - gx * 0.05, {
-  wave: 'classic sine', t: t * 0.7,
-  range: [0, 1]
+samplerX = Waves.createSampler({
+  shift: true,
+  shiftInterval: 4,
+  range: [-3, 3],
+  frequency: 0.3,
+  seed: 42
+});
+samplerZ = Waves.createSampler({
+  shift: true,
+  shiftInterval: 5,
+  range: [-3, 3],
+  frequency: 0.35,
+  seed: 77
 });
 
-fill((v1 + v2) / 2 * 220);
-rect(gx * cell, gy * cell, cell - 0.5, cell - 0.5);</code></pre>
+const dy = samplerY.sample(xi * 0.9 + zi * 0.6, t);
+const dx = samplerX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
+const dz = samplerZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
+
+const surfaceRow = N / 2 + dy;
+for (let yi = 0; yi &lt; N; yi++) {
+  const gap = Math.abs(yi - surfaceRow);
+  if (gap &lt; 2.5) {
+    const glow = 1 - gap / 2.5;
+    const bright = Math.round(80 + (yi / (N - 1)) * 175);
+    stroke(bright, bright, 255, 255 * glow);
+    vertex(
+      -half + xi * SPACING + dx * SPACING * 0.4,
+      -half + yi * SPACING,
+      -half + zi * SPACING + dz * SPACING * 0.4
+    );
+  }
+}</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

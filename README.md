@@ -1,6 +1,6 @@
 # p5.waves
 
-**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)**
+**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/wave_lab/)**
 
 34 wave shapes for p5.js. One function call, one number back.
 
@@ -151,17 +151,17 @@ Also: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config,
 
 ## Examples
 
-- `00_wave_lab` — interactive playground
-- `01_basic_wave` — wave shift
-- `04_basic_wave_p2d` — contour map
-- `06_flow_fields` — particle swarms
-- `07_wave_params` — amplitude, frequency, phase
-- `09_range_0_1` — output range
-- `10_wave_override` — wild mode
-- `11_tick_time_mode` — manual time control
-- `12_color_spectrum` — color field
-- `15_opacity` — morph wave
-- `17_3d_wave_volume` — 3D WebGL
+- `wave_lab` — interactive playground
+- `wave_shift` — auto-cycling wave formulas
+- `contour_map` — P2D contour lines
+- `flow_fields` — particle swarms
+- `wave_params` — amplitude, frequency, phase
+- `luminance_field` — output range
+- `wild_mode` — wild mode
+- `time_strata` — manual time control
+- `color_field` — HSB color field
+- `morph_wave` — morph between two waves
+- `3d_wave_volume` — 3D WebGL
 
 ---
 

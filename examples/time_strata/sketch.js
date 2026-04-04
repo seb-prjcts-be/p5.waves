@@ -1,4 +1,4 @@
-// 11 — Time Strata
+// Time Strata
 // Time is a plain number — full manual control.
 // Mouse X scrubs a time window; each layer is frozen at its own t.
 // Layers are filled ribbons with HSB color, creating geological strata.
@@ -22,22 +22,24 @@ function draw() {
     var wHue   = (i * 22) % 360;
     var alphaVal = map(i, 0, LAYERS - 1, 200, 60);
 
-    fill(wHue, 40, 85, alphaVal);
+    var freq = 0.6 + i * 0.08;
+    fill(wHue, 70, 85, alphaVal);
     beginShape();
     for (var x = 0; x <= width; x += 3) {
       var dy = Waves.wave(x * 0.015, {
         wave:      'classic sine',
         t:         layerT,
-        amplitude: 20
+        amplitude: 25,
+        frequency: freq
       });
       vertex(x, y0 + dy);
     }
-    // close along the bottom edge of this band
     for (var x2 = width; x2 >= 0; x2 -= 3) {
       var dy2 = Waves.wave(x2 * 0.015, {
         wave:      'classic sine',
         t:         layerT + 0.3,
-        amplitude: 12
+        amplitude: 15,
+        frequency: freq
       });
       vertex(x2, y0 + dy2 + 22);
     }

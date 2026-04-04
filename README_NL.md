@@ -1,6 +1,6 @@
 # p5.waves
 
-**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/00_wave_lab/)**
+**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/wave_lab/)**
 
 34 golfvormen voor p5.js. Eén functie-aanroep, één getal terug.
 
@@ -151,17 +151,17 @@ Ook: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, 
 
 ## Voorbeelden
 
-- `00_wave_lab` — interactieve speeltuin
-- `01_basic_wave` — wave shift
-- `04_basic_wave_p2d` — contourkaart
-- `06_flow_fields` — deeltjeszwermen
-- `07_wave_params` — amplitude, frequency, phase
-- `09_range_0_1` — output range
-- `10_wave_override` — wild mode
-- `11_tick_time_mode` — handmatige tijdcontrole
-- `12_color_spectrum` — kleurveld
-- `15_opacity` — morph golf
-- `17_3d_wave_volume` — 3D WebGL
+- `wave_lab` — interactieve speeltuin
+- `wave_shift` — auto-wisselende golfformules
+- `contour_map` — P2D contourlijnen
+- `flow_fields` — deeltjeszwermen
+- `wave_params` — amplitude, frequency, phase
+- `luminance_field` — output range
+- `wild_mode` — wild mode
+- `time_strata` — handmatige tijdcontrole
+- `color_field` — HSB kleurveld
+- `morph_wave` — morph tussen twee golven
+- `3d_wave_volume` — 3D WebGL
 
 ---
 

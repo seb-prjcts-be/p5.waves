@@ -1,4 +1,4 @@
-// 07 — Amplitude · Frequency · Phase
+// Wave Params
 // Three rows isolate each parameter as filled wave ribbons.
 // Each row uses a distinct hue; light to dark shows increasing values.
 
@@ -19,14 +19,11 @@ function draw() {
   var rowH = height / 3;
   var i, x, amp, freq, ph, waveY;
 
-  // row colors: warm red, cool blue, green
-  var hues = [[200, 60, 50], [50, 80, 200], [50, 170, 80]];
-
-  // ── Row 1: amplitude ──────────────────────────────────────
+  // ── Row 1: RED — amplitude ─────────────────────────────────
   for (i = 0; i < N; i++) {
     amp = map(i, 0, N - 1, 4, rowH * 0.21);
-    var alphaVal = map(i, 0, N - 1, 30, 120);
-    fill(hues[0][0], hues[0][1], hues[0][2], alphaVal);
+    var alphaVal = map(i, 0, N - 1, 60, 255);
+    fill(255, 0, 0, alphaVal);
     noStroke();
     beginShape();
     for (x = 0; x <= width; x += 3) {
@@ -44,11 +41,11 @@ function draw() {
     endShape(CLOSE);
   }
 
-  // ── Row 2: frequency ─────────────────────────────────────
+  // ── Row 2: GREEN — frequency ──────────────────────────────
   for (i = 0; i < N; i++) {
     freq = map(i, 0, N - 1, 0.4, 2.8);
-    var alphaVal2 = map(i, 0, N - 1, 30, 120);
-    fill(hues[1][0], hues[1][1], hues[1][2], alphaVal2);
+    var alphaVal2 = map(i, 0, N - 1, 60, 255);
+    fill(0, 255, 0, alphaVal2);
     noStroke();
     beginShape();
     for (x = 0; x <= width; x += 3) {
@@ -66,11 +63,11 @@ function draw() {
     endShape(CLOSE);
   }
 
-  // ── Row 3: phase ─────────────────────────────────────────
+  // ── Row 3: BLUE — phase ──────────────────────────────────
   for (i = 0; i < N; i++) {
     ph = map(i, 0, N - 1, 0, TWO_PI * 0.85);
-    var alphaVal3 = map(i, 0, N - 1, 30, 120);
-    fill(hues[2][0], hues[2][1], hues[2][2], alphaVal3);
+    var alphaVal3 = map(i, 0, N - 1, 60, 255);
+    fill(0, 0, 255, alphaVal3);
     noStroke();
     beginShape();
     for (x = 0; x <= width; x += 3) {
