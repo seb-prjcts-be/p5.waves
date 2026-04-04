@@ -31,17 +31,18 @@
         <div class="code-label">Core snippet</div>
         <pre><code>var sampler = Waves.createSampler({
   shift:     true,       // auto-shift to random waves
-  amplitude: 100,
+  amplitude: 70,
   frequency: 0.6
 });
 
-// In draw — 10 lines, each with its own phase offset:
+// In draw — 10 horizontal lines, each with its own phase offset:
+var t = millis() / 1000;
 for (var i = 0; i &lt; 10; i++) {
   var phaseOff = i * 0.35;
   stroke(40 + i * 14);
   beginShape();
-  for (var y = 0; y &lt;= height; y += 3) {
-    vertex(width/2 + sampler.sample(y + phaseOff*60, t + phaseOff*0.2), y);
+  for (var x = 0; x &lt;= width; x += 4) {
+    vertex(x, height/2 + sampler.sample(x + phaseOff*60, t + phaseOff*0.2));
   }
   endShape();
 }</code></pre>
