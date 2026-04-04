@@ -94,7 +94,7 @@ Waves.wave(x, {
     <h2>What Can You Do With a Number?</h2>
     <p>Anything. Seriously. Here are some ideas:</p>
     <div class="code-block"><span class="cm">// Move a circle up and down</span>
-circle(width / <span class="nb">2</span>, height / <span class="nb">2</span> + Waves.wave(frameCount, <span class="st">'sine'</span>), <span class="nb">20</span>);
+circle(width / <span class="nb">2</span>, height / <span class="nb">2</span> + Waves.wave(t, <span class="st">'sine'</span>), <span class="nb">20</span>);  <span class="cm">// t += 0.01 in draw()</span>
 
 <span class="cm">// Control opacity</span>
 <span class="kw">let</span> dotAlpha = Waves.wave(x, { wave: <span class="st">'pulse'</span>, range: [<span class="nb">30</span>, <span class="nb">255</span>] });
@@ -267,7 +267,8 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
 });
 
 <span class="kw">function</span> <span class="fn">draw</span>() {
-  <span class="kw">let</span> cells = g.sample(frameCount * <span class="nb">0.02</span>);
+  t += <span class="nb">0.02</span>;  <span class="cm">// declared as let t = 0 above setup()</span>
+  <span class="kw">let</span> cells = g.sample(t);
   <span class="cm">// cells is a Uint8Array of 0s and 1s</span>
   <span class="cm">// cells[row * g.cols + col]</span>
 }</div>
@@ -369,7 +370,7 @@ s.sample(x, millis() / <span class="nb">1000</span>);</div>
 
     <h3>50 particles, each with its own wave</h3>
     <div class="code-block"><span class="kw">for</span> (<span class="kw">let</span> i = <span class="nb">0</span>; i &lt; <span class="nb">50</span>; i++) {
-  <span class="kw">let</span> y = Waves.wave(frameCount, {
+  <span class="kw">let</span> y = Waves.wave(t, {  <span class="cm">// t += 0.01 in draw()</span>
     seed:      i,               <span class="cm">// each particle gets its own wave</span>
     t:         millis() / <span class="nb">1000</span>,
     amplitude: <span class="nb">30</span>

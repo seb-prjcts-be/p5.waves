@@ -109,9 +109,10 @@ function draw() {
     </div>
     <div class="ex-preview">
       <div id="ex-seed" class="ex-canvas"></div>
-      <pre class="ex-code-block">function draw() {
+      <pre class="ex-code-block">var t = 0;
+function draw() {
   background(245);
-  var t = frameCount * 0.01;
+  t += 0.01;
   var period = Math.floor(t / 2);
 
   for (var i = 0; i &lt; 8; i++) {
@@ -141,7 +142,7 @@ function draw() {
     <div class="ex-preview">
       <div id="ex-params" class="ex-canvas"></div>
       <pre class="ex-code-block">// Same wave, one parameter varies per row
-var t = frameCount * 0.012;
+t += 0.012;  // declared as var t = 0 above setup()
 
 // Row 1: amplitude fans from small to large
 for (var i = 0; i &lt; 5; i++) {
@@ -313,7 +314,8 @@ var grid = Waves.createGrid(28, 20, {
 });
 
 // Sample once per frame
-var cells = grid.sample(frameCount * 0.004);
+t += 0.004;
+var cells = grid.sample(t);
 
 // Draw: 1 = black, 0 = light
 fill(cells[row * 28 + col] === 1 ? 15 : 225);
@@ -365,6 +367,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
   new p5(function(p) {
     var sampler;
     var amp;
+    var t = 0;
     var opts = { wave: 'bounce', amplitude: 1, t: 0 };
     p.setup = function() {
       var w = cw('ex0');
@@ -376,7 +379,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       p.background(238);
-      var t    = p.frameCount * 0.012;
+      t += 0.012;
       var rowH = p.height / 3;
       var x;
       opts.t = t;
@@ -448,13 +451,14 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
   // ── Seed as Clock ─────────────────────────────────────────
   new p5(function(p) {
     var LINE_COUNT = 8;
+    var t = 0;
     p.setup = function() {
       var w = cw('ex-seed');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex-seed');
     };
     p.draw = function() {
       p.background(245);
-      var t = p.frameCount * 0.01;
+      t += 0.01;
       var period = Math.floor(t / 2);
       var amp = p.height * 0.3;
 
@@ -481,6 +485,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
   // ── Shape Controls ────────────────────────────────────────
   new p5(function(p) {
     var hues = [[200, 60, 50], [50, 80, 200], [50, 170, 80]];
+    var t = 0;
     p.setup = function() {
       var w = cw('ex-params');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex-params');
@@ -488,7 +493,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       p.background(245);
-      var t = p.frameCount * 0.012;
+      t += 0.012;
       var rowH = p.height / 3;
       var N = 5;
       var i, x, amp, freq, ph, wY, aV;
@@ -592,7 +597,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
 
   // ── Flow Fields ───────────────────────────────────────────
   new p5(function(p) {
-    var samplers, pts = [];
+    var samplers, pts = [], t = 0;
     p.setup = function() {
       var w = cw('ex7');
       p.createCanvas(w, Math.round(w * 2/3)).parent('ex7');
@@ -607,7 +612,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       p.background(245, 245, 245, 22);
-      var t = p.frameCount * 0.014;
+      t += 0.014;
       for (var i = 0; i < pts.length; i++) {
         var pt = pts[i];
         pt.x += samplers[pt.s].sample(pt.y * 0.009, t) * 2.5;
@@ -715,7 +720,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
 
   // ── Wave Grid ─────────────────────────────────────────────
   new p5(function(p) {
-    var grid;
+    var grid, t = 0;
     var COLS = 28, ROWS = 20;
     p.setup = function() {
       var w = cw('ex6');
@@ -725,7 +730,8 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       p.background(238);
-      var cells = grid.sample(p.frameCount * 0.004);
+      t += 0.004;
+      var cells = grid.sample(t);
       var cw2 = p.width / COLS, ch = p.height / ROWS;
       for (var row = 0; row < ROWS; row++) {
         for (var col = 0; col < COLS; col++) {
@@ -740,7 +746,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
   // ── 3D Wave Volume ────────────────────────────────────────
   new p5(function(p) {
     var N = 12, SPACING = 18, half = (N - 1) * SPACING / 2;
-    var sY, sX, sZ;
+    var sY, sX, sZ, rotAngle = 0;
     p.setup = function() {
       var w = cw('ex14');
       p.createCanvas(w, Math.round(w * 2/3), p.WEBGL).parent('ex14');
@@ -751,7 +757,8 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       p.background(12);
-      p.rotateX(-0.5); p.rotateY(p.frameCount * 0.006);
+      rotAngle += 0.006;
+      p.rotateX(-0.5); p.rotateY(rotAngle);
       var t = p.millis() / 1000;
       p.beginShape(p.POINTS);
       for (var xi = 0; xi < N; xi++) {

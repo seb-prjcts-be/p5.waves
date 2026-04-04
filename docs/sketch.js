@@ -132,7 +132,7 @@ reg('gallery-canvas', new p5(function(p) {
   var COLS = 6;
   var ROWS = Math.ceil(WAVE_NAMES.length / COLS);
   var EXP_H = 140;
-  var cellW, cellH = 90;
+  var cellW, cellH = 90, t = 0;
   var samplers = [], hovered = -1;
 
   p.setup = function() {
@@ -154,7 +154,7 @@ reg('gallery-canvas', new p5(function(p) {
 
   p.draw = function() {
     p.background(248);
-    var t = p.frameCount * 0.01;
+    t += 0.01;
     var hasFocus  = hovered >= 0;
     var miniY0    = hasFocus ? EXP_H + 4 : 0;
     var miniCellH = hasFocus ? Math.floor((p.height - miniY0) / ROWS) : cellH;
@@ -266,7 +266,7 @@ reg('interactive-canvas', new p5(function(p) {
     lines: 5, fill: false, dots: false
   };
   var GRAYS = [0, 40, 80, 120, 160, 30, 70, 110, 20, 50, 90, 140];
-  var sampler;
+  var sampler, tInteractive = 0;
 
   function readControls() {
     params.wave      = document.getElementById('ctrl-wave').value;
@@ -322,7 +322,8 @@ reg('interactive-canvas', new p5(function(p) {
 
   p.draw = function() {
     p.background(248);
-    var t = p.frameCount * params.speed * 100;
+    tInteractive += params.speed * 100;
+    var t = tInteractive;
 
     p.stroke(220);
     p.strokeWeight(1);
@@ -479,7 +480,7 @@ reg('terrain-canvas', new p5(function(p) {
   var terrainH = 100, terrainSpeed = 0.023;
   var waveX = 'grow random', waveZ = 'bumpy sine';
   var terrainColor = 'height', wireframe = true, solid = false;
-  var samplerX, samplerZ;
+  var samplerX, samplerZ, tTerrain = 0;
 
   function buildSamplers() {
     samplerX = Waves.createSampler({
@@ -563,7 +564,8 @@ reg('terrain-canvas', new p5(function(p) {
 
   p.draw = function() {
     p.background(245);
-    var t    = p.frameCount * terrainSpeed;
+    tTerrain += terrainSpeed;
+    var t    = tTerrain;
     var size = Math.min(p.width, p.height) * 0.85;
     var cellSz = size / TERRAIN_N;
 

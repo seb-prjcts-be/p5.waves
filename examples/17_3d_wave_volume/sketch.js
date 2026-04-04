@@ -7,6 +7,7 @@ const SPACING = 22;
 const half    = (N - 1) * SPACING / 2;
 
 let samplerY, samplerX, samplerZ;
+let rotAngle = 0;
 
 function setup() {
   createCanvas(460, 460, WEBGL).parent('sketch-container');
@@ -47,7 +48,8 @@ function draw() {
   background(12);
   orbitControl();
   rotateX(-0.5);
-  rotateY(frameCount * 0.005);
+  rotAngle += 0.005;
+  rotateY(rotAngle);
 
   const t = millis() / 1000;
 
