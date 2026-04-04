@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flow Fields | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/waves.html">Waves</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">createSampler</div>
+      <h1>Swarm Flows</h1>
+      <p>Four <code>createSampler()</code> calls — each a different wave formula — steer 120 particles through a shared canvas. Particles wrap at edges; each sampler produces its own distinct flow pattern.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// Four samplers with distinct wave shapes steer 120 particles.
+// Each particle uses its assigned sampler for x and y velocity.
+
+var waveNames = ['classic sine', 'wobble sine', 'pulse', 'meta sine'];
+var samplers  = [];
+for (var i = 0; i &lt; waveNames.length; i++) {
+  samplers.push(Waves.createSampler({
+    wave: waveNames[i], seed: i * 11, range: [-1.8, 1.8]
+  }));
+}
+
+// In draw():
+p.x += samplers[p.s].sample(p.y * 0.009, t) * 2.2;
+p.y += samplers[(p.s + 2) % 4].sample(p.x * 0.009, t) * 2.2;
+// wrap edges…</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v3.0.0 &nbsp;&middot;&nbsp; p5.js v2.2.2</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>

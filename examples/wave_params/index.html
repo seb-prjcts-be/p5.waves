@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>15 — Morph Wave | p5.waves examples</title>
+  <title>Wave Params | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -22,23 +22,32 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 15 — wave: [a, b] + mix</div>
-      <h1>Morph Wave</h1>
-      <p>Pass <code>wave: ['nameA', 'nameB']</code> with a <code>mix</code> value (0&ndash;1) to crossfade between any two formulas. Animate <code>mix</code> to smoothly morph the shape over time.</p>
+      <div class="demo-number">amplitude · frequency · phase</div>
+      <h1>Shape Parameters</h1>
+      <p>Three rows of filled wave ribbons — each isolates one parameter. Amplitude in red, frequency in blue, phase in green. Lighter bands show smaller values; all run the same <code>classic sine</code>.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// 50 rows — each row's mix depends on distance from a sweeping centre
-var centre = (sin(t * 0.3) + 1) * 0.5;
-var morphMix = constrain(1 - abs(rowFrac - centre) * 3, 0, 1);
+        <pre><code>// amplitude — scales the output height
+Waves.wave(x * 0.016, {
+  wave:      'classic sine',
+  t:         t,
+  amplitude: 60      // default: 100
+});
 
-var waveY = Waves.wave(x, {
-  wave:      ['wobble sine', 'meta sine'],
-  mix:       morphMix,        // 0 = pure A, 1 = pure B
-  t:         t + row * 0.06,
-  frequency: 0.08,
-  amplitude: rowH * 1.8
+// frequency — compresses/stretches the wave
+Waves.wave(x * 0.016, {
+  wave:      'classic sine',
+  t:         t,
+  frequency: 2.0     // default: 1
+});
+
+// phase — shifts the wave sideways
+Waves.wave(x * 0.016, {
+  wave:      'classic sine',
+  t:         t,
+  phase:     PI * 0.5  // default: 0
 });</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>

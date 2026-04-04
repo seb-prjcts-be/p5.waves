@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>04 — Contour Map | p5.waves examples</title>
+  <title>Luminance Field | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -22,32 +22,27 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 04 — P2D Renderer</div>
-      <h1>Contour Map</h1>
-      <p>30 horizontal wave lines stacked with a progressive phase offset per row. The overlapping contours create a topographic map illusion. Explicit <code>P2D</code> renderer — confirms <code>Waves.wave()</code> works renderer-agnostic.</p>
+      <div class="demo-number">Output Shaping</div>
+      <h1>Luminance Field</h1>
+      <p>Two wave layers (different speeds and directions) are summed and their average drives fill brightness via <code>range: [0, 1]</code>. No extra mapping needed — the output is used directly as a greyscale value.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// P2D renderer — Waves.wave() is renderer-agnostic.
-// 30 contour lines, phase offset i * 0.24 staggers the rows.
+        <pre><code>// range: [0, 1] → use output directly as brightness (0–220).
+// Two wave layers at different speeds produce moving interference.
 
-createCanvas(460, 460, P2D).parent('sketch-container');
+const v1 = Waves.wave(gx * 0.12 + gy * 0.07, {
+  wave: 'smooth solid sine', t,
+  range: [0, 1]
+});
+const v2 = Waves.wave(gy * 0.1 - gx * 0.05, {
+  wave: 'classic sine', t: t * 0.7,
+  range: [0, 1]
+});
 
-// In draw():
-for (let i = 0; i &lt; LINES; i++) {
-  const y0    = map(i, 0, LINES-1, 30, height-30);
-  const phase = i * 0.24;
-
-  beginShape();
-  for (let x = 0; x &lt;= width; x += 4) {
-    const dy = Waves.wave(x * 0.011, {
-      wave: 'wobble sine', t: t + phase, amplitude: 13
-    });
-    vertex(x, y0 + dy);
-  }
-  endShape();
-}</code></pre>
+fill((v1 + v2) / 2 * 220);
+rect(gx * cell, gy * cell, cell - 0.5, cell - 0.5);</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

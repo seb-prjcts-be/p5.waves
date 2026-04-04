@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>07 — Amplitude · Frequency · Phase | p5.waves examples</title>
+  <title>Color Field | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -22,33 +22,33 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 07 — amplitude · frequency · phase</div>
-      <h1>Shape Parameters</h1>
-      <p>Three rows of filled wave ribbons — each isolates one parameter. Amplitude in red, frequency in blue, phase in green. Lighter bands show smaller values; all run the same <code>classic sine</code>.</p>
+      <div class="demo-number">color output</div>
+      <h1>Wave Color Field</h1>
+      <p>Two wave samplers with <code>shift: true</code> drive <strong>hue and brightness</strong> across a 2D field. Every 4 seconds the formulas morph into new ones over 2 seconds — the colour landscape keeps evolving.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// amplitude — scales the output height
-Waves.wave(x * 0.016, {
-  wave:      'classic sine',
-  t:         t,
-  amplitude: 60      // default: 100
+        <pre><code>var hueSampler = Waves.createSampler({
+  wave: 'meta sine', shift: true,
+  shiftInterval: 4, shiftDuration: 2,
+  range: [160, 320], seed: 0
+});
+var briSampler = Waves.createSampler({
+  wave: 'wobble sine', shift: true,
+  shiftInterval: 5, shiftDuration: 2,
+  range: [55, 90], seed: 7
 });
 
-// frequency — compresses/stretches the wave
-Waves.wave(x * 0.016, {
-  wave:      'classic sine',
-  t:         t,
-  frequency: 2.0     // default: 1
-});
-
-// phase — shifts the wave sideways
-Waves.wave(x * 0.016, {
-  wave:      'classic sine',
-  t:         t,
-  phase:     PI * 0.5  // default: 0
-});</code></pre>
+// In draw:
+for (var y = 0; y &lt; height; y += 4) {
+  for (var x = 0; x &lt; width; x += 4) {
+    fill(hueSampler.sample(x*0.007 + y*0.005, t),
+         72,
+         briSampler.sample(x*0.005 - y*0.007, t*0.6));
+    rect(x, y, 4, 4);
+  }
+}</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

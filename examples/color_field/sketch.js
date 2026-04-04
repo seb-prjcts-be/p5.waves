@@ -1,4 +1,4 @@
-// 12 — Wave Color Field
+// Color Field
 // Two wave samplers with shift drive hue and brightness across a 2D field.
 // Hue shifts every 4s, brightness every 5s — desynchronised for variety.
 
@@ -31,7 +31,7 @@ function setup() {
 
 function draw() {
   t += 0.035;
-  var cellSz = 4;
+  var cellSz = 8;
 
   for (var y = 0; y < height; y += cellSz) {
     for (var x = 0; x < width; x += cellSz) {

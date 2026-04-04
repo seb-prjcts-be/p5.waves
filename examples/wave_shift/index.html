@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>06 — Swarm Flows | p5.waves examples</title>
+  <title>Wave Shift | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -22,28 +22,30 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">Example 06 — createSampler</div>
-      <h1>Swarm Flows</h1>
-      <p>Four <code>createSampler()</code> calls — each a different wave formula — steer 120 particles through a shared canvas. Particles wrap at edges; each sampler produces its own distinct flow pattern.</p>
+      <div class="demo-number">createSampler({ shift: true })</div>
+      <h1>Wave Shift</h1>
+      <p>A curtain of wave lines that auto-shift between random formulas. Each line has its own phase offset, creating an organic ripple. Pass <code>shift: true</code> — the library handles timing, picking, and easing.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// Four samplers with distinct wave shapes steer 120 particles.
-// Each particle uses its assigned sampler for x and y velocity.
+        <pre><code>var sampler = Waves.createSampler({
+  shift:     true,       // auto-shift to random waves
+  amplitude: 70,
+  frequency: 0.6
+});
 
-var waveNames = ['classic sine', 'wobble sine', 'pulse', 'meta sine'];
-var samplers  = [];
-for (var i = 0; i &lt; waveNames.length; i++) {
-  samplers.push(Waves.createSampler({
-    wave: waveNames[i], seed: i * 11, range: [-1.8, 1.8]
-  }));
-}
-
-// In draw():
-p.x += samplers[p.s].sample(p.y * 0.009, t) * 2.2;
-p.y += samplers[(p.s + 2) % 4].sample(p.x * 0.009, t) * 2.2;
-// wrap edges…</code></pre>
+// In draw — 10 horizontal lines, each with its own phase offset:
+var t = millis() / 1000;
+for (var i = 0; i &lt; 10; i++) {
+  var phaseOff = i * 0.35;
+  stroke(40 + i * 14);
+  beginShape();
+  for (var x = 0; x &lt;= width; x += 4) {
+    vertex(x, height/2 + sampler.sample(x + phaseOff*60, t + phaseOff*0.2));
+  }
+  endShape();
+}</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

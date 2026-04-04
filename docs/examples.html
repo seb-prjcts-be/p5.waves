@@ -30,39 +30,36 @@
     <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v3.0.0</div>
     <h1>p5.<span class="accent">waves</span> Examples</h1>
     <p>Each thumbnail is a live sketch. Click <strong>→ full example</strong> for the code and full-size canvas.</p>
-    <a class="ex-lab-card" href="../examples/00_wave_lab/" target="_blank">
+    <a class="ex-lab-card" href="../examples/wave_lab/" target="_blank">
       <div class="section-tag">Interactive playground</div>
       <strong>Wave Lab →</strong>
       <p>All 34 waves. Morph, shift, wild mode. Try everything.</p>
     </a>
   </div>
 
-  <!-- THE CALL -->
+  <!-- ONE NUMBER -->
   <section id="firstcall" class="section section-dark">
     <div class="section-header">
       <div class="section-tag">Waves.wave(y)</div>
-      <h2>The <span class="accent">Call</span></h2>
-      <p class="section-desc">Three ways to call it. All three return a number.</p>
+      <h2>One <span class="accent">Number</span></h2>
+      <p class="section-desc">One call returns one number. Use it for size, position, color — anything.</p>
     </div>
     <div class="ex-preview">
       <div id="ex0" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Three ways to call — all return a number
-
-// 1. Namespace form (always works)
-var y1 = Waves.wave(x * 0.02, {
-  wave: 'bounce', amplitude: 50, t: t
+      <pre class="ex-code-block">// One number — use it for anything
+var v = Waves.wave(i * 0.3, {
+  wave: 'bounce', t: t, range: [0, 1]
 });
 
-// 2. Global mode (p5 sketch)
-var y2 = waves(x * 0.02, {
-  wave: 'bounce', amplitude: 50, t: t
-});
+// Row 1: size
+circle(x, y, v * 30);
 
-// 3. Sampler (configure once, sample many)
-var sampler = Waves.createSampler({
-  wave: 'bounce', amplitude: 50
-});
-var y3 = sampler.sample(x * 0.02, t);</pre>
+// Row 2: position
+circle(x, baseY + v * rowH * 0.8, 8);
+
+// Row 3: color (pure red → pure blue)
+fill(255 - round(v * 255), 0, round(v * 255));
+circle(x, y, 14);</pre>
     </div>
   </section>
 
@@ -71,64 +68,25 @@ var y3 = sampler.sample(x * 0.02, t);</pre>
     <div class="section-header">
       <div class="section-tag">shift: true</div>
       <h2>Wave <span class="accent">Shift</span></h2>
-      <p class="section-desc">The wave changes automatically every few seconds. Smooth morph between random formulas. One flag, zero setup.</p>
+      <p class="section-desc">The wave changes automatically every few seconds. Smooth morph between random formulas. Watch the ribbons transform.</p>
     </div>
     <div class="ex-preview">
       <div id="ex1" class="ex-canvas"></div>
       <pre class="ex-code-block">var sampler = Waves.createSampler({
-  shift:     true,   // auto-shift to random waves
-  amplitude: 70,
-  frequency: 0.6
+  shift: true,
+  amplitude: 1,
+  frequency: 0.5
 });
 
-function draw() {
-  background(245);
-  var t = millis() / 1000;
-  for (var i = 0; i &lt; 10; i++) {
-    var phaseOff = i * 0.35;
-    stroke(40 + i * 14);
-    beginShape();
-    for (var x = 0; x &lt;= width; x += 4) {
-      vertex(x, height/2 + sampler.sample(
-        x + phaseOff * 60, t + phaseOff * 0.2
-      ));
-    }
-    endShape();
-  }
+// Filled ribbons — color shifts with the wave
+var t = millis() / 1000;
+for (var i = 0; i &lt; STRIPS; i++) {
+  var frac = i / (STRIPS - 1);
+  fill(255 - round(frac * 255), 0, round(frac * 255));
+  var v = sampler.sample(i * 0.4, t + i * 0.1);
+  rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
 }</pre>
-      <a class="ex-full-link" href="../examples/01_basic_wave/" target="_blank">→ full example</a>
-    </div>
-  </section>
-
-  <!-- SEED AS TIME -->
-  <section id="seeding" class="section section-dark">
-    <div class="section-header">
-      <div class="section-tag">seed + time</div>
-      <h2>Seed as <span class="accent">Clock</span></h2>
-      <p class="section-desc">A seed picks a wave formula. Change the seed over time and the wave switches automatically — no state, no timers.</p>
-    </div>
-    <div class="ex-preview">
-      <div id="ex-seed" class="ex-canvas"></div>
-      <pre class="ex-code-block">var t = 0;
-function draw() {
-  background(245);
-  t += 0.01;
-  var period = Math.floor(t / 2);
-
-  for (var i = 0; i &lt; 8; i++) {
-    var phase = i * 0.4;
-    stroke(map(i, 0, 7, 210, 0));
-    beginShape();
-    for (var x = 0; x &lt;= width; x += 4) {
-      vertex(x, height/2 + Waves.wave(x * 0.02 + phase, {
-        seed: period,  // new seed = new wave
-        t: t,
-        amplitude: height * 0.3
-      }));
-    }
-    endShape();
-  }
-}</pre>
+      <a class="ex-full-link" href="../examples/wave_shift/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -141,21 +99,19 @@ function draw() {
     </div>
     <div class="ex-preview">
       <div id="ex-params" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Same wave, one parameter varies per row
-t += 0.012;  // declared as var t = 0 above setup()
+      <pre class="ex-code-block">// Red = amplitude, Green = frequency, Blue = phase
+// Same wave, one parameter varies per row
 
-// Row 1: amplitude fans from small to large
-for (var i = 0; i &lt; 5; i++) {
-  var amp = map(i, 0, 4, 3, rowH * 0.21);
-  Waves.wave(x * 0.016, {
-    wave: 'classic sine', t: t,
-    amplitude: amp, frequency: 1.2
-  });
-}
+// Row 1: red ribbons — amplitude fans out
+fill(255, 0, 0);  // pure red
+Waves.wave(x * 0.016, {
+  wave: 'classic sine', t: t,
+  amplitude: amp, frequency: 1.2
+});
 
-// Row 2: frequency from loose to tight
-// Row 3: phase shifts across the wave</pre>
-      <a class="ex-full-link" href="../examples/07_wave_params/" target="_blank">→ full example</a>
+// Row 2: green ribbons — frequency tightens
+// Row 3: blue ribbons — phase shifts</pre>
+      <a class="ex-full-link" href="../examples/wave_params/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -164,25 +120,22 @@ for (var i = 0; i &lt; 5; i++) {
     <div class="section-header">
       <div class="section-tag">mode: 'wild'</div>
       <h2>Wild <span class="accent">Mode</span></h2>
-      <p class="section-desc">Left side: normal. Right side: <code>mode: 'wild'</code>. Adds wobble to frequency, phase, and amplitude at the same time.</p>
+      <p class="section-desc">Left: order. Right: chaos. Same wave, one flag added. The difference speaks for itself.</p>
     </div>
     <div class="ex-preview">
       <div id="ex4" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Left: stable. Right: wild mode.
-var waveIdx = Math.floor(Math.random() * 34);
-
-// Stable side
-var yStable = Waves.wave(pos, {
-  wave: waveIdx, t: t, amplitude: 30
+      <pre class="ex-code-block">// Left: stable circles. Right: wild circles.
+// Stable — orderly pattern
+var sz = Waves.wave(col + row * 0.5, {
+  wave: waveIdx, t: t, range: [4, maxR]
 });
 
-// Wild side — same wave, chaos added
-var yWild = Waves.wave(pos, {
-  wave: waveIdx, t: t, amplitude: 30,
-  mode: 'wild',
-  unpredictability: 0.6
+// Wild — same wave, chaos added
+var szW = Waves.wave(col + row * 0.5, {
+  wave: waveIdx, t: t, range: [4, maxR],
+  mode: 'wild', unpredictability: 0.7
 });</pre>
-      <a class="ex-full-link" href="../examples/10_wave_override/" target="_blank">→ full example</a>
+      <a class="ex-full-link" href="../examples/wild_mode/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -195,7 +148,8 @@ var yWild = Waves.wave(pos, {
     </div>
     <div class="ex-preview">
       <div id="ex7" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Four samplers steer 100 particles
+      <pre class="ex-code-block">// Four samplers, four colors: R, G, B, yellow
+var colors = [[255,0,0],[0,255,0],[0,0,255],[255,255,0]];
 var samplers = [
   Waves.createSampler({ wave: rw(), range: [-2, 2] }),
   Waves.createSampler({ wave: rw(), range: [-2, 2] }),
@@ -205,8 +159,10 @@ var samplers = [
 
 // Each particle follows its assigned sampler
 pt.x += samplers[pt.s].sample(pt.y * 0.009, t) * 2.5;
-pt.y += samplers[(pt.s+2)%4].sample(pt.x * 0.009, t) * 2.5;</pre>
-      <a class="ex-full-link" href="../examples/06_flow_fields/" target="_blank">→ full example</a>
+pt.y += samplers[(pt.s+2)%4].sample(pt.x * 0.009, t) * 2.5;
+fill(colors[pt.s][0], colors[pt.s][1], colors[pt.s][2], 180);
+circle(pt.x, pt.y, 5);</pre>
+      <a class="ex-full-link" href="../examples/flow_fields/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -235,7 +191,7 @@ for (var i = 0; i &lt; 12; i++) {
   }
   endShape();
 }</pre>
-      <a class="ex-full-link" href="../examples/11_tick_time_mode/" target="_blank">→ full example</a>
+      <a class="ex-full-link" href="../examples/time_strata/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -265,7 +221,7 @@ colorMode(HSB, 360, 100, 100);
 fill(hueS.sample(x * 0.007 + y * 0.005, t),
      72,
      briS.sample(x * 0.005 - y * 0.007, t));</pre>
-      <a class="ex-full-link" href="../examples/12_color_spectrum/" target="_blank">→ full example</a>
+      <a class="ex-full-link" href="../examples/color_field/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -279,11 +235,11 @@ fill(hueS.sample(x * 0.007 + y * 0.005, t),
     <div class="ex-preview">
       <div id="ex12" class="ex-canvas"></div>
       <pre class="ex-code-block">// Blend two formulas with mix
-var wA = Math.floor(Math.random() * 34);
-var wB = Math.floor(Math.random() * 34);
+var wA = floor(random(34));
+var wB = floor(random(34));
 
 // mix: 0 = pure A, mix: 1 = pure B
-var morphMix = (Math.sin(t * 0.3) + 1) * 0.5;
+var morphMix = (sin(t * 0.3) + 1) * 0.5;
 
 var wv = Waves.wave(x, {
   wave: [wA, wB],    // morph between two waves
@@ -292,7 +248,7 @@ var wv = Waves.wave(x, {
   frequency: 0.08,
   amplitude: rowH * 0.8
 });</pre>
-      <a class="ex-full-link" href="../examples/15_opacity/" target="_blank">→ full example</a>
+      <a class="ex-full-link" href="../examples/morph_wave/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -348,7 +304,7 @@ var sZ = Waves.createSampler({
 
 // Points near the surface glow
 var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
-      <a class="ex-full-link" href="../examples/17_3d_wave_volume/" target="_blank">→ full example</a>
+      <a class="ex-full-link" href="../examples/3d_wave_volume/" target="_blank">→ full example</a>
     </div>
   </section>
 
@@ -363,132 +319,92 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
   function cw(id) { return document.getElementById(id).offsetWidth || 320; }
   function rw() { return Math.floor(Math.random() * Waves.count); }
 
-  // ── The Call ──────────────────────────────────────────────
+  // ── One Number ────────────────────────────────────────────
   new p5(function(p) {
-    var sampler;
-    var amp;
     var t = 0;
-    var opts = { wave: 'bounce', amplitude: 1, t: 0 };
+    var N = 12;
     p.setup = function() {
       var w = cw('ex0');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex0');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex0');
+      p.noStroke();
       p.textFont('monospace');
-      amp = p.height / 3 * 0.35;
-      opts.amplitude = amp;
-      sampler = Waves.createSampler({ wave: 'bounce', amplitude: amp });
     };
     p.draw = function() {
       p.background(238);
-      t += 0.012;
+      t += 0.015;
       var rowH = p.height / 3;
-      var x;
-      opts.t = t;
+      var gap = p.width / (N + 1);
 
-      p.noFill(); p.stroke(0); p.strokeWeight(1.5);
+      // Row 1: wave → size
+      for (var i = 0; i < N; i++) {
+        var v1 = Waves.wave(i * 0.3, { wave: 'bounce', t: t, range: [0, 1] });
+        p.fill(0);
+        p.circle((i + 1) * gap, rowH * 0.5, v1 * gap * 0.85);
+      }
 
-      p.beginShape();
-      for (x = 0; x <= p.width; x += 4)
-        p.vertex(x, rowH * 0.5 + Waves.wave(x * 0.02, opts));
-      p.endShape();
+      // Row 2: wave → position
+      for (var j = 0; j < N; j++) {
+        var v2 = Waves.wave(j * 0.3, { wave: 'bounce', t: t + 2, range: [-1, 1] });
+        p.fill(0);
+        p.circle((j + 1) * gap, rowH * 1.5 + v2 * rowH * 0.35, 8);
+      }
 
-      p.beginShape();
-      for (x = 0; x <= p.width; x += 4)
-        p.vertex(x, rowH * 1.5 + p.waves(x * 0.02, opts));
-      p.endShape();
-
-      p.beginShape();
-      for (x = 0; x <= p.width; x += 4)
-        p.vertex(x, rowH * 2.5 + sampler.sample(x * 0.02, t));
-      p.endShape();
+      // Row 3: wave → color (red to blue)
+      for (var k = 0; k < N; k++) {
+        var v3 = Waves.wave(k * 0.3, { wave: 'bounce', t: t + 4, range: [0, 1] });
+        var rv = p.round(v3 * 255);
+        p.fill(255 - rv, 0, rv);
+        p.circle((k + 1) * gap, rowH * 2.5, 14);
+      }
 
       p.stroke(0, 0, 0, 20); p.strokeWeight(1);
       p.line(0, rowH, p.width, rowH);
       p.line(0, rowH * 2, p.width, rowH * 2);
-
-      p.noStroke(); p.fill(0, 0, 0, 100); p.textSize(11); p.textAlign(p.LEFT, p.TOP);
-      p.text("Waves.wave(x, opts)",    6, rowH * 0 + 5);
-      p.text("p.waves(x, opts)",       6, rowH * 1 + 5);
-      p.text("sampler.sample(x, t)",   6, rowH * 2 + 5);
+      p.noStroke(); p.fill(0, 0, 0, 80); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
+      p.text('size', 6, 5);
+      p.text('position', 6, rowH + 5);
+      p.text('color', 6, rowH * 2 + 5);
     };
-    p.windowResized = function() {
-      var w = cw('ex0');
-      p.resizeCanvas(w, Math.round(w * 2/3));
-      amp = p.height / 3 * 0.35;
-      opts.amplitude = amp;
-      sampler = Waves.createSampler({ wave: 'bounce', amplitude: amp });
-    };
+    p.windowResized = function() { var w = cw('ex0'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex0');
 
-  // ── Wave Shift ───────────────────────────────────────────
+  // ── Wave Shift — Ribbons ──────────────────────────────────
   new p5(function(p) {
-    var LINE_COUNT = 10;
-    var sampler = Waves.createSampler({ shift: true, amplitude: 70, frequency: 0.6 });
+    var STRIPS = 16;
+    var sampler = Waves.createSampler({ shift: true, amplitude: 1, frequency: 0.5 });
     p.setup = function() {
       var w = cw('ex1');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex1');
-      p.strokeCap(p.ROUND);
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex1');
+      p.noStroke();
+      p.textFont('monospace');
     };
     p.draw = function() {
       p.background(245);
       var t = p.millis() / 1000;
-      p.noFill();
-      for (var i = 0; i < LINE_COUNT; i++) {
-        var shade = 40 + (i / (LINE_COUNT - 1)) * 140;
-        var phaseOff = i * 0.35;
-        p.stroke(shade); p.strokeWeight(1.4);
-        p.beginShape();
-        for (var x = 0; x <= p.width; x += 4) {
-          p.vertex(x, p.height / 2 + sampler.sample(x + phaseOff * 60, t + phaseOff * 0.2));
-        }
-        p.endShape();
+      var sw = p.width / STRIPS;
+      var cy = p.height / 2;
+      var rowH = p.height * 0.42;
+      for (var i = 0; i < STRIPS; i++) {
+        var frac = i / (STRIPS - 1);
+        var r = p.lerp(255, 0, frac);
+        var b = p.lerp(0, 255, frac);
+        p.fill(r, 0, b);
+        var v = sampler.sample(i * 0.4, t + i * 0.1);
+        p.rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
       }
-      p.noStroke(); p.fill(0, 0, 0, 140); p.textFont('monospace'); p.textSize(11); p.textAlign(p.LEFT);
+      p.fill(0, 0, 0, 140); p.textSize(11); p.textAlign(p.LEFT);
       p.text(sampler.waveName, 8, 16);
     };
-    p.windowResized = function() { var w = cw('ex1'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex1'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex1');
 
-  // ── Seed as Clock ─────────────────────────────────────────
+  // ── Shape Controls — RGB Ribbons ────────────────────────────
   new p5(function(p) {
-    var LINE_COUNT = 8;
-    var t = 0;
-    p.setup = function() {
-      var w = cw('ex-seed');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex-seed');
-    };
-    p.draw = function() {
-      p.background(245);
-      t += 0.01;
-      var period = Math.floor(t / 2);
-      var amp = p.height * 0.3;
-
-      p.noFill();
-      for (var i = 0; i < LINE_COUNT; i++) {
-        var shade = p.map(i, 0, LINE_COUNT - 1, 210, 0);
-        var phase = i * 0.4;
-        var sw = p.map(i, 0, LINE_COUNT - 1, 0.5, 2);
-        p.stroke(shade); p.strokeWeight(sw);
-        p.beginShape();
-        for (var x = 0; x <= p.width; x += 4) {
-          p.vertex(x, p.height / 2 + Waves.wave(x * 0.02 + phase, { seed: period, t: t, amplitude: amp }));
-        }
-        p.endShape();
-      }
-
-      p.noStroke(); p.fill(0, 0, 0, 80);
-      p.textFont('monospace'); p.textSize(11); p.textAlign(p.LEFT);
-      p.text(Waves.data[period % Waves.count].name, 8, 16);
-    };
-    p.windowResized = function() { var w = cw('ex-seed'); p.resizeCanvas(w, Math.round(w * 2/3)); };
-  }, 'ex-seed');
-
-  // ── Shape Controls ────────────────────────────────────────
-  new p5(function(p) {
-    var hues = [[200, 60, 50], [50, 80, 200], [50, 170, 80]];
     var t = 0;
     p.setup = function() {
       var w = cw('ex-params');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex-params');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex-params');
+      p.noStroke();
       p.textFont('monospace');
     };
     p.draw = function() {
@@ -498,10 +414,11 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       var N = 5;
       var i, x, amp, freq, ph, wY, aV;
 
+      // Row 1: RED — amplitude fans out
       for (i = 0; i < N; i++) {
         amp = p.map(i, 0, N - 1, 3, rowH * 0.21);
-        aV = p.map(i, 0, N - 1, 25, 110);
-        p.fill(hues[0][0], hues[0][1], hues[0][2], aV); p.noStroke();
+        aV = p.map(i, 0, N - 1, 60, 255);
+        p.fill(255, 0, 0, aV);
         p.beginShape();
         for (x = 0; x <= p.width; x += 4) {
           wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: amp, frequency: 1.2 });
@@ -514,10 +431,11 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         p.endShape(p.CLOSE);
       }
 
+      // Row 2: GREEN — frequency tightens
       for (i = 0; i < N; i++) {
         freq = p.map(i, 0, N - 1, 0.4, 2.8);
-        aV = p.map(i, 0, N - 1, 25, 110);
-        p.fill(hues[1][0], hues[1][1], hues[1][2], aV); p.noStroke();
+        aV = p.map(i, 0, N - 1, 60, 255);
+        p.fill(0, 255, 0, aV);
         p.beginShape();
         for (x = 0; x <= p.width; x += 4) {
           wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.11, frequency: freq });
@@ -530,10 +448,11 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         p.endShape(p.CLOSE);
       }
 
+      // Row 3: BLUE — phase shifts
       for (i = 0; i < N; i++) {
         ph = p.map(i, 0, N - 1, 0, p.TWO_PI * 0.85);
-        aV = p.map(i, 0, N - 1, 25, 110);
-        p.fill(hues[2][0], hues[2][1], hues[2][2], aV); p.noStroke();
+        aV = p.map(i, 0, N - 1, 60, 255);
+        p.fill(0, 0, 255, aV);
         p.beginShape();
         for (x = 0; x <= p.width; x += 4) {
           wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.11, frequency: 1.2, phase: ph });
@@ -548,81 +467,91 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
 
       p.stroke(0, 0, 0, 18); p.strokeWeight(1);
       p.line(0, rowH, p.width, rowH); p.line(0, rowH * 2, p.width, rowH * 2);
-      p.noStroke(); p.fill(0, 0, 0, 80); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
-      p.text('amplitude', 6, rowH * 0 + 5);
-      p.text('frequency', 6, rowH * 1 + 5);
-      p.text('phase',     6, rowH * 2 + 5);
+      p.fill(0, 0, 0, 80); p.noStroke(); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
+      p.text('amplitude', 6, 5);
+      p.text('frequency', 6, rowH + 5);
+      p.text('phase', 6, rowH * 2 + 5);
     };
-    p.windowResized = function() { var w = cw('ex-params'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex-params'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-params');
 
-  // ── Wild Mode ─────────────────────────────────────────────
+  // ── Wild Mode — Circle Grid ───────────────────────────────
   new p5(function(p) {
-    var LINE_COUNT = 14;
+    var COLS = 16, ROWS = 8;
     var t = 0, wildWave;
     p.setup = function() {
       var w = cw('ex4');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex4');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex4');
+      p.noStroke();
+      p.textFont('monospace');
       wildWave = rw();
     };
     p.draw = function() {
-      p.background(238); t += 0.012;
-      p.noFill();
-      for (var i = 0; i < LINE_COUNT; i++) {
-        var shade = 30 + (i / (LINE_COUNT - 1)) * 150;
-        var phaseOff = i * 0.25;
-        p.stroke(shade, shade * 0.9, shade * 1.1); p.strokeWeight(1);
-        p.beginShape();
-        for (var y = 0; y <= p.height - 20; y += 4) {
-          var xs = Waves.wave(y * 0.014 + phaseOff, { wave: wildWave, t: t + phaseOff * 0.15, amplitude: 30 });
-          p.vertex(p.width / 4 + xs * 0.4, y);
+      p.background(238);
+      t += 0.02;
+      var cw2 = p.width / COLS;
+      var ch = (p.height - 16) / ROWS;
+      var maxD = p.min(cw2, ch) * 0.9;
+      var half = COLS / 2;
+
+      for (var row = 0; row < ROWS; row++) {
+        for (var col = 0; col < COLS; col++) {
+          var cx = (col + 0.5) * cw2;
+          var cy = (row + 0.5) * ch;
+          var coord = col * 0.5 + row * 0.7;
+
+          if (col < half) {
+            var sz = Waves.wave(coord, { wave: wildWave, t: t, range: [2, maxD] });
+            p.fill(0);
+            p.circle(cx, cy, sz);
+          } else {
+            var szW = Waves.wave(coord, { wave: wildWave, t: t, range: [2, maxD], mode: 'wild', unpredictability: 0.8 });
+            p.fill(0);
+            p.circle(cx, cy, szW);
+          }
         }
-        p.endShape();
-        p.stroke(shade * 0.8, shade * 0.6, shade);
-        p.beginShape();
-        for (var y2 = 0; y2 <= p.height - 20; y2 += 4) {
-          var xw = Waves.wave(y2 * 0.014 + phaseOff, { wave: wildWave, t: t + phaseOff * 0.15, mode: 'wild', unpredictability: 0.6, amplitude: 30 });
-          p.vertex(3 * p.width / 4 + xw * 0.4, y2);
-        }
-        p.endShape();
       }
+
       p.stroke(0, 0, 0, 30); p.strokeWeight(1);
-      p.line(p.width / 2, 0, p.width / 2, p.height - 20);
-      p.noStroke(); p.fill(0, 0, 0, 100); p.textSize(7); p.textFont('monospace'); p.textAlign(p.CENTER);
-      p.text('stable', p.width / 4, p.height - 6);
-      p.text('wild', 3 * p.width / 4, p.height - 6);
+      p.line(p.width / 2, 0, p.width / 2, p.height - 16);
+      p.noStroke(); p.fill(0, 0, 0, 100); p.textSize(7); p.textAlign(p.CENTER);
+      p.text('stable', p.width / 4, p.height - 4);
+      p.text('wild', 3 * p.width / 4, p.height - 4);
     };
-    p.windowResized = function() { var w = cw('ex4'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex4'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex4');
 
-  // ── Flow Fields ───────────────────────────────────────────
+  // ── Flow Fields — Colored Trails ────────────────────────────
   new p5(function(p) {
     var samplers, pts = [], t = 0;
+    var colors = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0]];
     p.setup = function() {
       var w = cw('ex7');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex7');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex7');
       p.noStroke();
       samplers = [
-        Waves.createSampler({ wave: rw(), seed:  0, range: [-2, 2] }),
-        Waves.createSampler({ wave: rw(), seed: 11, range: [-2, 2] }),
-        Waves.createSampler({ wave: rw(), seed: 22, range: [-2, 2] }),
-        Waves.createSampler({ wave: rw(), seed: 33, range: [-2, 2] }),
+        Waves.createSampler({ wave: rw(), seed:  0, range: [-3, 3], frequency: 0.8 }),
+        Waves.createSampler({ wave: rw(), seed: 11, range: [-3, 3], frequency: 0.8 }),
+        Waves.createSampler({ wave: rw(), seed: 22, range: [-3, 3], frequency: 0.8 }),
+        Waves.createSampler({ wave: rw(), seed: 33, range: [-3, 3], frequency: 0.8 })
       ];
-      for (var i = 0; i < 100; i++) pts.push({ x: p.random(p.width), y: p.random(p.height), s: i % 4 });
+      for (var i = 0; i < 120; i++) pts.push({ x: p.random(p.width), y: p.random(p.height), s: i % 4 });
     };
     p.draw = function() {
-      p.background(245, 245, 245, 22);
-      t += 0.014;
+      p.background(245, 245, 245, 16);
+      t += 0.018;
       for (var i = 0; i < pts.length; i++) {
         var pt = pts[i];
-        pt.x += samplers[pt.s].sample(pt.y * 0.009, t) * 2.5;
-        pt.y += samplers[(pt.s + 2) % 4].sample(pt.x * 0.009, t) * 2.5;
+        pt.x += samplers[pt.s].sample(pt.y * 0.015, t);
+        pt.y += samplers[(pt.s + 2) % 4].sample(pt.x * 0.015, t);
         if (pt.x < 0) pt.x += p.width;  if (pt.x > p.width)  pt.x -= p.width;
         if (pt.y < 0) pt.y += p.height; if (pt.y > p.height) pt.y -= p.height;
-        p.fill(0, 0, 0, 160); p.circle(pt.x, pt.y, 3);
+        var c = colors[pt.s];
+        p.fill(c[0], c[1], c[2]);
+        p.circle(pt.x, pt.y, 5);
       }
     };
-    p.windowResized = function() { var w = cw('ex7'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex7'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex7');
 
   // ── Time is a Number ──────────────────────────────────────
@@ -630,7 +559,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     var strataWave;
     p.setup = function() {
       var w = cw('ex8');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex8');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex8');
       p.colorMode(p.HSB, 360, 100, 100, 255);
       strataWave = rw();
     };
@@ -657,7 +586,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         p.endShape(p.CLOSE);
       }
     };
-    p.windowResized = function() { var w = cw('ex8'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex8'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex8');
 
   // ── Color Field ───────────────────────────────────────────
@@ -665,7 +594,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     var hueS, briS, t = 0;
     p.setup = function() {
       var w = cw('ex9');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex9');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex9');
       p.noStroke(); p.colorMode(p.HSB, 360, 100, 100);
       hueS = Waves.createSampler({ wave: 'meta sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [160, 320], seed: 0 });
       briS = Waves.createSampler({ wave: 'wobble sine', shift: true, shiftInterval: 5, shiftDuration: 2, range: [55, 90], seed: 7 });
@@ -680,7 +609,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         }
       }
     };
-    p.windowResized = function() { var w = cw('ex9'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex9'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex9');
 
   // ── Morph Wave ────────────────────────────────────────────
@@ -689,12 +618,12 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     var t = 0;
     p.setup = function() {
       var w = cw('ex12');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex12');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex12');
     };
     p.draw = function() {
       p.background(250);
       t += 0.0375;
-      var centre = (Math.sin(t * 0.3) + 1) * 0.5;
+      var centre = (p.sin(t * 0.3) + 1) * 0.5;
       var rowH = p.height / ROWS;
       for (var row = 0; row < ROWS; row++) {
         var rowFrac = row / (ROWS - 1);
@@ -715,7 +644,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         p.endShape();
       }
     };
-    p.windowResized = function() { var w = cw('ex12'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex12'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex12');
 
   // ── Wave Grid ─────────────────────────────────────────────
@@ -724,7 +653,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     var COLS = 28, ROWS = 20;
     p.setup = function() {
       var w = cw('ex6');
-      p.createCanvas(w, Math.round(w * 2/3)).parent('ex6');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex6');
       p.noStroke();
       grid = Waves.createGrid(COLS, ROWS, { waveRow: 'smooth solid sine', waveCol: 'ramp up sine', threshold: 0, speed: 1 });
     };
@@ -740,7 +669,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         }
       }
     };
-    p.windowResized = function() { var w = cw('ex6'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex6'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex6');
 
   // ── 3D Wave Volume ────────────────────────────────────────
@@ -749,7 +678,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     var sY, sX, sZ, rotAngle = 0;
     p.setup = function() {
       var w = cw('ex14');
-      p.createCanvas(w, Math.round(w * 2/3), p.WEBGL).parent('ex14');
+      p.createCanvas(w, p.floor(w * 2 / 3), p.WEBGL).parent('ex14');
       p.frameRate(24); p.noFill(); p.strokeWeight(3);
       sY = Waves.createSampler({ shift: true, shiftInterval: 3, shiftDuration: 1.5, range: [-5, 5], frequency: 0.4, seed: 0 });
       sX = Waves.createSampler({ shift: true, shiftInterval: 4, shiftDuration: 1.2, range: [-2.5, 2.5], frequency: 0.3, seed: 42 });
@@ -768,10 +697,10 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
           var dz = sZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
           var surfaceRow = N / 2 + dy;
           for (var yi = 0; yi < N; yi++) {
-            var gapVal = Math.abs(yi - surfaceRow);
+            var gapVal = p.abs(yi - surfaceRow);
             if (gapVal < 2.5) {
               var glow = 1 - gapVal / 2.5;
-              var bright = Math.round(80 + (yi / (N - 1)) * 175);
+              var bright = p.round(80 + (yi / (N - 1)) * 175);
               p.stroke(bright, bright, 255, 255 * glow);
               p.vertex(-half + xi * SPACING + dx * SPACING * 0.4, -half + yi * SPACING, -half + zi * SPACING + dz * SPACING * 0.4);
             }
@@ -780,7 +709,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       }
       p.endShape();
     };
-    p.windowResized = function() { var w = cw('ex14'); p.resizeCanvas(w, Math.round(w * 2/3)); };
+    p.windowResized = function() { var w = cw('ex14'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex14');
   </script>
 
