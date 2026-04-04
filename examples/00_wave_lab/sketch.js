@@ -454,27 +454,8 @@ function drawGrid14(state) {
   noStroke();
   for (var r = 0; r < rows; r++) {
     for (var c = 0; c < cols; c++) {
-      var idx = r * cols + c;
-      var on  = cells[idx] === 1;
-      fill(on ? 0 : 255);
+      fill(cells[r * cols + c] === 1 ? 0 : 245);
       rect(ox + c * cell, oy + r * cell, cell, cell);
-      if (state.showPoints) {
-        fill(on ? 255 : 0);
-        circle(ox + c * cell + cell * 0.5, oy + r * cell + cell * 0.5,
-          on ? cell * 0.36 : cell * 0.14);
-      }
-    }
-  }
-
-  if (state.showGrid) {
-    stroke(0);
-    strokeWeight(1);
-    noFill();
-    for (var gx = 0; gx <= cols; gx++) {
-      line(ox + gx * cell, oy, ox + gx * cell, oy + gridH);
-    }
-    for (var gy = 0; gy <= rows; gy++) {
-      line(ox, oy + gy * cell, ox + gridW, oy + gy * cell);
     }
   }
 }
