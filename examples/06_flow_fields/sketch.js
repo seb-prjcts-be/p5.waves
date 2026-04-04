@@ -20,9 +20,10 @@ function setup() {
   }
 }
 
+var t = 0;
 function draw() {
   background(245, 245, 245, 22);
-  const t = frameCount * 0.014;
+  t += 0.014;
 
   for (const p of particles) {
     p.x += samplers[p.s].sample(p.y * 0.009, t) * 2.2;
