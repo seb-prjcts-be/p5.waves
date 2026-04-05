@@ -19,7 +19,7 @@
     { name: 'stepped sine',      algo: 'ceil(sin(x*.1))*.25' },
     { name: 'mountain peaks',    algo: 'abs(cos(x*.1))*.35 + sin(x*.1)*.25' },
     { name: 'valleys',           algo: 'abs(cos(x*.1))*-.35 + sin(x*.1)*.25' },
-    { name: 'zig-zag sine',      algo: 'sin(x*.1)*.25 % .15' },
+    { name: 'zig-zag sine',      algo: 'sin(x*.2)*.4 % .12' },
     { name: 'batman',            algo: 'sin(x*.1)*.7 % .4' },
     { name: 'offset sine',       algo: 'ceil(cos(x*.1))*.25 - sin(x*.1)*.25' },
     { name: 'steps down',        algo: 'ceil(tan(x*.1))*.25' },
