@@ -257,7 +257,8 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
 
     <!-- ═══════════════════════════════════ CREATEGRID -->
     <h2>createGrid() — Instant 2D Patterns</h2>
-    <p>One call fills a 2D grid with wave values. Two waves combine — one runs along the rows, one along the columns. The result: animated black-and-white patterns.</p>
+    <p>Imagine a checkerboard, but instead of black and white squares, each square has a number in it. <code>createGrid(10, 10)</code> makes a 10&times;10 grid &mdash; 100 squares. Every time you call <code>.sample(t)</code>, it fills all 100 squares with wave values at once. One wave runs across the rows, a different wave runs down the columns. Where they overlap, you get a pattern.</p>
+    <p>You can use those numbers for anything &mdash; color, size, on/off. The <code>threshold</code> option turns it into a binary grid: every square is either 0 or 1, like pixels on or off.</p>
 
     <div class="code-block"><span class="kw">let</span> g = Waves.createGrid(<span class="nb">14</span>, <span class="nb">14</span>, {
   waveRow:   <span class="st">'classic sine'</span>,
