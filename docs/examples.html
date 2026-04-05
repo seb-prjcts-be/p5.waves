@@ -357,7 +357,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       p.stroke(0, 0, 0, 20); p.strokeWeight(1);
       p.line(0, rowH, p.width, rowH);
       p.line(0, rowH * 2, p.width, rowH * 2);
-      p.noStroke(); p.fill(0, 0, 0, 80); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
+      p.noStroke(); p.fill(0); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
       p.text('size', 6, 5);
       p.text('position', 6, rowH + 5);
       p.text('color', 6, rowH * 2 + 5);
@@ -389,7 +389,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         var v = sampler.sample(i * 0.4, t + i * 0.1);
         p.rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
       }
-      p.fill(0, 0, 0, 140); p.textSize(11); p.textAlign(p.LEFT);
+      p.fill(0); p.textSize(11); p.textAlign(p.LEFT);
       p.text(sampler.waveName, 8, 16);
     };
     p.windowResized = function() { var w = cw('ex1'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
@@ -431,7 +431,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         }
         p.endShape();
       }
-      p.noStroke(); p.fill(0, 0, 0, 50); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
+      p.noStroke(); p.fill(0); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
       p.text(waveName, 5, 5);
     };
     p.windowResized = function() { var w = cw('ex-params'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
@@ -476,7 +476,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
 
       p.stroke(0, 0, 0, 30); p.strokeWeight(1);
       p.line(p.width / 2, 0, p.width / 2, p.height - 16);
-      p.noStroke(); p.fill(0, 0, 0, 100); p.textSize(7); p.textAlign(p.CENTER);
+      p.noStroke(); p.fill(0); p.textSize(7); p.textAlign(p.CENTER);
       p.text('stable', p.width / 4, p.height - 4);
       p.text('wild', 3 * p.width / 4, p.height - 4);
     };

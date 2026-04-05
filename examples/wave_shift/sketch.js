@@ -31,7 +31,7 @@ function draw() {
     rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
   }
 
-  fill(0, 0, 0, 140);
+  fill(0);
   textSize(11);
   textAlign(LEFT);
   text(sampler.waveName, 8, 16);

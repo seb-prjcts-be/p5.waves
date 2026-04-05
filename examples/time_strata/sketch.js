@@ -47,7 +47,7 @@ function draw() {
   }
 
   // time cursor label
-  fill(0, 0, 30);
+  fill(0);
   noStroke();
   textSize(10);
   textAlign(LEFT);

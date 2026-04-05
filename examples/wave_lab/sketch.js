@@ -408,13 +408,13 @@ function drawWave(state) {
   // Shift labels
   if (useShift && sampler) {
     noStroke();
-    fill(0, 0, 0, 160);
+    fill(0);
     textFont('monospace');
     textSize(12);
     textAlign(CENTER, CENTER);
     text(sampler.waveName, cx, height - 36);
     if (sampler.shifting) {
-      fill(0, 0, 0, map(sampler.mix, 0, 1, 0, 160));
+      fill(0, 0, 0, map(sampler.mix, 0, 1, 0, 255));
       text(sampler.targetName, cx, height - 18);
     }
   }

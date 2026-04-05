@@ -61,7 +61,7 @@ function draw() {
 
   // Labels
   noStroke();
-  fill(0, 0, 0, 60);
+  fill(0);
   textSize(10);
   textAlign(LEFT, TOP);
   text(waveName, 8, 8);

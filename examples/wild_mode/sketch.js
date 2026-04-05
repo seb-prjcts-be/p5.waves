@@ -48,7 +48,7 @@ function draw() {
   strokeWeight(1);
   line(width / 2, 0, width / 2, height - 24);
   noStroke();
-  fill(0, 0, 0, 120);
+  fill(0);
   textSize(10);
   text('stable', width / 4, height - 6);
   text('wild  ' + nf(unpred, 1, 2), 3 * width / 4, height - 6);
