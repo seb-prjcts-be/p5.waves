@@ -4,6 +4,8 @@
 
 34 wave shapes for p5.js. One function call, one number back.
 
+**Requires p5.js 2.x** (tested with 2.2.2). Not compatible with p5.js 1.x.
+
 ## Install
 
 ```html
