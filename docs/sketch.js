@@ -263,9 +263,9 @@ reg('interactive-canvas', new p5(function(p) {
   var params = {
     wave: 'classic sine', amplitude: 68,
     frequency: 0.060, speed: 0.020,
-    lines: 5, fill: false, dots: false
+    lines: 12, dots: false
   };
-  var GRAYS = [0, 40, 80, 120, 160, 30, 70, 110, 20, 50, 90, 140];
+  var GRAYS = [0, 40, 80, 120, 160, 30, 70, 110, 20, 50, 90, 140, 10, 60, 100, 150, 35, 75, 115, 45, 85, 130, 25, 65];
   var sampler, tInteractive = 0;
 
   function readControls() {
@@ -274,7 +274,6 @@ reg('interactive-canvas', new p5(function(p) {
     params.frequency = +document.getElementById('ctrl-frequency').value / 1000;
     params.speed     = +document.getElementById('ctrl-speed').value / 1000;
     params.lines     = +document.getElementById('ctrl-lines').value;
-    params.fill      = document.getElementById('ctrl-fill').checked;
     params.dots      = document.getElementById('ctrl-dots').checked;
 
     document.getElementById('val-amplitude').textContent = params.amplitude;
@@ -310,7 +309,7 @@ reg('interactive-canvas', new p5(function(p) {
     });
     updateCode();
 
-    var ids = ['ctrl-wave', 'ctrl-amplitude', 'ctrl-frequency', 'ctrl-speed', 'ctrl-lines', 'ctrl-fill', 'ctrl-dots'];
+    var ids = ['ctrl-wave', 'ctrl-amplitude', 'ctrl-frequency', 'ctrl-speed', 'ctrl-lines', 'ctrl-dots'];
     for (var i = 0; i < ids.length; i++) {
       var el = document.getElementById(ids[i]);
       if (el) {
@@ -332,18 +331,6 @@ reg('interactive-canvas', new p5(function(p) {
     for (var li = 0; li < params.lines; li++) {
       var g = GRAYS[li % GRAYS.length];
       var offsetY = (li - (params.lines - 1) / 2) * (p.height / (params.lines + 3));
-
-      if (params.fill) {
-        p.noStroke();
-        p.fill(g, g, g, 18);
-        p.beginShape();
-        p.vertex(0, p.height / 2 + offsetY);
-        for (var x = 0; x <= p.width; x += 4) {
-          p.vertex(x, p.height / 2 + offsetY + sampler.sample(x, t + li * 20));
-        }
-        p.vertex(p.width, p.height / 2 + offsetY);
-        p.endShape(p.CLOSE);
-      }
 
       p.stroke(g, g, g, 200 - li * 8);
       p.strokeWeight(1.8);
