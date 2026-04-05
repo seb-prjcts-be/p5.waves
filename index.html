@@ -111,6 +111,32 @@
     </div>
   </section>
 
+  <!-- NOT SO RANDOM WALKER -->
+  <section id="walker" class="section">
+    <div class="section-header">
+      <div class="section-tag">shift: true &middot; no random()</div>
+      <h2>Not So Random <span class="accent">Walker</span></h2>
+      <p class="section-desc">No angles, no steps — wave output IS the velocity. Five trails ride two shift-samplers as raw displacement. When formulas shift, movement character transforms entirely.</p>
+    </div>
+    <div id="walker-canvas" style="max-width:500px; margin:0 auto;"></div>
+    <div class="code-preview" style="max-width:500px; margin:1.5rem auto 0;"><code>let xWave = Waves.createSampler({
+  shift: true,
+  amplitude: 2.5,
+  frequency: 0.7
+});
+let yWave = Waves.createSampler({
+  shift: true,
+  amplitude: 2.5,
+  frequency: 0.55
+});
+
+// Wave output IS velocity:
+let vx = xWave.sample(t * 1.8 + phase, t);
+let vy = yWave.sample(t * 2.1 + phase, t);
+wx += vx;
+wy += vy;</code></div>
+  </section>
+
   <!-- 3D TERRAIN -->
   <section id="terrain" class="section section-dark">
     <div class="section-header">

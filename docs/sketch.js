@@ -1,6 +1,6 @@
 /* ============================================================
    p5.waves Showcase – sketch.js
-   Sections: Hero, Gallery, Interactive, Shift, Terrain
+   Sections: Hero, Gallery, Interactive, Shift, Walker, Terrain
    ============================================================ */
 
 // ── WAVE NAMES ──────────────────────────────────────────────
@@ -473,7 +473,114 @@ reg('shift-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 5. 3D TERRAIN — Two wave samplers + WEBGL
+// 5. NOT SO RANDOM WALKER — Wave output as raw velocity
+// ═════════════════════════════════════════════════════════════
+reg('walker-canvas', new p5(function(p) {
+  var WALKERS = 5;
+  var xWave, yWave, trailBuf;
+  var wx = [], wy = [], pxArr = [], pyArr = [];
+  var walkerT = 0;
+
+  var palette = [
+    [255, 60, 60],
+    [60, 220, 60],
+    [60, 100, 255],
+    [255, 220, 40],
+    [180, 60, 255]
+  ];
+
+  p.setup = function() {
+    var container = document.getElementById('walker-canvas');
+    var w = container ? container.offsetWidth : 500;
+    p.createCanvas(w, w).parent('walker-canvas');
+    trailBuf = p.createGraphics(w, w);
+    trailBuf.background(15);
+    p.frameRate(30);
+
+    xWave = Waves.createSampler({
+      shift: true,
+      shiftInterval: 4,
+      shiftDuration: 1.5,
+      amplitude: 2.5,
+      frequency: 0.7,
+      seed: 0
+    });
+
+    yWave = Waves.createSampler({
+      shift: true,
+      shiftInterval: 5,
+      shiftDuration: 1.2,
+      amplitude: 2.5,
+      frequency: 0.55,
+      seed: 77
+    });
+
+    for (var i = 0; i < WALKERS; i++) {
+      var a = p.TWO_PI * i / WALKERS;
+      wx[i] = p.width / 2 + p.cos(a) * 40;
+      wy[i] = p.height / 2 + p.sin(a) * 40;
+      pxArr[i] = wx[i];
+      pyArr[i] = wy[i];
+    }
+  };
+
+  p.draw = function() {
+    // Fade the trail buffer
+    trailBuf.noStroke();
+    trailBuf.fill(15, 15, 15, 8);
+    trailBuf.rect(0, 0, trailBuf.width, trailBuf.height);
+
+    walkerT += 0.025;
+
+    for (var i = 0; i < WALKERS; i++) {
+      var phase = i * 6.7;
+      var vx = xWave.sample(walkerT * 1.8 + phase, walkerT);
+      var vy = yWave.sample(walkerT * 2.1 + phase * 1.3, walkerT);
+
+      pxArr[i] = wx[i];
+      pyArr[i] = wy[i];
+
+      wx[i] += vx;
+      wy[i] += vy;
+
+      if (wx[i] < 0) wx[i] += p.width;
+      if (wx[i] > p.width) wx[i] -= p.width;
+      if (wy[i] < 0) wy[i] += p.height;
+      if (wy[i] > p.height) wy[i] -= p.height;
+
+      if (p.abs(wx[i] - pxArr[i]) > p.width / 2) continue;
+      if (p.abs(wy[i] - pyArr[i]) > p.height / 2) continue;
+
+      var col = palette[i];
+      trailBuf.stroke(col[0], col[1], col[2], 200);
+      trailBuf.strokeWeight(2.5);
+      trailBuf.line(pxArr[i], pyArr[i], wx[i], wy[i]);
+    }
+
+    p.image(trailBuf, 0, 0);
+
+    p.noStroke();
+    p.fill(255, 255, 255, 120);
+    p.textSize(10);
+    p.textFont('monospace');
+    p.textAlign(p.LEFT, p.TOP);
+    p.text(xWave.waveName + ' \u00d7 ' + yWave.waveName, 8, 8);
+  };
+
+  p.windowResized = function() {
+    var container = document.getElementById('walker-canvas');
+    var w = container ? container.offsetWidth : 500;
+    p.resizeCanvas(w, w);
+    var oldBuf = trailBuf;
+    trailBuf = p.createGraphics(w, w);
+    trailBuf.image(oldBuf, 0, 0, w, w);
+    oldBuf.remove();
+  };
+}, 'walker-canvas'));
+
+
+// ═════════════════════════════════════════════════════════════
+// 6. 3D TERRAIN — Two wave samplers + WEBGL
 // ═════════════════════════════════════════════════════════════
 reg('terrain-canvas', new p5(function(p) {
   var TERRAIN_N = 35;
@@ -629,3 +736,7 @@ reg('terrain-canvas', new p5(function(p) {
     p.resizeCanvas(container.offsetWidth || 800, 480);
   };
 }, 'terrain-canvas'));
+
+
+
+

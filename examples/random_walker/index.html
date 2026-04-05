@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Not So Random Walker | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/waves.html">Waves</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">shift: true &middot; no random()</div>
+      <h1>Not So Random Walker</h1>
+      <p>No angles, no steps — wave output IS the velocity. Five trails ride two shift-samplers as raw displacement. When formulas shift, movement character transforms entirely.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>const xWave = Waves.createSampler({
+  shift: true,
+  shiftInterval: 4,
+  amplitude: 2.5,
+  frequency: 0.7
+});
+const yWave = Waves.createSampler({
+  shift: true,
+  shiftInterval: 5,
+  amplitude: 2.5,
+  frequency: 0.55
+});
+
+// Wave output IS velocity — no angle, no step
+const vx = xWave.sample(t * 1.8 + phase, t);
+const vy = yWave.sample(t * 2.1 + phase, t);
+wx += vx;
+wy += vy;</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">&larr; All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v3.0.0 &nbsp;&middot;&nbsp; p5.js v2.2.2</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>
