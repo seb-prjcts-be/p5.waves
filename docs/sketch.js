@@ -189,7 +189,7 @@ reg('gallery-canvas', new p5(function(p) {
       p.text(i, ox + 16, oy + 13);
 
       if (!hasFocus) {
-        p.fill(isHov ? 0 : 120);
+        p.fill(0);
         p.textSize(9);
         p.textAlign(p.LEFT, p.BOTTOM);
         p.text(WAVE_NAMES[i], ox + 8, oy + miniCellH - 7);
