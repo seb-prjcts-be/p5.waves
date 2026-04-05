@@ -351,7 +351,7 @@ reg('interactive-canvas', new p5(function(p) {
     }
 
     p.noStroke();
-    p.fill(180);
+    p.fill(0);
     p.textSize(10);
     p.textFont('Consolas, monospace');
     p.textAlign(p.LEFT, p.TOP);
