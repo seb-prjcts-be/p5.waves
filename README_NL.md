@@ -4,6 +4,8 @@
 
 34 golfvormen voor p5.js. Eén functie-aanroep, één getal terug.
 
+**Vereist p5.js 2.x** (getest met 2.2.2). Niet compatibel met p5.js 1.x.
+
 ## Installeren
 
 ```html
