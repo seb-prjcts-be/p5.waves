@@ -22,32 +22,23 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">amplitude · frequency · phase</div>
+      <div class="demo-number">amplitude · frequency · interactive</div>
       <h1>Shape Parameters</h1>
-      <p>Three rows of filled wave ribbons — each isolates one parameter. Amplitude in red, frequency in blue, phase in green. Lighter bands show smaller values; all run the same <code>classic sine</code>.</p>
+      <p>Move your mouse. X controls frequency (how many waves fit), Y controls amplitude (how tall). The formula shifts automatically — drag around to feel the difference between parameters.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// amplitude — scales the output height
-Waves.wave(x * 0.016, {
-  wave:      'classic sine',
-  t:         t,
-  amplitude: 60      // default: 100
-});
+        <pre><code>// mouseX = frequency, mouseY = amplitude
+let freq = map(mouseX, 0, width, 0.15, 3.5);
+let amp = map(mouseY, 0, height, 120, 8);
 
-// frequency — compresses/stretches the wave
-Waves.wave(x * 0.016, {
-  wave:      'classic sine',
-  t:         t,
-  frequency: 2.0     // default: 1
-});
-
-// phase — shifts the wave sideways
-Waves.wave(x * 0.016, {
-  wave:      'classic sine',
-  t:         t,
-  phase:     PI * 0.5  // default: 0
+let val = Waves.wave(x, {
+  wave: waveName,
+  t: t,
+  amplitude: amp,
+  frequency: freq * 0.01,
+  phase: i * 0.7
 });</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>

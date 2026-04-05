@@ -93,24 +93,21 @@ for (var i = 0; i &lt; STRIPS; i++) {
   <!-- AMPLITUDE · FREQUENCY · PHASE -->
   <section id="params" class="section">
     <div class="section-header">
-      <div class="section-tag">amplitude · frequency · phase</div>
-      <h2>Shape <span class="accent">Controls</span></h2>
-      <p class="section-desc">Amplitude = how tall. Frequency = how tight. Phase = how far shifted. Same formula, one parameter changes per row.</p>
+      <div class="section-tag">amplitude · frequency · interactive</div>
+      <h2>Shape <span class="accent">Parameters</span></h2>
+      <p class="section-desc">Move your mouse over the canvas. X = frequency, Y = amplitude. The formula shifts automatically — drag to feel the difference.</p>
     </div>
     <div class="ex-preview">
       <div id="ex-params" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Red = amplitude, Green = frequency, Blue = phase
-// Same wave, one parameter varies per row
+      <pre class="ex-code-block">// mouseX = frequency, mouseY = amplitude
+let freq = map(mouseX, 0, width, 0.15, 3.5);
+let amp = map(mouseY, 0, height, 120, 8);
 
-// Row 1: red ribbons — amplitude fans out
-fill(255, 0, 0);  // pure red
-Waves.wave(x * 0.016, {
-  wave: 'classic sine', t: t,
-  amplitude: amp, frequency: 1.2
-});
-
-// Row 2: green ribbons — frequency tightens
-// Row 3: blue ribbons — phase shifts</pre>
+Waves.wave(x, {
+  wave: waveName, t: t,
+  amplitude: amp,
+  frequency: freq * 0.01
+});</pre>
       <a class="ex-full-link" href="../examples/wave_params/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -398,79 +395,44 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.windowResized = function() { var w = cw('ex1'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex1');
 
-  // ── Shape Controls — RGB Ribbons ────────────────────────────
+  // ── Shape Parameters — interactive mouse control ─────────────
   new p5(function(p) {
-    var t = 0;
+    var t = 0, LINE_COUNT = 6;
+    var shiftSampler;
     p.setup = function() {
       var w = cw('ex-params');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex-params');
-      p.noStroke();
       p.textFont('monospace');
+      shiftSampler = Waves.createSampler({
+        shift: true, shiftInterval: 4, shiftDuration: 1.5, seed: 42
+      });
     };
     p.draw = function() {
       p.background(245);
-      t += 0.012;
-      var rowH = p.height / 3;
-      var N = 5;
-      var i, x, amp, freq, ph, wY, aV;
-
-      // Row 1: RED — amplitude fans out
-      for (i = 0; i < N; i++) {
-        amp = p.map(i, 0, N - 1, 3, rowH * 0.21);
-        aV = p.map(i, 0, N - 1, 60, 255);
-        p.fill(255, 0, 0, aV);
+      t += 0.015;
+      var freq = p.map(p.mouseX, 0, p.width, 0.15, 3.5);
+      var amp = p.map(p.mouseY, 0, p.height, 100, 8);
+      freq = p.constrain(freq, 0.15, 3.5);
+      amp = p.constrain(amp, 8, 100);
+      shiftSampler.sample(0, t);
+      var waveName = shiftSampler.waveName;
+      for (var i = 0; i < LINE_COUNT; i++) {
+        var progress = i / (LINE_COUNT - 1);
+        var phase = i * 0.7;
+        var lineAmp = amp * (1 - progress * 0.5);
+        var gray = p.lerp(0, 200, progress);
+        p.stroke(gray);
+        p.strokeWeight(p.lerp(2, 0.8, progress));
+        p.noFill();
         p.beginShape();
-        for (x = 0; x <= p.width; x += 4) {
-          wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: amp, frequency: 1.2 });
-          p.vertex(x, rowH * 0.5 + wY);
+        for (var x = 0; x <= p.width; x += 3) {
+          var val = Waves.wave(x, { wave: waveName, t: t, amplitude: lineAmp, frequency: freq * 0.01, phase: phase });
+          p.vertex(x, p.height / 2 + val);
         }
-        for (x = p.width; x >= 0; x -= 4) {
-          wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: amp, frequency: 1.2 });
-          p.vertex(x, rowH * 0.5 - wY);
-        }
-        p.endShape(p.CLOSE);
+        p.endShape();
       }
-
-      // Row 2: GREEN — frequency tightens
-      for (i = 0; i < N; i++) {
-        freq = p.map(i, 0, N - 1, 0.4, 2.8);
-        aV = p.map(i, 0, N - 1, 60, 255);
-        p.fill(0, 255, 0, aV);
-        p.beginShape();
-        for (x = 0; x <= p.width; x += 4) {
-          wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.11, frequency: freq });
-          p.vertex(x, rowH * 1.5 + wY);
-        }
-        for (x = p.width; x >= 0; x -= 4) {
-          wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.11, frequency: freq });
-          p.vertex(x, rowH * 1.5 - wY);
-        }
-        p.endShape(p.CLOSE);
-      }
-
-      // Row 3: BLUE — phase shifts
-      for (i = 0; i < N; i++) {
-        ph = p.map(i, 0, N - 1, 0, p.TWO_PI * 0.85);
-        aV = p.map(i, 0, N - 1, 60, 255);
-        p.fill(0, 0, 255, aV);
-        p.beginShape();
-        for (x = 0; x <= p.width; x += 4) {
-          wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.11, frequency: 1.2, phase: ph });
-          p.vertex(x, rowH * 2.5 + wY);
-        }
-        for (x = p.width; x >= 0; x -= 4) {
-          wY = Waves.wave(x * 0.016, { wave: 'classic sine', t: t, amplitude: rowH * 0.11, frequency: 1.2, phase: ph });
-          p.vertex(x, rowH * 2.5 - wY);
-        }
-        p.endShape(p.CLOSE);
-      }
-
-      p.stroke(0, 0, 0, 18); p.strokeWeight(1);
-      p.line(0, rowH, p.width, rowH); p.line(0, rowH * 2, p.width, rowH * 2);
-      p.fill(0, 0, 0, 80); p.noStroke(); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
-      p.text('amplitude', 6, 5);
-      p.text('frequency', 6, rowH + 5);
-      p.text('phase', 6, rowH * 2 + 5);
+      p.noStroke(); p.fill(0, 0, 0, 50); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
+      p.text(waveName, 5, 5);
     };
     p.windowResized = function() { var w = cw('ex-params'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-params');
