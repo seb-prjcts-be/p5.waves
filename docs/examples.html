@@ -139,23 +139,25 @@ var szW = Waves.wave(col + row * 0.5, {
   <!-- FLOW FIELDS -->
   <section id="flow" class="section">
     <div class="section-header">
-      <div class="section-tag">waves() as noise</div>
+      <div class="section-tag">shift + sampler</div>
       <h2>Flow <span class="accent">Fields</span></h2>
-      <p class="section-desc">A grid of ASCII direction characters driven by <code>waves()</code> — like <code>noise()</code>, but with structure. A different wave formula is picked on every page load.</p>
+      <p class="section-desc">A grid of ASCII direction characters driven by a sampler with <code>shift</code> — like <code>noise()</code>, but with structure. The wave formula shifts automatically, morphing the entire field.</p>
     </div>
     <div class="ex-preview">
       <div id="ex7" class="ex-canvas"></div>
-      <pre class="ex-code-block">// ASCII flow field — waves() replaces noise()
+      <pre class="ex-code-block">// ASCII flow field — sampler with shift
 const DIRS = ['-', '/', '|', '\\'];
-let waveIdx = floor(random(Waves.count));
+let sampler = createWaveSampler({
+  shift: true,
+  shiftInterval: 4,
+  shiftDuration: 2,
+  frequency: 2
+});
 
+// In draw():
 for (let row = 0; row &lt; ROWS; row++) {
   for (let col = 0; col &lt; COLS; col++) {
-    let val = waves(col * 0.5, {
-      wave: waveIdx,
-      t: t + row * 0.4,
-      frequency: 2
-    });
+    let val = sampler.sample(col * 0.5, t + row * 0.4);
     let idx = constrain(floor(map(val, -1, 1.001, 0, 4)), 0, 3);
     text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
   }
@@ -488,7 +490,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
   new p5(function(p) {
     var COLS = 22;
     var DIRS = ['-', '/', '|', '\\'];
-    var waveIdx;
+    var sampler;
     p.setup = function() {
       var w = cw('ex7');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex7');
@@ -496,7 +498,12 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       p.textAlign(p.CENTER, p.CENTER);
       p.noStroke();
       p.fill(0);
-      waveIdx = rw();
+      sampler = Waves.createSampler({
+        shift: true,
+        shiftInterval: 4,
+        shiftDuration: 2,
+        frequency: 2
+      });
     };
     p.draw = function() {
       p.background(255);
@@ -506,11 +513,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       p.textSize(sz * 0.9);
       for (var row = 0; row < rows; row++) {
         for (var col = 0; col < COLS; col++) {
-          var val = Waves.wave(col * 0.5, {
-            wave: waveIdx,
-            t: t + row * 0.4,
-            frequency: 2
-          });
+          var val = sampler.sample(col * 0.5, t + row * 0.4);
           var idx = p.constrain(p.floor(p.map(val, -1, 1.001, 0, 4)), 0, 3);
           p.text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
         }
