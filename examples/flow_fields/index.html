@@ -22,27 +22,26 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">waves() as noise</div>
+      <div class="demo-number">shift + sampler</div>
       <h1>Flow Fields</h1>
-      <p>A grid of ASCII direction characters driven by <code>waves()</code> — like <code>noise()</code>, but with structure. Each cell maps the wave output to one of four characters. A different wave formula is picked on every page load.</p>
+      <p>A grid of ASCII direction characters driven by a sampler with <code>shift</code> — like <code>noise()</code>, but with structure. The wave formula shifts automatically every few seconds, morphing the entire field.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// ASCII flow field — waves() replaces noise()
-const COLS = 30;
-const ROWS = 30;
+        <pre><code>// ASCII flow field — sampler with shift
 const DIRS = ['-', '/', '|', '\\'];
-let waveIdx = floor(random(Waves.count));
+let sampler = createWaveSampler({
+  shift: true,
+  shiftInterval: 4,
+  shiftDuration: 2,
+  frequency: 2
+});
 
 // In draw():
 for (let row = 0; row &lt; ROWS; row++) {
   for (let col = 0; col &lt; COLS; col++) {
-    let val = waves(col * 0.5, {
-      wave: waveIdx,
-      t: t + row * 0.4,
-      frequency: 2
-    });
+    let val = sampler.sample(col * 0.5, t + row * 0.4);
     let idx = constrain(floor(map(val, -1, 1.001, 0, 4)), 0, 3);
     text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
   }
