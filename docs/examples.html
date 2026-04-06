@@ -139,26 +139,27 @@ var szW = Waves.wave(col + row * 0.5, {
   <!-- FLOW FIELDS -->
   <section id="flow" class="section">
     <div class="section-header">
-      <div class="section-tag">particles + samplers</div>
+      <div class="section-tag">waves() as noise</div>
       <h2>Flow <span class="accent">Fields</span></h2>
-      <p class="section-desc">Four samplers steer 100 particles. Each sampler uses a different wave. Swap the wave names and the whole flow pattern changes.</p>
+      <p class="section-desc">A grid of ASCII direction characters driven by <code>waves()</code> — like <code>noise()</code>, but with structure. A different wave formula is picked on every page load.</p>
     </div>
     <div class="ex-preview">
       <div id="ex7" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Four samplers, four colors: R, G, B, yellow
-var colors = [[255,0,0],[0,255,0],[0,0,255],[255,255,0]];
-var samplers = [
-  Waves.createSampler({ wave: rw(), range: [-2, 2] }),
-  Waves.createSampler({ wave: rw(), range: [-2, 2] }),
-  Waves.createSampler({ wave: rw(), range: [-2, 2] }),
-  Waves.createSampler({ wave: rw(), range: [-2, 2] })
-];
+      <pre class="ex-code-block">// ASCII flow field — waves() replaces noise()
+const DIRS = ['-', '/', '|', '\\'];
+let waveIdx = floor(random(Waves.count));
 
-// Each particle follows its assigned sampler
-pt.x += samplers[pt.s].sample(pt.y * 0.009, t) * 2.5;
-pt.y += samplers[(pt.s+2)%4].sample(pt.x * 0.009, t) * 2.5;
-fill(colors[pt.s][0], colors[pt.s][1], colors[pt.s][2], 180);
-circle(pt.x, pt.y, 5);</pre>
+for (let row = 0; row &lt; ROWS; row++) {
+  for (let col = 0; col &lt; COLS; col++) {
+    let val = waves(col * 0.5, {
+      wave: waveIdx,
+      t: t + row * 0.4,
+      frequency: 2
+    });
+    let idx = constrain(floor(map(val, -1, 1.001, 0, 4)), 0, 3);
+    text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
+  }
+}</pre>
       <a class="ex-full-link" href="../examples/flow_fields/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -483,34 +484,36 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.windowResized = function() { var w = cw('ex4'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex4');
 
-  // ── Flow Fields — Colored Trails ────────────────────────────
+  // ── Flow Fields — ASCII Grid ────────────────────────────────
   new p5(function(p) {
-    var samplers, pts = [], t = 0;
-    var colors = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0]];
+    var COLS = 22;
+    var DIRS = ['-', '/', '|', '\\'];
+    var waveIdx;
     p.setup = function() {
       var w = cw('ex7');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex7');
+      p.textFont('monospace');
+      p.textAlign(p.CENTER, p.CENTER);
       p.noStroke();
-      samplers = [
-        Waves.createSampler({ wave: rw(), seed:  0, range: [-3, 3], frequency: 0.8 }),
-        Waves.createSampler({ wave: rw(), seed: 11, range: [-3, 3], frequency: 0.8 }),
-        Waves.createSampler({ wave: rw(), seed: 22, range: [-3, 3], frequency: 0.8 }),
-        Waves.createSampler({ wave: rw(), seed: 33, range: [-3, 3], frequency: 0.8 })
-      ];
-      for (var i = 0; i < 120; i++) pts.push({ x: p.random(p.width), y: p.random(p.height), s: i % 4 });
+      p.fill(0);
+      waveIdx = rw();
     };
     p.draw = function() {
-      p.background(245, 245, 245, 16);
-      t += 0.018;
-      for (var i = 0; i < pts.length; i++) {
-        var pt = pts[i];
-        pt.x += samplers[pt.s].sample(pt.y * 0.015, t);
-        pt.y += samplers[(pt.s + 2) % 4].sample(pt.x * 0.015, t);
-        if (pt.x < 0) pt.x += p.width;  if (pt.x > p.width)  pt.x -= p.width;
-        if (pt.y < 0) pt.y += p.height; if (pt.y > p.height) pt.y -= p.height;
-        var c = colors[pt.s];
-        p.fill(c[0], c[1], c[2]);
-        p.circle(pt.x, pt.y, 5);
+      p.background(255);
+      var t = p.millis() / 1000;
+      var sz = p.width / COLS;
+      var rows = p.floor(p.height / sz);
+      p.textSize(sz * 0.9);
+      for (var row = 0; row < rows; row++) {
+        for (var col = 0; col < COLS; col++) {
+          var val = Waves.wave(col * 0.5, {
+            wave: waveIdx,
+            t: t + row * 0.4,
+            frequency: 2
+          });
+          var idx = p.constrain(p.floor(p.map(val, -1, 1.001, 0, 4)), 0, 3);
+          p.text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
+        }
       }
     };
     p.windowResized = function() { var w = cw('ex7'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };

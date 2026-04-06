@@ -22,28 +22,31 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">createSampler</div>
-      <h1>Swarm Flows</h1>
-      <p>Four <code>createSampler()</code> calls — each a different wave formula — steer 120 particles through a shared canvas. Particles wrap at edges; each sampler produces its own distinct flow pattern.</p>
+      <div class="demo-number">waves() as noise</div>
+      <h1>Flow Fields</h1>
+      <p>A grid of ASCII direction characters driven by <code>waves()</code> — like <code>noise()</code>, but with structure. Each cell maps the wave output to one of four characters. A different wave formula is picked on every page load.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>// Four samplers with distinct wave shapes steer 120 particles.
-// Each particle uses its assigned sampler for x and y velocity.
-
-var waveNames = ['classic sine', 'wobble sine', 'pulse', 'meta sine'];
-var samplers  = [];
-for (var i = 0; i &lt; waveNames.length; i++) {
-  samplers.push(Waves.createSampler({
-    wave: waveNames[i], seed: i * 11, range: [-1.8, 1.8]
-  }));
-}
+        <pre><code>// ASCII flow field — waves() replaces noise()
+const COLS = 30;
+const ROWS = 30;
+const DIRS = ['-', '/', '|', '\\'];
+let waveIdx = floor(random(Waves.count));
 
 // In draw():
-p.x += samplers[p.s].sample(p.y * 0.009, t) * 2.2;
-p.y += samplers[(p.s + 2) % 4].sample(p.x * 0.009, t) * 2.2;
-// wrap edges…</code></pre>
+for (let row = 0; row &lt; ROWS; row++) {
+  for (let col = 0; col &lt; COLS; col++) {
+    let val = waves(col * 0.5, {
+      wave: waveIdx,
+      t: t + row * 0.4,
+      frequency: 2
+    });
+    let idx = constrain(floor(map(val, -1, 1.001, 0, 4)), 0, 3);
+    text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
+  }
+}</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>
