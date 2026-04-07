@@ -26,7 +26,7 @@ function draw() {
     fill(wHue, 70, 85, alphaVal);
     beginShape();
     for (let x = 0; x <= width; x += 3) {
-      const dy = Waves.wave(x * 0.015, {
+      const dy = Waves.wave(x * 0.15, {
         wave:      'classic sine',
         t:         layerT,
         amplitude: 25,
@@ -35,7 +35,7 @@ function draw() {
       vertex(x, y0 + dy);
     }
     for (let x2 = width; x2 >= 0; x2 -= 3) {
-      const dy2 = Waves.wave(x2 * 0.015, {
+      const dy2 = Waves.wave(x2 * 0.15, {
         wave:      'classic sine',
         t:         layerT + 0.3,
         amplitude: 15,
