@@ -86,8 +86,10 @@ for (let i = 0; i &lt; STRIPS; i++) {
   const v = sampler.sample(i * 0.4, t + i * 0.1);
   rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
 }</pre>
-      <a class="ex-full-link" href="../examples/wave_shift/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/VZmKK7bRd" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/wave_shift/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/VZmKK7bRd" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
@@ -109,8 +111,10 @@ Waves.wave(x, {
   amplitude: amp,
   frequency: freq * 0.01
 });</pre>
-      <a class="ex-full-link" href="../examples/wave_params/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/DwbS7tkcd" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/wave_params/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/DwbS7tkcd" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
@@ -134,8 +138,10 @@ const szW = Waves.wave(col + row * 0.5, {
   wave: waveIdx, t: t, range: [4, maxR],
   mode: 'wild', unpredictability: 0.7
 });</pre>
-      <a class="ex-full-link" href="../examples/wild_mode/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/WJ2Dd06au" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/wild_mode/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/WJ2Dd06au" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
@@ -165,8 +171,10 @@ for (let row = 0; row &lt; ROWS; row++) {
     text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
   }
 }</pre>
-      <a class="ex-full-link" href="../examples/flow_fields/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/cEsoiq0wK" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/flow_fields/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/cEsoiq0wK" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
@@ -195,8 +203,10 @@ for (let i = 0; i &lt; 12; i++) {
   }
   endShape();
 }</pre>
-      <a class="ex-full-link" href="../examples/time_strata/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/T_c5Ted__" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/time_strata/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/T_c5Ted__" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
@@ -226,8 +236,10 @@ colorMode(HSB, 360, 100, 100);
 fill(hueS.sample(x * 0.007 + y * 0.005, t),
      72,
      briS.sample(x * 0.005 - y * 0.007, t));</pre>
-      <a class="ex-full-link" href="../examples/color_field/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/FISK4i_Pv" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/color_field/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/FISK4i_Pv" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
@@ -254,8 +266,10 @@ const wv = Waves.wave(x, {
   frequency: 0.08,
   amplitude: rowH * 0.8
 });</pre>
-      <a class="ex-full-link" href="../examples/morph_wave/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/tiKRarkU_" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/morph_wave/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/tiKRarkU_" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
@@ -311,8 +325,10 @@ const sZ = Waves.createSampler({
 
 // Points near the surface glow
 const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
-      <a class="ex-full-link" href="../examples/3d_wave_volume/" target="_blank">→ full example</a>
-      <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/1PonLJbMv" target="_blank">→ open in p5.js editor</a>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/3d_wave_volume/" target="_blank">→ full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/1PonLJbMv" target="_blank">→ open in p5.js editor</a>
+      </div>
     </div>
   </section>
 
