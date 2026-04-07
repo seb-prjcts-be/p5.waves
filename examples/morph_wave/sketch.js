@@ -28,8 +28,8 @@ function draw() {
     const yBase = row * rowH + rowH * 0.5;
 
     // waveA = blue, waveB = red — morph zone blends
-    const r = round(lerp(0, 255, morphMix));
-    const b = round(lerp(255, 0, morphMix));
+    const r = lerp(0, 255, morphMix);
+    const b = lerp(255, 0, morphMix);
 
     noFill();
     stroke(r, 0, b);
