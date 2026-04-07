@@ -1,7 +1,7 @@
-// Morph Wave
+﻿// Morph Wave
 // A field of horizontal lines where each row blends two wave formulas.
 // Top rows = pure waveA. Bottom rows = pure waveB. Middle = the morph.
-// The blend sweeps up and down over time — you see the shape transform.
+// The blend sweeps up and down over time - you see the shape transform.
 
 const WAVE_A = 'wobble sine';
 const WAVE_B = 'meta sine';
@@ -27,7 +27,7 @@ function draw() {
     const morphMix = constrain(1 - gap * 3, 0, 1);
     const yBase = row * rowH + rowH * 0.5;
 
-    // waveA = blue, waveB = red — morph zone blends
+    // waveA = blue, waveB = red - morph zone blends
     const r = lerp(0, 255, morphMix);
     const b = lerp(255, 0, morphMix);
 

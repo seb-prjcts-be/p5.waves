@@ -1,6 +1,6 @@
-/* ============================================================
-   p5.waves Examples – Showcase design system shared styles
-   Nav, footer, body layout – included by all example pages
+﻿/* ============================================================
+   p5.waves Examples - Showcase design system shared styles
+   Nav, footer, body layout - included by all example pages
    Load AFTER the example's own style.css so these win.
    ============================================================ */
 
@@ -115,7 +115,7 @@ footer a:hover { color: #000; }
 }
 
 /* ============================================================
-   Demo two-column layout — used by examples 01–11
+   Demo two-column layout - used by examples 01-11
    ============================================================ */
 
 .demo-page {

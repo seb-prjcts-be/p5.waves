@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guide – p5.waves</title>
+  <title>Guide - p5.waves</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -68,21 +68,21 @@
   endShape();
 }</div>
 
-    <p>That's the whole API in action. <code>Waves.wave()</code> takes a position, returns a number. Use that number for y-position, size, color, rotation, opacity — anything that takes a number.</p>
+    <p>That's the whole API in action. <code>Waves.wave()</code> takes a position, returns a number. Use that number for y-position, size, color, rotation, opacity - anything that takes a number.</p>
 
     <div class="callout"><p>Now change <code>'mountain peaks'</code> to <code>'batman'</code>. Or <code>'wobble sine'</code>. Or <code>'fuzzy pulse'</code>. Each one has its own personality. There are 34 to explore.</p></div>
 
 
     <!-- ═══════════════════════════════════ THREE WAYS -->
     <h2>Three Ways to Call It</h2>
-    <p>From lazy to precise — all three return the same kind of number.</p>
-    <div class="code-block"><span class="cm">// Lazy — picks a random wave for you</span>
+    <p>From lazy to precise - all three return the same kind of number.</p>
+    <div class="code-block"><span class="cm">// Lazy - picks a random wave for you</span>
 Waves.wave(x);
 
-<span class="cm">// Quick — pick one by name</span>
+<span class="cm">// Quick - pick one by name</span>
 Waves.wave(x, <span class="st">'triangle'</span>);
 
-<span class="cm">// Full control — name, speed, size, everything</span>
+<span class="cm">// Full control - name, speed, size, everything</span>
 Waves.wave(x, {
   wave:      <span class="st">'triangle'</span>,
   t:         millis() / <span class="nb">1000</span>,
@@ -186,7 +186,7 @@ circle(x, y, dotSize);</div>
 
 
     <!-- ═══════════════════════════════════ SHIFT -->
-    <h2>Wave Shift — The Fun Part</h2>
+    <h2>Wave Shift - The Fun Part</h2>
     <p>This is the feature that makes people go "whoa". One flag, and your wave starts switching to random formulas on its own. Smooth morphs. Different sequence every time you reload.</p>
 
     <div class="code-block"><span class="kw">let</span> sampler = Waves.createSampler({
@@ -210,16 +210,16 @@ circle(x, y, dotSize);</div>
   text(sampler.waveName, <span class="nb">10</span>, <span class="nb">20</span>);     <span class="cm">// "mountain peaks"</span>
   text(sampler.shifting, <span class="nb">10</span>, <span class="nb">40</span>);     <span class="cm">// true while morphing</span>
   text(sampler.targetName, <span class="nb">10</span>, <span class="nb">60</span>);   <span class="cm">// "batman" (what's coming next)</span>
-  text(sampler.mix, <span class="nb">10</span>, <span class="nb">80</span>);          <span class="cm">// 0.0 → 1.0 during morph</span>
+  text(sampler.mix, <span class="nb">10</span>, <span class="nb">80</span>);          <span class="cm">// 0.0 -> 1.0 during morph</span>
 }</div>
 
     <p>Reload the page. Different waves. Every time. Your sketch is never the same twice.</p>
 
-    <div class="callout"><p>Shift also works directly on <code>Waves.wave()</code> — just add <code>shift: true</code> to the options. But the sampler version is better: it caches everything and gives you the <code>.waveName</code> / <code>.shifting</code> / <code>.mix</code> getters for free.</p></div>
+    <div class="callout"><p>Shift also works directly on <code>Waves.wave()</code>  - just add <code>shift: true</code> to the options. But the sampler version is better: it caches everything and gives you the <code>.waveName</code> / <code>.shifting</code> / <code>.mix</code> getters for free.</p></div>
 
 
     <!-- ═══════════════════════════════════ MORPH -->
-    <h2>Morph — Blend Two Waves</h2>
+    <h2>Morph - Blend Two Waves</h2>
     <p>Pick two waves. Slide between them. Connect <code>mix</code> to your mouse and you get a live crossfader.</p>
 
     <div class="code-block"><span class="kw">let</span> y = Waves.wave(x, {
@@ -233,7 +233,7 @@ circle(x, y, dotSize);</div>
 
 
     <!-- ═══════════════════════════════════ CREATESAMPLER -->
-    <h2>createSampler() — For Loops and Particles</h2>
+    <h2>createSampler()  - For Loops and Particles</h2>
     <p>If you're calling the same wave 200 times per frame (particles, grid cells, trail points), set up a sampler once and call <code>.sample()</code> instead. Same result, less repeated work.</p>
 
     <div class="code-block"><span class="kw">let</span> s = Waves.createSampler({
@@ -257,7 +257,7 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
 
 
     <!-- ═══════════════════════════════════ CREATEGRID -->
-    <h2>createGrid() — Instant 2D Patterns</h2>
+    <h2>createGrid()  - Instant 2D Patterns</h2>
     <p>Imagine a checkerboard, but instead of black and white squares, each square has a number in it. <code>createGrid(10, 10)</code> makes a 10&times;10 grid &mdash; 100 squares. Every time you call <code>.sample(t)</code>, it fills all 100 squares with wave values at once. One wave runs across the rows, a different wave runs down the columns. Where they overlap, you get a pattern.</p>
     <p>You can use those numbers for anything &mdash; color, size, on/off. The <code>threshold</code> option turns it into a binary grid: every square is either 0 or 1, like pixels on or off.</p>
 
@@ -289,8 +289,8 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
 
 
     <!-- ═══════════════════════════════════ WILD MODE -->
-    <h2>Wild Mode — Controlled Chaos</h2>
-    <p>Turn on <code>mode: 'wild'</code> and the wave gets wobbly. Frequency, phase, and amplitude all start drifting. It stays recognizable — just... unhinged.</p>
+    <h2>Wild Mode - Controlled Chaos</h2>
+    <p>Turn on <code>mode: 'wild'</code> and the wave gets wobbly. Frequency, phase, and amplitude all start drifting. It stays recognizable - just... unhinged.</p>
 
     <div class="code-block"><span class="kw">let</span> y = Waves.wave(x, {
   wave:             <span class="st">'pulse'</span>,
@@ -300,13 +300,13 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
   amplitude:        <span class="nb">80</span>
 });</div>
 
-    <p>Start at <code>0.3</code> and work your way up. At <code>1.0</code> things get interesting. Wild mode is about 5x slower though — so don't use it in a 10,000-point loop unless you're ready for that.</p>
+    <p>Start at <code>0.3</code> and work your way up. At <code>1.0</code> things get interesting. Wild mode is about 5x slower though - so don't use it in a 10,000-point loop unless you're ready for that.</p>
 
 
     <!-- ═══════════════════════════════════ TIME -->
-    <h2>Time — You Control It</h2>
+    <h2>Time - You Control It</h2>
     <p>There's no built-in clock. You pass <code>t</code> on every call. That means you're in charge.</p>
-    <div class="code-block"><span class="cm">// Tie time to the mouse — scrub through the wave</span>
+    <div class="code-block"><span class="cm">// Tie time to the mouse - scrub through the wave</span>
 <span class="kw">let</span> t = map(mouseX, <span class="nb">0</span>, width, <span class="nb">0</span>, <span class="nb">10</span>);
 <span class="kw">let</span> y = Waves.wave(x, { wave: <span class="st">'sine'</span>, t: t, amplitude: <span class="nb">50</span> });</div>
 
@@ -314,11 +314,11 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
 
 
     <!-- ═══════════════════════════════════ SEED VS INDEX -->
-    <h2>Seed vs Index — Don't Mix Them Up</h2>
+    <h2>Seed vs Index - Don't Mix Them Up</h2>
     <p>These look similar but do different things:</p>
-    <div class="code-block">Waves.wave(x, <span class="nb">3</span>)             <span class="cm">// seed 3 → hashed to SOME wave (not necessarily #3)</span>
-Waves.wave(x, { wave: <span class="nb">3</span> })   <span class="cm">// index 3 → exactly wave #3 (square)</span></div>
-    <p><strong>Index</strong> = "I want that exact wave." <strong>Seed</strong> = "Give each of my 50 particles its own consistent wave — I don't care which."</p>
+    <div class="code-block">Waves.wave(x, <span class="nb">3</span>)             <span class="cm">// seed 3 -> hashed to SOME wave (not necessarily #3)</span>
+Waves.wave(x, { wave: <span class="nb">3</span> })   <span class="cm">// index 3 -> exactly wave #3 (square)</span></div>
+    <p><strong>Index</strong> = "I want that exact wave." <strong>Seed</strong> = "Give each of my 50 particles its own consistent wave - I don't care which."</p>
 
 
     <!-- ═══════════════════════════════════ API ACCESS -->

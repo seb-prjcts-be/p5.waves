@@ -1,6 +1,6 @@
-// Flow Fields
+﻿// Flow Fields
 // A grid of ASCII characters forms a flow field.
-// Each cell's direction comes from waves() — like noise(), but with structure.
+// Each cell's direction comes from waves() - like noise(), but with structure.
 // The wave formula shifts automatically every few seconds.
 
 const COLS = 30;

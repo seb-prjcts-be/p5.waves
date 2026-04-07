@@ -1,4 +1,4 @@
-// Shape Parameters
+﻿// Shape Parameters
 // mouseX = frequency, mouseY = amplitude.
 // Wave formula shifts automatically.
 // Drag to feel what each parameter does.
@@ -34,7 +34,7 @@ function draw() {
   shiftSampler.sample(0, t);
   let waveName = shiftSampler.waveName;
 
-  // Draw layered lines — each offset in phase for depth
+  // Draw layered lines - each offset in phase for depth
   for (let i = 0; i < LINE_COUNT; i++) {
     let progress = i / (LINE_COUNT - 1);
     let phase = i * 0.7;

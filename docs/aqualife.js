@@ -1,7 +1,7 @@
-/* ============================================================
-   AQUALIFE — Wave-driven marine ecosystem
+﻿/* ============================================================
+   AQUALIFE - Wave-driven marine ecosystem
    Species: fish (small/medium/big), jellyfish, crabs, seaweed
-   Not yet included in showcase — preserved for future use.
+   Not yet included in showcase - preserved for future use.
 
    To enable: add the HTML section to index.html and load this
    script after sketch.js. Requires the reg() function and
@@ -16,7 +16,7 @@ reg('aqualife-canvas', new p5(function(p) {
   var plants = [];
   var aquaT = 0;
 
-  // Global current — shared by all life, shifts the whole ocean mood
+  // Global current - shared by all life, shifts the whole ocean mood
   var current;
 
   // ── Fish factory: size drives everything ────────────────────
@@ -170,7 +170,7 @@ reg('aqualife-canvas', new p5(function(p) {
     crabs.push(makeCrab(510, [200, 100, 60]));
     crabs.push(makeCrab(520, [230, 140, 40]));
 
-    // Seaweed — many thin strands, almost invisible
+    // Seaweed - many thin strands, almost invisible
     plants = [];
     var greens = [[25, 110, 45], [35, 130, 55], [20, 100, 40], [40, 140, 50], [30, 120, 48]];
     for (var i = 0; i < 14; i++) {
@@ -215,7 +215,7 @@ reg('aqualife-canvas', new p5(function(p) {
     for (var i = 0; i < crabs.length; i++) {
       var cr = crabs[i];
 
-      // Sideways scuttle — jerky lateral movement
+      // Sideways scuttle - jerky lateral movement
       var scuttleVal = cr.scuttle.sample(aquaT * 4 + i * 7, aquaT);
       cr.x += scuttleVal * cr.facing;
       // Current pushes them
@@ -230,7 +230,7 @@ reg('aqualife-canvas', new p5(function(p) {
 
       var cy = cr.y + bobVal;
 
-      // Body — wide oval
+      // Body - wide oval
       buf.noStroke();
       buf.fill(cr.col[0], cr.col[1], cr.col[2], 180);
       buf.ellipse(cr.x, cy, 12, 7);
@@ -239,7 +239,7 @@ reg('aqualife-canvas', new p5(function(p) {
       buf.fill(cr.col[0] - 20, cr.col[1] - 20, cr.col[2], 160);
       buf.ellipse(cr.x - 7 + clawOff, cy - 2, 5, 4);
       buf.ellipse(cr.x + 7 + clawOff, cy - 2, 5, 4);
-      // Legs — tiny ticks
+      // Legs - tiny ticks
       buf.stroke(cr.col[0], cr.col[1], cr.col[2], 100);
       buf.strokeWeight(0.8);
       for (var leg = -2; leg <= 2; leg++) {
@@ -337,7 +337,7 @@ reg('aqualife-canvas', new p5(function(p) {
 
     p.image(buf, 0, 0);
 
-    // Label — show current mood
+    // Label - show current mood
     p.noStroke();
     p.fill(255, 255, 255, 70);
     p.textSize(10);

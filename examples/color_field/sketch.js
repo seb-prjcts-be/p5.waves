@@ -1,6 +1,6 @@
-// Color Field
+﻿// Color Field
 // Two wave samplers with shift drive hue and brightness across a 2D field.
-// Hue shifts every 4s, brightness every 5s — desynchronised for variety.
+// Hue shifts every 4s, brightness every 5s - desynchronised for variety.
 
 let hueSampler, briSampler;
 let t = 0;

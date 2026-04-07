@@ -1,6 +1,6 @@
-// Wild Mode
+﻿// Wild Mode
 // Grid of circles: left half stable, right half wild.
-// mouseX controls unpredictability — drag to feel the chaos build.
+// mouseX controls unpredictability - drag to feel the chaos build.
 
 const COLS = 20, ROWS = 14;
 let t = 0;
