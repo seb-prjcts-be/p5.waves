@@ -24,8 +24,8 @@ function draw() {
 
   for (let i = 0; i < STRIPS; i++) {
     const frac = i / (STRIPS - 1);
-    const r = round(255 * (1 - frac));
-    const b = round(255 * frac);
+    const r = 255 * (1 - frac);
+    const b = 255 * frac;
     fill(r, 0, b);
     const v = sampler.sample(i * 0.4, t + i * 0.1);
     rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);

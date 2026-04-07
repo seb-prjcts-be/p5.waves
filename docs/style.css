@@ -620,6 +620,7 @@ section[id] {
   transition: color 0.15s, border-color 0.15s;
 }
 .ex-full-link:hover { color: #000; border-color: #000; }
+.ex-full-link + .ex-full-link { margin-left: 1.5rem; }
 
 .ex-code-block {
   width: 100%;
