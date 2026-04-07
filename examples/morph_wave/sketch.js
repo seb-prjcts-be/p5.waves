@@ -23,8 +23,8 @@ function draw() {
   for (let row = 0; row < ROW_COUNT; row++) {
     const rowFrac = row / (ROW_COUNT - 1);
     // distance from the sweeping centre determines the mix
-    const dist = abs(rowFrac - centre);
-    const morphMix = constrain(1 - dist * 3, 0, 1);
+    const gap = abs(rowFrac - centre);
+    const morphMix = constrain(1 - gap * 3, 0, 1);
     const yBase = row * rowH + rowH * 0.5;
 
     // waveA = blue, waveB = red — morph zone blends
