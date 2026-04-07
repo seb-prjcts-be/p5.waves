@@ -183,7 +183,7 @@ for (let i = 0; i &lt; 12; i++) {
   const layerT = t + (i / 12) * 6;
   beginShape();
   for (let x = 0; x &lt;= width; x += 4) {
-    const dy = Waves.wave(x * 0.015, {
+    const dy = Waves.wave(x * 0.15, {
       wave: strataWave, t: layerT,
       amplitude: 15
     });
@@ -545,11 +545,11 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
         p.fill(wHue, 40, 85, alphaVal);
         p.beginShape();
         for (let x = 0; x <= p.width; x += 4) {
-          const dy = Waves.wave(x * 0.015, { wave: strataWave, t: layerT, amplitude: 15 });
+          const dy = Waves.wave(x * 0.15, { wave: strataWave, t: layerT, amplitude: 15 });
           p.vertex(x, y0 + dy);
         }
         for (let x2 = p.width; x2 >= 0; x2 -= 4) {
-          const dy2 = Waves.wave(x2 * 0.015, { wave: strataWave, t: layerT + 0.3, amplitude: 9 });
+          const dy2 = Waves.wave(x2 * 0.15, { wave: strataWave, t: layerT + 0.3, amplitude: 9 });
           p.vertex(x2, y0 + dy2 + 16);
         }
         p.endShape(p.CLOSE);
