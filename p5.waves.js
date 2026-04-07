@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * p5.waves
  * Wave sampling for p5.js. Always returns a number.
  * Version 3.1.0
@@ -52,7 +52,7 @@
   const COMPILE_CACHE = new Map();
   const STATS_CACHE   = new Map();
 
-  // Runtime entropy for wave() shift — stable per page load, different each session
+  // Runtime entropy for wave() shift - stable per page load, different each session
   const _waveShiftEntropy = Math.floor(Math.random() * 100000);
 
   // ─── Math helpers ────────────────────────────────────────────────────────────
@@ -185,7 +185,7 @@
     return fn;
   }
 
-  // Module-scope state for evaluate — avoids closure allocation on every call
+  // Module-scope state for evaluate - avoids closure allocation on every call
   let _evalSeed = 0, _evalX = 0, _evalCalls = 0;
 
   function _evalRandom(min, max) {
@@ -284,21 +284,21 @@
   // ─── wave() ──────────────────────────────────────────────────────────────────
 
   function wave(y, secondParam) {
-    // ─── Fast path: wave(y) — no params ──────────────────────
+    // ─── Fast path: wave(y)  - no params ──────────────────────
     if (secondParam == null) {
       const idx   = pickWaveIndex(0);
       const iSeed = seedFrom(0);
       const raw   = evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, iSeed);
       return normalizeVal(raw, getStats(idx, iSeed)) * 100;
     }
-    // ─── Fast path: wave(y, number) — seed only ──────────────
+    // ─── Fast path: wave(y, number)  - seed only ──────────────
     if (typeof secondParam === 'number') {
       const iSeed = seedFrom(secondParam);
       const idx   = pickWaveIndex(secondParam);
       const raw   = evaluate(compile(WAVES[idx].algo), toNumber(y, 0), 0, iSeed);
       return normalizeVal(raw, getStats(idx, iSeed)) * 100;
     }
-    // ─── Fast path: wave(y, 'name') — wave name only ─────────
+    // ─── Fast path: wave(y, 'name')  - wave name only ─────────
     if (typeof secondParam === 'string') {
       const r     = resolveWave(secondParam);
       const idx   = r >= 0 ? r : pickWaveIndex(0);
@@ -333,7 +333,7 @@
       const cycleDur = shiftInterval + shiftDuration;
       const era      = Math.floor(t / cycleDur);
       const progress = t - era * cycleDur;
-      // Runtime entropy — stateless wave() has no persistent state,
+      // Runtime entropy - stateless wave() has no persistent state,
       // but the entropy is stable within a single page load via closure
       const waveShiftEntropy = _waveShiftEntropy;
 
@@ -363,7 +363,7 @@
       return normalizeVal(valA, getStats(idxA, internalSeed)) * amplitude;
     }
 
-    // ─── Morph: wave: ['nameA', 'nameB'], mix: 0–1 ───────────
+    // ─── Morph: wave: ['nameA', 'nameB'], mix: 0-1 ───────────
     if (Array.isArray(waveRef)) {
       const mix  = toUnit(secondParam.mix, 0.5);
       const rA   = resolveWave(waveRef[0]);
@@ -514,7 +514,7 @@
     return {
       waveIndex: isMorph ? [waveIndexA, waveIndexB] : waveIndexA,
       waveName:  isMorph
-        ? WAVES[waveIndexA].name + ' → ' + WAVES[waveIndexB].name
+        ? WAVES[waveIndexA].name + ' -> ' + WAVES[waveIndexB].name
         : WAVES[waveIndexA].name,
       sample: function (y, t, mix) {
         const tVal = t !== undefined ? toNumber(t, 0) : t0;
@@ -601,7 +601,7 @@
       stats = { min: mn, max: mx };
     }
 
-    // Pre-allocate output buffers — reused on every .sample() call
+    // Pre-allocate output buffers - reused on every .sample() call
     const _gridBuf = hasThreshold ? new Uint8Array(cellCount) : new Float32Array(cellCount);
 
     return {

@@ -1,4 +1,4 @@
-# p5.waves
+﻿# p5.waves
 
 **[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/wave_lab/)**
 
@@ -47,7 +47,7 @@ Always returns a single number.
 
 | option | what it does | default |
 |---|---|---|
-| `wave` | Which shape. Name, index (0–33), or `['a', 'b']` for blending. | random |
+| `wave` | Which shape. Name, index (0-33), or `['a', 'b']` for blending. | random |
 | `t` | Time. Makes the wave move. Pass `millis() / 1000`. | `0` |
 | `amplitude` | How tall. Output: `[-amplitude, +amplitude]`. | `100` |
 
@@ -66,12 +66,12 @@ Always returns a single number.
 |---|---|---|
 | `phase` | Shift wave sideways. | `0` |
 | `mode` | `'stable'` or `'wild'` (adds wobble). | `'stable'` |
-| `unpredictability` | How much wobble in wild mode. 0–1. | `0` |
-| `mix` | Blend factor when `wave` is `['a', 'b']`. 0–1. | `0.5` |
+| `unpredictability` | How much wobble in wild mode. 0-1. | `0` |
+| `mix` | Blend factor when `wave` is `['a', 'b']`. 0-1. | `0.5` |
 | `shiftInterval` | Seconds to hold each wave. | `3` |
 | `shiftDuration` | Seconds for the morph transition. | `1` |
 
-> **Seed vs index:** `Waves.wave(x, 3)` — 3 is a seed (hashed). `Waves.wave(x, { wave: 3 })` — 3 is a direct index.
+> **Seed vs index:** `Waves.wave(x, 3)`  - 3 is a seed (hashed). `Waves.wave(x, { wave: 3 })` - 3 is a direct index.
 
 ---
 
@@ -90,7 +90,7 @@ sampler.sample(y, t);
 sampler.waveName;      // current wave
 sampler.shifting;      // true during morph
 sampler.targetName;    // next wave
-sampler.mix;           // morph progress 0–1
+sampler.mix;           // morph progress 0-1
 ```
 
 ---
@@ -125,8 +125,8 @@ let cells = g.sample(t);  // Uint8Array of 0/1
 | `waveRow` | Wave for rows. | random |
 | `waveCol` | Wave for columns. | random |
 | `seed` | Auto-picks two different waves. | `0` |
-| `range` | `[min, max]` → Float32Array. | `null` |
-| `threshold` | Binary mode → Uint8Array. Overrides range. | `null` |
+| `range` | `[min, max]` -> Float32Array. | `null` |
+| `threshold` | Binary mode -> Uint8Array. Overrides range. | `null` |
 | `speed` | Time scale. | `1` |
 
 The output array is **reused** between calls. Copy it if you need to keep it.
@@ -153,21 +153,21 @@ Also: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config,
 
 ## Examples
 
-- `wave_lab` — interactive playground
-- `wave_shift` — auto-cycling wave formulas
-- `wave_params` — amplitude, frequency, phase
-- `wild_mode` — wild mode
-- `flow_fields` — ASCII flow field
-- `time_strata` — manual time control
-- `color_field` — HSB color field
-- `morph_wave` — morph between two waves
-- `random_walker` — wave-steered walker
-- `3d_wave_volume` — 3D WebGL
+- `wave_lab` - interactive playground
+- `wave_shift` - auto-cycling wave formulas
+- `wave_params` - amplitude, frequency, phase
+- `wild_mode` - wild mode
+- `flow_fields` - ASCII flow field
+- `time_strata` - manual time control
+- `color_field` - HSB color field
+- `morph_wave` - morph between two waves
+- `random_walker` - wave-steered walker
+- `3d_wave_volume` - 3D WebGL
 
 ---
 
 ## Credits
 
-- `tw@GenerativePunk`, `gh@ffd8` — wave formula dataset
+- `tw@GenerativePunk`, `gh@ffd8` - wave formula dataset
 
 Developed by Sebastien Vanblaere.

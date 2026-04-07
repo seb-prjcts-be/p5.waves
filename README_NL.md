@@ -1,4 +1,4 @@
-# p5.waves
+﻿# p5.waves
 
 **[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/wave_lab/)**
 
@@ -47,7 +47,7 @@ Geeft altijd één getal terug.
 
 | optie | wat het doet | standaard |
 |---|---|---|
-| `wave` | Welke vorm. Naam, index (0–33), of `['a', 'b']` om te blenden. | willekeurig |
+| `wave` | Welke vorm. Naam, index (0-33), of `['a', 'b']` om te blenden. | willekeurig |
 | `t` | Tijd. Laat de golf bewegen. Geef `millis() / 1000` mee. | `0` |
 | `amplitude` | Hoe hoog. Output: `[-amplitude, +amplitude]`. | `100` |
 
@@ -66,12 +66,12 @@ Geeft altijd één getal terug.
 |---|---|---|
 | `phase` | Verschuif de golf zijwaarts. | `0` |
 | `mode` | `'stable'` of `'wild'` (voegt wankeling toe). | `'stable'` |
-| `unpredictability` | Hoeveel wankeling in wild mode. 0–1. | `0` |
-| `mix` | Blendfactor wanneer `wave` is `['a', 'b']`. 0–1. | `0.5` |
+| `unpredictability` | Hoeveel wankeling in wild mode. 0-1. | `0` |
+| `mix` | Blendfactor wanneer `wave` is `['a', 'b']`. 0-1. | `0.5` |
 | `shiftInterval` | Seconden per golf vasthouden. | `3` |
 | `shiftDuration` | Seconden voor de overgang. | `1` |
 
-> **Seed vs index:** `Waves.wave(x, 3)` — 3 is een seed (gehasht). `Waves.wave(x, { wave: 3 })` — 3 is een directe index.
+> **Seed vs index:** `Waves.wave(x, 3)`  - 3 is een seed (gehasht). `Waves.wave(x, { wave: 3 })` - 3 is een directe index.
 
 ---
 
@@ -90,7 +90,7 @@ sampler.sample(y, t);
 sampler.waveName;      // huidige golf
 sampler.shifting;      // true tijdens overgang
 sampler.targetName;    // volgende golf
-sampler.mix;           // voortgang 0–1
+sampler.mix;           // voortgang 0-1
 ```
 
 ---
@@ -125,8 +125,8 @@ let cells = g.sample(t);  // Uint8Array van 0/1
 | `waveRow` | Golf voor rijen. | willekeurig |
 | `waveCol` | Golf voor kolommen. | willekeurig |
 | `seed` | Kiest automatisch twee verschillende golven. | `0` |
-| `range` | `[min, max]` → Float32Array. | `null` |
-| `threshold` | Binaire modus → Uint8Array. Overschrijft range. | `null` |
+| `range` | `[min, max]` -> Float32Array. | `null` |
+| `threshold` | Binaire modus -> Uint8Array. Overschrijft range. | `null` |
 | `speed` | Tijdschaalfactor. | `1` |
 
 De output-array wordt **hergebruikt** tussen aanroepen. Kopieer als je het wilt bewaren.
@@ -153,21 +153,21 @@ Ook: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, 
 
 ## Voorbeelden
 
-- `wave_lab` — interactieve speeltuin
-- `wave_shift` — auto-wisselende golfformules
-- `wave_params` — amplitude, frequency, phase
-- `wild_mode` — wild mode
-- `flow_fields` — ASCII stroomveld
-- `time_strata` — handmatige tijdcontrole
-- `color_field` — HSB kleurveld
-- `morph_wave` — morph tussen twee golven
-- `random_walker` — golf-gestuurde walker
-- `3d_wave_volume` — 3D WebGL
+- `wave_lab` - interactieve speeltuin
+- `wave_shift` - auto-wisselende golfformules
+- `wave_params` - amplitude, frequency, phase
+- `wild_mode` - wild mode
+- `flow_fields` - ASCII stroomveld
+- `time_strata` - handmatige tijdcontrole
+- `color_field` - HSB kleurveld
+- `morph_wave` - morph tussen twee golven
+- `random_walker` - golf-gestuurde walker
+- `3d_wave_volume` - 3D WebGL
 
 ---
 
 ## Credits
 
-- `tw@GenerativePunk`, `gh@ffd8` — golfformule dataset
+- `tw@GenerativePunk`, `gh@ffd8` - golfformule dataset
 
 Ontwikkeld door Sebastien Vanblaere.

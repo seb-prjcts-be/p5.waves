@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -24,7 +24,7 @@
     <div class="demo-header">
       <div class="demo-number">shift: true &middot; no random()</div>
       <h1>Not So Random Walker</h1>
-      <p>No angles, no steps — wave output IS the velocity. Five trails ride two shift-samplers as raw displacement. When formulas shift, movement character transforms entirely.</p>
+      <p>No angles, no steps - wave output IS the velocity. Five trails ride two shift-samplers as raw displacement. When formulas shift, movement character transforms entirely.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
@@ -42,7 +42,7 @@ const yWave = Waves.createSampler({
   frequency: 0.55
 });
 
-// Wave output IS velocity — no angle, no step
+// Wave output IS velocity - no angle, no step
 const vx = xWave.sample(t * 1.8 + phase, t);
 const vy = yWave.sample(t * 2.1 + phase, t);
 wx += vx;

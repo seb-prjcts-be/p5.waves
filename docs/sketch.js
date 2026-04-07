@@ -1,5 +1,5 @@
-/* ============================================================
-   p5.waves Showcase – sketch.js
+﻿/* ============================================================
+   p5.waves Showcase - sketch.js
    Sections: Hero, Gallery, Interactive, Shift, Walker, Terrain
    ============================================================ */
 
@@ -47,7 +47,7 @@ function reg(id, sketch) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 1. HERO — Shifting wave landscape
+// 1. HERO - Shifting wave landscape
 // ═════════════════════════════════════════════════════════════
 reg('hero-canvas', new p5(function(p) {
   var BG = [
@@ -126,7 +126,7 @@ reg('hero-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 2. GALLERY — All 34 waves with hover focus
+// 2. GALLERY - All 34 waves with hover focus
 // ═════════════════════════════════════════════════════════════
 reg('gallery-canvas', new p5(function(p) {
   var COLS = 6;
@@ -257,7 +257,7 @@ reg('gallery-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 3. INTERACTIVE — Live wave lab with sliders
+// 3. INTERACTIVE - Live wave lab with sliders
 // ═════════════════════════════════════════════════════════════
 reg('interactive-canvas', new p5(function(p) {
   var params = {
@@ -367,7 +367,7 @@ reg('interactive-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 4. WAVE SHIFT — Auto-cycling demo
+// 4. WAVE SHIFT - Auto-cycling demo
 // ═════════════════════════════════════════════════════════════
 reg('shift-canvas', new p5(function(p) {
   var shiftInterval = 3, shiftDuration = 1;
@@ -460,7 +460,7 @@ reg('shift-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 5. NOT SO RANDOM WALKER — Wave output as raw velocity
+// 5. NOT SO RANDOM WALKER - Wave output as raw velocity
 // ═════════════════════════════════════════════════════════════
 reg('walker-canvas', new p5(function(p) {
   var WALKERS = 5;
@@ -567,7 +567,7 @@ reg('walker-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 6. 3D TERRAIN — Two wave samplers + WEBGL
+// 6. 3D TERRAIN - Two wave samplers + WEBGL
 // ═════════════════════════════════════════════════════════════
 reg('terrain-canvas', new p5(function(p) {
   var TERRAIN_N = 35;

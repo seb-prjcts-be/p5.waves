@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About – p5.waves – Origin &amp; Story</title>
+  <title>About - p5.waves - Origin &amp; Story</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -86,15 +86,15 @@
     <div class="section-tag" style="margin-bottom:0.6rem">Origin &amp; Story</div>
     <h1>About p5.<span class="accent">waves</span></h1>
     <p style="font-size:1.05rem; color:#333;">
-      How a list of math expressions became a creative tool —
+      How a list of math expressions became a creative tool  -
       and why switching between wave shapes makes sketches feel alive.
     </p>
 
     <h2>The Dataset</h2>
     <p>
-      It started with a shared list of wave formulas — short math expressions,
+      It started with a shared list of wave formulas - short math expressions,
       each producing a different pattern from a single input number.
-      Sine, cosine, tangent, modulo, absolute value, rounding — combined in dozens of ways.
+      Sine, cosine, tangent, modulo, absolute value, rounding - combined in dozens of ways.
     </p>
     <p>
       The original dataset came from the creative coding community.
@@ -106,11 +106,11 @@
     <h2>The Origin Grid</h2>
     <p>
       The moment everything clicked was a 16&times;16 binary grid.
-      Two wave algorithms — one for rows, one for columns — combined into a black-and-white pattern.
+      Two wave algorithms - one for rows, one for columns - combined into a black-and-white pattern.
       When the grid went all-black or all-white, it auto-advanced to the next formula pair.
     </p>
 
-    <div class="origin-label">Genuary 2025 · 16&times;16 challenge · live sketch (original 37 formulas — 3 near-duplicates were removed in v2)</div>
+    <div class="origin-label">Genuary 2025 · 16&times;16 challenge · live sketch (original 37 formulas - 3 near-duplicates were removed in v2)</div>
     <div class="origin-grid-wrap">
       <div id="origin-grid-canvas"></div>
       <div class="origin-grid-info">
@@ -123,7 +123,7 @@
       <p>
         That sketch was about 30 lines of draw logic. But watching it run was a revelation:
         predictable math producing patterns that felt alive. Each formula switch changed the
-        character of the grid — from stripes to checkers to organic clusters to total silence,
+        character of the grid - from stripes to checkers to organic clusters to total silence,
         then back again.
       </p>
     </div>
@@ -136,15 +136,15 @@
     <p>
       p5.js sketches are deterministic by default. Run the same code, get the same picture.
       That is a feature for learning, but a limitation for creative expression.
-      The sketch looks identical every time — no variation, no discovery, no surprise.
+      The sketch looks identical every time - no variation, no discovery, no surprise.
     </p>
     <p>
       p5.waves exists to change that. By giving you 34 formulas you can switch between,
-      every run can produce a different result. Not random chaos — structured variation.
+      every run can produce a different result. Not random chaos - structured variation.
       The wave always has a recognisable shape. But which shape? That can change.
     </p>
     <p>
-      Seeding, morphing, shifting, wild mode — these are all mechanisms for the same idea:
+      Seeding, morphing, shifting, wild mode - these are all mechanisms for the same idea:
       the sketch should feel different every time you reload, while staying recognizable.
       A different result every run, but never a broken one.
     </p>
@@ -153,12 +153,12 @@
     <p>
       The design decisions were driven by simplicity. One function, one number back:
       <code>Waves.wave(y)</code>. No setup required. No configuration before you start.
-      The mental model mirrors <code>noise(y)</code> in p5.js — pass a coordinate, get a value.
+      The mental model mirrors <code>noise(y)</code> in p5.js - pass a coordinate, get a value.
     </p>
     <p>
       Everything else layers on top: naming formulas, morphing between them, caching with samplers,
       sampling grids. But the entry point is always the same single function call.
-      If user code becomes awkward to use the library, the fix belongs in the library — not in
+      If user code becomes awkward to use the library, the fix belongs in the library - not in
       instructions telling the user to write differently.
     </p>
 
@@ -166,20 +166,20 @@
       <h2 style="margin-top:0">Makers &amp; Contributors</h2>
       <p>Maker:</p>
       <p>
-        <strong>Sebastien Vanblaere</strong> — <a href="https://prjcts.be" target="_blank">prjcts.be</a>
+        <strong>Sebastien Vanblaere</strong>  - <a href="https://prjcts.be" target="_blank">prjcts.be</a>
       </p>
       <p>Contributors (wave formula dataset):</p>
       <p>
-        <strong>tw@GenerativePunk</strong> — original dataset contributor<br>
-        <strong>gh@ffd8</strong> — original dataset contributor
+        <strong>tw@GenerativePunk</strong>  - original dataset contributor<br>
+        <strong>gh@ffd8</strong>  - original dataset contributor
       </p>
       <p>
         Reference for rectangular/pulse formulas:<br>
-        <a href="https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0" target="_blank">titanwolf.org – pulse/rectangular wave formulas</a>
+        <a href="https://titanwolf.org/Network/Articles/Article?AID=b5a3e4c8-1939-4fcb-aab8-8ff126c895da#gsc.tab=0" target="_blank">titanwolf.org - pulse/rectangular wave formulas</a>
       </p>
       <p>
         Reference for triangle formula:<br>
-        <a href="https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg" target="_blank">p5.js editor – jeremydouglass triangle sketch</a>
+        <a href="https://editor.p5js.org/jeremydouglass/sketches/fE0UWUEg" target="_blank">p5.js editor - jeremydouglass triangle sketch</a>
       </p>
     </div>
 
@@ -192,7 +192,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.min.js"></script>
   <script>
-  // Origin Grid — the original Genuary 16x16 sketch that inspired p5.waves
+  // Origin Grid - the original Genuary 16x16 sketch that inspired p5.waves
   // Faithfully reproduced from the 2025 submission with all 37 original formulas
 
   var ogWaveNames = [

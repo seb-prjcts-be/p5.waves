@@ -1,5 +1,5 @@
-// Not So Random Walker
-// No angles, no steps — wave output IS the velocity.
+﻿// Not So Random Walker
+// No angles, no steps - wave output IS the velocity.
 // Five trails ride two shift-samplers as raw displacement.
 // When formulas shift, movement character transforms entirely.
 
@@ -61,7 +61,7 @@ function draw() {
   for (let i = 0; i < WALKERS; i++) {
     const phase = i * 6.7;
 
-    // Wave output IS velocity — no angle, no step
+    // Wave output IS velocity - no angle, no step
     const vx = xWave.sample(t * 1.8 + phase, t);
     const vy = yWave.sample(t * 2.1 + phase * 1.3, t);
 

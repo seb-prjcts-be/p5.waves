@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Examples – p5.waves</title>
+  <title>Examples - p5.waves</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -29,10 +29,10 @@
   <div class="ex-page-header">
     <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v3.1.0</div>
     <h1>p5.<span class="accent">waves</span> Examples</h1>
-    <p>Each thumbnail is a live sketch. Click <strong>→ full example</strong> for the code and full-size canvas.</p>
+    <p>Each thumbnail is a live sketch. Click <strong>-> full example</strong> for the code and full-size canvas.</p>
     <a class="ex-lab-card" href="../examples/wave_lab/" target="_blank">
       <div class="section-tag">Interactive playground</div>
-      <strong>Wave Lab →</strong>
+      <strong>Wave Lab -></strong>
       <p>All 34 waves. Morph, shift, wild mode. Try everything.</p>
     </a>
   </div>
@@ -42,11 +42,11 @@
     <div class="section-header">
       <div class="section-tag">Waves.wave(y)</div>
       <h2>One <span class="accent">Number</span></h2>
-      <p class="section-desc">One call returns one number. Use it for size, position, color — anything.</p>
+      <p class="section-desc">One call returns one number. Use it for size, position, color - anything.</p>
     </div>
     <div class="ex-preview">
       <div id="ex0" class="ex-canvas"></div>
-      <pre class="ex-code-block">// One number — use it for anything
+      <pre class="ex-code-block">// One number - use it for anything
 const v = Waves.wave(i * 0.3, {
   wave: 'bounce', t: t, range: [0, 1]
 });
@@ -57,7 +57,7 @@ circle(x, y, v * 30);
 // Row 2: position
 circle(x, baseY + v * rowH * 0.8, 8);
 
-// Row 3: color (pure red → pure blue)
+// Row 3: color (pure red -> pure blue)
 fill(255 - v * 255, 0, v * 255);
 circle(x, y, 14);</pre>
     </div>
@@ -78,7 +78,7 @@ circle(x, y, 14);</pre>
   frequency: 0.5
 });
 
-// Filled ribbons — color shifts with the wave
+// Filled ribbons - color shifts with the wave
 const t = millis() / 1000;
 for (let i = 0; i &lt; STRIPS; i++) {
   const frac = i / (STRIPS - 1);
@@ -87,8 +87,8 @@ for (let i = 0; i &lt; STRIPS; i++) {
   rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
 }</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/wave_shift/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/VZmKK7bRd" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/wave_shift/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/VZmKK7bRd" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -98,7 +98,7 @@ for (let i = 0; i &lt; STRIPS; i++) {
     <div class="section-header">
       <div class="section-tag">amplitude · frequency · interactive</div>
       <h2>Shape <span class="accent">Parameters</span></h2>
-      <p class="section-desc">Move your <strong>mouse</strong> over the canvas. X = frequency, Y = amplitude. The formula shifts automatically — drag to feel the difference.</p>
+      <p class="section-desc">Move your <strong>mouse</strong> over the canvas. X = frequency, Y = amplitude. The formula shifts automatically - drag to feel the difference.</p>
     </div>
     <div class="ex-preview">
       <div id="ex-params" class="ex-canvas"></div>
@@ -112,8 +112,8 @@ Waves.wave(x, {
   frequency: freq * 0.01
 });</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/wave_params/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/DwbS7tkcd" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/wave_params/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/DwbS7tkcd" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -128,19 +128,19 @@ Waves.wave(x, {
     <div class="ex-preview">
       <div id="ex4" class="ex-canvas"></div>
       <pre class="ex-code-block">// Left: stable circles. Right: wild circles.
-// Stable — orderly pattern
+// Stable - orderly pattern
 const sz = Waves.wave(col + row * 0.5, {
   wave: waveIdx, t: t, range: [4, maxR]
 });
 
-// Wild — same wave, chaos added
+// Wild - same wave, chaos added
 const szW = Waves.wave(col + row * 0.5, {
   wave: waveIdx, t: t, range: [4, maxR],
   mode: 'wild', unpredictability: 0.7
 });</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/wild_mode/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/WJ2Dd06au" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/wild_mode/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/WJ2Dd06au" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -150,11 +150,11 @@ const szW = Waves.wave(col + row * 0.5, {
     <div class="section-header">
       <div class="section-tag">shift + sampler</div>
       <h2>Flow <span class="accent">Fields</span></h2>
-      <p class="section-desc">A grid of ASCII direction characters driven by a sampler with <code>shift</code> — like <code>noise()</code>, but with structure. The wave formula shifts automatically, morphing the entire field.</p>
+      <p class="section-desc">A grid of ASCII direction characters driven by a sampler with <code>shift</code>  - like <code>noise()</code>, but with structure. The wave formula shifts automatically, morphing the entire field.</p>
     </div>
     <div class="ex-preview">
       <div id="ex7" class="ex-canvas"></div>
-      <pre class="ex-code-block">// ASCII flow field — sampler with shift
+      <pre class="ex-code-block">// ASCII flow field - sampler with shift
 const DIRS = ['-', '/', '|', '\\'];
 let sampler = createWaveSampler({
   shift: true,
@@ -172,8 +172,8 @@ for (let row = 0; row &lt; ROWS; row++) {
   }
 }</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/flow_fields/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/cEsoiq0wK" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/flow_fields/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/cEsoiq0wK" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -187,7 +187,7 @@ for (let row = 0; row &lt; ROWS; row++) {
     </div>
     <div class="ex-preview">
       <div id="ex8" class="ex-canvas"></div>
-      <pre class="ex-code-block">// No clock — t is whatever you pass
+      <pre class="ex-code-block">// No clock - t is whatever you pass
 // Move mouse to scrub through time
 const t = map(mouseX, 0, width, 0, 24);
 
@@ -204,8 +204,8 @@ for (let i = 0; i &lt; 12; i++) {
   endShape();
 }</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/time_strata/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/T_c5Ted__" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/time_strata/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/T_c5Ted__" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -213,7 +213,7 @@ for (let i = 0; i &lt; 12; i++) {
   <!-- COLOR FIELD -->
   <section id="color" class="section">
     <div class="section-header">
-      <div class="section-tag">wave → hue + brightness</div>
+      <div class="section-tag">wave -> hue + brightness</div>
       <h2>Color <span class="accent">Field</span></h2>
       <p class="section-desc">Two waves sample across x and y to control hue and brightness. The result is a flowing color landscape.</p>
     </div>
@@ -237,8 +237,8 @@ fill(hueS.sample(x * 0.007 + y * 0.005, t),
      72,
      briS.sample(x * 0.005 - y * 0.007, t));</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/color_field/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/FISK4i_Pv" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/color_field/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/FISK4i_Pv" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -267,8 +267,8 @@ const wv = Waves.wave(x, {
   amplitude: rowH * 0.8
 });</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/morph_wave/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/tiKRarkU_" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/morph_wave/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/tiKRarkU_" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -278,7 +278,7 @@ const wv = Waves.wave(x, {
     <div class="section-header">
       <div class="section-tag">Waves.createGrid()</div>
       <h2>Wave <span class="accent">Grid</span></h2>
-      <p class="section-desc">One call fills a 2D grid. With <code>threshold</code>, each cell is on or off — a binary pattern that animates.</p>
+      <p class="section-desc">One call fills a 2D grid. With <code>threshold</code>, each cell is on or off - a binary pattern that animates.</p>
     </div>
     <div class="ex-preview">
       <div id="ex6" class="ex-canvas"></div>
@@ -305,11 +305,11 @@ rect(col * cw, row * ch, cw, ch);</pre>
     <div class="section-header">
       <div class="section-tag">WebGL + shift</div>
       <h2>3D Wave <span class="accent">Volume</span></h2>
-      <p class="section-desc">Three samplers — one per axis — each shifting on its own cycle. Points near the surface glow.</p>
+      <p class="section-desc">Three samplers - one per axis - each shifting on its own cycle. Points near the surface glow.</p>
     </div>
     <div class="ex-preview">
       <div id="ex14" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Three shift-samplers — one per axis
+      <pre class="ex-code-block">// Three shift-samplers - one per axis
 const sY = Waves.createSampler({
   shift: true, shiftInterval: 3,
   range: [-5, 5], frequency: 0.4
@@ -326,8 +326,8 @@ const sZ = Waves.createSampler({
 // Points near the surface glow
 const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       <div class="ex-links">
-        <a class="ex-full-link" href="../examples/3d_wave_volume/" target="_blank">→ full example</a>
-        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/1PonLJbMv" target="_blank">→ open in p5.js editor</a>
+        <a class="ex-full-link" href="../examples/3d_wave_volume/" target="_blank">-> full example</a>
+        <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/1PonLJbMv" target="_blank">-> open in p5.js editor</a>
       </div>
     </div>
   </section>
@@ -359,21 +359,21 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       const rowH = p.height / 3;
       const gap = p.width / (N + 1);
 
-      // Row 1: wave → size
+      // Row 1: wave -> size
       for (let i = 0; i < N; i++) {
         const v1 = Waves.wave(i * 0.3, { wave: 'bounce', t: t, range: [0, 1] });
         p.fill(0);
         p.circle((i + 1) * gap, rowH * 0.5, v1 * gap * 0.85);
       }
 
-      // Row 2: wave → position
+      // Row 2: wave -> position
       for (let j = 0; j < N; j++) {
         const v2 = Waves.wave(j * 0.3, { wave: 'bounce', t: t + 2, range: [-1, 1] });
         p.fill(0);
         p.circle((j + 1) * gap, rowH * 1.5 + v2 * rowH * 0.35, 8);
       }
 
-      // Row 3: wave → color (red to blue)
+      // Row 3: wave -> color (red to blue)
       for (let k = 0; k < N; k++) {
         const v3 = Waves.wave(k * 0.3, { wave: 'bounce', t: t + 4, range: [0, 1] });
         p.fill(255 - v3 * 255, 0, v3 * 255);
@@ -391,7 +391,7 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.windowResized = function() { const w = cw('ex0'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex0');
 
-  // ── Wave Shift — Ribbons ──────────────────────────────────
+  // ── Wave Shift - Ribbons ──────────────────────────────────
   new p5(function(p) {
     const STRIPS = 16;
     const sampler = Waves.createSampler({ shift: true, amplitude: 1, frequency: 0.5 });
@@ -421,7 +421,7 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.windowResized = function() { const w = cw('ex1'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex1');
 
-  // ── Shape Parameters — interactive mouse control ─────────────
+  // ── Shape Parameters - interactive mouse control ─────────────
   new p5(function(p) {
     let t = 0;
     const LINE_COUNT = 6;
@@ -464,7 +464,7 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.windowResized = function() { const w = cw('ex-params'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-params');
 
-  // ── Wild Mode — Circle Grid ───────────────────────────────
+  // ── Wild Mode - Circle Grid ───────────────────────────────
   new p5(function(p) {
     const COLS = 16, ROWS = 8;
     let t = 0, wildWave;
@@ -510,7 +510,7 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.windowResized = function() { const w = cw('ex4'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex4');
 
-  // ── Flow Fields — ASCII Grid ────────────────────────────────
+  // ── Flow Fields - ASCII Grid ────────────────────────────────
   new p5(function(p) {
     const COLS = 22;
     const DIRS = ['-', '/', '|', '\\'];

@@ -1,4 +1,4 @@
-// Wave Lab — p5.waves v2
+﻿// Wave Lab - p5.waves v2
 // Interactive explorer for all library features.
 
 const controls     = {};
@@ -154,7 +154,7 @@ function onControlChange() {
 // ─── State reading ────────────────────────────────────────────────────────────
 
 function enforceRanges() {
-  // Presets are always valid — no enforcement needed
+  // Presets are always valid - no enforcement needed
 }
 
 function readState() {
@@ -361,7 +361,7 @@ function drawWave(state) {
 
   noFill();
 
-  // Draw layers back to front — lightest first, darkest last
+  // Draw layers back to front - lightest first, darkest last
   for (let layer = LAYERS - 1; layer >= 0; layer--) {
     const norm     = layer / (LAYERS - 1);
     const phaseOff = layer * 0.3;
@@ -539,7 +539,7 @@ function buildGridSnippet(state) {
     '  background(245);\n' +
     '  const cells = g.sample(t * 8);\n' +
     '  const cell  = min(width / g.cols, height / g.rows);\n' +
-    '  const ox    = (width  - g.cols * cell) * 0.5;\n' +
+    '  const ox    = (width - g.cols * cell) * 0.5;\n' +
     '  const oy    = (height - g.rows * cell) * 0.5;\n' +
     '  noStroke();\n' +
     '  for (let r = 0; r < g.rows; r++) {\n' +
@@ -602,11 +602,11 @@ function updateCodeSnippet(state) {
   }
 }
 
-// ─── Live code editor — Run / Reset / Copy ───────────────────────────────────
+// ─── Live code editor - Run / Reset / Copy ───────────────────────────────────
 
 function runUserCode() {
   // Placeholder: in v1 we just reset the time to re-evaluate
-  // Full eval would require sandboxed p5 instance — for now, reset time
+  // Full eval would require sandboxed p5 instance - for now, reset time
   t = 0;
   shiftSampler = null;
   shiftSamplerKey = '';

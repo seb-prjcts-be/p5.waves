@@ -1,5 +1,5 @@
-// 3D Wave Volume (WEBGL)
-// 16×16 grid with 3 shift-samplers — one per axis.
+﻿// 3D Wave Volume (WEBGL)
+// 16×16 grid with 3 shift-samplers - one per axis.
 // Every axis breathes independently, creating a living 3D volume.
 
 const N       = 16;
@@ -15,7 +15,7 @@ function setup() {
   noFill();
   strokeWeight(4);
 
-  // Three desynchronised shift-samplers — each axis has its own wave life
+  // Three desynchronised shift-samplers - each axis has its own wave life
   samplerY = Waves.createSampler({
     shift: true,
     shiftInterval: 3,
@@ -56,13 +56,13 @@ function draw() {
   beginShape(POINTS);
   for (let xi = 0; xi < N; xi++) {
     for (let zi = 0; zi < N; zi++) {
-      // Y: main surface displacement — full range across the cube
+      // Y: main surface displacement - full range across the cube
       const dy = samplerY.sample(xi * 0.9 + zi * 0.6, t);
 
-      // X: horizontal breathing — points drift sideways
+      // X: horizontal breathing - points drift sideways
       const dx = samplerX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
 
-      // Z: depth warping — grid pulses in and out
+      // Z: depth warping - grid pulses in and out
       const dz = samplerZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
 
       // Map dy to a grid row and spread points around the surface
