@@ -3,30 +3,30 @@
 // Mouse X scrubs a time window; each layer is frozen at its own t.
 // Layers are filled ribbons with HSB color, creating geological strata.
 
-var LAYERS      = 16;
-var WAVE_WINDOW = 6;
+const LAYERS      = 16;
+const WAVE_WINDOW = 6;
 
 function setup() {
-  createCanvas(460, 460).parent('sketch-container');
+  createCanvas(460, 460).parent('sketch-container'); // remove .parent() for local use
   colorMode(HSB, 360, 100, 100, 255);
 }
 
 function draw() {
   background(0, 0, 96);
-  var timeBase = map(mouseX, 0, width, 0, 8);
+  const timeBase = map(mouseX, 0, width, 0, 8);
 
   noStroke();
-  for (var i = LAYERS - 1; i >= 0; i--) {
-    var layerT = timeBase + (i / LAYERS) * WAVE_WINDOW;
-    var y0     = map(i, 0, LAYERS - 1, 50, height - 50);
-    var wHue   = (i * 22) % 360;
-    var alphaVal = map(i, 0, LAYERS - 1, 200, 60);
+  for (let i = LAYERS - 1; i >= 0; i--) {
+    const layerT = timeBase + (i / LAYERS) * WAVE_WINDOW;
+    const y0     = map(i, 0, LAYERS - 1, 50, height - 50);
+    const wHue   = (i * 22) % 360;
+    const alphaVal = map(i, 0, LAYERS - 1, 200, 60);
 
-    var freq = 0.6 + i * 0.08;
+    const freq = 0.6 + i * 0.08;
     fill(wHue, 70, 85, alphaVal);
     beginShape();
-    for (var x = 0; x <= width; x += 3) {
-      var dy = Waves.wave(x * 0.015, {
+    for (let x = 0; x <= width; x += 3) {
+      const dy = Waves.wave(x * 0.015, {
         wave:      'classic sine',
         t:         layerT,
         amplitude: 25,
@@ -34,8 +34,8 @@ function draw() {
       });
       vertex(x, y0 + dy);
     }
-    for (var x2 = width; x2 >= 0; x2 -= 3) {
-      var dy2 = Waves.wave(x2 * 0.015, {
+    for (let x2 = width; x2 >= 0; x2 -= 3) {
+      const dy2 = Waves.wave(x2 * 0.015, {
         wave:      'classic sine',
         t:         layerT + 0.3,
         amplitude: 15,

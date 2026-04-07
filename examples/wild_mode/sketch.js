@@ -2,12 +2,12 @@
 // Grid of circles: left half stable, right half wild.
 // mouseX controls unpredictability — drag to feel the chaos build.
 
-var COLS = 20, ROWS = 14;
-var t = 0;
-var wildWave;
+const COLS = 20, ROWS = 14;
+let t = 0;
+let wildWave;
 
 function setup() {
-  createCanvas(460, 460).parent('sketch-container');
+  createCanvas(460, 460).parent('sketch-container'); // remove .parent() for local use
   noStroke();
   textFont('monospace');
   textAlign(CENTER);
@@ -17,24 +17,24 @@ function setup() {
 function draw() {
   background(238);
   t += 0.012;
-  var cw = width / COLS;
-  var ch = (height - 24) / ROWS;
-  var maxR = min(cw, ch) * 0.44;
-  var half = COLS / 2;
-  var unpred = constrain(map(mouseX, 0, width, 0, 1), 0, 1);
+  const cw = width / COLS;
+  const ch = (height - 24) / ROWS;
+  const maxR = min(cw, ch) * 0.44;
+  const half = COLS / 2;
+  const unpred = constrain(map(mouseX, 0, width, 0, 1), 0, 1);
 
-  for (var row = 0; row < ROWS; row++) {
-    for (var col = 0; col < COLS; col++) {
-      var cx = (col + 0.5) * cw;
-      var cy = (row + 0.5) * ch;
-      var coord = col * 0.15 + row * 0.3;
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+      const cx = (col + 0.5) * cw;
+      const cy = (row + 0.5) * ch;
+      const coord = col * 0.15 + row * 0.3;
 
       if (col < half) {
-        var sz = Waves.wave(coord, { wave: wildWave, t: t, range: [3, maxR] });
+        const sz = Waves.wave(coord, { wave: wildWave, t: t, range: [3, maxR] });
         fill(0);
         circle(cx, cy, sz * 2);
       } else {
-        var szW = Waves.wave(coord, {
+        const szW = Waves.wave(coord, {
           wave: wildWave, t: t, range: [3, maxR],
           mode: 'wild', unpredictability: unpred
         });

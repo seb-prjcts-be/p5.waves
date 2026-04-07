@@ -10,7 +10,7 @@ let samplerY, samplerX, samplerZ;
 let rotAngle = 0;
 
 function setup() {
-  createCanvas(460, 460, WEBGL).parent('sketch-container');
+  createCanvas(460, 460, WEBGL).parent('sketch-container'); // remove .parent() for local use
   frameRate(30);
   noFill();
   strokeWeight(4);

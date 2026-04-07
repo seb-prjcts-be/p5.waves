@@ -29,19 +29,19 @@
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>var sampler = Waves.createSampler({
+        <pre><code>const sampler = Waves.createSampler({
   shift:     true,       // auto-shift to random waves
   amplitude: 70,
   frequency: 0.6
 });
 
 // In draw — 10 horizontal lines, each with its own phase offset:
-var t = millis() / 1000;
-for (var i = 0; i &lt; 10; i++) {
-  var phaseOff = i * 0.35;
+const t = millis() / 1000;
+for (let i = 0; i &lt; 10; i++) {
+  const phaseOff = i * 0.35;
   stroke(40 + i * 14);
   beginShape();
-  for (var x = 0; x &lt;= width; x += 4) {
+  for (let x = 0; x &lt;= width; x += 4) {
     vertex(x, height/2 + sampler.sample(x + phaseOff*60, t + phaseOff*0.2));
   }
   endShape();

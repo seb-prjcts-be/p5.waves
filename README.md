@@ -155,14 +155,13 @@ Also: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config,
 
 - `wave_lab` — interactive playground
 - `wave_shift` — auto-cycling wave formulas
-- `contour_map` — P2D contour lines
-- `flow_fields` — particle swarms
 - `wave_params` — amplitude, frequency, phase
-- `luminance_field` — output range
 - `wild_mode` — wild mode
+- `flow_fields` — ASCII flow field
 - `time_strata` — manual time control
 - `color_field` — HSB color field
 - `morph_wave` — morph between two waves
+- `random_walker` — wave-steered walker
 - `3d_wave_volume` — 3D WebGL
 
 ---

@@ -8,7 +8,7 @@ let t = 0;
 const LINE_COUNT = 8;
 
 function setup() {
-  createCanvas(460, 460).parent('sketch-container');
+  createCanvas(460, 460).parent('sketch-container'); // remove .parent() for local use
   textFont('monospace');
 
   // Only used to get shifting wave names
