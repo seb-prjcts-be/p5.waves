@@ -29,20 +29,20 @@
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code>var hueSampler = Waves.createSampler({
+        <pre><code>const hueSampler = Waves.createSampler({
   wave: 'meta sine', shift: true,
   shiftInterval: 4, shiftDuration: 2,
   range: [160, 320], seed: 0
 });
-var briSampler = Waves.createSampler({
+const briSampler = Waves.createSampler({
   wave: 'wobble sine', shift: true,
   shiftInterval: 5, shiftDuration: 2,
   range: [55, 90], seed: 7
 });
 
 // In draw:
-for (var y = 0; y &lt; height; y += 4) {
-  for (var x = 0; x &lt; width; x += 4) {
+for (let y = 0; y &lt; height; y += 4) {
+  for (let x = 0; x &lt; width; x += 4) {
     fill(hueSampler.sample(x*0.007 + y*0.005, t),
          72,
          briSampler.sample(x*0.005 - y*0.007, t*0.6));

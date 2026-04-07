@@ -2,32 +2,32 @@
 // Filled ribbons that auto-shift between random wave formulas.
 // Color flows from red to blue across the strips.
 
-var STRIPS = 20;
-var sampler = Waves.createSampler({
+const STRIPS = 20;
+const sampler = Waves.createSampler({
   shift:     true,
   amplitude: 1,
   frequency: 0.5
 });
 
 function setup() {
-  createCanvas(460, 460).parent('sketch-container');
+  createCanvas(460, 460).parent('sketch-container'); // remove .parent() for local use
   noStroke();
   textFont('monospace');
 }
 
 function draw() {
   background(245);
-  var t = millis() / 1000;
-  var sw = width / STRIPS;
-  var cy = height / 2;
-  var rowH = height * 0.42;
+  const t = millis() / 1000;
+  const sw = width / STRIPS;
+  const cy = height / 2;
+  const rowH = height * 0.42;
 
-  for (var i = 0; i < STRIPS; i++) {
-    var frac = i / (STRIPS - 1);
-    var r = round(255 * (1 - frac));
-    var b = round(255 * frac);
+  for (let i = 0; i < STRIPS; i++) {
+    const frac = i / (STRIPS - 1);
+    const r = round(255 * (1 - frac));
+    const b = round(255 * frac);
     fill(r, 0, b);
-    var v = sampler.sample(i * 0.4, t + i * 0.1);
+    const v = sampler.sample(i * 0.4, t + i * 0.1);
     rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
   }
 

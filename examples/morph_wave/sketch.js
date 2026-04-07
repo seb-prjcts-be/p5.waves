@@ -3,13 +3,13 @@
 // Top rows = pure waveA. Bottom rows = pure waveB. Middle = the morph.
 // The blend sweeps up and down over time — you see the shape transform.
 
-var WAVE_A = 'wobble sine';
-var WAVE_B = 'meta sine';
-var ROW_COUNT = 50;
-var t = 0;
+const WAVE_A = 'wobble sine';
+const WAVE_B = 'meta sine';
+const ROW_COUNT = 50;
+let t = 0;
 
 function setup() {
-  createCanvas(460, 460).parent('sketch-container');
+  createCanvas(460, 460).parent('sketch-container'); // remove .parent() for local use
 }
 
 function draw() {
@@ -17,26 +17,26 @@ function draw() {
   t += 0.0375;
 
   // the morph centre sweeps up and down
-  var centre = (sin(t * 0.3) + 1) * 0.5;
-  var rowH = height / ROW_COUNT;
+  const centre = (sin(t * 0.3) + 1) * 0.5;
+  const rowH = height / ROW_COUNT;
 
-  for (var row = 0; row < ROW_COUNT; row++) {
-    var rowFrac = row / (ROW_COUNT - 1);
+  for (let row = 0; row < ROW_COUNT; row++) {
+    const rowFrac = row / (ROW_COUNT - 1);
     // distance from the sweeping centre determines the mix
-    var dist = abs(rowFrac - centre);
-    var morphMix = constrain(1 - dist * 3, 0, 1);
-    var yBase = row * rowH + rowH * 0.5;
+    const dist = abs(rowFrac - centre);
+    const morphMix = constrain(1 - dist * 3, 0, 1);
+    const yBase = row * rowH + rowH * 0.5;
 
     // waveA = blue, waveB = red — morph zone blends
-    var r = round(lerp(0, 255, morphMix));
-    var b = round(lerp(255, 0, morphMix));
+    const r = round(lerp(0, 255, morphMix));
+    const b = round(lerp(255, 0, morphMix));
 
     noFill();
     stroke(r, 0, b);
     strokeWeight(1.2 + morphMix * 1.8);
     beginShape();
-    for (var x = 0; x < width; x += 3) {
-      var waveY = Waves.wave(x, {
+    for (let x = 0; x < width; x += 3) {
+      const waveY = Waves.wave(x, {
         wave: [WAVE_A, WAVE_B],
         mix:  morphMix,
         t:    t + row * 0.06,

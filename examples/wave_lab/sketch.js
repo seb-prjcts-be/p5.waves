@@ -1,20 +1,20 @@
 // Wave Lab — p5.waves v2
 // Interactive explorer for all library features.
 
-var controls     = {};
-var valueTargets = {};
+const controls     = {};
+const valueTargets = {};
 
-var t = 0;
-var currentFps     = 60;
-var gridSampler    = null;
-var gridSamplerKey = '';
-var codeOutputEl   = null;
-var copyBtnTimer   = 0;
-var shiftSampler   = null;
-var shiftSamplerKey = '';
-var userEditedCode = false;
+let t = 0;
+let currentFps     = 60;
+let gridSampler    = null;
+let gridSamplerKey = '';
+let codeOutputEl   = null;
+let copyBtnTimer   = 0;
+let shiftSampler   = null;
+let shiftSamplerKey = '';
+let userEditedCode = false;
 
-var ids = [
+const ids = [
   'wave', 'seed',
   'amplitude', 'frequency', 'phase',
   'shift-enable', 'shift-interval', 'shift-duration',
@@ -25,7 +25,7 @@ var ids = [
   'surprise', 'copy-code', 'run-code', 'reset-code'
 ];
 
-var valueIds = [
+const valueIds = [
   'seed-value',
   'shift-interval-value', 'shift-duration-value',
   'amplitude-value', 'frequency-value', 'phase-value', 'unpredictability-value',
@@ -37,7 +37,7 @@ function fmt(num, digits) {
   return Number(num).toFixed(digits);
 }
 
-var RANGE_PRESETS = {
+const RANGE_PRESETS = {
   color:      { range: [0, 255],   label: 'Color [0, 255]' },
   opacity:    { range: [0, 1],     label: 'Opacity [0, 1]' },
   position:   { range: null,       label: 'Position [0, width]' },
@@ -47,7 +47,7 @@ var RANGE_PRESETS = {
 };
 
 function resolveRangePreset(key) {
-  var preset = RANGE_PRESETS[key];
+  const preset = RANGE_PRESETS[key];
   if (!preset) return [0, 255];
   if (key === 'position') return [0, width];
   return preset.range;
@@ -56,10 +56,10 @@ function resolveRangePreset(key) {
 // ─── p5 setup / resize ───────────────────────────────────────────────────────
 
 function setup() {
-  for (var i = 0; i < ids.length; i++) {
+  for (let i = 0; i < ids.length; i++) {
     controls[ids[i]] = document.getElementById(ids[i]);
   }
-  for (var i = 0; i < valueIds.length; i++) {
+  for (let i = 0; i < valueIds.length; i++) {
     valueTargets[valueIds[i]] = document.getElementById(valueIds[i]);
   }
   codeOutputEl = document.getElementById('code-output');
@@ -68,8 +68,8 @@ function setup() {
   bindControls();
   updateUiState();
 
-  var wrap = document.getElementById('canvas-wrap');
-  var c = createCanvas(wrap.clientWidth, 100);
+  const wrap = document.getElementById('canvas-wrap');
+  const c = createCanvas(wrap.clientWidth, 100);
   c.parent('canvas-wrap');
 
   controls.amplitude.max = wrap.clientWidth;
@@ -82,9 +82,9 @@ function setup() {
 }
 
 function fitCanvas() {
-  var wrap = document.getElementById('canvas-wrap');
-  var w = wrap.clientWidth;
-  var h = wrap.clientHeight;
+  const wrap = document.getElementById('canvas-wrap');
+  let w = wrap.clientWidth;
+  let h = wrap.clientHeight;
   if (h < 50) h = wrap.getBoundingClientRect().height;
   if (h < 50) h = 400;
   resizeCanvas(w, h);
@@ -98,19 +98,19 @@ function windowResized() {
 // ─── Populate selects ─────────────────────────────────────────────────────────
 
 function populateWaveSelects() {
-  var waveList = Waves.list();
+  const waveList = Waves.list();
 
   // Build options for a select element
   function fillSelect(el, includeAuto) {
     el.innerHTML = '';
     if (includeAuto) {
-      var autoOpt = document.createElement('option');
+      const autoOpt = document.createElement('option');
       autoOpt.value = '';
       autoOpt.textContent = '(seed-determined)';
       el.appendChild(autoOpt);
     }
-    for (var i = 0; i < waveList.length; i++) {
-      var opt = document.createElement('option');
+    for (let i = 0; i < waveList.length; i++) {
+      const opt = document.createElement('option');
       opt.value = String(i);
       opt.textContent = i + ' \u2014 ' + waveList[i].name;
       el.appendChild(opt);
@@ -127,8 +127,8 @@ function populateWaveSelects() {
 // ─── Control binding ─────────────────────────────────────────────────────────
 
 function bindControls() {
-  var allInputs = document.querySelectorAll('input, select');
-  for (var i = 0; i < allInputs.length; i++) {
+  const allInputs = document.querySelectorAll('input, select');
+  for (let i = 0; i < allInputs.length; i++) {
     allInputs[i].addEventListener('input', onControlChange);
     allInputs[i].addEventListener('change', onControlChange);
   }
@@ -158,19 +158,19 @@ function enforceRanges() {
 }
 
 function readState() {
-  var waveIndex    = Number(controls.wave.value) || 0;
-  var seed         = Number(controls.seed.value) || 0;
-  var amplitude    = Number(controls.amplitude.value);
-  var frequency    = Number(controls.frequency.value);
-  var phase        = Number(controls.phase.value);
-  var modeVal      = controls.mode.value;
-  var unpredictability = Number(controls.unpredictability.value);
-  var rangeEnable  = controls['range-enable'].checked;
-  var rangePreset  = controls['range-preset'].value;
-  var rangeVal     = rangeEnable ? resolveRangePreset(rangePreset) : null;
+  const waveIndex    = Number(controls.wave.value) || 0;
+  const seed         = Number(controls.seed.value) || 0;
+  const amplitude    = Number(controls.amplitude.value);
+  const frequency    = Number(controls.frequency.value);
+  const phase        = Number(controls.phase.value);
+  const modeVal      = controls.mode.value;
+  const unpredictability = Number(controls.unpredictability.value);
+  const rangeEnable  = controls['range-enable'].checked;
+  const rangePreset  = controls['range-preset'].value;
+  const rangeVal     = rangeEnable ? resolveRangePreset(rangePreset) : null;
 
-  var waveRowVal = controls['wave-row'].value;
-  var waveColVal = controls['wave-col'].value;
+  const waveRowVal = controls['wave-row'].value;
+  const waveColVal = controls['wave-col'].value;
 
   return {
     previewMode:     controls['preview-mode'].value,
@@ -204,10 +204,10 @@ function readState() {
 // ─── UI updates ──────────────────────────────────────────────────────────────
 
 function setControlDisabled(id, disabled) {
-  var el = controls[id];
+  const el = controls[id];
   if (!el) return;
   el.disabled = !!disabled;
-  var labelEl = el.closest('label');
+  const labelEl = el.closest('label');
   if (labelEl) labelEl.classList.toggle('disabled-control', !!disabled);
 }
 
@@ -219,7 +219,7 @@ function updateValueDisplays() {
   valueTargets['frequency-value'].textContent        = fmt(controls.frequency.value, 2);
   valueTargets['phase-value'].textContent            = fmt(controls.phase.value, 2);
   valueTargets['unpredictability-value'].textContent = fmt(controls.unpredictability.value, 2);
-  var rng = resolveRangePreset(controls['range-preset'].value);
+  const rng = resolveRangePreset(controls['range-preset'].value);
   valueTargets['range-value'].textContent             = '[' + rng[0] + ', ' + rng[1] + ']';
   valueTargets['threshold-value'].textContent        = fmt(controls.threshold.value, 2);
   valueTargets['time-speed-value'].textContent       = fmt(controls['time-speed'].value, 3);
@@ -227,11 +227,11 @@ function updateValueDisplays() {
 }
 
 function updateBadges(state) {
-  var waveLabel;
+  let waveLabel;
   if (state.shiftEnable) {
     waveLabel = 'shift: ' + (shiftSampler ? shiftSampler.waveName : 'auto');
   } else {
-    var waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
+    const waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
     waveLabel = 'wave: ' + state.waveIndex + ' \u2014 ' + waveName;
   }
   document.getElementById('active-wave').textContent = waveLabel;
@@ -250,7 +250,7 @@ function updateUiState() {
   enforceRanges();
 
   // Shift toggle
-  var shiftOn = controls['shift-enable'].checked;
+  const shiftOn = controls['shift-enable'].checked;
   setControlDisabled('wave', shiftOn);
   setControlDisabled('seed', shiftOn);
   setControlDisabled('shift-interval', !shiftOn);
@@ -260,12 +260,12 @@ function updateUiState() {
   setControlDisabled('unpredictability', controls.mode.value !== 'wild');
 
   // Range
-  var rangeOn = controls['range-enable'].checked;
+  const rangeOn = controls['range-enable'].checked;
   setControlDisabled('range-preset', !rangeOn);
 
   // Grid sub-controls
-  var isGrid = controls['preview-mode'].value === 'grid';
-  var gridCtrl = document.getElementById('grid-controls');
+  const isGrid = controls['preview-mode'].value === 'grid';
+  const gridCtrl = document.getElementById('grid-controls');
   gridCtrl.style.display = isGrid ? '' : 'none';
 
   // Shift forces line mode
@@ -282,7 +282,7 @@ function updateUiState() {
   }
 
   updateValueDisplays();
-  var state = readState();
+  const state = readState();
   updateBadges(state);
 
   // Only update code if user hasn't manually edited
@@ -296,12 +296,12 @@ function updateUiState() {
 function drawGridLines() {
   stroke(0);
   strokeWeight(1);
-  for (var y = 0; y <= height; y += 40) line(0, y, width, y);
-  for (var x = 0; x <= width; x += 80) line(x, 0, x, height);
+  for (let y = 0; y <= height; y += 40) line(0, y, width, y);
+  for (let x = 0; x <= width; x += 80) line(x, 0, x, height);
 }
 
 function buildWaveOpts(state) {
-  var opts = {
+  const opts = {
     t:               t,
     frequency:       state.frequency,
     phase:           state.phase,
@@ -320,7 +320,7 @@ function buildWaveOpts(state) {
 }
 
 function getShiftSampler(state) {
-  var cacheKey = [
+  const cacheKey = [
     state.shiftInterval, state.shiftDuration,
     state.amplitude, state.frequency, state.phase,
     state.mode, state.unpredictability,
@@ -328,7 +328,7 @@ function getShiftSampler(state) {
   ].join('|');
   if (cacheKey !== shiftSamplerKey) {
     shiftSamplerKey = cacheKey;
-    var opts = {
+    const opts = {
       shift:           true,
       shiftInterval:   state.shiftInterval,
       shiftDuration:   state.shiftDuration,
@@ -348,13 +348,13 @@ function getShiftSampler(state) {
 }
 
 function drawWave(state) {
-  var LAYERS     = 8;
-  var cx         = width * 0.5;
-  var pointStep  = Math.max(1, state.pointStep);
-  var drawPoints = state.showPoints || !state.connectLine;
-  var useShift   = state.shiftEnable;
+  const LAYERS     = 8;
+  const cx         = width * 0.5;
+  const pointStep  = Math.max(1, state.pointStep);
+  const drawPoints = state.showPoints || !state.connectLine;
+  const useShift   = state.shiftEnable;
 
-  var sampler;
+  let sampler;
   if (useShift) {
     sampler = getShiftSampler(state);
   }
@@ -362,11 +362,11 @@ function drawWave(state) {
   noFill();
 
   // Draw layers back to front — lightest first, darkest last
-  for (var layer = LAYERS - 1; layer >= 0; layer--) {
-    var norm     = layer / (LAYERS - 1);
-    var phaseOff = layer * 0.3;
-    var shade    = Math.round(200 - norm * 170);
-    var alphaVal = Math.round(30 + norm * 225);
+  for (let layer = LAYERS - 1; layer >= 0; layer--) {
+    const norm     = layer / (LAYERS - 1);
+    const phaseOff = layer * 0.3;
+    const shade    = Math.round(200 - norm * 170);
+    const alphaVal = Math.round(30 + norm * 225);
 
     if (state.connectLine) {
       stroke(shade, shade, shade, alphaVal);
@@ -374,16 +374,16 @@ function drawWave(state) {
       beginShape();
     }
 
-    for (var y = 0; y <= height; y += pointStep) {
-      var sampleVal;
+    for (let y = 0; y <= height; y += pointStep) {
+      let sampleVal;
       if (useShift) {
         sampleVal = sampler.sample(y + phaseOff * 50, t + phaseOff * 0.15);
       } else {
-        var opts = buildWaveOpts(state);
+        const opts = buildWaveOpts(state);
         opts.phase = (opts.phase || 0) + phaseOff;
         sampleVal = Waves.wave(y + phaseOff * 50, opts);
       }
-      var x = cx + (state.rangeEnable && !useShift
+      const x = cx + (state.rangeEnable && !useShift
         ? map(sampleVal, state.range[0], state.range[1], -state.amplitude, state.amplitude)
         : sampleVal);
 
@@ -421,8 +421,8 @@ function drawWave(state) {
 }
 
 function getGridSampler(state) {
-  var g = state.grid;
-  var gridCacheKey = [
+  const g = state.grid;
+  const gridCacheKey = [
     g.waveRow !== undefined ? g.waveRow : 'a',
     g.waveCol !== undefined ? g.waveCol : 'a',
     state.seed,
@@ -431,7 +431,7 @@ function getGridSampler(state) {
 
   if (gridSamplerKey !== gridCacheKey) {
     gridSamplerKey = gridCacheKey;
-    var opts = { seed: state.seed, threshold: g.threshold };
+    const opts = { seed: state.seed, threshold: g.threshold };
     if (g.waveRow !== undefined) opts.waveRow = g.waveRow;
     if (g.waveCol !== undefined) opts.waveCol = g.waveCol;
     gridSampler = Waves.createGrid(14, 14, opts);
@@ -441,19 +441,19 @@ function getGridSampler(state) {
 }
 
 function drawGrid14(state) {
-  var gs    = getGridSampler(state);
-  var cells = gs.sample(t * 8);
-  var cols  = gs.cols;
-  var rows  = gs.rows;
-  var cell  = Math.min(width / cols, height / rows);
-  var gridW = cell * cols;
-  var gridH = cell * rows;
-  var ox    = (width - gridW) * 0.5;
-  var oy    = (height - gridH) * 0.5;
+  const gs    = getGridSampler(state);
+  const cells = gs.sample(t * 8);
+  const cols  = gs.cols;
+  const rows  = gs.rows;
+  const cell  = Math.min(width / cols, height / rows);
+  const gridW = cell * cols;
+  const gridH = cell * rows;
+  const ox    = (width - gridW) * 0.5;
+  const oy    = (height - gridH) * 0.5;
 
   noStroke();
-  for (var r = 0; r < rows; r++) {
-    for (var c = 0; c < cols; c++) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
       fill(cells[r * cols + c] === 1 ? 0 : 245);
       rect(ox + c * cell, oy + r * cell, cell, cell);
     }
@@ -463,21 +463,21 @@ function drawGrid14(state) {
 // ─── Code snippet generation ─────────────────────────────────────────────────
 
 function codeNum(value, digits) {
-  var n = Number(value);
+  const n = Number(value);
   if (!Number.isFinite(n)) return '0';
   if (Number.isInteger(n)) return String(n);
   return String(Number(n.toFixed(digits || 4)));
 }
 
 function buildLineSnippet(state) {
-  var waveTail = state.rangeEnable
+  const waveTail = state.rangeEnable
     ? ',\n      range: [' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) + ']'
     : ',\n      amplitude: ' + codeNum(state.amplitude, 0);
 
-  var waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
-  var waveParam = "      wave:             '" + waveName + "',\n";
+  const waveName = Waves.data[state.waveIndex] ? Waves.data[state.waveIndex].name : '?';
+  const waveParam = "      wave:             '" + waveName + "',\n";
 
-  var waveCall =
+  const waveCall =
     'Waves.wave(y, {\n' +
     waveParam +
     '      t:                t,\n' +
@@ -488,15 +488,15 @@ function buildLineSnippet(state) {
     waveTail + '\n' +
     '    })';
 
-  var xLines = state.rangeEnable
-    ? '    var sample = ' + waveCall + ';\n' +
-      '    var x = map(sample, ' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) +
+  const xLines = state.rangeEnable
+    ? '    let sample = ' + waveCall + ';\n' +
+      '    let x = map(sample, ' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) +
       ', width * 0.5 - ' + codeNum(state.amplitude, 0) + ', width * 0.5 + ' + codeNum(state.amplitude, 0) + ');\n'
-    : '    var x = width * 0.5 + ' + waveCall + ';\n';
+    : '    let x = width * 0.5 + ' + waveCall + ';\n';
 
   return (
     '// p5.waves v2 \u2014 line\n' +
-    'var t = 0;\n\n' +
+    'let t = 0;\n\n' +
     'function setup() {\n' +
     '  createCanvas(800, 520);\n' +
     '  noFill();\n' +
@@ -505,7 +505,7 @@ function buildLineSnippet(state) {
     '  background(245);\n' +
     '  beginShape();\n' +
     '  stroke(0);\n' +
-    '  for (var y = 0; y <= height; y += ' + Math.max(1, state.pointStep) + ') {\n' +
+    '  for (let y = 0; y <= height; y += ' + Math.max(1, state.pointStep) + ') {\n' +
     xLines +
     '    vertex(x, y);\n' +
     '  }\n' +
@@ -516,16 +516,16 @@ function buildLineSnippet(state) {
 }
 
 function buildGridSnippet(state) {
-  var g       = state.grid;
-  var rowName = g.waveRow !== undefined && Waves.data[g.waveRow]
+  const g       = state.grid;
+  const rowName = g.waveRow !== undefined && Waves.data[g.waveRow]
     ? Waves.data[g.waveRow].name : null;
-  var colName = g.waveCol !== undefined && Waves.data[g.waveCol]
+  const colName = g.waveCol !== undefined && Waves.data[g.waveCol]
     ? Waves.data[g.waveCol].name : null;
-  var rowLine = rowName ? "  waveRow:   '" + rowName + "',\n" : '';
-  var colLine = colName ? "  waveCol:   '" + colName + "',\n" : '';
+  const rowLine = rowName ? "  waveRow:   '" + rowName + "',\n" : '';
+  const colLine = colName ? "  waveCol:   '" + colName + "',\n" : '';
   return (
     '// p5.waves v2 \u2014 grid\n' +
-    'var g, t = 0;\n\n' +
+    'let g, t = 0;\n\n' +
     'function setup() {\n' +
     '  createCanvas(560, 560);\n' +
     '  g = Waves.createGrid(14, 14, {\n' +
@@ -537,13 +537,13 @@ function buildGridSnippet(state) {
     '}\n\n' +
     'function draw() {\n' +
     '  background(245);\n' +
-    '  var cells = g.sample(t * 8);\n' +
-    '  var cell  = min(width / g.cols, height / g.rows);\n' +
-    '  var ox    = (width  - g.cols * cell) * 0.5;\n' +
-    '  var oy    = (height - g.rows * cell) * 0.5;\n' +
+    '  const cells = g.sample(t * 8);\n' +
+    '  const cell  = min(width / g.cols, height / g.rows);\n' +
+    '  const ox    = (width  - g.cols * cell) * 0.5;\n' +
+    '  const oy    = (height - g.rows * cell) * 0.5;\n' +
     '  noStroke();\n' +
-    '  for (var r = 0; r < g.rows; r++) {\n' +
-    '    for (var c = 0; c < g.cols; c++) {\n' +
+    '  for (let r = 0; r < g.rows; r++) {\n' +
+    '    for (let c = 0; c < g.cols; c++) {\n' +
     '      fill(cells[r * g.cols + c] === 1 ? 0 : 255);\n' +
     '      rect(ox + c * cell, oy + r * cell, cell, cell);\n' +
     '    }\n' +
@@ -554,12 +554,12 @@ function buildGridSnippet(state) {
 }
 
 function buildShiftSnippet(state) {
-  var ampLine = state.rangeEnable
+  const ampLine = state.rangeEnable
     ? '  range:          [' + codeNum(state.range[0], 2) + ', ' + codeNum(state.range[1], 2) + '],'
     : '  amplitude:      ' + codeNum(state.amplitude, 0) + ',';
   return (
     '// p5.waves v2 \u2014 shift\n' +
-    'var sampler = Waves.createSampler({\n' +
+    'const sampler = Waves.createSampler({\n' +
     '  shift:          true,\n' +
     '  shiftInterval:  ' + codeNum(state.shiftInterval, 1) + ',\n' +
     '  shiftDuration:  ' + codeNum(state.shiftDuration, 1) + ',\n' +
@@ -567,7 +567,7 @@ function buildShiftSnippet(state) {
     '  frequency:      ' + codeNum(state.frequency, 4) + ',\n' +
     '  phase:          ' + codeNum(state.phase, 4) + '\n' +
     '});\n\n' +
-    'var t = 0;\n\n' +
+    'let t = 0;\n\n' +
     'function setup() {\n' +
     '  createCanvas(800, 520);\n' +
     '  noFill();\n' +
@@ -578,7 +578,7 @@ function buildShiftSnippet(state) {
     '  stroke(0);\n' +
     '  strokeWeight(2);\n' +
     '  beginShape();\n' +
-    '  for (var y = 0; y <= height; y += ' + Math.max(1, state.pointStep) + ') {\n' +
+    '  for (let y = 0; y <= height; y += ' + Math.max(1, state.pointStep) + ') {\n' +
     '    vertex(width / 2 + sampler.sample(y, t), y);\n' +
     '  }\n' +
     '  endShape();\n\n' +
@@ -619,13 +619,13 @@ function runUserCode() {
 function resetCode() {
   userEditedCode = false;
   codeOutputEl.classList.remove('user-edited');
-  var state = readState();
+  const state = readState();
   updateCodeSnippet(state);
   setBtnFeedback('reset-code', 'Reset!', 'Reset', 800);
 }
 
 function fallbackCopyText(txt) {
-  var ghost = document.createElement('textarea');
+  const ghost = document.createElement('textarea');
   ghost.value = txt;
   ghost.setAttribute('readonly', 'readonly');
   ghost.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
@@ -637,7 +637,7 @@ function fallbackCopyText(txt) {
 
 async function copyCodeSnippet() {
   if (!codeOutputEl) return;
-  var snippet = codeOutputEl.value || '';
+  const snippet = codeOutputEl.value || '';
   if (!snippet) return;
   try {
     if (navigator.clipboard && window.isSecureContext) {
@@ -652,7 +652,7 @@ async function copyCodeSnippet() {
 }
 
 function setBtnFeedback(id, tempLabel, originalLabel, ms) {
-  var btn = controls[id];
+  const btn = controls[id];
   if (!btn) return;
   btn.textContent = tempLabel;
   window.setTimeout(function () { btn.textContent = originalLabel; }, ms);
@@ -665,7 +665,7 @@ function randomFrom(arr) {
 }
 
 function randomizeControls() {
-  var n = Waves.count;
+  const n = Waves.count;
 
   controls.wave.value = String(Math.floor(Math.random() * n));
   controls.seed.value = String(Math.floor(Math.random() * 501));
@@ -677,7 +677,7 @@ function randomizeControls() {
   controls['range-enable'].checked = false;
 
   // Shift: 50% chance
-  var doShift = Math.random() > 0.5;
+  const doShift = Math.random() > 0.5;
   controls['shift-enable'].checked = doShift;
   controls['shift-interval'].value = fmt(1 + Math.random() * 8, 1);
   controls['shift-duration'].value = fmt(0.3 + Math.random() * 3, 1);
@@ -709,7 +709,7 @@ function randomizeControls() {
 // ─── Main draw loop ───────────────────────────────────────────────────────────
 
 function draw() {
-  var state = readState();
+  const state = readState();
   if (state.fps !== currentFps) {
     currentFps = state.fps;
     frameRate(currentFps);

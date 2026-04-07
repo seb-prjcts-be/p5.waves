@@ -47,7 +47,7 @@
     <div class="ex-preview">
       <div id="ex0" class="ex-canvas"></div>
       <pre class="ex-code-block">// One number — use it for anything
-var v = Waves.wave(i * 0.3, {
+const v = Waves.wave(i * 0.3, {
   wave: 'bounce', t: t, range: [0, 1]
 });
 
@@ -72,18 +72,18 @@ circle(x, y, 14);</pre>
     </div>
     <div class="ex-preview">
       <div id="ex1" class="ex-canvas"></div>
-      <pre class="ex-code-block">var sampler = Waves.createSampler({
+      <pre class="ex-code-block">const sampler = Waves.createSampler({
   shift: true,
   amplitude: 1,
   frequency: 0.5
 });
 
 // Filled ribbons — color shifts with the wave
-var t = millis() / 1000;
-for (var i = 0; i &lt; STRIPS; i++) {
-  var frac = i / (STRIPS - 1);
+const t = millis() / 1000;
+for (let i = 0; i &lt; STRIPS; i++) {
+  const frac = i / (STRIPS - 1);
   fill(255 - round(frac * 255), 0, round(frac * 255));
-  var v = sampler.sample(i * 0.4, t + i * 0.1);
+  const v = sampler.sample(i * 0.4, t + i * 0.1);
   rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
 }</pre>
       <a class="ex-full-link" href="../examples/wave_shift/" target="_blank">→ full example</a>
@@ -123,12 +123,12 @@ Waves.wave(x, {
       <div id="ex4" class="ex-canvas"></div>
       <pre class="ex-code-block">// Left: stable circles. Right: wild circles.
 // Stable — orderly pattern
-var sz = Waves.wave(col + row * 0.5, {
+const sz = Waves.wave(col + row * 0.5, {
   wave: waveIdx, t: t, range: [4, maxR]
 });
 
 // Wild — same wave, chaos added
-var szW = Waves.wave(col + row * 0.5, {
+const szW = Waves.wave(col + row * 0.5, {
   wave: waveIdx, t: t, range: [4, maxR],
   mode: 'wild', unpredictability: 0.7
 });</pre>
@@ -177,13 +177,13 @@ for (let row = 0; row &lt; ROWS; row++) {
       <div id="ex8" class="ex-canvas"></div>
       <pre class="ex-code-block">// No clock — t is whatever you pass
 // Move mouse to scrub through time
-var t = map(mouseX, 0, width, 0, 8);
+const t = map(mouseX, 0, width, 0, 8);
 
-for (var i = 0; i &lt; 12; i++) {
-  var layerT = t + (i / 12) * 6;
+for (let i = 0; i &lt; 12; i++) {
+  const layerT = t + (i / 12) * 6;
   beginShape();
-  for (var x = 0; x &lt;= width; x += 4) {
-    var dy = Waves.wave(x * 0.015, {
+  for (let x = 0; x &lt;= width; x += 4) {
+    const dy = Waves.wave(x * 0.015, {
       wave: strataWave, t: layerT,
       amplitude: 15
     });
@@ -205,12 +205,12 @@ for (var i = 0; i &lt; 12; i++) {
     <div class="ex-preview">
       <div id="ex9" class="ex-canvas"></div>
       <pre class="ex-code-block">// Two shift-samplers drive hue and brightness
-var hueS = Waves.createSampler({
+const hueS = Waves.createSampler({
   wave: 'meta sine', shift: true,
   shiftInterval: 4, shiftDuration: 2,
   range: [160, 320]
 });
-var briS = Waves.createSampler({
+const briS = Waves.createSampler({
   wave: 'wobble sine', shift: true,
   shiftInterval: 5, shiftDuration: 2,
   range: [55, 90]
@@ -235,13 +235,13 @@ fill(hueS.sample(x * 0.007 + y * 0.005, t),
     <div class="ex-preview">
       <div id="ex12" class="ex-canvas"></div>
       <pre class="ex-code-block">// Blend two formulas with mix
-var wA = floor(random(34));
-var wB = floor(random(34));
+const wA = floor(random(34));
+const wB = floor(random(34));
 
 // mix: 0 = pure A, mix: 1 = pure B
-var morphMix = (sin(t * 0.3) + 1) * 0.5;
+const morphMix = (sin(t * 0.3) + 1) * 0.5;
 
-var wv = Waves.wave(x, {
+const wv = Waves.wave(x, {
   wave: [wA, wB],    // morph between two waves
   mix: morphMix,
   t: t + row * 0.06,
@@ -262,7 +262,7 @@ var wv = Waves.wave(x, {
     <div class="ex-preview">
       <div id="ex6" class="ex-canvas"></div>
       <pre class="ex-code-block">// One call fills a 2D grid
-var grid = Waves.createGrid(28, 20, {
+const grid = Waves.createGrid(28, 20, {
   waveRow: 'smooth solid sine',
   waveCol: 'ramp up sine',
   threshold: 0,  // binary: on or off
@@ -271,7 +271,7 @@ var grid = Waves.createGrid(28, 20, {
 
 // Sample once per frame
 t += 0.004;
-var cells = grid.sample(t);
+const cells = grid.sample(t);
 
 // Draw: 1 = black, 0 = light
 fill(cells[row * 28 + col] === 1 ? 15 : 225);
@@ -289,21 +289,21 @@ rect(col * cw, row * ch, cw, ch);</pre>
     <div class="ex-preview">
       <div id="ex14" class="ex-canvas"></div>
       <pre class="ex-code-block">// Three shift-samplers — one per axis
-var sY = Waves.createSampler({
+const sY = Waves.createSampler({
   shift: true, shiftInterval: 3,
   range: [-5, 5], frequency: 0.4
 });
-var sX = Waves.createSampler({
+const sX = Waves.createSampler({
   shift: true, shiftInterval: 4,
   range: [-2.5, 2.5], frequency: 0.3
 });
-var sZ = Waves.createSampler({
+const sZ = Waves.createSampler({
   shift: true, shiftInterval: 5,
   range: [-2.5, 2.5], frequency: 0.35
 });
 
 // Points near the surface glow
-var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
+const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       <a class="ex-full-link" href="../examples/3d_wave_volume/" target="_blank">→ full example</a>
     </div>
   </section>
@@ -321,10 +321,10 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
 
   // ── One Number ────────────────────────────────────────────
   new p5(function(p) {
-    var t = 0;
-    var N = 12;
+    let t = 0;
+    const N = 12;
     p.setup = function() {
-      var w = cw('ex0');
+      const w = cw('ex0');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex0');
       p.noStroke();
       p.textFont('monospace');
@@ -332,27 +332,27 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.draw = function() {
       p.background(238);
       t += 0.015;
-      var rowH = p.height / 3;
-      var gap = p.width / (N + 1);
+      const rowH = p.height / 3;
+      const gap = p.width / (N + 1);
 
       // Row 1: wave → size
-      for (var i = 0; i < N; i++) {
-        var v1 = Waves.wave(i * 0.3, { wave: 'bounce', t: t, range: [0, 1] });
+      for (let i = 0; i < N; i++) {
+        const v1 = Waves.wave(i * 0.3, { wave: 'bounce', t: t, range: [0, 1] });
         p.fill(0);
         p.circle((i + 1) * gap, rowH * 0.5, v1 * gap * 0.85);
       }
 
       // Row 2: wave → position
-      for (var j = 0; j < N; j++) {
-        var v2 = Waves.wave(j * 0.3, { wave: 'bounce', t: t + 2, range: [-1, 1] });
+      for (let j = 0; j < N; j++) {
+        const v2 = Waves.wave(j * 0.3, { wave: 'bounce', t: t + 2, range: [-1, 1] });
         p.fill(0);
         p.circle((j + 1) * gap, rowH * 1.5 + v2 * rowH * 0.35, 8);
       }
 
       // Row 3: wave → color (red to blue)
-      for (var k = 0; k < N; k++) {
-        var v3 = Waves.wave(k * 0.3, { wave: 'bounce', t: t + 4, range: [0, 1] });
-        var rv = p.round(v3 * 255);
+      for (let k = 0; k < N; k++) {
+        const v3 = Waves.wave(k * 0.3, { wave: 'bounce', t: t + 4, range: [0, 1] });
+        const rv = p.round(v3 * 255);
         p.fill(255 - rv, 0, rv);
         p.circle((k + 1) * gap, rowH * 2.5, 14);
       }
@@ -365,45 +365,46 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       p.text('position', 6, rowH + 5);
       p.text('color', 6, rowH * 2 + 5);
     };
-    p.windowResized = function() { var w = cw('ex0'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex0'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex0');
 
   // ── Wave Shift — Ribbons ──────────────────────────────────
   new p5(function(p) {
-    var STRIPS = 16;
-    var sampler = Waves.createSampler({ shift: true, amplitude: 1, frequency: 0.5 });
+    const STRIPS = 16;
+    const sampler = Waves.createSampler({ shift: true, amplitude: 1, frequency: 0.5 });
     p.setup = function() {
-      var w = cw('ex1');
+      const w = cw('ex1');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex1');
       p.noStroke();
       p.textFont('monospace');
     };
     p.draw = function() {
       p.background(245);
-      var t = p.millis() / 1000;
-      var sw = p.width / STRIPS;
-      var cy = p.height / 2;
-      var rowH = p.height * 0.42;
-      for (var i = 0; i < STRIPS; i++) {
-        var frac = i / (STRIPS - 1);
-        var r = p.lerp(255, 0, frac);
-        var b = p.lerp(0, 255, frac);
+      const t = p.millis() / 1000;
+      const sw = p.width / STRIPS;
+      const cy = p.height / 2;
+      const rowH = p.height * 0.42;
+      for (let i = 0; i < STRIPS; i++) {
+        const frac = i / (STRIPS - 1);
+        const r = p.lerp(255, 0, frac);
+        const b = p.lerp(0, 255, frac);
         p.fill(r, 0, b);
-        var v = sampler.sample(i * 0.4, t + i * 0.1);
+        const v = sampler.sample(i * 0.4, t + i * 0.1);
         p.rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
       }
       p.fill(0); p.textSize(11); p.textAlign(p.LEFT);
       p.text(sampler.waveName, 8, 16);
     };
-    p.windowResized = function() { var w = cw('ex1'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex1'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex1');
 
   // ── Shape Parameters — interactive mouse control ─────────────
   new p5(function(p) {
-    var t = 0, LINE_COUNT = 6;
-    var shiftSampler;
+    let t = 0;
+    const LINE_COUNT = 6;
+    let shiftSampler;
     p.setup = function() {
-      var w = cw('ex-params');
+      const w = cw('ex-params');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex-params');
       p.textFont('monospace');
       shiftSampler = Waves.createSampler({
@@ -413,23 +414,23 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.draw = function() {
       p.background(245);
       t += 0.015;
-      var freq = p.map(p.mouseX, 0, p.width, 0.15, 3.5);
-      var amp = p.map(p.mouseY, 0, p.height, 100, 8);
+      let freq = p.map(p.mouseX, 0, p.width, 0.15, 3.5);
+      let amp = p.map(p.mouseY, 0, p.height, 100, 8);
       freq = p.constrain(freq, 0.15, 3.5);
       amp = p.constrain(amp, 8, 100);
       shiftSampler.sample(0, t);
-      var waveName = shiftSampler.waveName;
-      for (var i = 0; i < LINE_COUNT; i++) {
-        var progress = i / (LINE_COUNT - 1);
-        var phase = i * 0.7;
-        var lineAmp = amp * (1 - progress * 0.5);
-        var gray = p.lerp(0, 200, progress);
+      const waveName = shiftSampler.waveName;
+      for (let i = 0; i < LINE_COUNT; i++) {
+        const progress = i / (LINE_COUNT - 1);
+        const phase = i * 0.7;
+        const lineAmp = amp * (1 - progress * 0.5);
+        const gray = p.lerp(0, 200, progress);
         p.stroke(gray);
         p.strokeWeight(p.lerp(2, 0.8, progress));
         p.noFill();
         p.beginShape();
-        for (var x = 0; x <= p.width; x += 3) {
-          var val = Waves.wave(x, { wave: waveName, t: t, amplitude: lineAmp, frequency: freq * 0.01, phase: phase });
+        for (let x = 0; x <= p.width; x += 3) {
+          const val = Waves.wave(x, { wave: waveName, t: t, amplitude: lineAmp, frequency: freq * 0.01, phase: phase });
           p.vertex(x, p.height / 2 + val);
         }
         p.endShape();
@@ -437,15 +438,15 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       p.noStroke(); p.fill(0); p.textSize(8); p.textAlign(p.LEFT, p.TOP);
       p.text(waveName, 5, 5);
     };
-    p.windowResized = function() { var w = cw('ex-params'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex-params'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-params');
 
   // ── Wild Mode — Circle Grid ───────────────────────────────
   new p5(function(p) {
-    var COLS = 16, ROWS = 8;
-    var t = 0, wildWave;
+    const COLS = 16, ROWS = 8;
+    let t = 0, wildWave;
     p.setup = function() {
-      var w = cw('ex4');
+      const w = cw('ex4');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex4');
       p.noStroke();
       p.textFont('monospace');
@@ -454,23 +455,23 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.draw = function() {
       p.background(238);
       t += 0.02;
-      var cw2 = p.width / COLS;
-      var ch = (p.height - 16) / ROWS;
-      var maxD = p.min(cw2, ch) * 0.9;
-      var half = COLS / 2;
+      const cw2 = p.width / COLS;
+      const ch = (p.height - 16) / ROWS;
+      const maxD = p.min(cw2, ch) * 0.9;
+      const half = COLS / 2;
 
-      for (var row = 0; row < ROWS; row++) {
-        for (var col = 0; col < COLS; col++) {
-          var cx = (col + 0.5) * cw2;
-          var cy = (row + 0.5) * ch;
-          var coord = col * 0.5 + row * 0.7;
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          const cx = (col + 0.5) * cw2;
+          const cy = (row + 0.5) * ch;
+          const coord = col * 0.5 + row * 0.7;
 
           if (col < half) {
-            var sz = Waves.wave(coord, { wave: wildWave, t: t, range: [2, maxD] });
+            const sz = Waves.wave(coord, { wave: wildWave, t: t, range: [2, maxD] });
             p.fill(0);
             p.circle(cx, cy, sz);
           } else {
-            var szW = Waves.wave(coord, { wave: wildWave, t: t, range: [2, maxD], mode: 'wild', unpredictability: 0.8 });
+            const szW = Waves.wave(coord, { wave: wildWave, t: t, range: [2, maxD], mode: 'wild', unpredictability: 0.8 });
             p.fill(0);
             p.circle(cx, cy, szW);
           }
@@ -483,16 +484,16 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       p.text('stable', p.width / 4, p.height - 4);
       p.text('wild', 3 * p.width / 4, p.height - 4);
     };
-    p.windowResized = function() { var w = cw('ex4'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex4'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex4');
 
   // ── Flow Fields — ASCII Grid ────────────────────────────────
   new p5(function(p) {
-    var COLS = 22;
-    var DIRS = ['-', '/', '|', '\\'];
-    var sampler;
+    const COLS = 22;
+    const DIRS = ['-', '/', '|', '\\'];
+    let sampler;
     p.setup = function() {
-      var w = cw('ex7');
+      const w = cw('ex7');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex7');
       p.textFont('monospace');
       p.textAlign(p.CENTER, p.CENTER);
@@ -507,61 +508,61 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       p.background(255);
-      var t = p.millis() / 1000;
-      var sz = p.width / COLS;
-      var rows = p.floor(p.height / sz);
+      const t = p.millis() / 1000;
+      const sz = p.width / COLS;
+      const rows = p.floor(p.height / sz);
       p.textSize(sz * 0.9);
-      for (var row = 0; row < rows; row++) {
-        for (var col = 0; col < COLS; col++) {
-          var val = sampler.sample(col * 0.5, t + row * 0.4);
-          var idx = p.constrain(p.floor(p.map(val, -1, 1.001, 0, 4)), 0, 3);
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < COLS; col++) {
+          const val = sampler.sample(col * 0.5, t + row * 0.4);
+          const idx = p.constrain(p.floor(p.map(val, -1, 1.001, 0, 4)), 0, 3);
           p.text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
         }
       }
     };
-    p.windowResized = function() { var w = cw('ex7'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex7'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex7');
 
   // ── Time is a Number ──────────────────────────────────────
   new p5(function(p) {
-    var strataWave;
+    let strataWave;
     p.setup = function() {
-      var w = cw('ex8');
+      const w = cw('ex8');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex8');
       p.colorMode(p.HSB, 360, 100, 100, 255);
       strataWave = rw();
     };
     p.draw = function() {
       p.background(0, 0, 96);
-      var tBase = p.map(p.mouseX, 0, p.width, 0, 8);
-      var LAYERS = 12;
+      const tBase = p.map(p.mouseX, 0, p.width, 0, 8);
+      const LAYERS = 12;
       p.noStroke();
-      for (var i = LAYERS - 1; i >= 0; i--) {
-        var layerT = tBase + (i / LAYERS) * 6;
-        var y0 = p.map(i, 0, LAYERS - 1, 30, p.height - 30);
-        var wHue = (i * 28) % 360;
-        var alphaVal = p.map(i, 0, LAYERS - 1, 190, 50);
+      for (let i = LAYERS - 1; i >= 0; i--) {
+        const layerT = tBase + (i / LAYERS) * 6;
+        const y0 = p.map(i, 0, LAYERS - 1, 30, p.height - 30);
+        const wHue = (i * 28) % 360;
+        const alphaVal = p.map(i, 0, LAYERS - 1, 190, 50);
         p.fill(wHue, 40, 85, alphaVal);
         p.beginShape();
-        for (var x = 0; x <= p.width; x += 4) {
-          var dy = Waves.wave(x * 0.015, { wave: strataWave, t: layerT, amplitude: 15 });
+        for (let x = 0; x <= p.width; x += 4) {
+          const dy = Waves.wave(x * 0.015, { wave: strataWave, t: layerT, amplitude: 15 });
           p.vertex(x, y0 + dy);
         }
-        for (var x2 = p.width; x2 >= 0; x2 -= 4) {
-          var dy2 = Waves.wave(x2 * 0.015, { wave: strataWave, t: layerT + 0.3, amplitude: 9 });
+        for (let x2 = p.width; x2 >= 0; x2 -= 4) {
+          const dy2 = Waves.wave(x2 * 0.015, { wave: strataWave, t: layerT + 0.3, amplitude: 9 });
           p.vertex(x2, y0 + dy2 + 16);
         }
         p.endShape(p.CLOSE);
       }
     };
-    p.windowResized = function() { var w = cw('ex8'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex8'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex8');
 
   // ── Color Field ───────────────────────────────────────────
   new p5(function(p) {
-    var hueS, briS, t = 0;
+    let hueS, briS, t = 0;
     p.setup = function() {
-      var w = cw('ex9');
+      const w = cw('ex9');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex9');
       p.noStroke(); p.colorMode(p.HSB, 360, 100, 100);
       hueS = Waves.createSampler({ wave: 'meta sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [160, 320], seed: 0 });
@@ -569,58 +570,58 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       t += 0.035;
-      var blockSz = 10;
-      for (var y = 0; y < p.height; y += blockSz) {
-        for (var x = 0; x < p.width; x += blockSz) {
+      const blockSz = 10;
+      for (let y = 0; y < p.height; y += blockSz) {
+        for (let x = 0; x < p.width; x += blockSz) {
           p.fill(hueS.sample(x * 0.007 + y * 0.005, t), 72, briS.sample(x * 0.005 - y * 0.007, t * 0.6));
           p.rect(x, y, blockSz, blockSz);
         }
       }
     };
-    p.windowResized = function() { var w = cw('ex9'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex9'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex9');
 
   // ── Morph Wave ────────────────────────────────────────────
   new p5(function(p) {
-    var WA = rw(), WB = rw(), ROWS = 30;
-    var t = 0;
+    const WA = rw(), WB = rw(), ROWS = 30;
+    let t = 0;
     p.setup = function() {
-      var w = cw('ex12');
+      const w = cw('ex12');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex12');
     };
     p.draw = function() {
       p.background(250);
       t += 0.0375;
-      var centre = (p.sin(t * 0.3) + 1) * 0.5;
-      var rowH = p.height / ROWS;
-      for (var row = 0; row < ROWS; row++) {
-        var rowFrac = row / (ROWS - 1);
-        var gap = p.abs(rowFrac - centre);
-        var morphMix = p.constrain(1 - gap * 3, 0, 1);
-        var yBase = row * rowH + rowH * 0.5;
-        var r = p.lerp(40, 210, morphMix);
-        var gn = p.lerp(90, 60, morphMix);
-        var b = p.lerp(200, 100, morphMix);
+      const centre = (p.sin(t * 0.3) + 1) * 0.5;
+      const rowH = p.height / ROWS;
+      for (let row = 0; row < ROWS; row++) {
+        const rowFrac = row / (ROWS - 1);
+        const gap = p.abs(rowFrac - centre);
+        const morphMix = p.constrain(1 - gap * 3, 0, 1);
+        const yBase = row * rowH + rowH * 0.5;
+        const r = p.lerp(40, 210, morphMix);
+        const gn = p.lerp(90, 60, morphMix);
+        const b = p.lerp(200, 100, morphMix);
         p.noFill();
         p.stroke(r, gn, b, 50 + (1 - gap) * 160);
         p.strokeWeight(0.8 + morphMix * 1.2);
         p.beginShape();
-        for (var x = 0; x < p.width; x += 4) {
-          var wv = Waves.wave(x, { wave: [WA, WB], mix: morphMix, t: t + row * 0.06, frequency: 0.08, amplitude: rowH * 0.8 });
+        for (let x = 0; x < p.width; x += 4) {
+          const wv = Waves.wave(x, { wave: [WA, WB], mix: morphMix, t: t + row * 0.06, frequency: 0.08, amplitude: rowH * 0.8 });
           p.vertex(x, yBase + p.constrain(wv, -rowH * 0.45, rowH * 0.45));
         }
         p.endShape();
       }
     };
-    p.windowResized = function() { var w = cw('ex12'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex12'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex12');
 
   // ── Wave Grid ─────────────────────────────────────────────
   new p5(function(p) {
-    var grid, t = 0;
-    var COLS = 28, ROWS = 20;
+    let grid, t = 0;
+    const COLS = 28, ROWS = 20;
     p.setup = function() {
-      var w = cw('ex6');
+      const w = cw('ex6');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex6');
       p.noStroke();
       grid = Waves.createGrid(COLS, ROWS, { waveRow: 'smooth solid sine', waveCol: 'ramp up sine', threshold: 0, speed: 1 });
@@ -628,24 +629,24 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     p.draw = function() {
       p.background(238);
       t += 0.004;
-      var cells = grid.sample(t);
-      var cw2 = p.width / COLS, ch = p.height / ROWS;
-      for (var row = 0; row < ROWS; row++) {
-        for (var col = 0; col < COLS; col++) {
+      const cells = grid.sample(t);
+      const cw2 = p.width / COLS, ch = p.height / ROWS;
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
           p.fill(cells[row * COLS + col] === 1 ? 15 : 225);
           p.rect(col * cw2, row * ch, cw2 - 0.5, ch - 0.5);
         }
       }
     };
-    p.windowResized = function() { var w = cw('ex6'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex6'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex6');
 
   // ── 3D Wave Volume ────────────────────────────────────────
   new p5(function(p) {
-    var N = 12, SPACING = 18, half = (N - 1) * SPACING / 2;
-    var sY, sX, sZ, rotAngle = 0;
+    const N = 12, SPACING = 18, half = (N - 1) * SPACING / 2;
+    let sY, sX, sZ, rotAngle = 0;
     p.setup = function() {
-      var w = cw('ex14');
+      const w = cw('ex14');
       p.createCanvas(w, p.floor(w * 2 / 3), p.WEBGL).parent('ex14');
       p.frameRate(24); p.noFill(); p.strokeWeight(3);
       sY = Waves.createSampler({ shift: true, shiftInterval: 3, shiftDuration: 1.5, range: [-5, 5], frequency: 0.4, seed: 0 });
@@ -656,19 +657,19 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       p.background(12);
       rotAngle += 0.006;
       p.rotateX(-0.5); p.rotateY(rotAngle);
-      var t = p.millis() / 1000;
+      const t = p.millis() / 1000;
       p.beginShape(p.POINTS);
-      for (var xi = 0; xi < N; xi++) {
-        for (var zi = 0; zi < N; zi++) {
-          var dy = sY.sample(xi * 0.9 + zi * 0.6, t);
-          var dx = sX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
-          var dz = sZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
-          var surfaceRow = N / 2 + dy;
-          for (var yi = 0; yi < N; yi++) {
-            var gapVal = p.abs(yi - surfaceRow);
+      for (let xi = 0; xi < N; xi++) {
+        for (let zi = 0; zi < N; zi++) {
+          const dy = sY.sample(xi * 0.9 + zi * 0.6, t);
+          const dx = sX.sample(zi * 0.8 + xi * 0.3, t * 0.85);
+          const dz = sZ.sample(xi * 0.7 + zi * 0.5, t * 0.7);
+          const surfaceRow = N / 2 + dy;
+          for (let yi = 0; yi < N; yi++) {
+            const gapVal = p.abs(yi - surfaceRow);
             if (gapVal < 2.5) {
-              var glow = 1 - gapVal / 2.5;
-              var bright = p.round(80 + (yi / (N - 1)) * 175);
+              const glow = 1 - gapVal / 2.5;
+              const bright = p.round(80 + (yi / (N - 1)) * 175);
               p.stroke(bright, bright, 255, 255 * glow);
               p.vertex(-half + xi * SPACING + dx * SPACING * 0.4, -half + yi * SPACING, -half + zi * SPACING + dz * SPACING * 0.4);
             }
@@ -677,7 +678,7 @@ var dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
       }
       p.endShape();
     };
-    p.windowResized = function() { var w = cw('ex14'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+    p.windowResized = function() { const w = cw('ex14'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex14');
   </script>
 

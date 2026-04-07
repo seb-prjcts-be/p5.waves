@@ -19,7 +19,7 @@ const palette = [
 ];
 
 function setup() {
-  createCanvas(460, 460).parent('sketch-container');
+  createCanvas(460, 460).parent('sketch-container'); // remove .parent() for local use
   trail = createGraphics(460, 460);
   trail.background(15);
 

@@ -155,14 +155,13 @@ Ook: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, 
 
 - `wave_lab` — interactieve speeltuin
 - `wave_shift` — auto-wisselende golfformules
-- `contour_map` — P2D contourlijnen
-- `flow_fields` — deeltjeszwermen
 - `wave_params` — amplitude, frequency, phase
-- `luminance_field` — output range
 - `wild_mode` — wild mode
+- `flow_fields` — ASCII stroomveld
 - `time_strata` — handmatige tijdcontrole
 - `color_field` — HSB kleurveld
 - `morph_wave` — morph tussen twee golven
+- `random_walker` — golf-gestuurde walker
 - `3d_wave_volume` — 3D WebGL
 
 ---

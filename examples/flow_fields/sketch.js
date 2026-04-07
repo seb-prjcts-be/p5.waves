@@ -9,7 +9,7 @@ const DIRS = ['-', '/', '|', '\\'];
 let sampler;
 
 function setup() {
-  createCanvas(460, 460).parent('sketch-container');
+  createCanvas(460, 460).parent('sketch-container'); // remove .parent() for local use
   textFont('monospace');
   textAlign(CENTER, CENTER);
   noStroke();

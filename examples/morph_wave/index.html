@@ -30,10 +30,10 @@
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
         <pre><code>// 50 rows — each row's mix depends on distance from a sweeping centre
-var centre = (sin(t * 0.3) + 1) * 0.5;
-var morphMix = constrain(1 - abs(rowFrac - centre) * 3, 0, 1);
+const centre = (sin(t * 0.3) + 1) * 0.5;
+const morphMix = constrain(1 - abs(rowFrac - centre) * 3, 0, 1);
 
-var waveY = Waves.wave(x, {
+const waveY = Waves.wave(x, {
   wave:      ['wobble sine', 'meta sine'],
   mix:       morphMix,        // 0 = pure A, 1 = pure B
   t:         t + row * 0.06,
