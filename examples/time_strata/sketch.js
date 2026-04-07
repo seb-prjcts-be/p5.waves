@@ -13,7 +13,7 @@ function setup() {
 
 function draw() {
   background(0, 0, 96);
-  const timeBase = map(mouseX, 0, width, 0, 8);
+  const timeBase = map(mouseX, 0, width, 0, 24);
 
   noStroke();
   for (let i = LAYERS - 1; i >= 0; i--) {
@@ -52,6 +52,6 @@ function draw() {
   textSize(10);
   textAlign(LEFT);
   textFont('monospace');
-  text('t = ' + nf(map(mouseX, 0, width, 0, 8), 1, 2), 12, 20);
+  text('t = ' + nf(map(mouseX, 0, width, 0, 24), 1, 2), 12, 20);
   text('move mouse', 12, 34);
 }

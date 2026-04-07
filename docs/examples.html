@@ -177,7 +177,7 @@ for (let row = 0; row &lt; ROWS; row++) {
       <div id="ex8" class="ex-canvas"></div>
       <pre class="ex-code-block">// No clock — t is whatever you pass
 // Move mouse to scrub through time
-const t = map(mouseX, 0, width, 0, 8);
+const t = map(mouseX, 0, width, 0, 24);
 
 for (let i = 0; i &lt; 12; i++) {
   const layerT = t + (i / 12) * 6;
@@ -534,7 +534,7 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.draw = function() {
       p.background(0, 0, 96);
-      const tBase = p.map(p.mouseX, 0, p.width, 0, 8);
+      const tBase = p.map(p.mouseX, 0, p.width, 0, 24);
       const LAYERS = 12;
       p.noStroke();
       for (let i = LAYERS - 1; i >= 0; i--) {
