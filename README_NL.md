@@ -168,6 +168,6 @@ Ook: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, 
 
 ## Credits
 
-- `tw@GenerativePunk`, `gh@ffd8` - golfformule dataset
+- `tw@GenerativePunk`, `gh@ffd8` ([Ted Davis](https://teddavis.org), [Oscillation Sandbox](https://github.com/ffd8/oscillation-sandbox)) - golfformule dataset
 
 Ontwikkeld door Sebastien Vanblaere.
