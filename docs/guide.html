@@ -139,8 +139,8 @@ circle(x, y, dotSize);</div>
       <tr><td><code>mode</code></td><td><code>'stable'</code> = clean. <code>'wild'</code> = wobbly and unpredictable.</td><td><code>'stable'</code></td></tr>
       <tr><td><code>unpredictability</code></td><td>Chaos dial for wild mode. 0 = calm. 1 = full chaos.</td><td><code>0</code></td></tr>
       <tr><td><code>mix</code></td><td>When blending two waves: 0 = all first wave, 1 = all second wave.</td><td><code>0.5</code></td></tr>
-      <tr><td><code>shiftInterval</code></td><td>How long to hold each wave before switching (seconds).</td><td><code>3</code></td></tr>
-      <tr><td><code>shiftDuration</code></td><td>How long the smooth transition takes (seconds).</td><td><code>1</code></td></tr>
+      <tr><td><code>shiftInterval</code></td><td>How long to hold each wave before switching (in units of <code>t</code>).</td><td><code>3</code></td></tr>
+      <tr><td><code>shiftDuration</code></td><td>How long the smooth transition takes (in units of <code>t</code>).</td><td><code>1</code></td></tr>
     </table>
 
 
@@ -212,6 +212,8 @@ circle(x, y, dotSize);</div>
   text(sampler.targetName, <span class="nb">10</span>, <span class="nb">60</span>);   <span class="cm">// "batman" (what's coming next)</span>
   text(sampler.mix, <span class="nb">10</span>, <span class="nb">80</span>);          <span class="cm">// 0.0 -> 1.0 during morph</span>
 }</div>
+
+    <p>Shift has no internal clock — it reads the <code>t</code> value you pass in. With <code>millis()/1000</code> that means real seconds. Pass something else (camera position, scroll offset) and shift follows that instead.</p>
 
     <p>Reload the page. Different waves. Every time. Your sketch is never the same twice.</p>
 

@@ -68,8 +68,8 @@ Geeft altijd één getal terug.
 | `mode` | `'stable'` of `'wild'` (voegt wankeling toe). | `'stable'` |
 | `unpredictability` | Hoeveel wankeling in wild mode. 0-1. | `0` |
 | `mix` | Blendfactor wanneer `wave` is `['a', 'b']`. 0-1. | `0.5` |
-| `shiftInterval` | Seconden per golf vasthouden. | `3` |
-| `shiftDuration` | Seconden voor de overgang. | `1` |
+| `shiftInterval` | Eenheden van `t` per golf vasthouden. | `3` |
+| `shiftDuration` | Eenheden van `t` voor de overgang. | `1` |
 
 > **Seed vs index:** `Waves.wave(x, 3)`  - 3 is een seed (gehasht). `Waves.wave(x, { wave: 3 })` - 3 is een directe index.
 
