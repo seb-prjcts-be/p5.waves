@@ -68,8 +68,8 @@ Always returns a single number.
 | `mode` | `'stable'` or `'wild'` (adds wobble). | `'stable'` |
 | `unpredictability` | How much wobble in wild mode. 0-1. | `0` |
 | `mix` | Blend factor when `wave` is `['a', 'b']`. 0-1. | `0.5` |
-| `shiftInterval` | Seconds to hold each wave. | `3` |
-| `shiftDuration` | Seconds for the morph transition. | `1` |
+| `shiftInterval` | Units of `t` to hold each wave. | `3` |
+| `shiftDuration` | Units of `t` for the morph transition. | `1` |
 
 > **Seed vs index:** `Waves.wave(x, 3)`  - 3 is a seed (hashed). `Waves.wave(x, { wave: 3 })` - 3 is a direct index.
 
