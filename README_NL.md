@@ -114,6 +114,8 @@ Zelfde opties als `Waves.wave()`.
 
 Vul een 2D-raster met golfwaarden in één aanroep.
 
+Elke celwaarde is de **som** van `waveRow` geëvalueerd op de rij en `waveCol` geëvalueerd op de kolom: `cel = waveRow(rij) + waveCol(kolom)`. Twee sines geven interferentiepatronen; twee pulsen geven een schaakbord.
+
 ```js
 let g = Waves.createGrid(20, 20, { threshold: 0, speed: 1 });
 let cells = g.sample(t);  // Uint8Array van 0/1
