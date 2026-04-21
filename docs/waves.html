@@ -117,6 +117,16 @@
       font-size: 0.95rem;
       font-weight: 500;
     }
+    .wave-card-period {
+      display: block;
+      margin-top: 0.4rem;
+      font-family: 'Consolas', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+      color: var(--text-faint);
+    }
+    .wave-card-period strong { font-weight: 600; color: var(--text-muted); }
+    .wave-card-period.is-non { color: #a33; }
     .wave-card-algo {
       display: block;
       font-family: 'Courier New', monospace;
@@ -134,6 +144,47 @@
       line-height: 1.4;
       margin: 0;
     }
+
+    /* Periodicity section */
+    .period-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Consolas', monospace;
+      font-size: 0.82rem;
+      margin: 0.8rem 0 1.2rem;
+    }
+    .period-table th, .period-table td {
+      border: 1px solid #e0e0e0;
+      padding: 0.35rem 0.6rem;
+      text-align: left;
+    }
+    .period-table th {
+      background: #111;
+      color: #fff;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.7rem;
+    }
+    .period-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .period-table tr:nth-child(even) td { background: #fafafa; }
+    .period-code {
+      display: block;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      background: #111;
+      color: #d0d0d0;
+      padding: 0.9rem 1rem;
+      margin: 0.6rem 0 1rem;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .period-code .kw { color: #ff8e7a; }
+    .period-code .st { color: #a6e22e; }
+    .period-code .cm { color: #777; font-style: italic; }
+    .period-code .nb { color: #9ad7ff; }
   </style>
 </head>
 <body>
@@ -202,6 +253,101 @@
         <p>Snaps continuous values to integers. Smooth curves become staircase patterns - a digital feel, hard edges, binary decisions from analog input.</p>
       </div>
     </div>
+
+    <h2 id="periodicity">Periodicity</h2>
+    <p>
+      A wave is <em>periodic</em> when there is a distance <code>T</code> such that
+      <code>wave(x) === wave(x + T)</code> for every <code>x</code>. That distance is
+      the wave's <strong>period</strong>. Knowing the period lets you close curved
+      shapes cleanly: sample a wave around a circle over an integer number of periods,
+      and the last vertex lands on the first one - <code>endShape(CLOSE)</code> draws
+      a zero-length line, no ugly seam.
+    </p>
+    <p>
+      <strong>Why <code>62.83</code> and not <code>360</code>?</strong>
+      <code>Waves.wave(x)</code> treats <code>x</code> as a generic coordinate -
+      the same mental model as <code>noise(x)</code> - not an angle in degrees
+      or radians. Frequencies are tuned for character, not for round numbers.
+      Ten of the 34 waves are not sine-based at all
+      (<code>square</code>, <code>triangle</code>, <code>ramp</code>,
+      <code>noise</code>...) so radians would be meaningless for them.
+      Use this table as your lookup instead of reaching for <code>TWO_PI</code>.
+    </p>
+    <p>
+      Every period value below was <strong>measured</strong>, not derived. The harness
+      at <a href="periodicity.html">/docs/periodicity.html</a> samples each wave, searches
+      for the smallest <code>T</code> where the mean error between <code>wave(x)</code>
+      and <code>wave(x + T)</code> stays below 0.002, then confirms with multiples. You
+      can re-run it and download the CSV to verify these numbers yourself.
+    </p>
+
+    <h3>Closed-shape recipe</h3>
+    <p>The integer <code>lobes</code> is the only thing you tune - anything from 1 upward works:</p>
+    <div class="period-code"><span class="cm">// Draw a closed wobble ring. No visible seam.</span>
+<span class="kw">const</span> period = <span class="nb">62.83</span>;                 <span class="cm">// from the table below (classic sine)</span>
+<span class="kw">const</span> lobes  = <span class="nb">8</span>;                     <span class="cm">// how many bumps around the ring</span>
+<span class="kw">const</span> steps  = <span class="nb">240</span>;                   <span class="cm">// resolution (does not affect closing)</span>
+<span class="kw">const</span> sweep  = lobes * period;        <span class="cm">// integer multiple = clean close</span>
+
+beginShape();
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="nb">0</span>; i &lt; steps; i++) {
+  <span class="kw">const</span> t = i / steps;
+  <span class="kw">const</span> a = t * TWO_PI;
+  <span class="kw">const</span> r = <span class="nb">140</span> + Waves.wave(t * sweep, { wave: <span class="st">'classic sine'</span>, amplitude: <span class="nb">20</span> });
+  vertex(r * cos(a), r * sin(a));
+}
+endShape(CLOSE);</div>
+
+    <h3>Quick lookup</h3>
+    <p>24 waves close cleanly, 10 don't. Each card below also shows its measured period.</p>
+    <table class="period-table">
+      <tr>
+        <th>Period T</th>
+        <th>Waves</th>
+      </tr>
+      <tr>
+        <td class="num"><strong>2.03</strong></td>
+        <td>33 smooth solid sine</td>
+      </tr>
+      <tr>
+        <td class="num"><strong>16.67</strong></td>
+        <td>20 saw down, 21 saw up</td>
+      </tr>
+      <tr>
+        <td class="num"><strong>17.75</strong></td>
+        <td>25 fuzzy pulse <em>(valid close, not the fundamental)</em></td>
+      </tr>
+      <tr>
+        <td class="num"><strong>31.42</strong></td>
+        <td>1 sine, 2 sharp peaks, 8 zig-zag sine, 11 steps down, 13 squared sine, 26 up down pulse</td>
+      </tr>
+      <tr>
+        <td class="num"><strong>33.33</strong></td>
+        <td>18 triangle</td>
+      </tr>
+      <tr>
+        <td class="num"><strong>40</strong></td>
+        <td>3 square, 4 pulse</td>
+      </tr>
+      <tr>
+        <td class="num"><strong>50</strong></td>
+        <td>19 ramp</td>
+      </tr>
+      <tr>
+        <td class="num"><strong>62.83</strong></td>
+        <td>0 classic sine, 5 stepped sine, 6 mountain peaks, 7 valleys, 9 batman, 10 offset sine, 12 steps, 14 bumpy sine, 15 wobble sine, 31 round linked sine</td>
+      </tr>
+      <tr>
+        <td class="num"><strong>—</strong></td>
+        <td><em>no clean close:</em> 16 up down noise, 17 meta sine, 22 fade out, 23 grow random, 24 noise, 27 bald patch, 28 fuzzy peak sine, 29 ramp up sine, 30 triangle sine, 32 half sine</td>
+      </tr>
+    </table>
+
+    <h3>How to read the result</h3>
+    <ul>
+      <li><strong>Periodic</strong> - a number. Use any integer multiple of it as your sweep.</li>
+      <li><strong>—</strong> - wave is quasi-periodic (incommensurate rhythms) or non-periodic (growing amplitudes, Perlin noise, random branches). Close with a soft blend back to the starting value instead of <code>CLOSE</code>.</li>
+    </ul>
 
     <h2>The Families</h2>
     <p>
@@ -338,6 +484,17 @@
   <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.min.js"></script>
   <script src="../p5.waves.js"></script>
   <script>
+  // Empirically measured periods (from docs/periodicity.html).
+  // null = quasi-periodic or non-periodic - no clean close. Re-run the harness
+  // at periodicity.html to verify any of these values.
+  var WAVE_PERIODS = {
+    0: 62.83, 1: 31.42, 2: 31.42, 3: 40,    4: 40,    5: 62.60, 6: 62.83,
+    7: 62.83, 8: 31.42, 9: 62.83, 10: 62.83, 11: 31.42, 12: 62.82, 13: 31.42,
+    14: 62.83, 15: 62.83, 16: null, 17: null, 18: 33.33, 19: 50,    20: 16.67,
+    21: 16.67, 22: null, 23: null, 24: null, 25: 17.75, 26: 31.42, 27: null,
+    28: null, 29: null, 30: null, 31: 62.83, 32: null, 33: 2.03
+  };
+
   // Wave data with family assignments and personality descriptions
   var waveData = [
     { idx: 0,  name: 'classic sine',      algo: 'sin(x*.1)*.4',                                    family: 'pure-sine',     mood: 'Broad, gentle oscillation. The widest swing of the sine family - slow, confident, architectural.' },
@@ -400,6 +557,13 @@
     card.className = 'wave-card';
 
     var canvasId = 'wc-' + w.idx;
+    var period = WAVE_PERIODS[w.idx];
+    var periodHtml;
+    if (period === null || period === undefined) {
+      periodHtml = '<span class="wave-card-period is-non"><strong>period</strong> — (no clean close)</span>';
+    } else {
+      periodHtml = '<span class="wave-card-period"><strong>period</strong> ' + period + '</span>';
+    }
     card.innerHTML =
       '<div class="wave-card-canvas" id="' + canvasId + '"></div>' +
       '<div class="wave-card-body">' +
@@ -409,6 +573,7 @@
         '</div>' +
         '<code class="wave-card-algo">' + w.algo + '</code>' +
         '<p class="wave-card-mood">' + w.mood + '</p>' +
+        periodHtml +
       '</div>';
 
     container.appendChild(card);

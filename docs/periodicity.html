@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Periodicity test - p5.waves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 6rem 2rem 4rem; }
+    h1 { font-family: 'Oswald', sans-serif; font-size: 2.4rem; margin-bottom: 0.4rem; }
+    h2 { font-family: 'Oswald', sans-serif; font-size: 1.2rem; margin: 2.2rem 0 0.6rem; text-transform: uppercase; letter-spacing: .05em; }
+    p, li { line-height: 1.65; color: var(--text-muted); }
+    code { font-family: 'Courier New', monospace; font-size: 0.88em; background: #ebebeb; padding: 0.1em 0.35em; }
+
+    .controls { margin: 1rem 0 1.5rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+    .controls button {
+      font-family: 'Oswald', sans-serif; font-size: 0.85rem; text-transform: uppercase; letter-spacing: .08em;
+      padding: 0.55rem 1rem; background: #111; color: #fff; border: none; cursor: pointer;
+    }
+    .controls button:hover { background: #333; }
+    .controls button:disabled { background: #999; cursor: default; }
+    .status { font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--text-muted); }
+
+    table.results {
+      width: 100%; border-collapse: collapse; font-family: 'Courier New', monospace; font-size: 0.82rem;
+      margin-top: 1rem;
+    }
+    table.results th, table.results td { border: 1px solid #e0e0e0; padding: 0.4rem 0.6rem; text-align: left; }
+    table.results th { background: #111; color: #fff; font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; font-size: 0.72rem; }
+    table.results tr:nth-child(even) td { background: #fafafa; }
+    table.results td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .verdict-periodic { color: #0a7a2f; font-weight: 600; }
+    .verdict-non { color: #a33; font-weight: 600; }
+    .verdict-quasi { color: #a67200; font-weight: 600; }
+    .verdict-nondet { color: #555; font-weight: 600; font-style: italic; }
+
+    .legend { font-size: 0.85rem; margin-top: 1rem; }
+    .legend ul { margin-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="../index.html" class="nav-brand">p5.waves</a>
+    <div class="nav-links">
+      <a href="../index.html#gallery">Showcase</a>
+      <a href="examples.html">Examples</a>
+      <a href="guide.html">Guide</a>
+      <a href="waves.html">Waves</a>
+      <a href="about.html">About</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <h1>Periodicity test</h1>
+    <p>
+      Empirical measurement of each wave's period - the x-distance over which
+      <code>Waves.wave(x)</code> repeats itself. Used to close curved shapes
+      cleanly: if the total x-sweep is an integer multiple of the period,
+      <code>endShape(CLOSE)</code> draws a zero-length line.
+    </p>
+
+    <h2>Method</h2>
+    <ul>
+      <li>Each wave is sampled via <code>Waves.wave(x, { wave: idx, t: 0 })</code> - no amplitude, no range, default [-1, 1] output.</li>
+      <li><strong>Determinism check</strong>: call <code>wave(x)</code> twice at the same x. If results differ, the wave is marked <em>non-deterministic</em> (p5's <code>random()</code> advances internal state).</li>
+      <li><strong>Period search</strong>: for candidate T from 0.5 to 200 (step 0.01), compute mean absolute difference between <code>wave(x)</code> and <code>wave(x + T)</code> at 80 sample points in x &isin; [10, 110]. Smallest T where mean error &lt; 0.002 AND multiples 2T, 3T also match is the detected period.</li>
+      <li><strong>Close-error</strong>: for the detected period T, report <code>|wave(10) - wave(10 + T)|</code> as a final sanity check.</li>
+      <li>If no T passes within [0.5, 200], the wave is marked <em>non-periodic</em> (or <em>quasi-periodic</em> if the minimum error was low but not low enough).</li>
+    </ul>
+
+    <div class="controls">
+      <button id="runBtn">Run test</button>
+      <button id="csvBtn" disabled>Download CSV</button>
+      <button id="jsonBtn" disabled>Download JSON</button>
+      <span class="status" id="status">Ready.</span>
+    </div>
+
+    <table class="results" id="resultsTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Algorithm</th>
+          <th class="num">Period</th>
+          <th class="num">wave(10)</th>
+          <th class="num">wave(10 + T)</th>
+          <th class="num">|&Delta;|</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+
+    <div class="legend">
+      <strong>Verdicts:</strong>
+      <ul>
+        <li><span class="verdict-periodic">periodic</span> - stable period found, error below 0.002 at T, 2T, 3T</li>
+        <li><span class="verdict-quasi">quasi-periodic</span> - near-match found but not exact (e.g. incommensurate frequencies)</li>
+        <li><span class="verdict-non">non-periodic</span> - no match within search range (log, growing amplitude, Perlin)</li>
+        <li><span class="verdict-nondet">non-deterministic</span> - wave(x) varies between calls at the same x (uses p5 random)</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.min.js"></script>
+  <script src="../p5.waves.js"></script>
+  <script>
+  // wave metadata (mirrors waves.html)
+  var WAVES = [
+    { idx: 0,  name: 'classic sine',      algo: 'sin(x*.1)*.4' },
+    { idx: 1,  name: 'sine',              algo: 'sin(x*.2)*.25' },
+    { idx: 2,  name: 'sharp peaks',       algo: 'abs(sin(x*.1))*.5' },
+    { idx: 3,  name: 'square',            algo: '(x*.025)%1 < .5 ? -.5 : .5' },
+    { idx: 4,  name: 'pulse',             algo: '(x*.5)%20 < 1 ? -.5 : .5' },
+    { idx: 5,  name: 'stepped sine',      algo: 'ceil(sin(x*.1))*.25' },
+    { idx: 6,  name: 'mountain peaks',    algo: 'abs(cos(x*.1))*.35 + sin(x*.1)*.25' },
+    { idx: 7,  name: 'valleys',           algo: 'abs(cos(x*.1))*-.35 + sin(x*.1)*.25' },
+    { idx: 8,  name: 'zig-zag sine',      algo: 'sin(x*.2)*.4 % .12' },
+    { idx: 9,  name: 'batman',            algo: 'sin(x*.1)*.7 % .4' },
+    { idx: 10, name: 'offset sine',       algo: 'ceil(cos(x*.1))*.25 - sin(x*.1)*.25' },
+    { idx: 11, name: 'steps down',        algo: 'ceil(tan(x*.1))*.25' },
+    { idx: 12, name: 'steps',             algo: 'round(sin(-x*.1))*.25' },
+    { idx: 13, name: 'squared sine',      algo: 'sq(sin(x*.1))*.25' },
+    { idx: 14, name: 'bumpy sine',        algo: 'sin(x*.1)*.25 + sin(x*.5)*.1' },
+    { idx: 15, name: 'wobble sine',       algo: 'sin(x*.1)*cos(x*.2)*.5' },
+    { idx: 16, name: 'up down noise',     algo: 'x*sin(x*.1) % .5' },
+    { idx: 17, name: 'meta sine',         algo: 'sin(x*.45 + radians(x))*cos(x*.4)*.5' },
+    { idx: 18, name: 'triangle',          algo: 'abs((x*.03) % (.5*2) - .5)' },
+    { idx: 19, name: 'ramp',              algo: '-1*(x*.02%1)/1 + 0.5' },
+    { idx: 20, name: 'saw down',          algo: 'x*.03 % .5' },
+    { idx: 21, name: 'saw up',            algo: '-x*.03 % .5' },
+    { idx: 22, name: 'fade out',          algo: 'log(x)*.1' },
+    { idx: 23, name: 'grow random',       algo: 'random(x*.003)' },
+    { idx: 24, name: 'noise',             algo: 'noise(x*.1) - .5' },
+    { idx: 25, name: 'fuzzy pulse',       algo: 'tan(x*20)*.05' },
+    { idx: 26, name: 'up down pulse',     algo: 'tan(x*.1)*.05' },
+    { idx: 27, name: 'bald patch',        algo: 'sq(x*.05) % .5' },
+    { idx: 28, name: 'fuzzy peak sine',   algo: 'sin(x*.1) < 0 ? random(-.2, .2) : sin(x*.1)*.5' },
+    { idx: 29, name: 'ramp up sine',      algo: 'sin(x)*(x*.01%.5)' },
+    { idx: 30, name: 'triangle sine',     algo: 'sin(x)*(x*.01%1-.5)' },
+    { idx: 31, name: 'round linked sine', algo: 'sin(x*.1)*cos(x*1)*.5' },
+    { idx: 32, name: 'half sine',         algo: 'sin(x*.05)*(x*.1%.5)' },
+    { idx: 33, name: 'smooth solid sine', algo: 'sin(x*3.1)*.25' }
+  ];
+
+  // We need p5 in global mode for sin/cos/noise/random/sq/radians to be defined
+  // for the library. Create a headless p5 instance.
+  var p5Ready = false;
+  new p5(function(p) {
+    p.setup = function() {
+      p.noCanvas();
+      p.randomSeed(1); // deterministic seed for determinism-check baseline
+      p.noiseSeed(1);
+      p5Ready = true;
+    };
+  });
+
+  function sampleOnce(waveIdx, x) {
+    // amplitude: 1 forces normalized [-1, 1] output so thresholds below are formula-agnostic
+    return Waves.wave(x, { wave: waveIdx, t: 0, amplitude: 1 });
+  }
+
+  function meanAbsDiff(waveIdx, T, nSamples, xStart, xSpan) {
+    var sum = 0;
+    var maxDiff = 0;
+    for (var i = 0; i < nSamples; i++) {
+      var x = xStart + (i / nSamples) * xSpan;
+      var a = sampleOnce(waveIdx, x);
+      var b = sampleOnce(waveIdx, x + T);
+      var d = Math.abs(a - b);
+      sum += d;
+      if (d > maxDiff) maxDiff = d;
+    }
+    return { mean: sum / nSamples, max: maxDiff };
+  }
+
+  function waveSpan(waveIdx, xStart, xEnd, nSamples) {
+    var lo = Infinity, hi = -Infinity;
+    for (var i = 0; i < nSamples; i++) {
+      var x = xStart + (i / nSamples) * (xEnd - xStart);
+      var v = sampleOnce(waveIdx, x);
+      if (v < lo) lo = v;
+      if (v > hi) hi = v;
+    }
+    return hi - lo;
+  }
+
+  function isDeterministic(waveIdx) {
+    // Reseed to same state between calls
+    var xs = [7, 13, 29, 61, 103];
+    for (var i = 0; i < xs.length; i++) {
+      // reset internal state the same way before each call
+      var rng = (typeof window.random === 'function');
+      // We can't reliably reseed between calls if the library doesn't call randomSeed,
+      // so just call twice in a row and see if outputs match.
+      var a = sampleOnce(waveIdx, xs[i]);
+      var b = sampleOnce(waveIdx, xs[i]);
+      if (Math.abs(a - b) > 1e-9) return false;
+    }
+    return true;
+  }
+
+  function detectPeriod(waveIdx) {
+    // Returns { period, closeErr, verdict, meanErrAtT }
+    if (!isDeterministic(waveIdx)) {
+      return { period: null, closeErr: null, verdict: 'non-deterministic', meanErrAtT: null };
+    }
+
+    var STRICT = 0.002;     // mean-abs-diff below this counts as "match"
+    var LOOSE  = 0.08;      // candidates collected below this
+    var Tmin = 0.1, Tmax = 200;
+    var coarseStep = 0.02;  // fine enough for high-freq waves (e.g. 2*PI/3.1 ≈ 2.026)
+
+    // Reference span: the full excursion of the wave over a wide x range.
+    // A valid period T must allow the wave to traverse at least SPAN_FRAC of this.
+    var SPAN_FRAC = 0.6;
+    var fullSpan = waveSpan(waveIdx, 10, 410, 500);
+
+    var bestMinErr = Infinity;
+
+    // Pass 1: scan all T, collect low-error candidates
+    var raw = [];
+    for (var T = Tmin; T <= Tmax; T += coarseStep) {
+      var e = meanAbsDiff(waveIdx, T, 60, 10, 100).mean;
+      if (e < bestMinErr) bestMinErr = e;
+      if (e < LOOSE) raw.push({ T: T, err: e });
+    }
+
+    if (raw.length === 0) {
+      return { period: null, closeErr: null, verdict: 'non-periodic', meanErrAtT: bestMinErr };
+    }
+
+    // Pass 2: cluster consecutive candidates, keep the local minimum of each cluster
+    var clusters = [[raw[0]]];
+    for (var i = 1; i < raw.length; i++) {
+      var gap = raw[i].T - raw[i-1].T;
+      if (gap <= coarseStep * 2.5) clusters[clusters.length - 1].push(raw[i]);
+      else clusters.push([raw[i]]);
+    }
+
+    var clusterMins = [];
+    for (var c = 0; c < clusters.length; c++) {
+      var cl = clusters[c];
+      var mT = cl[0].T, mE = cl[0].err;
+      for (var j = 1; j < cl.length; j++) {
+        if (cl[j].err < mE) { mE = cl[j].err; mT = cl[j].T; }
+      }
+      clusterMins.push({ T: mT, err: mE });
+    }
+
+    // Pass 3: fine refine each cluster minimum, then confirm with 2T, 3T
+    var validPeriods = [];
+    for (var k = 0; k < clusterMins.length; k++) {
+      var cm = clusterMins[k];
+      var lo = Math.max(0.3, cm.T - coarseStep);
+      var hi = cm.T + coarseStep;
+      var bT = cm.T, bE = cm.err;
+      for (var Tf = lo; Tf <= hi; Tf += 0.0005) {
+        var ef = meanAbsDiff(waveIdx, Tf, 100, 10, 100).mean;
+        if (ef < bE) { bE = ef; bT = Tf; }
+      }
+      if (bE < STRICT) {
+        // Reject trivial matches on constant plateaus: require the wave to
+        // actually vary across [x, x+T].
+        var localSpan = waveSpan(waveIdx, 10, 10 + bT, Math.max(60, Math.floor(bT * 20)));
+        if (localSpan >= fullSpan * SPAN_FRAC) {
+          var e2 = meanAbsDiff(waveIdx, bT * 2, 80, 10, 100).mean;
+          var e3 = meanAbsDiff(waveIdx, bT * 3, 80, 10, 100).mean;
+          if (e2 < STRICT * 2 && e3 < STRICT * 3) {
+            validPeriods.push({ T: bT, err: bE });
+          }
+        }
+      }
+    }
+
+    if (validPeriods.length === 0) {
+      return { period: null, closeErr: null, verdict: 'quasi-periodic', meanErrAtT: bestMinErr };
+    }
+
+    // Smallest valid period = fundamental period
+    validPeriods.sort(function(a, b) { return a.T - b.T; });
+    var best = validPeriods[0];
+
+    // Harmonic-reduction: best.T may be 2×, 3×, 5× the true fundamental.
+    // Check divisors AND require that the candidate period spans the full wave range
+    // (rejects plateau-matches on step functions).
+    for (var divisor = 12; divisor >= 2; divisor--) {
+      var Tcand = best.T / divisor;
+      if (Tcand < 0.05) continue;
+      var cSpan = waveSpan(waveIdx, 10, 10 + Tcand, Math.max(60, Math.floor(Tcand * 20)));
+      if (cSpan < fullSpan * SPAN_FRAC) continue;
+      var longErr = meanAbsDiff(waveIdx, Tcand, 200, 10, 400).mean;
+      if (longErr < STRICT) {
+        var lo2 = Math.max(0.05, Tcand - 0.01);
+        var hi2 = Tcand + 0.01;
+        var bT2 = Tcand, bE2 = longErr;
+        for (var Tf2 = lo2; Tf2 <= hi2; Tf2 += 0.0002) {
+          var ef2 = meanAbsDiff(waveIdx, Tf2, 150, 10, 300).mean;
+          if (ef2 < bE2) { bE2 = ef2; bT2 = Tf2; }
+        }
+        best = { T: bT2, err: bE2 };
+      }
+    }
+
+    var a0 = sampleOnce(waveIdx, 10);
+    var aT = sampleOnce(waveIdx, 10 + best.T);
+    return { period: best.T, closeErr: Math.abs(a0 - aT), verdict: 'periodic', meanErrAtT: best.err };
+  }
+
+  // --- UI ---
+
+  var runBtn = document.getElementById('runBtn');
+  var csvBtn = document.getElementById('csvBtn');
+  var jsonBtn = document.getElementById('jsonBtn');
+  var statusEl = document.getElementById('status');
+  var table = document.getElementById('resultsTable');
+  var tbody = document.getElementById('resultsBody');
+  var allResults = [];
+
+  function waitForP5() {
+    return new Promise(function(resolve) {
+      var check = function() {
+        if (p5Ready && typeof Waves !== 'undefined') resolve();
+        else setTimeout(check, 50);
+      };
+      check();
+    });
+  }
+
+  function runAll() {
+    runBtn.disabled = true;
+    csvBtn.disabled = true;
+    jsonBtn.disabled = true;
+    tbody.innerHTML = '';
+    allResults = [];
+    table.style.display = 'table';
+
+    waitForP5().then(function() {
+      var i = 0;
+      function step() {
+        if (i >= WAVES.length) {
+          statusEl.textContent = 'Done. ' + allResults.length + ' waves measured.';
+          runBtn.disabled = false;
+          csvBtn.disabled = false;
+          jsonBtn.disabled = false;
+          return;
+        }
+        var w = WAVES[i];
+        statusEl.textContent = 'Measuring ' + (i + 1) + '/' + WAVES.length + ': ' + w.name;
+        var res = detectPeriod(w.idx);
+        var row = {
+          idx: w.idx,
+          name: w.name,
+          algo: w.algo,
+          period: res.period,
+          v0: sampleOnce(w.idx, 10),
+          vT: res.period !== null ? sampleOnce(w.idx, 10 + res.period) : null,
+          closeErr: res.closeErr,
+          verdict: res.verdict,
+          meanErr: res.meanErrAtT
+        };
+        allResults.push(row);
+        appendRow(row);
+        i++;
+        setTimeout(step, 0);
+      }
+      step();
+    });
+  }
+
+  function fmt(n, digits) {
+    if (n === null || n === undefined) return '-';
+    if (typeof n !== 'number' || !isFinite(n)) return '-';
+    return n.toFixed(digits);
+  }
+
+  function appendRow(r) {
+    var tr = document.createElement('tr');
+    var verdictClass = 'verdict-' + (r.verdict === 'non-periodic' ? 'non' : r.verdict === 'quasi-periodic' ? 'quasi' : r.verdict === 'non-deterministic' ? 'nondet' : 'periodic');
+    tr.innerHTML =
+      '<td class="num">' + r.idx + '</td>' +
+      '<td>' + r.name + '</td>' +
+      '<td><code>' + r.algo + '</code></td>' +
+      '<td class="num">' + fmt(r.period, 4) + '</td>' +
+      '<td class="num">' + fmt(r.v0, 6) + '</td>' +
+      '<td class="num">' + fmt(r.vT, 6) + '</td>' +
+      '<td class="num">' + fmt(r.closeErr, 8) + '</td>' +
+      '<td><span class="' + verdictClass + '">' + r.verdict + '</span></td>';
+    tbody.appendChild(tr);
+  }
+
+  function downloadCSV() {
+    var headers = ['idx', 'name', 'algo', 'period', 'wave_at_10', 'wave_at_10_plus_T', 'close_err', 'verdict', 'mean_err_at_T'];
+    var lines = [headers.join(',')];
+    for (var i = 0; i < allResults.length; i++) {
+      var r = allResults[i];
+      var cells = [
+        r.idx,
+        '"' + r.name + '"',
+        '"' + r.algo.replace(/"/g, '""') + '"',
+        r.period === null ? '' : r.period.toFixed(6),
+        r.v0 === null ? '' : r.v0.toFixed(8),
+        r.vT === null ? '' : r.vT.toFixed(8),
+        r.closeErr === null ? '' : r.closeErr.toFixed(10),
+        r.verdict,
+        r.meanErr === null ? '' : r.meanErr.toFixed(10)
+      ];
+      lines.push(cells.join(','));
+    }
+    var blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'p5waves_periodicity.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadJSON() {
+    var blob = new Blob([JSON.stringify(allResults, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'p5waves_periodicity.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  runBtn.addEventListener('click', runAll);
+  csvBtn.addEventListener('click', downloadCSV);
+  jsonBtn.addEventListener('click', downloadJSON);
+  </script>
+</body>
+</html>

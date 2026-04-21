@@ -185,6 +185,68 @@ circle(x, y, dotSize);</div>
     </div>
 
 
+    <!-- ═══════════════════════════════════ CLOSED SHAPES -->
+    <h2>Closing Curved Shapes</h2>
+    <p>
+      When you sample a wave around a circle, the last vertex rarely lines up with the
+      first one - <code>endShape(CLOSE)</code> then draws an ugly seam back to the start.
+      The fix is to sweep over an integer multiple of the wave's <strong>period</strong>
+      (the x-distance over which <code>wave(x)</code> repeats).
+    </p>
+    <p>
+      Every periodic wave in the library has a measured period, listed on the
+      <a href="waves.html#periodicity">Waves page</a>. For <code>'classic sine'</code>
+      it's <code>62.83</code>. Multiply by however many lobes you want around the ring.
+    </p>
+    <p>
+      <em>Why <code>62.83</code> and not <code>360</code>?</em> <code>x</code> is a
+      generic coordinate here, like in <code>noise(x)</code> - not an angle. Ten of
+      the 34 waves are not sine-based at all (<code>square</code>, <code>triangle</code>,
+      <code>ramp</code>, <code>noise</code>...), so radians would be meaningless for them.
+    </p>
+
+    <div class="code-block"><span class="kw">function</span> <span class="fn">setup</span>() {
+  createCanvas(<span class="nb">600</span>, <span class="nb">600</span>);
+  noFill();
+  stroke(<span class="nb">0</span>);
+}
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  background(<span class="nb">245</span>);
+  translate(width / <span class="nb">2</span>, height / <span class="nb">2</span>);
+
+  <span class="kw">const</span> period = <span class="nb">62.83</span>;         <span class="cm">// classic sine</span>
+  <span class="kw">const</span> lobes  = <span class="nb">8</span>;             <span class="cm">// bumps around the ring</span>
+  <span class="kw">const</span> steps  = <span class="nb">240</span>;           <span class="cm">// resolution</span>
+  <span class="kw">const</span> sweep  = lobes * period;
+
+  beginShape();
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nb">0</span>; i &lt; steps; i++) {
+    <span class="kw">const</span> a = (i / steps) * TWO_PI;
+    <span class="kw">const</span> r = <span class="nb">180</span> + Waves.wave(i / steps * sweep, {
+      wave: <span class="st">'classic sine'</span>,
+      t:    millis() / <span class="nb">1000</span>,
+      amplitude: <span class="nb">30</span>
+    });
+    vertex(r * cos(a), r * sin(a));
+  }
+  endShape(CLOSE);
+}</div>
+
+    <p>
+      Change <code>lobes</code> to 3, 5, 13 - any positive integer closes cleanly.
+      Change <code>steps</code> for finer or coarser resolution; it never affects
+      whether the shape closes.
+    </p>
+
+    <div class="callout"><p>
+      Some waves have no clean period - <code>'noise'</code>, <code>'fade out'</code>,
+      <code>'meta sine'</code>, and the rest of the <em>no-close</em> group on the
+      Waves page. For those, use two rings (inner + outer) and connect them with
+      radial lines, or fade the stroke to zero at the endpoints instead of closing.
+    </p></div>
+
+
     <!-- ═══════════════════════════════════ SHIFT -->
     <h2>Wave Shift - The Fun Part</h2>
     <p>This is the feature that makes people go "whoa". One flag, and your wave starts switching to random formulas on its own. Smooth morphs. Different sequence every time you reload.</p>
