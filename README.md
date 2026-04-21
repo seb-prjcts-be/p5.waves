@@ -114,6 +114,8 @@ Same options as `Waves.wave()`.
 
 Fill a 2D grid of wave values in one call.
 
+Each cell value is the **sum** of `waveRow` evaluated at its row and `waveCol` evaluated at its column: `cell = waveRow(row) + waveCol(col)`. Two sines give interference patterns; two pulses give a checkerboard.
+
 ```js
 let g = Waves.createGrid(20, 20, { threshold: 0, speed: 1 });
 let cells = g.sample(t);  // Uint8Array of 0/1
