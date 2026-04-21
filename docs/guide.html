@@ -40,7 +40,7 @@
     <p>Requires <strong>p5.js 2.x</strong> (tested with 2.2.2). Not compatible with p5.js 1.x.</p>
     <p>Two script tags. p5.js first, then p5.waves. Done.</p>
     <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.1.0/p5.waves.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.1.0/p5.waves.min.js"&gt;&lt;/script&gt;
 &lt;script src="sketch.js"&gt;&lt;/script&gt;</div>
     <p>No npm. No build step. Just script tags.</p>
 
@@ -333,7 +333,7 @@ Waves.wave(x, { wave: <span class="nb">3</span> })   <span class="cm">// index 3
       <tr><td><code>Waves.createSampler(opts)</code></td><td><code>createWaveSampler(opts)</code></td><td><code>p.createWaveSampler(opts)</code></td></tr>
       <tr><td><code>Waves.createGrid(c, r, opts)</code></td><td><code>createWaveGrid(c, r, opts)</code></td><td><code>p.createWaveGrid(c, r, opts)</code></td></tr>
     </table>
-    <p>Extras: <code>Waves.list()</code> returns all 34 formulas. <code>Waves.count</code> = 34. <code>Waves.data</code> = the raw formula array.</p>
+    <p>Extras: <code>Waves.list()</code> returns all 34 formulas. <code>Waves.count</code> = 34. <code>Waves.data</code> = the raw formula array. <code>Waves.benchmark(config, n)</code> runs <code>n</code> wave calls and returns <code>{ iterations, ms, callsPerMs }</code>.</p>
 
 
     <!-- ═══════════════════════════════════ COPY-PASTE -->
