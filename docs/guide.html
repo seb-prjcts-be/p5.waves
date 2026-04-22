@@ -37,7 +37,7 @@
 
     <!-- ═══════════════════════════════════ INSTALL -->
     <h2>Install</h2>
-    <p>Requires <strong>p5.js 2.x</strong> (tested with 2.2.2). Not compatible with p5.js 1.x.</p>
+    <p>Optimized for <strong>p5.js 2.x</strong> (tested with 2.2.2). Also works with p5.js 1.x.</p>
     <p>Two script tags. p5.js first, then p5.waves. Done.</p>
     <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
 &lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.1.0/p5.waves.min.js"&gt;&lt;/script&gt;
@@ -130,6 +130,7 @@ circle(x, y, dotSize);</div>
       <tr><td><code>frequency</code></td><td>Squeeze the wave tighter (high) or stretch it out (low).</td><td><code>1</code></td></tr>
       <tr><td><code>seed</code></td><td>Give each object its own wave. Same seed always picks the same wave.</td><td><code>0</code></td></tr>
       <tr><td><code>shift</code></td><td><code>true</code> = auto-switch to a new random wave every few seconds. Smooth transitions. Different every page load.</td><td><code>false</code></td></tr>
+      <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (28). <code>'harsh'</code> = tan/noise/random (6). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
     </table>
 
     <h3>Go deeper</h3>
@@ -280,6 +281,15 @@ circle(x, y, dotSize);</div>
     <p>Reload the page. Different waves. Every time. Your sketch is never the same twice.</p>
 
     <div class="callout"><p>Shift also works directly on <code>Waves.wave()</code>  - just add <code>shift: true</code> to the options. But the sampler version is better: it caches everything and gives you the <code>.waveName</code> / <code>.shifting</code> / <code>.mix</code> getters for free.</p></div>
+
+    <h3>Pick a pool with <code>group</code></h3>
+    <p>Shift can land on any of the 34 formulas - including tan spikes and noise. If you want to stay in calm territory (or the opposite), narrow the pool.</p>
+
+    <div class="code-block">Waves.createSampler({ shift: <span class="nb">true</span>, group: <span class="st">'gentle'</span> });  <span class="cm">// sines &amp; curves only (28 waves)</span>
+Waves.createSampler({ shift: <span class="nb">true</span>, group: <span class="st">'harsh'</span> });   <span class="cm">// tan/noise/random only (6 waves)</span>
+Waves.createSampler({ shift: <span class="nb">true</span>, group: [<span class="st">'sine'</span>, <span class="st">'triangle'</span>, <span class="st">'batman'</span>] });  <span class="cm">// your own list</span></div>
+
+    <div class="callout"><p><strong><code>mode</code> vs <code>group</code> - don't confuse them.</strong> <code>mode: 'wild'</code> warps <em>one</em> wave (frequency + phase + amplitude noise). <code>group: 'harsh'</code> picks a <em>different kind of wave</em> - one with spikes baked in. They're orthogonal: <code>{ mode: 'wild', group: 'gentle' }</code> = breathing sines, no spikes.</p></div>
 
 
     <!-- ═══════════════════════════════════ MORPH -->

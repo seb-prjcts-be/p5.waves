@@ -4,13 +4,13 @@
 
 34 wave shapes for p5.js. One function call, one number back.
 
-**Requires p5.js 2.x** (tested with 2.2.2). Not compatible with p5.js 1.x.
+**Optimized for p5.js 2.x** (tested with 2.2.2). Also works with p5.js 1.x.
 
 ## Install
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.1.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.2.0/p5.waves.min.js"></script>
 ```
 
 ## Quick start
@@ -59,6 +59,7 @@ Always returns a single number.
 | `frequency` | How tight the cycles are. Higher = squished. | `1` |
 | `seed` | Pick a wave by number. Same seed = same wave. | `0` |
 | `shift` | `true` = auto-switch to random waves with smooth blend. | `false` |
+| `group` | Which pool `shift` / `seed` can pick from: `'gentle'`, `'harsh'`, `'all'`, or `['sine', 'triangle']`. | `'all'` |
 
 ### Advanced
 
@@ -92,6 +93,18 @@ sampler.shifting;      // true during morph
 sampler.targetName;    // next wave
 sampler.mix;           // morph progress 0-1
 ```
+
+### Pick a pool with `group`
+
+By default `shift` can land on any of the 34 formulas, including tan/noise spikes. Narrow the pool:
+
+```js
+Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (28 waves)
+Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random only (6 waves)
+Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
+```
+
+> **`mode` vs `group` — don't confuse them.** `mode: 'wild'` warps *one* wave (frequency + phase + amplitude noise). `group: 'harsh'` picks a *different kind of wave* (the ones with spikes baked in). They're orthogonal: `{ mode: 'wild', group: 'gentle' }` = breathing sines, no spikes.
 
 ---
 
@@ -127,6 +140,7 @@ let cells = g.sample(t);  // Uint8Array of 0/1
 | `waveRow` | Wave for rows. | random |
 | `waveCol` | Wave for columns. | random |
 | `seed` | Auto-picks two different waves. | `0` |
+| `group` | Pool for seed-picked waves: `'gentle'`, `'harsh'`, `'all'`, or an array. | `'all'` |
 | `range` | `[min, max]` -> Float32Array. | `null` |
 | `threshold` | Binary mode -> Uint8Array. Overrides range. | `null` |
 | `speed` | Time scale. | `1` |

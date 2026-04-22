@@ -4,13 +4,13 @@
 
 34 golfvormen voor p5.js. Eén functie-aanroep, één getal terug.
 
-**Vereist p5.js 2.x** (getest met 2.2.2). Niet compatibel met p5.js 1.x.
+**Geoptimaliseerd voor p5.js 2.x** (getest met 2.2.2). Werkt ook met p5.js 1.x.
 
 ## Installeren
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.1.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.2.0/p5.waves.min.js"></script>
 ```
 
 ## Snel starten
@@ -59,6 +59,7 @@ Geeft altijd één getal terug.
 | `frequency` | Hoe dicht de cycli op elkaar zitten. Hoger = samengedrukt. | `1` |
 | `seed` | Kies een golf via een getal. Zelfde seed = zelfde golf. | `0` |
 | `shift` | `true` = wissel automatisch naar willekeurige golven met vloeiende overgang. | `false` |
+| `group` | Welke pool `shift` / `seed` mag kiezen: `'gentle'`, `'harsh'`, `'all'`, of `['sine', 'triangle']`. | `'all'` |
 
 ### Geavanceerd
 
@@ -92,6 +93,18 @@ sampler.shifting;      // true tijdens overgang
 sampler.targetName;    // volgende golf
 sampler.mix;           // voortgang 0-1
 ```
+
+### Kies een pool met `group`
+
+Standaard kan `shift` op alle 34 formules landen, inclusief tan/noise-spikes. Beperk de pool:
+
+```js
+Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (28 golven)
+Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random (6 golven)
+Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
+```
+
+> **`mode` vs `group` — verwar ze niet.** `mode: 'wild'` vervormt *één* golf (frequency + phase + amplitude noise). `group: 'harsh'` kiest een *ander soort golf* (de formules met ingebakken spikes). Ze zijn orthogonaal: `{ mode: 'wild', group: 'gentle' }` = ademende sinussen, geen spikes.
 
 ---
 
@@ -127,6 +140,7 @@ let cells = g.sample(t);  // Uint8Array van 0/1
 | `waveRow` | Golf voor rijen. | willekeurig |
 | `waveCol` | Golf voor kolommen. | willekeurig |
 | `seed` | Kiest automatisch twee verschillende golven. | `0` |
+| `group` | Pool voor seed-gekozen golven: `'gentle'`, `'harsh'`, `'all'`, of een array. | `'all'` |
 | `range` | `[min, max]` -> Float32Array. | `null` |
 | `threshold` | Binaire modus -> Uint8Array. Overschrijft range. | `null` |
 | `speed` | Tijdschaalfactor. | `1` |

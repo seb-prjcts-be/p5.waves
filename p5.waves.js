@@ -1,7 +1,7 @@
 ﻿/*!
  * p5.waves
  * Wave sampling for p5.js. Always returns a number.
- * Version 3.1.0
+ * Version 3.2.0
  * Author: seb@prjcts
  * License: MIT
  */
@@ -46,6 +46,32 @@
     { name: 'half sine',         algo: 'sin(x*.05)*(x*.1%.5)' },
     { name: 'smooth solid sine', algo: 'sin(x*3.1)*.25' },
   ];
+
+  // ─── Character classification ────────────────────────────────────────────────
+  // Parallel to WAVES. 'harsh' = tan/random/noise-driven (breaks rhythm).
+  // 'gentle' = everything else, including sharp-but-periodic (square, pulse).
+  // See strategy.md §0 — group: 'harsh' picks BEFORE wave selection;
+  // mode: 'wild' warps WITHIN one wave. They are orthogonal.
+  const CHARACTER = [
+    'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle',
+    'gentle', 'gentle', 'gentle',
+    'harsh',                                     // 11 steps down (tan)
+    'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle',
+    'gentle', 'gentle', 'gentle',
+    'harsh',                                     // 23 grow random (random)
+    'harsh',                                     // 24 noise (noise)
+    'harsh',                                     // 25 fuzzy pulse (tan hi freq)
+    'harsh',                                     // 26 up down pulse (tan)
+    'gentle',
+    'harsh',                                     // 28 fuzzy peak sine (random)
+    'gentle', 'gentle', 'gentle', 'gentle', 'gentle'
+  ];
+
+  const GENTLE_INDICES = [];
+  const HARSH_INDICES  = [];
+  for (let i = 0; i < CHARACTER.length; i++) {
+    (CHARACTER[i] === 'harsh' ? HARSH_INDICES : GENTLE_INDICES).push(i);
+  }
 
   // ─── Caches ──────────────────────────────────────────────────────────────────
 
@@ -125,6 +151,48 @@
   function pickWaveIndex(seedValue) {
     const rng = mulberry32(seedFrom(seedValue));
     return Math.floor(rng() * WAVES.length);
+  }
+
+  // ─── Group (pool filter) ─────────────────────────────────────────────────────
+  // `group` narrows the pool BEFORE wave selection (orthogonal to `mode`).
+  // Accepts: 'all' / null (full pool), 'gentle', 'harsh', or an array of
+  // names/indices. Unresolvable entries are silently dropped; empty result
+  // falls back to the full pool. See strategy.md §0.
+
+  function resolveGroup(opt) {
+    if (opt == null) return null;
+    if (Array.isArray(opt)) {
+      const pool = [];
+      for (let i = 0; i < opt.length; i++) {
+        const r = resolveWave(opt[i]);
+        if (r >= 0) pool.push(r);
+      }
+      return pool.length > 0 ? pool : null;
+    }
+    if (typeof opt === 'string') {
+      const k = normalizeName(opt);
+      if (k === '' || k === 'all') return null;
+      if (k === 'gentle') return GENTLE_INDICES;
+      if (k === 'harsh')  return HARSH_INDICES;
+      return null;
+    }
+    return null;
+  }
+
+  function pickWaveIndexIn(seedValue, pool) {
+    if (!pool || pool.length === 0) return pickWaveIndex(seedValue);
+    const rng = mulberry32(seedFrom(seedValue));
+    return pool[Math.floor(rng() * pool.length)];
+  }
+
+  // Returns an index different from curIdx, staying within the pool when given.
+  // Pool of length 1 is an unavoidable repeat.
+  function nextDifferentInPool(curIdx, pool) {
+    if (!pool || pool.length === 0) return (curIdx + 1) % WAVES.length;
+    if (pool.length === 1) return pool[0];
+    const i = pool.indexOf(curIdx);
+    if (i < 0) return pool[0];
+    return pool[(i + 1) % pool.length];
   }
 
   function findWaveByName(name) {
@@ -325,6 +393,7 @@
     const shift         = !!secondParam.shift;
     const shiftInterval = toNumber(secondParam.shiftInterval, 3);
     const shiftDuration = toNumber(secondParam.shiftDuration, 1);
+    const groupPool     = resolveGroup(secondParam.group);
 
     const internalSeed = seedFrom(seed);
 
@@ -338,13 +407,13 @@
       const waveShiftEntropy = _waveShiftEntropy;
 
       const userIdx = waveRef !== undefined ? resolveWave(waveRef) : -1;
-      const idxA = (era === 0 && userIdx >= 0) ? userIdx : pickWaveIndex(seed + '.' + waveShiftEntropy + '.' + era);
+      const idxA = (era === 0 && userIdx >= 0) ? userIdx : pickWaveIndexIn(seed + '.' + waveShiftEntropy + '.' + era, groupPool);
       const fnA  = compile(WAVES[idxA].algo);
       const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
 
       if (progress >= shiftInterval) {
-        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndex(seed + '.' + waveShiftEntropy + '.1') : pickWaveIndex(seed + '.' + waveShiftEntropy + '.' + (era + 1));
-        if (idxB === idxA) idxB = (idxB + 1) % WAVES.length;
+        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndexIn(seed + '.' + waveShiftEntropy + '.1', groupPool) : pickWaveIndexIn(seed + '.' + waveShiftEntropy + '.' + (era + 1), groupPool);
+        if (idxB === idxA) idxB = nextDifferentInPool(idxA, groupPool);
         const fnB  = compile(WAVES[idxB].algo);
         const valB = evalKernel(fnB, y, t, frequency, phase, internalSeed, mode, unpredictability);
         let m = clamp((progress - shiftInterval) / shiftDuration, 0, 1);
@@ -368,8 +437,8 @@
       const mix  = toUnit(secondParam.mix, 0.5);
       const rA   = resolveWave(waveRef[0]);
       const rB   = waveRef.length > 1 ? resolveWave(waveRef[1]) : rA;
-      const idxA = rA >= 0 ? rA : pickWaveIndex(seed);
-      const idxB = rB >= 0 ? rB : pickWaveIndex(seed);
+      const idxA = rA >= 0 ? rA : pickWaveIndexIn(seed, groupPool);
+      const idxB = rB >= 0 ? rB : pickWaveIndexIn(seed, groupPool);
       const fnA  = compile(WAVES[idxA].algo);
       const fnB  = compile(WAVES[idxB].algo);
       const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
@@ -387,9 +456,9 @@
     let waveIndex;
     if (waveRef !== undefined) {
       const r = resolveWave(waveRef);
-      waveIndex = r >= 0 ? r : pickWaveIndex(seed);
+      waveIndex = r >= 0 ? r : pickWaveIndexIn(seed, groupPool);
     } else {
-      waveIndex = pickWaveIndex(seed);
+      waveIndex = pickWaveIndexIn(seed, groupPool);
     }
 
     const fn    = compile(WAVES[waveIndex].algo);
@@ -420,22 +489,23 @@
     const internalSeed = seedFrom(seed);
     const isMorph      = Array.isArray(opts.wave) && opts.wave.length >= 2;
     const mixDefault   = isMorph ? toUnit(opts.mix, 0.5) : 0;
+    const groupPool    = resolveGroup(opts.group);
 
     let waveIndexA;
     if (isMorph) {
       const rA = resolveWave(opts.wave[0]);
-      waveIndexA = rA >= 0 ? rA : pickWaveIndex(seed);
+      waveIndexA = rA >= 0 ? rA : pickWaveIndexIn(seed, groupPool);
     } else if (opts.wave !== undefined) {
       const r = resolveWave(opts.wave);
-      waveIndexA = r >= 0 ? r : pickWaveIndex(seed);
+      waveIndexA = r >= 0 ? r : pickWaveIndexIn(seed, groupPool);
     } else {
-      waveIndexA = pickWaveIndex(seed);
+      waveIndexA = pickWaveIndexIn(seed, groupPool);
     }
 
     let waveIndexB = -1;
     if (isMorph) {
       const rB = resolveWave(opts.wave[1]);
-      waveIndexB = rB >= 0 ? rB : pickWaveIndex(seed);
+      waveIndexB = rB >= 0 ? rB : pickWaveIndexIn(seed, groupPool);
     }
 
     const fn     = compile(WAVES[waveIndexA].algo);
@@ -460,7 +530,7 @@
 
       function pickForEra(era) {
         if (era === 0 && hasUserWave) return waveIndexA;
-        return pickWaveIndex(seed + '.' + shiftEntropy + '.' + era);
+        return pickWaveIndexIn(seed + '.' + shiftEntropy + '.' + era, groupPool);
       }
 
       function ensureEra(era) {
@@ -468,7 +538,7 @@
         cachedEra = era;
         curIdx  = pickForEra(era);
         nxtIdx  = pickForEra(era + 1);
-        if (nxtIdx === curIdx) nxtIdx = (nxtIdx + 1) % WAVES.length;
+        if (nxtIdx === curIdx) nxtIdx = nextDifferentInPool(curIdx, groupPool);
         curFn   = compile(WAVES[curIdx].algo);
         nxtFn   = compile(WAVES[nxtIdx].algo);
         curName = WAVES[curIdx].name;
@@ -554,13 +624,18 @@
     const speed     = toNumber(opts.speed, 1);
     const cellCount = c * r;
     const TWO_PI    = Math.PI * 2;
+    const groupPool = resolveGroup(opts.group);
 
-    // Pick two different waves from seed
+    // Pick two different waves from seed (optionally constrained to group)
     const seedHash = seedFrom(seed);
     const rng      = mulberry32(seedHash);
-    const def0     = Math.floor(rng() * WAVES.length);
-    let   def1     = Math.floor(rng() * WAVES.length);
-    if (def1 === def0) def1 = (def1 + 1) % WAVES.length;
+    const def0     = groupPool
+      ? groupPool[Math.floor(rng() * groupPool.length)]
+      : Math.floor(rng() * WAVES.length);
+    let   def1     = groupPool
+      ? groupPool[Math.floor(rng() * groupPool.length)]
+      : Math.floor(rng() * WAVES.length);
+    if (def1 === def0) def1 = nextDifferentInPool(def0, groupPool);
 
     function resolveGridWave(ref, fallback) {
       if (ref === undefined || ref === null) return fallback;
@@ -640,7 +715,7 @@
 
   function list() {
     return WAVES.map(function (w, i) {
-      return { index: i, name: w.name, algo: w.algo };
+      return { index: i, name: w.name, algo: w.algo, character: CHARACTER[i] };
     });
   }
 
