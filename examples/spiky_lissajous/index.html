@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spiky Lissajous | p5.waves examples</title>
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/curation-engine/index.html">Curation Engine</a></li>
+      <li><a href="../../docs/waves.html">Waves</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">closability &middot; integer ratio</div>
+      <h1>Spiky Lissajous</h1>
+      <p>Classic Lissajous is <code>x = sin(A&middot;&theta;)</code>, <code>y = sin(B&middot;&theta;)</code>. Swap <code>sin</code> for a spiky or sawtooth-ish p5.waves formula and the curve still closes - as long as &theta; sweeps one full period of that wave and <code>A</code>, <code>B</code> are integers. A pen traces the path over one cycle; watch it land back on the white start dot. Click to cycle the spiky wave.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code>// Periods measured via docs/periodicity.html
+const SPIKY = [
+  { name: 'sharp peaks',   period: Math.PI * 10 },
+  { name: 'batman',        period: Math.PI * 20 },
+  { name: 'zig-zag sine',  period: Math.PI * 10 },
+  { name: 'up down pulse', period: Math.PI * 10 }
+];
+const RATIO_A = 3;
+const RATIO_B = 5;
+
+// Freeze phase for one cycle - one sweep draws a true closed loop.
+const cycleId  = floor(millis() / CYCLE_MS);
+const frozenMs = cycleId * CYCLE_MS;
+const phaseX   = frozenMs * 0.00015;
+const phaseY   = frozenMs * 0.00021;
+const prog     = (millis() % CYCLE_MS) / CYCLE_MS;
+const drawnTo  = floor(prog * SEGMENTS);
+
+// Sample every vertex of the chosen wave, once per frame.
+const xs = new Array(SEGMENTS + 1);
+const ys = new Array(SEGMENTS + 1);
+for (let i = 0; i &lt;= SEGMENTS; i++) {
+  const theta = (i / SEGMENTS) * choice.period;
+  xs[i] = radius * Waves.wave(RATIO_A * theta + phaseX * choice.period, {
+    wave: choice.name, amplitude: 1
+  });
+  ys[i] = radius * Waves.wave(RATIO_B * theta + phaseY * choice.period + choice.period * 0.25, {
+    wave: choice.name, amplitude: 1
+  });
+}
+
+// Bright pen trail up to the current progress.
+stroke(choice.color);
+beginShape();
+for (let i = 0; i &lt;= drawnTo; i++) vertex(xs[i], ys[i]);
+endShape();
+
+// Home dot + pen cursor: when drawnTo hits SEGMENTS they land on the same pixel.
+fill(255); circle(xs[0], ys[0], 12);
+fill(18);  circle(xs[0], ys[0], 6);
+fill(255); circle(xs[drawnTo], ys[drawnTo], 8);</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">&larr; All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v3.2.5 &nbsp;&middot;&nbsp; p5.js v2.2.2</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>

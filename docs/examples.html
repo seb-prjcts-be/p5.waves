@@ -27,7 +27,7 @@
 
   <!-- HEADER -->
   <div class="ex-page-header">
-    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v3.2.0</div>
+    <div class="section-tag" style="margin-bottom:0.6rem">p5.js addon library · v3.2.5</div>
     <h1>p5.<span class="accent">waves</span> Examples</h1>
     <p>Each thumbnail is a live sketch. Click <strong>-> full example</strong> for the code and full-size canvas.</p>
     <a class="ex-lab-card" href="../examples/wave_lab/" target="_blank">
@@ -273,6 +273,43 @@ const wv = Waves.wave(x, {
     </div>
   </section>
 
+  <!-- SPIKY LISSAJOUS -->
+  <section id="spiky" class="section">
+    <div class="section-header">
+      <div class="section-tag">closability &middot; integer ratio</div>
+      <h2>Spiky <span class="accent">Lissajous</span></h2>
+      <p class="section-desc">Classic Lissajous with <code>sin</code> swapped for a spiky wave. It still closes cleanly because &theta; sweeps one full period and the ratio is integer.</p>
+    </div>
+    <div class="ex-preview">
+      <div id="ex-spiky" class="ex-canvas"></div>
+      <pre class="ex-code-block">// Swap sin() for a spiky wave - curve still closes.
+// A pen sweeps one cycle, then lands back on the start dot.
+const A = 3, B = 5;
+const prog = (millis() % CYCLE_MS) / CYCLE_MS;
+const drawnTo = floor(prog * N);
+
+for (let i = 0; i &lt;= N; i++) {
+  const theta = (i / N) * wave.period;
+  xs[i] = r * Waves.wave(A * theta, { wave: wave.name, amplitude: 1 });
+  ys[i] = r * Waves.wave(B * theta + wave.period * 0.25, {
+    wave: wave.name, amplitude: 1
+  });
+}
+
+beginShape();
+for (let i = 0; i &lt;= drawnTo; i++) vertex(xs[i], ys[i]);
+endShape();
+
+// Home dot + pen tip. When drawnTo === N, they overlap exactly.
+fill(255); circle(xs[0], ys[0], 10);
+fill(18);  circle(xs[0], ys[0], 5);
+fill(255); circle(xs[drawnTo], ys[drawnTo], 6);</pre>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/spiky_lissajous/" target="_blank">-> full example</a>
+      </div>
+    </div>
+  </section>
+
   <!-- GRID -->
   <section id="grid" class="section">
     <div class="section-header">
@@ -334,7 +371,7 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
 
   <footer>
     <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
-    <p class="footer-sub">MIT License · v3.2.0</p>
+    <p class="footer-sub">MIT License · v3.2.5</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
@@ -638,6 +675,66 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
     };
     p.windowResized = function() { const w = cw('ex12'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex12');
+
+  // ── Spiky Lissajous ───────────────────────────────────────
+  new p5(function(p) {
+    const SPIKY = [
+      { name: 'sharp peaks',   period: Math.PI * 10, color: [70, 220, 130] },
+      { name: 'batman',        period: Math.PI * 20, color: [255, 70, 70] },
+      { name: 'zig-zag sine',  period: Math.PI * 10, color: [60, 160, 255] },
+      { name: 'up down pulse', period: Math.PI * 10, color: [250, 220, 40] }
+    ];
+    const A = 3, B = 5, N = 900, CYCLE_MS = 4500;
+    let idx = 0;
+    p.setup = function() {
+      const w = cw('ex-spiky');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex-spiky');
+      p.strokeJoin(p.ROUND);
+      p.noFill();
+    };
+    p.draw = function() {
+      p.background(12);
+      p.translate(p.width / 2, p.height / 2);
+      const choice = SPIKY[idx];
+      const period = choice.period;
+      const radius = p.min(p.width, p.height) * 0.38;
+      const cycleId = p.floor(p.millis() / CYCLE_MS);
+      const frozenMs = cycleId * CYCLE_MS;
+      const phaseX = frozenMs * 0.00015;
+      const phaseY = frozenMs * 0.00021;
+      const prog = (p.millis() % CYCLE_MS) / CYCLE_MS;
+      const drawnTo = p.floor(prog * N);
+      const xs = new Array(N + 1);
+      const ys = new Array(N + 1);
+      for (let i = 0; i <= N; i++) {
+        const theta = (i / N) * period;
+        xs[i] = radius * Waves.wave(A * theta + phaseX * period, { wave: choice.name, amplitude: 1 });
+        ys[i] = radius * Waves.wave(B * theta + phaseY * period + period * 0.25, { wave: choice.name, amplitude: 1 });
+      }
+      p.noFill();
+      p.stroke(choice.color[0] * 0.22, choice.color[1] * 0.22, choice.color[2] * 0.22);
+      p.strokeWeight(1);
+      p.beginShape();
+      for (let i = 0; i <= N; i++) p.vertex(xs[i], ys[i]);
+      p.endShape(p.CLOSE);
+      p.stroke(choice.color[0], choice.color[1], choice.color[2]);
+      p.strokeWeight(1.2);
+      p.beginShape();
+      for (let i = 0; i <= drawnTo; i++) p.vertex(xs[i], ys[i]);
+      p.endShape();
+      const homeR = 9 + p.sin(prog * p.TWO_PI) * 1.2;
+      p.noStroke();
+      p.fill(255); p.circle(xs[0], ys[0], homeR);
+      p.fill(18);  p.circle(xs[0], ys[0], homeR - 4);
+      p.fill(255); p.circle(xs[drawnTo], ys[drawnTo], 6);
+    };
+    p.mousePressed = function() {
+      if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+        idx = (idx + 1) % SPIKY.length;
+      }
+    };
+    p.windowResized = function() { const w = cw('ex-spiky'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+  }, 'ex-spiky');
 
   // ── Wave Grid ─────────────────────────────────────────────
   new p5(function(p) {
