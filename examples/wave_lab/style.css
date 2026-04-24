@@ -59,6 +59,37 @@ body {
   text-align: center;
 }
 
+/* ─── Tabs: Line vs Grid ─────────────────────────── */
+
+.lab-tabs {
+  display: flex;
+  border: 1px solid var(--black);
+}
+
+.lab-tabs .tab-btn {
+  width: 50%;
+  background: var(--white);
+  color: var(--black);
+  border: none;
+  border-right: 1px solid var(--black);
+  padding: 10px;
+}
+
+.lab-tabs .tab-btn:last-child {
+  border-right: none;
+}
+
+.lab-tabs .tab-btn.active,
+.lab-tabs .tab-btn.active:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+.control-panel[data-mode="line"] .grid-only,
+.control-panel[data-mode="grid"] .line-only {
+  display: none !important;
+}
+
 /* ─── Control groups (section + details) ─────────────────────────── */
 
 .control-group {

@@ -20,10 +20,28 @@ const ids = [
   'shift-enable', 'shift-interval', 'shift-duration',
   'mode', 'unpredictability',
   'range-enable', 'range-preset',
-  'preview-mode', 'wave-row', 'wave-col', 'threshold',
+  'wave-row', 'wave-col', 'threshold',
   'time-speed', 'frame-rate', 'step', 'show-points', 'connect-line', 'show-grid',
   'surprise', 'copy-code', 'run-code', 'reset-code'
 ];
+
+function getMode() {
+  const panel = document.querySelector('.control-panel');
+  return panel && panel.dataset.mode === 'grid' ? 'grid' : 'line';
+}
+
+function setMode(mode) {
+  const panel = document.querySelector('.control-panel');
+  if (!panel) return;
+  panel.dataset.mode = mode;
+  const tabs = document.querySelectorAll('.lab-tabs .tab-btn');
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].classList.toggle('active', tabs[i].dataset.tab === mode);
+  }
+  userEditedCode = false;
+  codeOutputEl.classList.remove('user-edited');
+  updateUiState();
+}
 
 const valueIds = [
   'seed-value',
@@ -137,6 +155,13 @@ function bindControls() {
   controls['run-code'].addEventListener('click', runUserCode);
   controls['reset-code'].addEventListener('click', resetCode);
 
+  const tabs = document.querySelectorAll('.lab-tabs .tab-btn');
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function () {
+      setMode(this.dataset.tab);
+    });
+  }
+
   // Track manual edits in the code textarea
   codeOutputEl.addEventListener('input', function () {
     userEditedCode = true;
@@ -173,7 +198,7 @@ function readState() {
   const waveColVal = controls['wave-col'].value;
 
   return {
-    previewMode:     controls['preview-mode'].value,
+    previewMode:     getMode(),
     waveIndex:       waveIndex,
     seed:            seed,
     amplitude:       amplitude,
@@ -263,22 +288,10 @@ function updateUiState() {
   const rangeOn = controls['range-enable'].checked;
   setControlDisabled('range-preset', !rangeOn);
 
-  // Grid sub-controls
-  const isGrid = controls['preview-mode'].value === 'grid';
-  const gridCtrl = document.getElementById('grid-controls');
-  gridCtrl.style.display = isGrid ? '' : 'none';
-
-  // Shift forces line mode
-  if (shiftOn) {
-    controls['preview-mode'].value = 'line';
-    gridCtrl.style.display = 'none';
-    setControlDisabled('preview-mode', true);
-  } else {
-    setControlDisabled('preview-mode', false);
-    if (!shiftOn) {
-      shiftSampler = null;
-      shiftSamplerKey = '';
-    }
+  // Shift lives under the Line tab — no cross-tab coupling needed
+  if (!shiftOn) {
+    shiftSampler = null;
+    shiftSamplerKey = '';
   }
 
   updateValueDisplays();
@@ -682,13 +695,7 @@ function randomizeControls() {
   controls['shift-interval'].value = fmt(1 + Math.random() * 8, 1);
   controls['shift-duration'].value = fmt(0.3 + Math.random() * 3, 1);
 
-  // Grid: only when not shifting
-  if (!doShift) {
-    controls['preview-mode'].value = Math.random() > 0.7 ? 'grid' : 'line';
-  } else {
-    controls['preview-mode'].value = 'line';
-  }
-
+  // Grid controls - randomise whether or not we're in grid tab
   controls['wave-row'].value = Math.random() > 0.3
     ? String(Math.floor(Math.random() * n)) : '';
   controls['wave-col'].value = Math.random() > 0.3

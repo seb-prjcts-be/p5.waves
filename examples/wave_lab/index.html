@@ -28,14 +28,20 @@
     </nav>
 
     <div class="page-shell">
-      <aside class="control-panel">
+      <aside class="control-panel" data-mode="line">
         <h1>Wave Lab</h1>
         <p class="subtitle">p5.waves v2 playground</p>
 
-        <!-- 1. WAVE KEUZE - altijd zichtbaar -->
+        <!-- TABS: Line vs Grid mental model -->
+        <div class="lab-tabs">
+          <button type="button" class="tab-btn active" data-tab="line">Line</button>
+          <button type="button" class="tab-btn" data-tab="grid">Grid</button>
+        </div>
+
+        <!-- WAVE - select is line-only, seed is shared -->
         <section class="control-group">
           <h2>Wave</h2>
-          <label>
+          <label class="line-only">
             Wave
             <select id="wave"></select>
           </label>
@@ -46,8 +52,8 @@
           </label>
         </section>
 
-        <!-- 2. SHAPE - altijd zichtbaar -->
-        <section class="control-group">
+        <!-- SHAPE - line only -->
+        <section class="control-group line-only">
           <h2>Shape</h2>
           <label>
             Amplitude
@@ -66,8 +72,8 @@
           </label>
         </section>
 
-        <!-- 3. SHIFT - uitklapbaar -->
-        <details class="control-group">
+        <!-- SHIFT - line only -->
+        <details class="control-group line-only">
           <summary><h2>Shift</h2></summary>
           <label class="inline">
             <input id="shift-enable" type="checkbox" />
@@ -85,8 +91,8 @@
           </label>
         </details>
 
-        <!-- 4. WILD MODE - uitklapbaar -->
-        <details class="control-group">
+        <!-- WILD MODE - line only -->
+        <details class="control-group line-only">
           <summary><h2>Wild Mode</h2></summary>
           <label>
             Mode
@@ -102,8 +108,8 @@
           </label>
         </details>
 
-        <!-- 5. RANGE - uitklapbaar -->
-        <details class="control-group">
+        <!-- RANGE - line only -->
+        <details class="control-group line-only">
           <summary><h2>Range</h2></summary>
           <label class="inline">
             <input id="range-enable" type="checkbox" />
@@ -123,34 +129,25 @@
           <span id="range-value" class="value"></span>
         </details>
 
-        <!-- 6. GRID - uitklapbaar -->
-        <details class="control-group" id="grid-details">
+        <!-- GRID - grid only, open by default -->
+        <details class="control-group grid-only" id="grid-details" open>
           <summary><h2>Grid</h2></summary>
           <label>
-            Preview Mode
-            <select id="preview-mode">
-              <option value="line" selected>Line Field</option>
-              <option value="grid">Grid 14x14</option>
-            </select>
+            Wave Row
+            <select id="wave-row"></select>
           </label>
-          <div id="grid-controls">
-            <label>
-              Wave Row
-              <select id="wave-row"></select>
-            </label>
-            <label>
-              Wave Col
-              <select id="wave-col"></select>
-            </label>
-            <label>
-              Threshold
-              <input id="threshold" type="range" min="-4" max="4" step="0.01" value="0" />
-              <span id="threshold-value" class="value"></span>
-            </label>
-          </div>
+          <label>
+            Wave Col
+            <select id="wave-col"></select>
+          </label>
+          <label>
+            Threshold
+            <input id="threshold" type="range" min="-4" max="4" step="0.01" value="0" />
+            <span id="threshold-value" class="value"></span>
+          </label>
         </details>
 
-        <!-- 7. RENDER - uitklapbaar -->
+        <!-- RENDER - some items shared, some line-only -->
         <details class="control-group">
           <summary><h2>Render</h2></summary>
           <label>
@@ -168,26 +165,26 @@
               <option value="2">frame-by-frame</option>
             </select>
           </label>
-          <label>
+          <label class="line-only">
             Point Step
             <input id="step" type="range" min="2" max="24" step="1" value="7" />
             <span id="step-value" class="value"></span>
           </label>
-          <label class="inline">
+          <label class="inline line-only">
             <input id="show-points" type="checkbox" checked />
             Show points
           </label>
-          <label class="inline">
+          <label class="inline line-only">
             <input id="connect-line" type="checkbox" checked />
             Connect with vertex line
           </label>
-          <label class="inline">
+          <label class="inline line-only">
             <input id="show-grid" type="checkbox" checked />
             Show grid
           </label>
         </details>
 
-        <!-- 8. SURPRISE ME -->
+        <!-- SURPRISE ME -->
         <button id="surprise" type="button">Surprise Me</button>
       </aside>
 
