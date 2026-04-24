@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curation Engine Guide - p5.waves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="nav-logo">p5.<span>waves</span></div>
+    <button class="nav-hamburger" aria-label="Toggle menu" onclick="this.closest('nav').classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Showcase</a></li>
+      <li><a href="../examples.html">Examples</a></li>
+      <li><a href="../guide.html">Guide</a></li>
+      <li><a href="index.html" class="active">Curation Engine</a></li>
+      <li><a href="../waves.html">Waves</a></li>
+      <li><a href="../about.html">About</a></li>
+      <li><a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <div class="ex-page-header">
+    <div class="section-tag" style="margin-bottom:0.6rem">Deep guide · v3.2.5</div>
+    <h1>Curation Engine <span class="accent">Guide</span></h1>
+    <p>Each reusable element is broken into start, build, and end product. Every section includes a live animated preview and a full copyable block that you can paste into a p5 sketch with <code>p5.waves</code> loaded.</p>
+    <div class="guide-quicklinks">
+      <a class="guide-chip" href="#overview">Overview</a>
+      <a class="guide-chip" href="#pool-curation">Pools</a>
+      <a class="guide-chip" href="#sampler-roles">Samplers</a>
+      <a class="guide-chip" href="#wave-ribbons">Ribbons</a>
+      <a class="guide-chip" href="#grid-module">Grid</a>
+      <a class="guide-chip" href="#kinetic-title">Title</a>
+      <a class="guide-chip" href="#status-strip">Status</a>
+      <a class="guide-chip" href="#ambient-cloud">Ambient Text</a>
+      <a class="guide-chip" href="#closability">Closability</a>
+      <a class="guide-chip" href="#full-poster">Poster</a>
+    </div>
+  </div>
+
+  <section id="overview" class="section">
+    <div class="section-header">
+      <div class="section-tag">system / assembly</div>
+      <h2>From One Wave To A <span class="accent">Poster</span></h2>
+      <p class="section-desc">The curation engine works when the page stops treating motion as decoration. Pools, samplers, modules, and readouts become one authored system.</p>
+    </div>
+    <div class="guide-wide-shell">
+      <div class="origin-label">Live assembly preview · ribbons + grid + title + atmosphere</div>
+      <div class="origin-grid-wrap">
+        <div id="guide-system" class="guide-canvas-wide"></div>
+        <div class="origin-grid-info">
+          <div>start: <span>pool -> role -> module</span></div>
+          <div>end product: <span>one engine, many surfaces</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Stop thinking in single effects</strong>
+        <p>The key shift is asking which family of wave behavior belongs to each layer, instead of asking how to animate one object.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Assign roles, not values</strong>
+        <p>Pools curate tone, samplers curate responsibility, and modules reveal the choices in public through layout, type, and proof panels.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>One engine, many surfaces</strong>
+        <p>The poster feels designed because motion, structure, and interface all come from the same logic instead of unrelated effects.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <pre class="ex-code-block"><code id="code-system">const ARRAY_GROUP = [
+  'classic sine',
+  'mountain peaks',
+  'triangle sine',
+  'smooth solid sine',
+  'meta sine'
+];
+
+const GROUPS = [
+  { key: 'gentle', group: 'gentle', color: '#174cff' },
+  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
+  { key: 'all', group: 'all', color: '#d7ff22' },
+  { key: 'array', group: ARRAY_GROUP, color: '#ff4fb3' }
+];
+
+let typeSampler;
+let groupSamplers = [];
+let gridSamplers = [];
+
+function setup() {
+  createCanvas(960, 540);
+  noStroke();
+  textFont('Oswald');
+
+  typeSampler = Waves.createSampler({
+    group: ARRAY_GROUP,
+    shift: true,
+    shiftInterval: 6,
+    shiftDuration: 1.5,
+    range: [-1, 1],
+    frequency: 0.72
+  });
+
+  groupSamplers = GROUPS.map(function(preset, i) {
+    return Waves.createSampler({
+      group: preset.group,
+      shift: true,
+      shiftInterval: 3.4 + i * 0.35,
+      shiftDuration: 1.1,
+      range: [-1, 1],
+      frequency: 0.7 + i * 0.08
+    });
+  });
+
+  gridSamplers = GROUPS.map(function(preset, i) {
+    return Waves.createGrid(24, 12, {
+      group: preset.group,
+      threshold: preset.key === 'harsh' ? 0.12 : 0,
+      speed: 0.42 + i * 0.08
+    });
+  });
+}
+
+function draw() {
+  background('#f4efe5');
+  const t = millis() / 1000;
+  const active = floor(t / 4.8) % GROUPS.length;
+
+  for (let i = 0; i &lt; GROUPS.length; i++) {
+    const y = map(i, 0, GROUPS.length - 1, height * 0.24, height * 0.78);
+    const amp = 24 + abs(groupSamplers[i].sample(i * 0.2, t)) * 42;
+
+    fill(color(GROUPS[i].color + (i === active ? 'aa' : '66')));
+    beginShape();
+    for (let x = -20; x &lt;= width + 20; x += 16) {
+      vertex(x, y + Waves.wave(x * 0.014, {
+        group: GROUPS[i].group,
+        shift: true,
+        shiftInterval: 3.6,
+        shiftDuration: 1.05,
+        t: t + i * 0.35,
+        amplitude: amp,
+        frequency: 0.76
+      }));
+    }
+    for (let x = width + 20; x &gt;= -20; x -= 16) {
+      vertex(x, y + 28);
+    }
+    endShape(CLOSE);
+  }
+
+  const cells = gridSamplers[active].sample(t);
+  const gx = width - 270;
+  const gy = 48;
+  const cw = 240 / 24;
+  const ch = 120 / 12;
+
+  fill('#080808');
+  rect(gx - 6, gy - 6, 252, 132);
+  fill('#f4efe5');
+  rect(gx, gy, 240, 120);
+
+  for (let row = 0; row &lt; 12; row++) {
+    for (let col = 0; col &lt; 24; col++) {
+      const on = cells[row * 24 + col] === 1;
+      fill(on ? GROUPS[active].color : '#ece5d7');
+      rect(gx + col * cw, gy + row * ch, cw - 1, ch - 1);
+    }
+  }
+
+  textSize(84);
+  let x = 42;
+  for (let i = 0; i &lt; 'p5.waves'.length; i++) {
+    const ch = 'p5.waves'[i];
+    const dy = typeSampler.sample(i * 0.23, t) * 8;
+    fill(i === 3 || i === 5 ? GROUPS[active].color : '#080808');
+    text(ch, x, 120 + dy);
+    x += textWidth(ch) * 0.97;
+  }
+
+  fill('#080808');
+  textSize(30);
+  text('AS A CURATION ENGINE', 42, 205);
+
+  fill('#080808');
+  rect(42, height - 60, 280, 24);
+  fill(GROUPS[active].color);
+  rect(42, height - 60, 160, 24);
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="system">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pool-curation" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">01 / pool curation</div>
+      <h2>Curate The <span class="accent">Pool</span></h2>
+      <p class="section-desc">This is the editorial backbone. Instead of letting every layer access every wave, you decide which behavior family belongs to which job.</p>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Name the voices</strong>
+        <p><code>gentle</code> is readable, <code>harsh</code> ruptures, <code>all</code> stays broad, and the array pool is hand-picked for taste.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Bind color to character</strong>
+        <p>Each group gets a visible identity: a label, a pool, and a color. The selection logic becomes visual direction.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>Rotation without chaos</strong>
+        <p>The active pool can change over time, but the sketch still speaks in a controlled voice because each layer stays in its family.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-pools" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>preview: <span>four curated families as live rows</span></div>
+        <div>result: <span>variation with authorship</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-pools">const ARRAY_GROUP = [
+  'classic sine',
+  'mountain peaks',
+  'triangle sine',
+  'smooth solid sine',
+  'meta sine'
+];
+
+const GROUP_PRESETS = [
+  { key: 'gentle', group: 'gentle', color: '#174cff' },
+  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
+  { key: 'all', group: 'all', color: '#d7ff22' },
+  { key: 'array', group: ARRAY_GROUP, color: '#ff4fb3' }
+];
+
+let groupSamplers = [];
+
+function setup() {
+  createCanvas(720, 420);
+  noStroke();
+  textFont('Oswald');
+
+  groupSamplers = GROUP_PRESETS.map(function(preset, i) {
+    return Waves.createSampler({
+      group: preset.group,
+      shift: true,
+      shiftInterval: 3.2 + i * 0.4,
+      shiftDuration: 1,
+      range: [-1, 1],
+      frequency: 0.65 + i * 0.08,
+      mode: preset.key === 'harsh' ? 'wild' : 'stable',
+      unpredictability: preset.key === 'harsh' ? 0.32 : 0
+    });
+  });
+}
+
+function draw() {
+  background('#f4efe5');
+  const t = millis() / 1000;
+  const active = floor(t / 4.8) % GROUP_PRESETS.length;
+  const left = 140;
+  const rowH = 72;
+  const gap = 16;
+
+  for (let i = 0; i &lt; GROUP_PRESETS.length; i++) {
+    const preset = GROUP_PRESETS[i];
+    const y = 38 + i * (rowH + gap);
+    const amp = 12 + abs(groupSamplers[i].sample(i * 0.22, t)) * 28;
+
+    stroke('#080808');
+    strokeWeight(i === active ? 3 : 1);
+    fill(i === active ? '#fffdfa' : '#f7f1e7');
+    rect(24, y, width - 48, rowH);
+    noStroke();
+
+    fill('#080808');
+    textSize(18);
+    text(preset.key.toUpperCase(), 40, y + 22);
+
+    fill(color(preset.color + 'aa'));
+    beginShape();
+    for (let x = left; x &lt;= width - 32; x += 14) {
+      const wave = Waves.wave(x * 0.016 + i * 0.3, {
+        group: preset.group,
+        shift: true,
+        shiftInterval: 3.4,
+        shiftDuration: 1,
+        t: t + i * 0.3,
+        amplitude: amp,
+        frequency: 0.82
+      });
+      vertex(x, y + rowH * 0.48 + wave);
+    }
+    for (let x = width - 32; x &gt;= left; x -= 14) {
+      vertex(x, y + rowH - 12);
+    }
+    endShape(CLOSE);
+  }
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="pools">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sampler-roles" class="section">
+    <div class="section-header">
+      <div class="section-tag">02 / sampler roles</div>
+      <h2>Split The <span class="accent">Responsibilities</span></h2>
+      <p class="section-desc">Separate samplers are what make the composition feel layered. Motion, color, pulse, and type stop collapsing into one uniform behavior.</p>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Define layer jobs</strong>
+        <p>List what the sketch needs: drift, pulse, color selection, and typographic wobble. Those are different roles.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Tune each role separately</strong>
+        <p>Readable motion uses <code>gentle</code>, pulse uses <code>harsh</code>, and typography uses the curated array. Each layer gets its own temperament.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>Layered behavior</strong>
+        <p>The page gains nuance because not everything responds the same way. The system reads as composed instead of globally animated.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-samplers" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>preview: <span>motion, color, pulse, type</span></div>
+        <div>result: <span>four roles, four behaviors</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-samplers">let motionSampler;
+let colorSampler;
+let pulseSampler;
+let typeSampler;
+
+const ARRAY_GROUP = [
+  'classic sine',
+  'mountain peaks',
+  'triangle sine',
+  'smooth solid sine',
+  'meta sine'
+];
+
+function setup() {
+  createCanvas(720, 420);
+  noStroke();
+  textFont('Oswald');
+
+  motionSampler = Waves.createSampler({
+    group: 'gentle',
+    shift: true,
+    shiftInterval: 5.5,
+    shiftDuration: 1.4,
+    range: [-1, 1],
+    frequency: 0.82
+  });
+
+  colorSampler = Waves.createSampler({
+    group: 'all',
+    shift: true,
+    shiftInterval: 6.2,
+    shiftDuration: 1.6,
+    range: [0, 1],
+    frequency: 0.56
+  });
+
+  pulseSampler = Waves.createSampler({
+    group: 'harsh',
+    shift: true,
+    shiftInterval: 4,
+    shiftDuration: 1.1,
+    range: [0, 1],
+    frequency: 1.05,
+    mode: 'wild',
+    unpredictability: 0.28
+  });
+
+  typeSampler = Waves.createSampler({
+    group: ARRAY_GROUP,
+    shift: true,
+    shiftInterval: 6.8,
+    shiftDuration: 1.5,
+    range: [-1, 1],
+    frequency: 0.7
+  });
+}
+
+function draw() {
+  background('#f4efe5');
+  const t = millis() / 1000;
+  const w = width * 0.42;
+  const h = height * 0.34;
+  const cells = [
+    [32, 32, 'motion'],
+    [width - w - 32, 32, 'color'],
+    [32, height - h - 32, 'pulse'],
+    [width - w - 32, height - h - 32, 'type']
+  ];
+
+  for (const cell of cells) {
+    const x = cell[0];
+    const y = cell[1];
+    const label = cell[2];
+    fill('#fffdfa');
+    stroke('#080808');
+    rect(x, y, w, h);
+    noStroke();
+    fill('#080808');
+    textSize(18);
+    text(label.toUpperCase(), x + 16, y + 24);
+
+    if (label === 'motion') {
+      const mx = x + w * 0.5 + motionSampler.sample(0.2, t) * w * 0.22;
+      const my = y + h * 0.62 + motionSampler.sample(0.45, t + 1) * h * 0.18;
+      fill('#174cff');
+      circle(mx, my, 42);
+    }
+
+    if (label === 'color') {
+      const v = colorSampler.sample(0.3, t);
+      const shades = ['#174cff', '#ff3b2f', '#d7ff22', '#ff4fb3', '#00c7ff'];
+      const idx = constrain(floor(v * shades.length), 0, shades.length - 1);
+      fill(shades[idx]);
+      rect(x + 16, y + 40, (w - 32) * v, h - 56);
+    }
+
+    if (label === 'pulse') {
+      for (let i = 0; i &lt; 8; i++) {
+        const power = pulseSampler.sample(i * 0.18, t);
+        fill(i % 2 === 0 ? '#ff3b2f' : '#080808');
+        rect(x + 16 + i * 22, y + h - 18 - power * 72, 14, power * 72);
+      }
+    }
+
+    if (label === 'type') {
+      let tx = x + 18;
+      textSize(42);
+      for (let i = 0; i &lt; 4; i++) {
+        const ch = 'WAVE'[i];
+        const dy = typeSampler.sample(i * 0.25, t) * 8;
+        fill(i === 1 ? '#ff4fb3' : '#080808');
+        text(ch, tx, y + h * 0.62 + dy);
+        tx += textWidth(ch) * 0.95;
+      }
+    }
+  }
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="samplers">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="wave-ribbons" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">03 / wave ribbons</div>
+      <h2>Turn Waves Into <span class="accent">Material</span></h2>
+      <p class="section-desc">A line describes. A ribbon divides space. This is where the library starts behaving like layout instead of motion garnish.</p>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Sample a line</strong>
+        <p>Use <code>Waves.wave()</code> across the x-axis to get the upper contour of the future form.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Close it as a band</strong>
+        <p>Run the lower edge back with a vertical offset. The moment the shape closes, it becomes printable material.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>Editorial strips</strong>
+        <p>The final bands split the composition, carry tone, and push energy without abandoning the page structure.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-ribbons" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>preview: <span>line -> ribbon -> band</span></div>
+        <div>result: <span>wave as layout material</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-ribbons">function drawRibbon(xOffset, y, thickness, amp, group, tint) {
+  fill(color(tint));
+  beginShape();
+  for (let x = -20; x &lt;= width + 20; x += 14) {
+    vertex(x, y + Waves.wave(x * 0.015 + xOffset, {
+      group: group,
+      shift: true,
+      shiftInterval: 3.6,
+      shiftDuration: 1.05,
+      t: millis() / 1000,
+      amplitude: amp,
+      frequency: 0.78
+    }));
+  }
+  for (let x = width + 20; x &gt;= -20; x -= 14) {
+    vertex(x, y + thickness);
+  }
+  endShape(CLOSE);
+}
+
+function setup() {
+  createCanvas(760, 420);
+  noStroke();
+}
+
+function draw() {
+  background('#f4efe5');
+
+  stroke('#080808');
+  noFill();
+  beginShape();
+  for (let x = -20; x &lt;= width + 20; x += 14) {
+    vertex(x, 90 + Waves.wave(x * 0.015, {
+      group: 'gentle',
+      shift: true,
+      shiftInterval: 3.5,
+      shiftDuration: 1,
+      t: millis() / 1000,
+      amplitude: 16,
+      frequency: 0.82
+    }));
+  }
+  endShape();
+
+  noStroke();
+  drawRibbon(0.2, 170, 26, 22, 'gentle', '#174cff88');
+  drawRibbon(0.6, 275, 54, 46, 'harsh', '#ff3b2faa');
+
+  fill('#080808');
+  textFont('Oswald');
+  textSize(18);
+  text('LINE', 24, 62);
+  text('FILLED RIBBON', 24, 140);
+  text('EDITORIAL BAND', 24, 242);
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="ribbons">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="grid-module" class="section">
+    <div class="section-header">
+      <div class="section-tag">04 / createGrid</div>
+      <h2>Show The System <span class="accent">Thinking</span></h2>
+      <p class="section-desc">The grid module is the proof panel. It gives the sketch a second language beside the hero layer and makes the internal logic visible.</p>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Create a binary field</strong>
+        <p>Use <code>createGrid()</code> with a chosen group so the panel already speaks in the same temperament as the rest of the sketch.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Frame it as a module</strong>
+        <p>Render a bordered panel, draw the cells, and label the group. The output becomes a visible instrument instead of hidden logic.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>Proof beside the hero</strong>
+        <p>The panel stabilizes the poster by pairing expressive bands with a rational readout surface.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-grid" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>preview: <span>binary field rendered as monitor panel</span></div>
+        <div>result: <span>visual proof module</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-grid">const GROUP_PRESETS = [
+  { key: 'gentle', group: 'gentle', color: '#174cff' },
+  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
+  { key: 'all', group: 'all', color: '#d7ff22' }
+];
+
+let grids = [];
+
+function setup() {
+  createCanvas(720, 420);
+  noStroke();
+  textFont('Oswald');
+
+  grids = GROUP_PRESETS.map(function(preset, i) {
+    return Waves.createGrid(24, 12, {
+      group: preset.group,
+      threshold: preset.key === 'harsh' ? 0.12 : 0,
+      speed: 0.42 + i * 0.08,
+      seed: 700 + i * 20
+    });
+  });
+}
+
+function draw() {
+  background('#f4efe5');
+  const t = millis() / 1000;
+  const active = floor(t / 5) % GROUP_PRESETS.length;
+  const cells = grids[active].sample(t);
+  const x = 90;
+  const y = 56;
+  const cols = 24;
+  const rows = 12;
+  const cw = 540 / cols;
+  const ch = 270 / rows;
+
+  fill('#080808');
+  rect(x - 8, y - 8, 556, 286);
+  fill('#f4efe5');
+  rect(x, y, 540, 270);
+
+  for (let row = 0; row &lt; rows; row++) {
+    for (let col = 0; col &lt; cols; col++) {
+      const on = cells[row * cols + col] === 1;
+      fill(on ? GROUP_PRESETS[active].color : '#ece5d7');
+      rect(x + col * cw, y + row * ch, cw - 1, ch - 1);
+    }
+  }
+
+  fill('#080808');
+  textSize(18);
+  text('CREATEGRID / GROUP: ' + GROUP_PRESETS[active].key.toUpperCase(), 90, 360);
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="grid">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kinetic-title" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">05 / kinetic typography</div>
+      <h2>Make The Title <span class="accent">Breathe</span></h2>
+      <p class="section-desc">The type works because the movement is sampled and constrained. The word stays typographic first, live second.</p>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Keep the word intact</strong>
+        <p>Draw the title letter by letter while preserving the baseline and spacing logic of the word.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Sample each letter</strong>
+        <p>Offset every glyph with the same sampler at a different sample position so the letters move as a family.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>Alive, not unstable</strong>
+        <p>The final word drifts just enough to show life without breaking its own legibility.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-title" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>preview: <span>one word, offset per letter</span></div>
+        <div>result: <span>typography that breathes</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-title">const ARRAY_GROUP = [
+  'classic sine',
+  'mountain peaks',
+  'triangle sine',
+  'smooth solid sine',
+  'meta sine'
+];
+
+let typeSampler;
+let colorSampler;
+
+function setup() {
+  createCanvas(760, 300);
+  noStroke();
+  textFont('Oswald');
+
+  typeSampler = Waves.createSampler({
+    group: ARRAY_GROUP,
+    shift: true,
+    shiftInterval: 6.6,
+    shiftDuration: 1.5,
+    range: [-1, 1],
+    frequency: 0.72
+  });
+
+  colorSampler = Waves.createSampler({
+    group: 'all',
+    shift: true,
+    shiftInterval: 6,
+    shiftDuration: 1.4,
+    range: [0, 1],
+    frequency: 0.58
+  });
+}
+
+function drawKineticWord(word, x, y, size, t) {
+  textSize(size);
+  let cursor = x;
+  for (let i = 0; i &lt; word.length; i++) {
+    const ch = word[i];
+    const wobble = typeSampler.sample(i * 0.24, t) * size * 0.05;
+    const accent = colorSampler.sample(i * 0.18, t);
+    const colors = ['#174cff', '#ff3b2f', '#d7ff22', '#ff4fb3'];
+    const tone = colors[constrain(floor(accent * colors.length), 0, colors.length - 1)];
+    fill(i === 3 || i === 5 ? tone : '#080808');
+    text(ch, cursor, y + wobble);
+    cursor += textWidth(ch) * 0.97;
+  }
+}
+
+function draw() {
+  background('#f4efe5');
+  drawKineticWord('p5.waves', 34, 150, 110, millis() / 1000);
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="title">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="status-strip" class="section">
+    <div class="section-header">
+      <div class="section-tag">06 / status strip</div>
+      <h2>Expose The <span class="accent">State</span></h2>
+      <p class="section-desc">The strip turns the sketch into an instrument. It translates sampler state into a graphic surface with live labels and progress.</p>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Read the sampler</strong>
+        <p>Sample first so <code>waveName</code>, <code>targetName</code>, <code>mix</code>, and <code>shifting</code> are current.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Translate state into UI</strong>
+        <p>Bar fill becomes <code>mix</code>, labels expose the current and target wave, and the group color keeps the strip tied to the active pool.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>Readable instrument panel</strong>
+        <p>The composition explains itself without becoming a dashboard. The logic is present, but still graphic.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-status" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>preview: <span>mix bar + wave labels + markers</span></div>
+        <div>result: <span>state rendered as composition</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-status">const GROUP_PRESETS = [
+  { key: 'gentle', group: 'gentle', color: '#174cff' },
+  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
+  { key: 'all', group: 'all', color: '#d7ff22' }
+];
+
+let samplers = [];
+let pulseSampler;
+
+function setup() {
+  createCanvas(760, 260);
+  noStroke();
+  textFont('Oswald');
+
+  samplers = GROUP_PRESETS.map(function(preset, i) {
+    return Waves.createSampler({
+      group: preset.group,
+      shift: true,
+      shiftInterval: 3.4 + i * 0.35,
+      shiftDuration: 1,
+      range: [-1, 1],
+      frequency: 0.7 + i * 0.08
+    });
+  });
+
+  pulseSampler = Waves.createSampler({
+    group: 'harsh',
+    shift: true,
+    shiftInterval: 4,
+    shiftDuration: 1.2,
+    range: [0, 1],
+    frequency: 1.08,
+    mode: 'wild',
+    unpredictability: 0.28
+  });
+}
+
+function draw() {
+  background('#f4efe5');
+  const t = millis() / 1000;
+  const active = floor(t / 4.8) % GROUP_PRESETS.length;
+  const sampler = samplers[active];
+  sampler.sample(0.3, t);
+  const mix = sampler.shifting ? sampler.mix : 0.55;
+
+  fill('#080808');
+  rect(44, 92, 560, 32);
+  fill(GROUP_PRESETS[active].color);
+  rect(44, 92, 560 * mix, 32);
+
+  fill(mix &gt; 0.55 ? '#080808' : '#f4efe5');
+  textSize(16);
+  text('GROUP ' + GROUP_PRESETS[active].key.toUpperCase() + ' / ' + (sampler.waveName || 'WAVE'), 56, 113);
+
+  fill('#f4efe5');
+  text('NEXT ' + (sampler.targetName || sampler.waveName || 'WAVE'), 430, 113);
+
+  for (let i = 0; i &lt; 6; i++) {
+    const on = pulseSampler.sample(i * 0.15, t) &gt; 0.42;
+    fill(on ? '#080808' : '#d8d0c2');
+    rect(628 + i * 16, 100, 9, 16);
+  }
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="status">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ambient-cloud" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">07 / ambient language</div>
+      <h2>Let Vocabulary Become <span class="accent">Atmosphere</span></h2>
+      <p class="section-desc">The background field stays useful because it is still attached to the same engine as the hero layer. It adds context without turning generic.</p>
+    </div>
+    <div class="blocks-grid guide-blocks">
+      <div class="block-card">
+        <code>start</code>
+        <strong>Choose a small vocabulary</strong>
+        <p>Use words that belong to the library itself: wave names, behaviors, parameters, and descriptive tags.</p>
+      </div>
+      <div class="block-card">
+        <code>build</code>
+        <strong>Drive drift and visibility</strong>
+        <p>Motion moves the words, pulse decides whether they appear, and type drift keeps them from freezing in place.</p>
+      </div>
+      <div class="block-card">
+        <code>end product</code>
+        <strong>Context without clutter</strong>
+        <p>The words become ghost labels and marginalia behind the hero statement, not filler sprinkled on top.</p>
+      </div>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-cloud" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>preview: <span>pulse-gated drifting vocabulary</span></div>
+        <div>result: <span>ambient language field</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-cloud">const WORDS = ['pure sine', 'noise', 'modulo', 'quantized', 'peak valley'];
+
+let motionSampler;
+let pulseSampler;
+let typeSampler;
+let particles = [];
+
+function setup() {
+  createCanvas(760, 360);
+  noStroke();
+  textFont('Oswald');
+
+  motionSampler = Waves.createSampler({
+    group: 'gentle',
+    shift: true,
+    shiftInterval: 5.5,
+    shiftDuration: 1.3,
+    range: [-1, 1],
+    frequency: 0.8
+  });
+
+  pulseSampler = Waves.createSampler({
+    group: 'harsh',
+    shift: true,
+    shiftInterval: 4,
+    shiftDuration: 1.1,
+    range: [0, 1],
+    frequency: 1.1,
+    mode: 'wild',
+    unpredictability: 0.25
+  });
+
+  typeSampler = Waves.createSampler({
+    group: 'all',
+    shift: true,
+    shiftInterval: 6.2,
+    shiftDuration: 1.4,
+    range: [-1, 1],
+    frequency: 0.68
+  });
+
+  for (let i = 0; i &lt; 24; i++) {
+    particles.push({
+      seed: i,
+      x: random(width),
+      y: random(height),
+      word: random(WORDS),
+      size: random(13, 24)
+    });
+  }
+}
+
+function draw() {
+  background('#f4efe5');
+  const t = millis() / 1000;
+
+  for (const item of particles) {
+    const vx = motionSampler.sample(item.seed * 0.31, t) * 22;
+    const vy = typeSampler.sample(item.seed * 0.19, t + 1.5) * 16;
+    const a = pulseSampler.sample(item.seed * 0.13, t);
+    if (a &lt; 0.34) continue;
+
+    fill(color('#080808' + hex(round(map(a, 0.34, 1, 40, 150)), 2)));
+    textSize(item.size);
+    text(item.word, item.x + vx, item.y + vy);
+  }
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="cloud">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="#full-poster">-> source sketch</a>
+          <a class="ex-full-link" href="#full-poster">-> poster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="closability" class="section">
+    <div class="section-header">
+      <div class="section-tag">appendix / closability proof</div>
+      <h2>Integer Ratios Still <span class="accent">Close</span></h2>
+      <p class="section-desc">Lissajous with sawtooth or spiky waves still closes, as long as A:B is integer and &theta; sweeps one full period. Left: a 1:1 saw circle. Right: a 3:5 spiky Lissajous. Each pen traces one frozen-phase cycle and lands back on its white start dot. Click either half to cycle its wave.</p>
+    </div>
+    <div class="ex-preview guide-example-shell">
+      <div id="guide-closability" class="ex-canvas"></div>
+      <div class="guide-inline-strip">
+        <div>left: <span>A:B = 1:1, saw / ramp</span></div>
+        <div>right: <span>A:B = 3:5, spiky formulas</span></div>
+      </div>
+      <pre class="ex-code-block"><code id="code-closability">// Integer A:B means wave(A * period) === wave(0), so the loop closes.
+const SPIKY = [
+  { name: 'sharp peaks',   period: Math.PI * 10 },
+  { name: 'batman',        period: Math.PI * 20 },
+  { name: 'zig-zag sine',  period: Math.PI * 10 },
+  { name: 'up down pulse', period: Math.PI * 10 }
+];
+const A = 3, B = 5, N = 1200, CYCLE_MS = 4500;
+
+function draw() {
+  // Freeze the phase for one cycle - one sweep is a true closed loop.
+  const frozenMs = floor(millis() / CYCLE_MS) * CYCLE_MS;
+  const prog = (millis() % CYCLE_MS) / CYCLE_MS;
+  const drawnTo = floor(prog * N);
+
+  const xs = [], ys = [];
+  for (let i = 0; i &lt;= N; i++) {
+    const theta = (i / N) * choice.period;
+    xs[i] = r * Waves.wave(A * theta, { wave: choice.name, amplitude: 1 });
+    ys[i] = r * Waves.wave(B * theta + choice.period * 0.25, {
+      wave: choice.name, amplitude: 1
+    });
+  }
+
+  // Pen trail + home dot. At prog = 1 the pen lands on the home dot.
+  beginShape();
+  for (let i = 0; i &lt;= drawnTo; i++) vertex(xs[i], ys[i]);
+  endShape();
+  fill(255); circle(xs[0], ys[0], 12);
+  fill(18);  circle(xs[0], ys[0], 6);
+  fill(255); circle(xs[drawnTo], ys[drawnTo], 8);
+}</code></pre>
+      <div class="guide-action-row">
+        <button type="button" class="copy-btn" data-copy="closability">Copy code</button>
+        <div class="ex-links">
+          <a class="ex-full-link" href="../../examples/spiky_lissajous/" target="_blank">-> spiky Lissajous example</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="full-poster" class="section section-fullbleed">
+    <div class="section-header">
+      <div class="section-tag">full composition / final poster</div>
+      <h2>The Full <span class="accent">Poster</span></h2>
+      <p class="section-desc">The complete composition, live. Every module above runs together here.</p>
+    </div>
+    <div class="guide-poster-stage">
+      <iframe class="guide-poster-frame" src="./poster.html" title="p5.waves curation engine full poster" loading="lazy"></iframe>
+    </div>
+    <div class="guide-poster-links">
+      <a class="ex-full-link" href="./poster.html" target="_blank">-> open full poster</a>
+      <a class="ex-full-link" href="./sketch.js" target="_blank">-> source sketch</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
+    <p class="footer-sub">MIT License · v3.2.5</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="guide.js"></script>
+</body>
+</html>

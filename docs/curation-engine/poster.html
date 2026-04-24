@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>p5.waves — curated pulse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=IBM+Plex+Mono:wght@500&family=Anton&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background: #f4efe5;
+      color: #080808;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    main {
+      width: 100vw;
+      height: 100vh;
+    }
+    canvas {
+      display: block;
+    }
+    /* preload font glyphs so p5 can measure them */
+    .preload { position: absolute; visibility: hidden; font-size: 1px; }
+  </style>
+</head>
+<body>
+  <main></main>
+  <div class="preload">
+    <span style="font-family:'Space Grotesk';font-weight:700">W</span>
+    <span style="font-family:'IBM Plex Mono'">~</span>
+    <span style="font-family:'Anton'">W</span>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="sketch.js?v=10"></script>
+</body>
+</html>
