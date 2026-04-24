@@ -477,6 +477,7 @@ reg('walker-canvas', new p5(function(p) {
   var IS_COLD = [true, false, false, false, true];
   var WALKERS_PER_COLOR = 3;
   var WALKERS = palette.length * WALKERS_PER_COLOR;
+  var CELL = 8;
   var coldX, coldY, warmX, warmY, trailBuf;
   var wx = [], wy = [], pxArr = [], pyArr = [];
   var walkerT = 0;
@@ -487,6 +488,7 @@ reg('walker-canvas', new p5(function(p) {
     p.createCanvas(w, w).parent('walker-canvas');
     trailBuf = p.createGraphics(w, w);
     trailBuf.background(15);
+    trailBuf.noSmooth();
     p.frameRate(30);
 
     coldX = Waves.createSampler({
@@ -572,10 +574,23 @@ reg('walker-canvas', new p5(function(p) {
       if (p.abs(wy[i] - pyArr[i]) > p.height / 2) continue;
 
       var col = palette[colorIdx];
-      var w = 2.5 + (p.abs(vx) + p.abs(vy)) * 0.5;
-      trailBuf.stroke(col[0], col[1], col[2], 150);
-      trailBuf.strokeWeight(w);
-      trailBuf.line(pxArr[i], pyArr[i], wx[i], wy[i]);
+      var brush = 1 + Math.round((p.abs(vx) + p.abs(vy)) * 0.25);
+      var dxp = wx[i] - pxArr[i];
+      var dyp = wy[i] - pyArr[i];
+      var steps = Math.max(1, Math.ceil(Math.max(p.abs(dxp), p.abs(dyp))));
+      trailBuf.noStroke();
+      trailBuf.fill(col[0], col[1], col[2], 210);
+      for (var s = 0; s <= steps; s++) {
+        var ix = pxArr[i] + dxp * s / steps;
+        var iy = pyArr[i] + dyp * s / steps;
+        var cx = Math.floor(ix / CELL) * CELL;
+        var cy = Math.floor(iy / CELL) * CELL;
+        for (var bx = 0; bx < brush; bx++) {
+          for (var by = 0; by < brush; by++) {
+            trailBuf.rect(cx + bx * CELL, cy + by * CELL, CELL - 1, CELL - 1);
+          }
+        }
+      }
     }
 
     p.image(trailBuf, 0, 0);
