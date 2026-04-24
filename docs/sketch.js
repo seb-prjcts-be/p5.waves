@@ -467,11 +467,6 @@ reg('shift-canvas', new p5(function(p) {
 // 5. NOT SO RANDOM WALKER - Wave output as raw velocity
 // ═════════════════════════════════════════════════════════════
 reg('walker-canvas', new p5(function(p) {
-  var WALKERS = 5;
-  var xWave, yWave, trailBuf;
-  var wx = [], wy = [], pxArr = [], pyArr = [];
-  var walkerT = 0;
-
   var palette = [
     [23, 76, 255],
     [255, 59, 47],
@@ -479,6 +474,12 @@ reg('walker-canvas', new p5(function(p) {
     [255, 79, 179],
     [0, 199, 255]
   ];
+  var IS_COLD = [true, false, false, false, true];
+  var WALKERS_PER_COLOR = 3;
+  var WALKERS = palette.length * WALKERS_PER_COLOR;
+  var coldX, coldY, warmX, warmY, trailBuf;
+  var wx = [], wy = [], pxArr = [], pyArr = [];
+  var walkerT = 0;
 
   p.setup = function() {
     var container = document.getElementById('walker-canvas');
@@ -488,28 +489,52 @@ reg('walker-canvas', new p5(function(p) {
     trailBuf.background(241);
     p.frameRate(30);
 
-    xWave = Waves.createSampler({
+    coldX = Waves.createSampler({
       shift: true,
-      shiftInterval: 4,
+      shiftInterval: 7,
       shiftDuration: 1.5,
-      amplitude: 2.5,
-      frequency: 0.7,
+      group: 'gentle',
+      amplitude: 5,
+      frequency: 0.4,
       seed: 0
     });
 
-    yWave = Waves.createSampler({
+    coldY = Waves.createSampler({
       shift: true,
-      shiftInterval: 5,
-      shiftDuration: 1.2,
-      amplitude: 2.5,
-      frequency: 0.55,
+      shiftInterval: 7,
+      shiftDuration: 1.5,
+      group: 'gentle',
+      amplitude: 5,
+      frequency: 0.3,
       seed: 77
     });
 
+    warmX = Waves.createSampler({
+      shift: true,
+      shiftInterval: 7,
+      shiftDuration: 1.5,
+      group: 'gentle',
+      amplitude: 5,
+      frequency: 0.4,
+      seed: 311
+    });
+
+    warmY = Waves.createSampler({
+      shift: true,
+      shiftInterval: 7,
+      shiftDuration: 1.5,
+      group: 'gentle',
+      amplitude: 5,
+      frequency: 0.3,
+      seed: 488
+    });
+
     for (var i = 0; i < WALKERS; i++) {
-      var a = p.TWO_PI * i / WALKERS;
-      wx[i] = p.width / 2 + p.cos(a) * 40;
-      wy[i] = p.height / 2 + p.sin(a) * 40;
+      var colorIdx = Math.floor(i / WALKERS_PER_COLOR);
+      var variantIdx = i % WALKERS_PER_COLOR;
+      var a = p.TWO_PI * colorIdx / palette.length + (variantIdx - 1) * 0.14;
+      wx[i] = p.width / 2 + p.cos(a) * 50;
+      wy[i] = p.height / 2 + p.sin(a) * 50;
       pxArr[i] = wx[i];
       pyArr[i] = wy[i];
     }
@@ -524,9 +549,13 @@ reg('walker-canvas', new p5(function(p) {
     walkerT += 0.025;
 
     for (var i = 0; i < WALKERS; i++) {
-      var phase = i * 6.7;
-      var vx = xWave.sample(walkerT * 1.8 + phase, walkerT);
-      var vy = yWave.sample(walkerT * 2.1 + phase * 1.3, walkerT);
+      var colorIdx = Math.floor(i / WALKERS_PER_COLOR);
+      var variantIdx = i % WALKERS_PER_COLOR;
+      var phase = colorIdx * 6.7 + variantIdx * 1.3;
+      var xS = IS_COLD[colorIdx] ? coldX : warmX;
+      var yS = IS_COLD[colorIdx] ? coldY : warmY;
+      var vx = xS.sample(walkerT * 1.8 + phase, walkerT);
+      var vy = yS.sample(walkerT * 2.1 + phase * 1.3, walkerT);
 
       pxArr[i] = wx[i];
       pyArr[i] = wy[i];
@@ -542,20 +571,22 @@ reg('walker-canvas', new p5(function(p) {
       if (p.abs(wx[i] - pxArr[i]) > p.width / 2) continue;
       if (p.abs(wy[i] - pyArr[i]) > p.height / 2) continue;
 
-      var col = palette[i];
-      trailBuf.stroke(col[0], col[1], col[2], 200);
-      trailBuf.strokeWeight(2.5);
+      var col = palette[colorIdx];
+      trailBuf.stroke(col[0], col[1], col[2], 150);
+      trailBuf.strokeWeight(5);
       trailBuf.line(pxArr[i], pyArr[i], wx[i], wy[i]);
     }
 
     p.image(trailBuf, 0, 0);
 
     p.noStroke();
-    p.fill(0, 0, 0, 140);
     p.textSize(10);
     p.textFont('monospace');
     p.textAlign(p.LEFT, p.TOP);
-    p.text(xWave.waveName + ' \u00d7 ' + yWave.waveName, 8, 8);
+    p.fill(23, 76, 255, 180);
+    p.text('cold  ' + coldX.waveName + ' \u00d7 ' + coldY.waveName, 8, 8);
+    p.fill(255, 59, 47, 180);
+    p.text('warm  ' + warmX.waveName + ' \u00d7 ' + warmY.waveName, 8, 22);
   };
 
   p.windowResized = function() {
