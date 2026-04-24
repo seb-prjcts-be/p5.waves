@@ -57,11 +57,11 @@ reg('hero-canvas', new p5(function(p) {
     { yPct: 0.90, range: [-25, 25], freq: 0.016, phase: 0.6, gray: 150, fillAlpha: 40, seed: 13 }
   ];
   var FG = [
-    { yPct: 0.62, range: [-55, 55], freq: 0.007, phase: 0.3, gray: 60,  lineAlpha: 35, weight: 1.5, seed: 20 },
-    { yPct: 0.70, range: [-50, 50], freq: 0.010, phase: 1.8, gray: 40,  lineAlpha: 50, weight: 1.8, seed: 21 },
-    { yPct: 0.78, range: [-45, 45], freq: 0.013, phase: 3.2, gray: 30,  lineAlpha: 65, weight: 2.0, seed: 22 },
-    { yPct: 0.86, range: [-40, 40], freq: 0.015, phase: 0.9, gray: 20,  lineAlpha: 80, weight: 2.2, seed: 23 },
-    { yPct: 0.93, range: [-30, 30], freq: 0.018, phase: 2.1, gray: 0,   lineAlpha: 100, weight: 2.5, seed: 24 }
+    { yPct: 0.55, range: [-90, 90], freq: 0.007, phase: 0.3, color: '#174cff', alpha: 140, thickness: 80, seed: 20 },
+    { yPct: 0.63, range: [-80, 80], freq: 0.010, phase: 1.8, color: '#ff3b2f', alpha: 150, thickness: 80, seed: 21 },
+    { yPct: 0.72, range: [-70, 70], freq: 0.013, phase: 3.2, color: '#d7ff22', alpha: 160, thickness: 80, seed: 22 },
+    { yPct: 0.80, range: [-65, 65], freq: 0.015, phase: 0.9, color: '#ff4fb3', alpha: 170, thickness: 80, seed: 23 },
+    { yPct: 0.88, range: [-55, 55], freq: 0.018, phase: 2.1, color: '#00c7ff', alpha: 180, thickness: 80, seed: 24 }
   ];
   var bgSamplers = [], fgSamplers = [];
   var heroT = 0;
@@ -108,14 +108,18 @@ reg('hero-canvas', new p5(function(p) {
     for (var i = 0; i < FG.length; i++) {
       var f = FG[i];
       var baseY = p.height * f.yPct;
-      p.noFill();
-      p.stroke(f.gray, f.lineAlpha);
-      p.strokeWeight(f.weight);
+      p.noStroke();
+      var c = p.color(f.color);
+      c.setAlpha(f.alpha);
+      p.fill(c);
       p.beginShape();
       for (var x = 0; x <= p.width; x += 3) {
         p.vertex(x, baseY + fgSamplers[i].sample(x * 0.4, heroT));
       }
-      p.endShape();
+      for (var x = p.width; x >= 0; x -= 3) {
+        p.vertex(x, baseY + f.thickness);
+      }
+      p.endShape(p.CLOSE);
     }
   };
 
