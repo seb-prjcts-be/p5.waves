@@ -473,11 +473,11 @@ reg('walker-canvas', new p5(function(p) {
   var walkerT = 0;
 
   var palette = [
-    [255, 60, 60],
-    [60, 220, 60],
-    [60, 100, 255],
-    [255, 220, 40],
-    [180, 60, 255]
+    [23, 76, 255],
+    [255, 59, 47],
+    [215, 255, 34],
+    [255, 79, 179],
+    [0, 199, 255]
   ];
 
   p.setup = function() {
@@ -485,7 +485,7 @@ reg('walker-canvas', new p5(function(p) {
     var w = container ? container.offsetWidth : 500;
     p.createCanvas(w, w).parent('walker-canvas');
     trailBuf = p.createGraphics(w, w);
-    trailBuf.background(15);
+    trailBuf.background(241);
     p.frameRate(30);
 
     xWave = Waves.createSampler({
@@ -518,7 +518,7 @@ reg('walker-canvas', new p5(function(p) {
   p.draw = function() {
     // Fade the trail buffer
     trailBuf.noStroke();
-    trailBuf.fill(15, 15, 15, 8);
+    trailBuf.fill(241, 241, 241, 8);
     trailBuf.rect(0, 0, trailBuf.width, trailBuf.height);
 
     walkerT += 0.025;
@@ -551,7 +551,7 @@ reg('walker-canvas', new p5(function(p) {
     p.image(trailBuf, 0, 0);
 
     p.noStroke();
-    p.fill(255, 255, 255, 120);
+    p.fill(0, 0, 0, 140);
     p.textSize(10);
     p.textFont('monospace');
     p.textAlign(p.LEFT, p.TOP);
