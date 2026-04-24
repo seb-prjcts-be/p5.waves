@@ -39,7 +39,6 @@
       <a class="guide-chip" href="#kinetic-title">Title</a>
       <a class="guide-chip" href="#status-strip">Status</a>
       <a class="guide-chip" href="#ambient-cloud">Ambient Text</a>
-      <a class="guide-chip" href="#closability">Closability</a>
       <a class="guide-chip" href="#full-poster">Poster</a>
     </div>
   </div>
@@ -962,59 +961,6 @@ function draw() {
         <div class="ex-links">
           <a class="ex-full-link" href="#full-poster">-> source sketch</a>
           <a class="ex-full-link" href="#full-poster">-> poster</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="closability" class="section">
-    <div class="section-header">
-      <div class="section-tag">appendix / closability proof</div>
-      <h2>Integer Ratios Still <span class="accent">Close</span></h2>
-      <p class="section-desc">Lissajous with sawtooth or spiky waves still closes, as long as A:B is integer and &theta; sweeps one full period. Left: a 1:1 saw circle. Right: a 3:5 spiky Lissajous. Each pen traces one frozen-phase cycle and lands back on its white start dot. Click either half to cycle its wave.</p>
-    </div>
-    <div class="ex-preview guide-example-shell">
-      <div id="guide-closability" class="ex-canvas"></div>
-      <div class="guide-inline-strip">
-        <div>left: <span>A:B = 1:1, saw / ramp</span></div>
-        <div>right: <span>A:B = 3:5, spiky formulas</span></div>
-      </div>
-      <pre class="ex-code-block"><code id="code-closability">// Integer A:B means wave(A * period) === wave(0), so the loop closes.
-const SPIKY = [
-  { name: 'sharp peaks',   period: Math.PI * 10 },
-  { name: 'batman',        period: Math.PI * 20 },
-  { name: 'zig-zag sine',  period: Math.PI * 10 },
-  { name: 'up down pulse', period: Math.PI * 10 }
-];
-const A = 3, B = 5, N = 1200, CYCLE_MS = 4500;
-
-function draw() {
-  // Freeze the phase for one cycle - one sweep is a true closed loop.
-  const frozenMs = floor(millis() / CYCLE_MS) * CYCLE_MS;
-  const prog = (millis() % CYCLE_MS) / CYCLE_MS;
-  const drawnTo = floor(prog * N);
-
-  const xs = [], ys = [];
-  for (let i = 0; i &lt;= N; i++) {
-    const theta = (i / N) * choice.period;
-    xs[i] = r * Waves.wave(A * theta, { wave: choice.name, amplitude: 1 });
-    ys[i] = r * Waves.wave(B * theta + choice.period * 0.25, {
-      wave: choice.name, amplitude: 1
-    });
-  }
-
-  // Pen trail + home dot. At prog = 1 the pen lands on the home dot.
-  beginShape();
-  for (let i = 0; i &lt;= drawnTo; i++) vertex(xs[i], ys[i]);
-  endShape();
-  fill(255); circle(xs[0], ys[0], 12);
-  fill(18);  circle(xs[0], ys[0], 6);
-  fill(255); circle(xs[drawnTo], ys[drawnTo], 8);
-}</code></pre>
-      <div class="guide-action-row">
-        <button type="button" class="copy-btn" data-copy="closability">Copy code</button>
-        <div class="ex-links">
-          <a class="ex-full-link" href="../../examples/spiky_lissajous/" target="_blank">-> spiky Lissajous example</a>
         </div>
       </div>
     </div>
