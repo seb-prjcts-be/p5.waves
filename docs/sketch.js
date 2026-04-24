@@ -486,7 +486,7 @@ reg('walker-canvas', new p5(function(p) {
     var w = container ? container.offsetWidth : 500;
     p.createCanvas(w, w).parent('walker-canvas');
     trailBuf = p.createGraphics(w, w);
-    trailBuf.background(241);
+    trailBuf.background(15);
     p.frameRate(30);
 
     coldX = Waves.createSampler({
@@ -543,7 +543,7 @@ reg('walker-canvas', new p5(function(p) {
   p.draw = function() {
     // Fade the trail buffer
     trailBuf.noStroke();
-    trailBuf.fill(241, 241, 241, 8);
+    trailBuf.fill(15, 15, 15, 10);
     trailBuf.rect(0, 0, trailBuf.width, trailBuf.height);
 
     walkerT += 0.025;
@@ -572,8 +572,9 @@ reg('walker-canvas', new p5(function(p) {
       if (p.abs(wy[i] - pyArr[i]) > p.height / 2) continue;
 
       var col = palette[colorIdx];
+      var w = 2.5 + (p.abs(vx) + p.abs(vy)) * 0.5;
       trailBuf.stroke(col[0], col[1], col[2], 150);
-      trailBuf.strokeWeight(5);
+      trailBuf.strokeWeight(w);
       trailBuf.line(pxArr[i], pyArr[i], wx[i], wy[i]);
     }
 
@@ -583,9 +584,9 @@ reg('walker-canvas', new p5(function(p) {
     p.textSize(10);
     p.textFont('monospace');
     p.textAlign(p.LEFT, p.TOP);
-    p.fill(23, 76, 255, 180);
+    p.fill(120, 160, 255, 200);
     p.text('cold  ' + coldX.waveName + ' \u00d7 ' + coldY.waveName, 8, 8);
-    p.fill(255, 59, 47, 180);
+    p.fill(255, 140, 120, 200);
     p.text('warm  ' + warmX.waveName + ' \u00d7 ' + warmY.waveName, 8, 22);
   };
 
