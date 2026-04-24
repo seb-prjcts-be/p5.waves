@@ -75,6 +75,11 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
 }
 
 .nav-links a:hover { color: #000; }
+.nav-links a.active {
+  color: #000;
+  border-bottom: 2px solid #000;
+  padding-bottom: 2px;
+}
 
 /* All content above the fixed bg-canvas */
 #hero, .section, .showcase-section, footer {
