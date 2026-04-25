@@ -181,8 +181,7 @@ const v = sampler.sample(i * 0.22, t);</code></pre>
       <pre class="ex-code-block"><code id="code-samplers">// one sampler per role - motion, color, pulse, type
 const motion = Waves.createSampler({ group: 'gentle', shift: true });
 const color  = Waves.createSampler({ group: 'all',    shift: true, range: [0, 1] });
-const pulse  = Waves.createSampler({ group: 'harsh',  shift: true, mode: 'wild',
-                                     unpredictability: 0.28 });
+const pulse  = Waves.createSampler({ group: 'harsh',  shift: true });
 const type   = Waves.createSampler({ group: ARRAY_GROUP, shift: true });
 
 // each layer responds at its own tempo

@@ -433,8 +433,6 @@
         shiftDuration: 1.1,
         range: [0, 1],
         frequency: 1.1,
-        mode: 'wild',
-        unpredictability: 0.28,
         seed: 21
       });
 
