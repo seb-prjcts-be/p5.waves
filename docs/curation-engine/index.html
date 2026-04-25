@@ -77,7 +77,7 @@
       </div>
     </div>
     <div class="ex-preview guide-example-shell">
-      <pre class="ex-code-block"><code id="code-system">// the engine: pool -> role -> module
+      <pre class="ex-code-block"><code class="language-javascript" id="code-system">// the engine: pool -> role -> module
 const sampler = Waves.createSampler({ group: ARRAY_GROUP, shift: true });
 const grid    = Waves.createGrid(24, 12, { group: 'harsh', threshold: 0.12 });
 
@@ -127,7 +127,7 @@ const grid    = Waves.createGrid(24, 12, { group: 'harsh', threshold: 0.12 });
         <div>preview: <span>four curated families as live rows</span></div>
         <div>result: <span>variation with authorship</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-pools">// group narrows the pool that shift/seed picks from
+      <pre class="ex-code-block"><code class="language-javascript" id="code-pools">// group narrows the pool that shift/seed picks from
 const sampler = Waves.createSampler({
   group: 'gentle',          // or 'harsh', 'all'
   shift: true,
@@ -178,7 +178,7 @@ const v = sampler.sample(i * 0.22, t);</code></pre>
         <div>preview: <span>motion, color, pulse, type</span></div>
         <div>result: <span>four roles, four behaviors</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-samplers">// one sampler per role - motion, color, pulse, type
+      <pre class="ex-code-block"><code class="language-javascript" id="code-samplers">// one sampler per role - motion, color, pulse, type
 const motion = Waves.createSampler({ group: 'gentle', shift: true });
 const color  = Waves.createSampler({ group: 'all',    shift: true, range: [0, 1] });
 const pulse  = Waves.createSampler({ group: 'harsh',  shift: true });
@@ -228,7 +228,7 @@ const wobbleY  = type.sample(i * 0.25, t) * 8;  // typographic drift</code></pre
         <div>preview: <span>line -> ribbon -> band</span></div>
         <div>result: <span>wave as layout material</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-ribbons">// wave forms the upper edge - close it back as a ribbon
+      <pre class="ex-code-block"><code class="language-javascript" id="code-ribbons">// wave forms the upper edge - close it back as a ribbon
 fill('#174cffaa');
 beginShape();
 for (let x = 0; x &lt;= width; x += 14) {
@@ -277,7 +277,7 @@ endShape(CLOSE);</code></pre>
         <div>preview: <span>binary field rendered as monitor panel</span></div>
         <div>result: <span>visual proof module</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-grid">// createGrid - a binary 2D field driven by two waves
+      <pre class="ex-code-block"><code class="language-javascript" id="code-grid">// createGrid - a binary 2D field driven by two waves
 const g = Waves.createGrid(24, 12, {
   group: 'harsh',
   threshold: 0.12        // cells where waveRow(row) + waveCol(col) > 0.12 = on
@@ -331,7 +331,7 @@ for (let row = 0; row &lt; g.rows; row++) {
         <div>preview: <span>one word, offset per letter</span></div>
         <div>result: <span>typography that breathes</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-title">// one sampler offsets each letter at a different sample position
+      <pre class="ex-code-block"><code class="language-javascript" id="code-title">// one sampler offsets each letter at a different sample position
 const type = Waves.createSampler({ group: ARRAY_GROUP, shift: true });
 
 textSize(110);
@@ -381,7 +381,7 @@ for (let i = 0; i &lt; word.length; i++) {
         <div>preview: <span>mix bar + wave labels + markers</span></div>
         <div>result: <span>state rendered as composition</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-status">// the sampler exposes its own state - render it as composition
+      <pre class="ex-code-block"><code class="language-javascript" id="code-status">// the sampler exposes its own state - render it as composition
 sampler.sample(0, t);              // pump state
 const mixBar = sampler.shifting ? sampler.mix : 0;
 
@@ -431,7 +431,7 @@ text('NEXT '   + sampler.targetName, 430, 113);</code></pre>
         <div>preview: <span>pulse-gated drifting vocabulary</span></div>
         <div>result: <span>ambient language field</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-cloud">// pulse gates visibility, motion drifts position, type wobbles
+      <pre class="ex-code-block"><code class="language-javascript" id="code-cloud">// pulse gates visibility, motion drifts position, type wobbles
 const a = pulse.sample(seed * 0.13, t);
 if (a &lt; 0.34) continue;          // below threshold = invisible this frame
 
@@ -473,5 +473,6 @@ text(word, x + dx, y + dy);</code></pre>
   <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
   <script src="../../p5.waves.min.js"></script>
   <script src="guide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 </body>
 </html>

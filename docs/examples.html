@@ -47,7 +47,7 @@
     </div>
     <div class="ex-preview">
       <div id="ex0" class="ex-canvas"></div>
-      <pre class="ex-code-block">// One number - use it for anything
+      <pre class="ex-code-block"><code class="language-javascript">// One number - use it for anything
 const v = Waves.wave(i * 0.3, {
   wave: 'bounce', t: t, range: [0, 1]
 });
@@ -60,7 +60,7 @@ circle(x, baseY + v * rowH * 0.8, 8);
 
 // Row 3: color (pure red -> pure blue)
 fill(255 - v * 255, 0, v * 255);
-circle(x, y, 14);</pre>
+circle(x, y, 14);</code></pre>
     </div>
   </section>
 
@@ -73,7 +73,7 @@ circle(x, y, 14);</pre>
     </div>
     <div class="ex-preview">
       <div id="ex1" class="ex-canvas"></div>
-      <pre class="ex-code-block">const sampler = Waves.createSampler({
+      <pre class="ex-code-block"><code class="language-javascript">const sampler = Waves.createSampler({
   shift: true,
   amplitude: 1,
   frequency: 0.5
@@ -86,7 +86,7 @@ for (let i = 0; i &lt; STRIPS; i++) {
   fill(255 - frac * 255, 0, frac * 255);
   const v = sampler.sample(i * 0.4, t + i * 0.1);
   rect(i * sw, cy - v * rowH, sw - 1, v * rowH * 2);
-}</pre>
+}</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/wave_shift/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/VZmKK7bRd" target="_blank">-> open in p5.js editor</a>
@@ -103,7 +103,7 @@ for (let i = 0; i &lt; STRIPS; i++) {
     </div>
     <div class="ex-preview">
       <div id="ex-params" class="ex-canvas"></div>
-      <pre class="ex-code-block">// mouseX = frequency, mouseY = amplitude
+      <pre class="ex-code-block"><code class="language-javascript">// mouseX = frequency, mouseY = amplitude
 let freq = map(mouseX, 0, width, 0.15, 3.5);
 let amp = map(mouseY, 0, height, 120, 8);
 
@@ -111,7 +111,7 @@ Waves.wave(x, {
   wave: waveName, t: t,
   amplitude: amp,
   frequency: freq * 0.01
-});</pre>
+});</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/wave_params/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/DwbS7tkcd" target="_blank">-> open in p5.js editor</a>
@@ -128,7 +128,7 @@ Waves.wave(x, {
     </div>
     <div class="ex-preview">
       <div id="ex4" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Left: stable circles. Right: wild circles.
+      <pre class="ex-code-block"><code class="language-javascript">// Left: stable circles. Right: wild circles.
 // Stable - orderly pattern
 const sz = Waves.wave(col + row * 0.5, {
   wave: waveIdx, t: t, range: [4, maxR]
@@ -138,7 +138,7 @@ const sz = Waves.wave(col + row * 0.5, {
 const szW = Waves.wave(col + row * 0.5, {
   wave: waveIdx, t: t, range: [4, maxR],
   mode: 'wild', unpredictability: 0.7
-});</pre>
+});</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/wild_mode/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/WJ2Dd06au" target="_blank">-> open in p5.js editor</a>
@@ -155,7 +155,7 @@ const szW = Waves.wave(col + row * 0.5, {
     </div>
     <div class="ex-preview">
       <div id="ex7" class="ex-canvas"></div>
-      <pre class="ex-code-block">// ASCII flow field - sampler with shift
+      <pre class="ex-code-block"><code class="language-javascript">// ASCII flow field - sampler with shift
 const DIRS = ['-', '/', '|', '\\'];
 let sampler = createWaveSampler({
   shift: true,
@@ -171,7 +171,7 @@ for (let row = 0; row &lt; ROWS; row++) {
     let idx = constrain(floor(map(val, -1, 1.001, 0, 4)), 0, 3);
     text(DIRS[idx], col * sz + sz / 2, row * sz + sz / 2);
   }
-}</pre>
+}</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/flow_fields/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/cEsoiq0wK" target="_blank">-> open in p5.js editor</a>
@@ -188,7 +188,7 @@ for (let row = 0; row &lt; ROWS; row++) {
     </div>
     <div class="ex-preview">
       <div id="ex8" class="ex-canvas"></div>
-      <pre class="ex-code-block">// No clock - t is whatever you pass
+      <pre class="ex-code-block"><code class="language-javascript">// No clock - t is whatever you pass
 // Move mouse to scrub through time
 const t = map(mouseX, 0, width, 0, 24);
 
@@ -203,7 +203,7 @@ for (let i = 0; i &lt; 12; i++) {
     vertex(x, y0 + dy);
   }
   endShape();
-}</pre>
+}</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/time_strata/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/T_c5Ted__" target="_blank">-> open in p5.js editor</a>
@@ -220,7 +220,7 @@ for (let i = 0; i &lt; 12; i++) {
     </div>
     <div class="ex-preview">
       <div id="ex9" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Two shift-samplers drive hue and brightness
+      <pre class="ex-code-block"><code class="language-javascript">// Two shift-samplers drive hue and brightness
 const hueS = Waves.createSampler({
   wave: 'meta sine', shift: true,
   shiftInterval: 4, shiftDuration: 2,
@@ -236,7 +236,7 @@ const briS = Waves.createSampler({
 colorMode(HSB, 360, 100, 100);
 fill(hueS.sample(x * 0.007 + y * 0.005, t),
      72,
-     briS.sample(x * 0.005 - y * 0.007, t));</pre>
+     briS.sample(x * 0.005 - y * 0.007, t));</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/color_field/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/FISK4i_Pv" target="_blank">-> open in p5.js editor</a>
@@ -253,7 +253,7 @@ fill(hueS.sample(x * 0.007 + y * 0.005, t),
     </div>
     <div class="ex-preview">
       <div id="ex12" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Blend two formulas with mix
+      <pre class="ex-code-block"><code class="language-javascript">// Blend two formulas with mix
 const wA = floor(random(34));
 const wB = floor(random(34));
 
@@ -266,7 +266,7 @@ const wv = Waves.wave(x, {
   t: t + row * 0.06,
   frequency: 0.08,
   amplitude: rowH * 0.8
-});</pre>
+});</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/morph_wave/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/tiKRarkU_" target="_blank">-> open in p5.js editor</a>
@@ -283,7 +283,7 @@ const wv = Waves.wave(x, {
     </div>
     <div class="ex-preview">
       <div id="ex-spiky" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Swap sin() for a spiky wave - curve still closes.
+      <pre class="ex-code-block"><code class="language-javascript">// Swap sin() for a spiky wave - curve still closes.
 // A pen sweeps one cycle, then lands back on the start dot.
 const A = 3, B = 5;
 const prog = (millis() % CYCLE_MS) / CYCLE_MS;
@@ -304,7 +304,7 @@ endShape();
 // Home dot + pen tip. When drawnTo === N, they overlap exactly.
 fill(255); circle(xs[0], ys[0], 10);
 fill(18);  circle(xs[0], ys[0], 5);
-fill(255); circle(xs[drawnTo], ys[drawnTo], 6);</pre>
+fill(255); circle(xs[drawnTo], ys[drawnTo], 6);</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/spiky_lissajous/" target="_blank">-> full example</a>
       </div>
@@ -320,7 +320,7 @@ fill(255); circle(xs[drawnTo], ys[drawnTo], 6);</pre>
     </div>
     <div class="ex-preview">
       <div id="ex6" class="ex-canvas"></div>
-      <pre class="ex-code-block">// One call fills a 2D grid
+      <pre class="ex-code-block"><code class="language-javascript">// One call fills a 2D grid
 const grid = Waves.createGrid(28, 20, {
   waveRow: 'smooth solid sine',
   waveCol: 'ramp up sine',
@@ -334,7 +334,7 @@ const cells = grid.sample(t);
 
 // Draw: 1 = black, 0 = light
 fill(cells[row * 28 + col] === 1 ? 15 : 225);
-rect(col * cw, row * ch, cw, ch);</pre>
+rect(col * cw, row * ch, cw, ch);</code></pre>
     </div>
   </section>
 
@@ -347,7 +347,7 @@ rect(col * cw, row * ch, cw, ch);</pre>
     </div>
     <div class="ex-preview">
       <div id="ex14" class="ex-canvas"></div>
-      <pre class="ex-code-block">// Three shift-samplers - one per axis
+      <pre class="ex-code-block"><code class="language-javascript">// Three shift-samplers - one per axis
 const sY = Waves.createSampler({
   shift: true, shiftInterval: 3,
   range: [-5, 5], frequency: 0.4
@@ -362,7 +362,7 @@ const sZ = Waves.createSampler({
 });
 
 // Points near the surface glow
-const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
+const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/3d_wave_volume/" target="_blank">-> full example</a>
         <a class="ex-full-link" href="https://editor.p5js.org/seb_prjcts.be/sketches/1PonLJbMv" target="_blank">-> open in p5.js editor</a>
@@ -803,5 +803,6 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</pre>
   }, 'ex14');
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 </body>
 </html>

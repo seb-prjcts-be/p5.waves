@@ -338,7 +338,9 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
 }
 
 .code-preview {
-  background: #1f1d1a;
+  background: #faf8f3;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
   padding: 0.75rem;
   margin-top: 0.25rem;
 }
@@ -346,10 +348,23 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
 .code-preview code {
   font-family: 'Consolas', 'Courier New', monospace;
   font-size: 0.7rem;
-  color: #ccc;
+  color: #111;
+  background: transparent;
   white-space: pre-wrap;
   line-height: 1.65;
 }
+
+/* Prism tokens - p5 webeditor (Atom One Light) palette */
+.code-preview .token.comment    { color: #A0A1A7; font-style: italic; }
+.code-preview .token.keyword    { color: #A626A4; }
+.code-preview .token.string     { color: #50A14F; }
+.code-preview .token.number,
+.code-preview .token.boolean    { color: #986801; }
+.code-preview .token.function   { color: #4078F2; }
+.code-preview .token.class-name { color: #C18401; }
+.code-preview .token.property   { color: #E45649; }
+.code-preview .token.operator,
+.code-preview .token.punctuation { color: #383A42; }
 
 #interactive-canvas {
   border: 1px solid var(--border-mid);
@@ -496,7 +511,7 @@ section[id] {
 .guide-wrap p  { line-height: 1.7; margin-bottom: 0.8rem; color: var(--text-muted); }
 .guide-wrap a  { color: #000; text-decoration: underline; }
 .guide-wrap a:hover { color: #555; }
-.guide-wrap code { font-family: 'Courier New', monospace; font-size: 0.88em; background: #ebebeb; padding: 0.1em 0.35em; }
+.guide-wrap code { font-family: 'Courier New', monospace; font-size: 0.88em; background: #f3f1ec; padding: 0.1em 0.35em; }
 .guide-intro { font-size: 1.1rem; color: var(--text); margin-bottom: 2rem; }
 
 .callout {
@@ -506,11 +521,13 @@ section[id] {
   margin: 1.2rem 0;
 }
 .callout p { margin: 0; }
-.callout code { background: #e2e2e2; }
+.callout code { background: #ebe8e0; }
 
 .code-block {
-  background: #1a1a1a;
-  color: #e8e8e8;
+  background: #faf8f3;
+  color: #111;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
   padding: 1.2rem 1.4rem;
   margin: 0.8rem 0 1.4rem;
   overflow-x: auto;
@@ -519,12 +536,24 @@ section[id] {
   line-height: 1.6;
   white-space: pre;
 }
-.code-block .cm { color: #777; }
-.code-block .kw { color: #c792ea; }
-.code-block .fn { color: #82aaff; }
-.code-block .st { color: #c3e88d; }
-.code-block .nb { color: #f78c6c; }
-.code-block .op { color: #89ddff; }
+.code-block code {
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Prism tokens - p5 webeditor (Atom One Light) palette */
+.code-block .token.comment    { color: #A0A1A7; font-style: italic; }
+.code-block .token.keyword    { color: #A626A4; }
+.code-block .token.string     { color: #50A14F; }
+.code-block .token.number,
+.code-block .token.boolean    { color: #986801; }
+.code-block .token.function   { color: #4078F2; }
+.code-block .token.class-name { color: #C18401; }
+.code-block .token.property   { color: #E45649; }
+.code-block .token.operator,
+.code-block .token.punctuation { color: #383A42; }
 
 .opts-table {
   width: 100%;
@@ -632,8 +661,9 @@ section[id] {
   width: 100%;
   margin: 0;
   padding: 1rem 1.2rem;
-  background: #1f1d1a;
-  color: #ccc;
+  background: #faf8f3;
+  color: #111;
+  border: 1px solid rgba(0, 0, 0, 0.15);
   font-family: 'Courier New', monospace;
   font-size: 0.78rem;
   line-height: 1.65;
@@ -641,6 +671,18 @@ section[id] {
   overflow-x: auto;
   border-radius: 4px;
 }
+
+/* Prism tokens - p5 webeditor (Atom One Light) palette */
+.ex-code-block .token.comment    { color: #A0A1A7; font-style: italic; }
+.ex-code-block .token.keyword    { color: #A626A4; }
+.ex-code-block .token.string     { color: #50A14F; }
+.ex-code-block .token.number,
+.ex-code-block .token.boolean    { color: #986801; }
+.ex-code-block .token.function   { color: #4078F2; }
+.ex-code-block .token.class-name { color: #C18401; }
+.ex-code-block .token.property   { color: #E45649; }
+.ex-code-block .token.operator,
+.ex-code-block .token.punctuation { color: #383A42; }
 
 .ex-canvas { overflow: hidden; background: var(--bg); border: 1px solid var(--border-mid); width: 100%; }
 .ex-canvas canvas { display: block !important; width: 100% !important; }

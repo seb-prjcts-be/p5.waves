@@ -40,34 +40,34 @@
     <h2>Install</h2>
     <p>Optimized for <strong>p5.js 2.x</strong> (tested with 2.2.2). Also works with p5.js 1.x.</p>
     <p>Two script tags. p5.js first, then p5.waves. Done.</p>
-    <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
+    <pre class="code-block"><code class="language-javascript">&lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
 &lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.2.6/p5.waves.min.js"&gt;&lt;/script&gt;
-&lt;script src="sketch.js"&gt;&lt;/script&gt;</div>
+&lt;script src="sketch.js"&gt;&lt;/script&gt;</code></pre>
     <p>No npm. No build step. Just script tags.</p>
 
 
     <!-- ═══════════════════════════════════ FIRST SKETCH -->
     <h2>Your First Sketch</h2>
     <p>Copy this into a new p5 sketch. You'll see a moving wave line.</p>
-    <div class="code-block"><span class="kw">function</span> <span class="fn">setup</span>() {
-  createCanvas(<span class="nb">600</span>, <span class="nb">400</span>);
+    <pre class="code-block"><code class="language-javascript">function setup() {
+  createCanvas(600, 400);
 }
 
-<span class="kw">function</span> <span class="fn">draw</span>() {
-  background(<span class="nb">245</span>);
+function draw() {
+  background(245);
   noFill();
-  stroke(<span class="nb">0</span>);
+  stroke(0);
   beginShape();
-  <span class="kw">for</span> (<span class="kw">let</span> x = <span class="nb">0</span>; x &lt;= width; x += <span class="nb">3</span>) {
-    <span class="kw">let</span> y = Waves.wave(x, {
-      wave: <span class="st">'mountain peaks'</span>,
-      t:    millis() / <span class="nb">1000</span>,
-      amplitude: <span class="nb">80</span>
+  for (let x = 0; x &lt;= width; x += 3) {
+    let y = Waves.wave(x, {
+      wave: 'mountain peaks',
+      t:    millis() / 1000,
+      amplitude: 80
     });
-    vertex(x, height / <span class="nb">2</span> + y);
+    vertex(x, height / 2 + y);
   }
   endShape();
-}</div>
+}</code></pre>
 
     <p>That's the whole API in action. <code>Waves.wave()</code> takes a position, returns a number. Use that number for y-position, size, color, rotation, opacity - anything that takes a number.</p>
 
@@ -77,38 +77,38 @@
     <!-- ═══════════════════════════════════ THREE WAYS -->
     <h2>Three Ways to Call It</h2>
     <p>From lazy to precise - all three return the same kind of number.</p>
-    <div class="code-block"><span class="cm">// Lazy - picks a random wave for you</span>
+    <pre class="code-block"><code class="language-javascript">// Lazy - picks a random wave for you
 Waves.wave(x);
 
-<span class="cm">// Quick - pick one by name</span>
-Waves.wave(x, <span class="st">'triangle'</span>);
+// Quick - pick one by name
+Waves.wave(x, 'triangle');
 
-<span class="cm">// Full control - name, speed, size, everything</span>
+// Full control - name, speed, size, everything
 Waves.wave(x, {
-  wave:      <span class="st">'triangle'</span>,
-  t:         millis() / <span class="nb">1000</span>,
-  amplitude: <span class="nb">50</span>
-});</div>
+  wave:      'triangle',
+  t:         millis() / 1000,
+  amplitude: 50
+});</code></pre>
     <p>Start lazy. Add options when you need them.</p>
 
 
     <!-- ═══════════════════════════════════ WHAT CAN YOU DO -->
     <h2>What Can You Do With a Number?</h2>
     <p>Anything. Seriously. Here are some ideas:</p>
-    <div class="code-block"><span class="cm">// Move a circle up and down</span>
-circle(width / <span class="nb">2</span>, height / <span class="nb">2</span> + Waves.wave(t, <span class="st">'sine'</span>), <span class="nb">20</span>);  <span class="cm">// t += 0.01 in draw()</span>
+    <pre class="code-block"><code class="language-javascript">// Move a circle up and down
+circle(width / 2, height / 2 + Waves.wave(t, 'sine'), 20);  // t += 0.01 in draw()
 
-<span class="cm">// Control opacity</span>
-<span class="kw">let</span> dotAlpha = Waves.wave(x, { wave: <span class="st">'pulse'</span>, range: [<span class="nb">30</span>, <span class="nb">255</span>] });
-fill(<span class="nb">0</span>, dotAlpha);
+// Control opacity
+let dotAlpha = Waves.wave(x, { wave: 'pulse', range: [30, 255] });
+fill(0, dotAlpha);
 
-<span class="cm">// Pick a color</span>
-<span class="kw">let</span> wHue = Waves.wave(x + y, { wave: <span class="st">'meta sine'</span>, range: [<span class="nb">0</span>, <span class="nb">360</span>] });
-fill(wHue, <span class="nb">80</span>, <span class="nb">90</span>);
+// Pick a color
+let wHue = Waves.wave(x + y, { wave: 'meta sine', range: [0, 360] });
+fill(wHue, 80, 90);
 
-<span class="cm">// Size each dot differently</span>
-<span class="kw">let</span> dotSize = Waves.wave(i, { wave: <span class="st">'sharp peaks'</span>, range: [<span class="nb">2</span>, <span class="nb">20</span>] });
-circle(x, y, dotSize);</div>
+// Size each dot differently
+let dotSize = Waves.wave(i, { wave: 'sharp peaks', range: [2, 20] });
+circle(x, y, dotSize);</code></pre>
     <p>If it accepts a number, a wave can drive it.</p>
 
 
@@ -207,33 +207,33 @@ circle(x, y, dotSize);</div>
       <code>ramp</code>, <code>noise</code>...), so radians would be meaningless for them.
     </p>
 
-    <div class="code-block"><span class="kw">function</span> <span class="fn">setup</span>() {
-  createCanvas(<span class="nb">600</span>, <span class="nb">600</span>);
+    <pre class="code-block"><code class="language-javascript">function setup() {
+  createCanvas(600, 600);
   noFill();
-  stroke(<span class="nb">0</span>);
+  stroke(0);
 }
 
-<span class="kw">function</span> <span class="fn">draw</span>() {
-  background(<span class="nb">245</span>);
-  translate(width / <span class="nb">2</span>, height / <span class="nb">2</span>);
+function draw() {
+  background(245);
+  translate(width / 2, height / 2);
 
-  <span class="kw">const</span> period = <span class="nb">62.83</span>;         <span class="cm">// classic sine</span>
-  <span class="kw">const</span> lobes  = <span class="nb">8</span>;             <span class="cm">// bumps around the ring</span>
-  <span class="kw">const</span> steps  = <span class="nb">240</span>;           <span class="cm">// resolution</span>
-  <span class="kw">const</span> sweep  = lobes * period;
+  const period = 62.83;         // classic sine
+  const lobes  = 8;             // bumps around the ring
+  const steps  = 240;           // resolution
+  const sweep  = lobes * period;
 
   beginShape();
-  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nb">0</span>; i &lt; steps; i++) {
-    <span class="kw">const</span> a = (i / steps) * TWO_PI;
-    <span class="kw">const</span> r = <span class="nb">180</span> + Waves.wave(i / steps * sweep, {
-      wave: <span class="st">'classic sine'</span>,
-      t:    millis() / <span class="nb">1000</span>,
-      amplitude: <span class="nb">30</span>
+  for (let i = 0; i &lt; steps; i++) {
+    const a = (i / steps) * TWO_PI;
+    const r = 180 + Waves.wave(i / steps * sweep, {
+      wave: 'classic sine',
+      t:    millis() / 1000,
+      amplitude: 30
     });
     vertex(r * cos(a), r * sin(a));
   }
   endShape(CLOSE);
-}</div>
+}</code></pre>
 
     <p>
       Change <code>lobes</code> to 3, 5, 13 - any positive integer closes cleanly.
@@ -253,29 +253,29 @@ circle(x, y, dotSize);</div>
     <h2>Wave Shift - The Fun Part</h2>
     <p>This is the feature that makes people go "whoa". One flag, and your wave starts switching to random formulas on its own. Smooth morphs. Different sequence every time you reload.</p>
 
-    <div class="code-block"><span class="kw">let</span> sampler = Waves.createSampler({
-  shift:         <span class="nb">true</span>,        <span class="cm">// that's it. that's the flag.</span>
-  amplitude:     <span class="nb">60</span>,
-  shiftInterval: <span class="nb">4</span>,          <span class="cm">// hold each wave 4 seconds</span>
-  shiftDuration: <span class="nb">1.5</span>         <span class="cm">// morph over 1.5 seconds</span>
+    <pre class="code-block"><code class="language-javascript">let sampler = Waves.createSampler({
+  shift:         true,        // that's it. that's the flag.
+  amplitude:     60,
+  shiftInterval: 4,          // hold each wave 4 seconds
+  shiftDuration: 1.5         // morph over 1.5 seconds
 });
 
-<span class="kw">function</span> <span class="fn">draw</span>() {
-  background(<span class="nb">245</span>);
-  <span class="kw">let</span> t = millis() / <span class="nb">1000</span>;
+function draw() {
+  background(245);
+  let t = millis() / 1000;
 
   beginShape();
-  <span class="kw">for</span> (<span class="kw">let</span> y = <span class="nb">0</span>; y &lt;= height; y += <span class="nb">3</span>) {
-    vertex(width / <span class="nb">2</span> + sampler.sample(y, t), y);
+  for (let y = 0; y &lt;= height; y += 3) {
+    vertex(width / 2 + sampler.sample(y, t), y);
   }
   endShape();
 
-  <span class="cm">// Want to show what's playing?</span>
-  text(sampler.waveName, <span class="nb">10</span>, <span class="nb">20</span>);     <span class="cm">// "mountain peaks"</span>
-  text(sampler.shifting, <span class="nb">10</span>, <span class="nb">40</span>);     <span class="cm">// true while morphing</span>
-  text(sampler.targetName, <span class="nb">10</span>, <span class="nb">60</span>);   <span class="cm">// "batman" (what's coming next)</span>
-  text(sampler.mix, <span class="nb">10</span>, <span class="nb">80</span>);          <span class="cm">// 0.0 -> 1.0 during morph</span>
-}</div>
+  // Want to show what's playing?
+  text(sampler.waveName, 10, 20);     // "mountain peaks"
+  text(sampler.shifting, 10, 40);     // true while morphing
+  text(sampler.targetName, 10, 60);   // "batman" (what's coming next)
+  text(sampler.mix, 10, 80);          // 0.0 -> 1.0 during morph
+}</code></pre>
 
     <p>Shift has no internal clock — it reads the <code>t</code> value you pass in. With <code>millis()/1000</code> that means real seconds. Pass something else (camera position, scroll offset) and shift follows that instead.</p>
 
@@ -286,9 +286,9 @@ circle(x, y, dotSize);</div>
     <h3>Pick a pool with <code>group</code></h3>
     <p>Shift can land on any of the 34 formulas - including tan spikes and noise. If you want to stay in calm territory (or the opposite), narrow the pool.</p>
 
-    <div class="code-block">Waves.createSampler({ shift: <span class="nb">true</span>, group: <span class="st">'gentle'</span> });  <span class="cm">// sines &amp; curves only (28 waves)</span>
-Waves.createSampler({ shift: <span class="nb">true</span>, group: <span class="st">'harsh'</span> });   <span class="cm">// tan/noise/random only (6 waves)</span>
-Waves.createSampler({ shift: <span class="nb">true</span>, group: [<span class="st">'sine'</span>, <span class="st">'triangle'</span>, <span class="st">'batman'</span>] });  <span class="cm">// your own list</span></div>
+    <pre class="code-block"><code class="language-javascript">Waves.createSampler({ shift: true, group: 'gentle' });  // sines &amp; curves only (28 waves)
+Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random only (6 waves)
+Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list</code></pre>
 
     <div class="callout"><p><strong><code>mode</code> vs <code>group</code> - don't confuse them.</strong> <code>mode: 'wild'</code> warps <em>one</em> wave (frequency + phase + amplitude noise). <code>group: 'harsh'</code> picks a <em>different kind of wave</em> - one with spikes baked in. They're orthogonal: <code>{ mode: 'wild', group: 'gentle' }</code> = breathing sines, no spikes.</p></div>
 
@@ -297,12 +297,12 @@ Waves.createSampler({ shift: <span class="nb">true</span>, group: [<span class="
     <h2>Morph - Blend Two Waves</h2>
     <p>Pick two waves. Slide between them. Connect <code>mix</code> to your mouse and you get a live crossfader.</p>
 
-    <div class="code-block"><span class="kw">let</span> y = Waves.wave(x, {
-  wave: [<span class="st">'sine'</span>, <span class="st">'batman'</span>],    <span class="cm">// sine on the left, batman on the right</span>
-  mix:  mouseX / width,        <span class="cm">// drag to blend</span>
-  t:    millis() / <span class="nb">1000</span>,
-  amplitude: <span class="nb">40</span>
-});</div>
+    <pre class="code-block"><code class="language-javascript">let y = Waves.wave(x, {
+  wave: ['sine', 'batman'],    // sine on the left, batman on the right
+  mix:  mouseX / width,        // drag to blend
+  t:    millis() / 1000,
+  amplitude: 40
+});</code></pre>
 
     <p><code>mix: 0</code> = pure first wave. <code>mix: 1</code> = pure second wave. Anything in between = a blend of both. Animate it for smooth shape transformations.</p>
 
@@ -311,24 +311,24 @@ Waves.createSampler({ shift: <span class="nb">true</span>, group: [<span class="
     <h2>createSampler()  - For Loops and Particles</h2>
     <p>If you're calling the same wave 200 times per frame (particles, grid cells, trail points), set up a sampler once and call <code>.sample()</code> instead. Same result, less repeated work.</p>
 
-    <div class="code-block"><span class="kw">let</span> s = Waves.createSampler({
-  wave:  <span class="st">'triangle'</span>,
-  range: [<span class="nb">-80</span>, <span class="nb">80</span>]
+    <pre class="code-block"><code class="language-javascript">let s = Waves.createSampler({
+  wave:  'triangle',
+  range: [-80, 80]
 });
 
-<span class="cm">// Then in draw, call it as many times as you want:</span>
-s.sample(y);          <span class="cm">// position only</span>
-s.sample(y, t);       <span class="cm">// position + time</span>
-s.sample(y, t, mix);  <span class="cm">// position + time + morph blend</span>
-s.waveName;           <span class="cm">// "triangle"</span></div>
+// Then in draw, call it as many times as you want:
+s.sample(y);          // position only
+s.sample(y, t);       // position + time
+s.sample(y, t, mix);  // position + time + morph blend
+s.waveName;           // "triangle"</code></pre>
 
     <p>Takes all the same options as <code>Waves.wave()</code>. Including <code>shift: true</code>.</p>
 
     <h3>Two samplers for independent axes</h3>
     <p>Want X and Y to move independently? Two samplers, two different seeds.</p>
-    <div class="code-block"><span class="kw">let</span> sx = Waves.createSampler({ seed: <span class="nb">0</span>, range: [<span class="nb">-80</span>, <span class="nb">80</span>] });
-<span class="kw">let</span> sz = Waves.createSampler({ seed: <span class="nb">1</span>, range: [<span class="nb">-80</span>, <span class="nb">80</span>] });
-<span class="cm">// Different seed = different wave = uncorrelated motion</span></div>
+    <pre class="code-block"><code class="language-javascript">let sx = Waves.createSampler({ seed: 0, range: [-80, 80] });
+let sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
+// Different seed = different wave = uncorrelated motion</code></pre>
 
 
     <!-- ═══════════════════════════════════ CREATEGRID -->
@@ -337,19 +337,19 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
     <p><strong>The formula:</strong> each cell is the <em>sum</em> of the two waves &mdash; <code>cell = waveRow(row) + waveCol(col)</code>. This is why the choice of waves matters: two sines at the same frequency give interference patterns, two pulses give a checkerboard, a sine + a pulse gives striped bands. <code>threshold: 0</code> means "cells where the sum is above zero turn on".</p>
     <p>You can use those numbers for anything &mdash; color, size, on/off. The <code>threshold</code> option turns it into a binary grid: every square is either 0 or 1, like pixels on or off.</p>
 
-    <div class="code-block"><span class="kw">let</span> g = Waves.createGrid(<span class="nb">14</span>, <span class="nb">14</span>, {
-  waveRow:   <span class="st">'classic sine'</span>,
-  waveCol:   <span class="st">'triangle'</span>,
-  threshold: <span class="nb">0</span>,       <span class="cm">// above 0 = on, below 0 = off</span>
-  speed:     <span class="nb">1</span>
+    <pre class="code-block"><code class="language-javascript">let g = Waves.createGrid(14, 14, {
+  waveRow:   'classic sine',
+  waveCol:   'triangle',
+  threshold: 0,       // above 0 = on, below 0 = off
+  speed:     1
 });
 
-<span class="kw">function</span> <span class="fn">draw</span>() {
-  t += <span class="nb">0.02</span>;  <span class="cm">// declared as let t = 0 above setup()</span>
-  <span class="kw">let</span> cells = g.sample(t);
-  <span class="cm">// cells is a Uint8Array of 0s and 1s</span>
-  <span class="cm">// cells[row * g.cols + col]</span>
-}</div>
+function draw() {
+  t += 0.02;  // declared as let t = 0 above setup()
+  let cells = g.sample(t);
+  // cells is a Uint8Array of 0s and 1s
+  // cells[row * g.cols + col]
+}</code></pre>
 
     <table class="opts-table">
       <tr><th>Option</th><th>What it does</th><th>Default</th></tr>
@@ -369,13 +369,13 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
     <h2>Wild Mode - Controlled Chaos</h2>
     <p>Turn on <code>mode: 'wild'</code> and the wave gets wobbly. Frequency, phase, and amplitude all start drifting. It stays recognizable - just... unhinged.</p>
 
-    <div class="code-block"><span class="kw">let</span> y = Waves.wave(x, {
-  wave:             <span class="st">'pulse'</span>,
-  t:                millis() / <span class="nb">1000</span>,
-  mode:             <span class="st">'wild'</span>,
-  unpredictability: <span class="nb">0.45</span>,    <span class="cm">// 0 = calm, 1 = full chaos</span>
-  amplitude:        <span class="nb">80</span>
-});</div>
+    <pre class="code-block"><code class="language-javascript">let y = Waves.wave(x, {
+  wave:             'pulse',
+  t:                millis() / 1000,
+  mode:             'wild',
+  unpredictability: 0.45,    // 0 = calm, 1 = full chaos
+  amplitude:        80
+});</code></pre>
 
     <p>Start at <code>0.3</code> and work your way up. At <code>1.0</code> things get interesting. Wild mode is about 5x slower though - so don't use it in a 10,000-point loop unless you're ready for that.</p>
 
@@ -383,9 +383,9 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
     <!-- ═══════════════════════════════════ TIME -->
     <h2>Time - You Control It</h2>
     <p>There's no built-in clock. You pass <code>t</code> on every call. That means you're in charge.</p>
-    <div class="code-block"><span class="cm">// Tie time to the mouse - scrub through the wave</span>
-<span class="kw">let</span> t = map(mouseX, <span class="nb">0</span>, width, <span class="nb">0</span>, <span class="nb">10</span>);
-<span class="kw">let</span> y = Waves.wave(x, { wave: <span class="st">'sine'</span>, t: t, amplitude: <span class="nb">50</span> });</div>
+    <pre class="code-block"><code class="language-javascript">// Tie time to the mouse - scrub through the wave
+let t = map(mouseX, 0, width, 0, 10);
+let y = Waves.wave(x, { wave: 'sine', t: t, amplitude: 50 });</code></pre>
 
     <p>Want to pause? Stop changing <code>t</code>. Want to rewind? Decrease it. Want slow motion? Use a tiny increment. Want to sync two sketches? Give them the same <code>t</code>.</p>
 
@@ -393,8 +393,8 @@ s.waveName;           <span class="cm">// "triangle"</span></div>
     <!-- ═══════════════════════════════════ SEED VS INDEX -->
     <h2>Seed vs Index - Don't Mix Them Up</h2>
     <p>These look similar but do different things:</p>
-    <div class="code-block">Waves.wave(x, <span class="nb">3</span>)             <span class="cm">// seed 3 -> hashed to SOME wave (not necessarily #3)</span>
-Waves.wave(x, { wave: <span class="nb">3</span> })   <span class="cm">// index 3 -> exactly wave #3 (square)</span></div>
+    <pre class="code-block"><code class="language-javascript">Waves.wave(x, 3)             // seed 3 -> hashed to SOME wave (not necessarily #3)
+Waves.wave(x, { wave: 3 })   // index 3 -> exactly wave #3 (square)</code></pre>
     <p><strong>Index</strong> = "I want that exact wave." <strong>Seed</strong> = "Give each of my 50 particles its own consistent wave - I don't care which."</p>
 
 
@@ -415,47 +415,47 @@ Waves.wave(x, { wave: <span class="nb">3</span> })   <span class="cm">// index 3
     <p>Grab one. Drop it in your sketch. Go.</p>
 
     <h3>Just a wave</h3>
-    <div class="code-block"><span class="kw">let</span> y = Waves.wave(x, <span class="st">'mountain peaks'</span>);</div>
+    <pre class="code-block"><code class="language-javascript">let y = Waves.wave(x, 'mountain peaks');</code></pre>
 
     <h3>Moving wave</h3>
-    <div class="code-block"><span class="kw">let</span> y = Waves.wave(x, {
-  wave: <span class="st">'mountain peaks'</span>,
-  t:    millis() / <span class="nb">1000</span>,
-  amplitude: <span class="nb">80</span>
-});</div>
+    <pre class="code-block"><code class="language-javascript">let y = Waves.wave(x, {
+  wave: 'mountain peaks',
+  t:    millis() / 1000,
+  amplitude: 80
+});</code></pre>
 
     <h3>Wave as color</h3>
-    <div class="code-block"><span class="kw">let</span> dotAlpha = Waves.wave(x, {
-  wave:  <span class="st">'pulse'</span>,
-  t:     millis() / <span class="nb">1000</span>,
-  range: [<span class="nb">30</span>, <span class="nb">255</span>]
+    <pre class="code-block"><code class="language-javascript">let dotAlpha = Waves.wave(x, {
+  wave:  'pulse',
+  t:     millis() / 1000,
+  range: [30, 255]
 });
-fill(<span class="nb">0</span>, dotAlpha);</div>
+fill(0, dotAlpha);</code></pre>
 
     <h3>Auto-shifting</h3>
-    <div class="code-block"><span class="kw">let</span> s = Waves.createSampler({
-  shift:     <span class="nb">true</span>,
-  amplitude: <span class="nb">60</span>
+    <pre class="code-block"><code class="language-javascript">let s = Waves.createSampler({
+  shift:     true,
+  amplitude: 60
 });
-<span class="cm">// in draw:</span>
-s.sample(x, millis() / <span class="nb">1000</span>);</div>
+// in draw:
+s.sample(x, millis() / 1000);</code></pre>
 
     <h3>Binary grid</h3>
-    <div class="code-block"><span class="kw">let</span> g = Waves.createGrid(<span class="nb">20</span>, <span class="nb">20</span>, {
-  threshold: <span class="nb">0</span>,
-  speed:     <span class="nb">1</span>
+    <pre class="code-block"><code class="language-javascript">let g = Waves.createGrid(20, 20, {
+  threshold: 0,
+  speed:     1
 });
-<span class="kw">let</span> cells = g.sample(t);</div>
+let cells = g.sample(t);</code></pre>
 
     <h3>50 particles, each with its own wave</h3>
-    <div class="code-block"><span class="kw">for</span> (<span class="kw">let</span> i = <span class="nb">0</span>; i &lt; <span class="nb">50</span>; i++) {
-  <span class="kw">let</span> y = Waves.wave(t, {  <span class="cm">// t += 0.01 in draw()</span>
-    seed:      i,               <span class="cm">// each particle gets its own wave</span>
-    t:         millis() / <span class="nb">1000</span>,
-    amplitude: <span class="nb">30</span>
+    <pre class="code-block"><code class="language-javascript">for (let i = 0; i &lt; 50; i++) {
+  let y = Waves.wave(t, {  // t += 0.01 in draw()
+    seed:      i,               // each particle gets its own wave
+    t:         millis() / 1000,
+    amplitude: 30
   });
-  circle(i * <span class="nb">12</span>, height / <span class="nb">2</span> + y, <span class="nb">6</span>);
-}</div>
+  circle(i * 12, height / 2 + y, 6);
+}</code></pre>
 
   </div>
 
@@ -464,5 +464,6 @@ s.sample(x, millis() / <span class="nb">1000</span>);</div>
     <p class="footer-sub">MIT License · v3.2.6</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 </body>
 </html>

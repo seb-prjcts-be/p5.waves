@@ -167,7 +167,7 @@ footer a:hover { color: #000; }
 /* ── Code panel ── */
 .demo-code {
   border: 1px solid rgba(0, 0, 0, 0.15);
-  background: #fff;
+  background: #faf8f3;
 }
 
 .code-label {
@@ -194,6 +194,18 @@ footer a:hover { color: #000; }
   color: #111;
   white-space: pre;
 }
+
+/* Prism tokens - p5 webeditor (Atom One Light) palette */
+.demo-code .token.comment    { color: #A0A1A7; font-style: italic; }
+.demo-code .token.keyword    { color: #A626A4; }
+.demo-code .token.string     { color: #50A14F; }
+.demo-code .token.number,
+.demo-code .token.boolean    { color: #986801; }
+.demo-code .token.function   { color: #4078F2; }
+.demo-code .token.class-name { color: #C18401; }
+.demo-code .token.property   { color: #E45649; }
+.demo-code .token.operator,
+.demo-code .token.punctuation { color: #383A42; }
 
 /* ── Right column: canvas + settings stacked ── */
 .demo-right {

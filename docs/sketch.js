@@ -293,13 +293,15 @@ reg('interactive-canvas', new p5(function(p) {
   }
 
   function updateCode() {
-    document.getElementById('code-text').textContent =
+    var el = document.getElementById('code-text');
+    el.textContent =
       'let y = Waves.wave(x, {\n' +
       '  wave: \'' + params.wave + '\',\n' +
       '  t: millis() / 1000 * ' + params.speed.toFixed(3) + ',\n' +
       '  amplitude: ' + params.amplitude + ',\n' +
       '  frequency: ' + params.frequency.toFixed(3) + '\n' +
       '});';
+    if (window.Prism) Prism.highlightElement(el);
   }
 
   p.setup = function() {
@@ -403,6 +405,7 @@ reg('shift-canvas', new p5(function(p) {
       'sampler.sample(y, t);\n' +
       'sampler.waveName;    // "' + sampler.waveName + '"\n' +
       'sampler.shifting;    // ' + sampler.shifting;
+    if (window.Prism) Prism.highlightElement(el);
   }
 
   p.setup = function() {
