@@ -532,7 +532,7 @@ function drawStatusPill(t) {
 function drawCursorPulse(t) {
   if (!mouseIsPressed && (mouseX <= 0 || mouseY <= 0 || mouseX >= width || mouseY >= height)) return;
 
-  const ring = map(pulseSampler.sample(0.9, t), 0, 1, 18, 80);
+  const ring = map(Math.max(0, pulseSampler.sample(0.9, t)), 0, 1, 18, 80);
   noFill();
   stroke(PALETTE.ink);
   strokeWeight(2);

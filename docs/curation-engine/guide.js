@@ -481,7 +481,7 @@
       p.rect(panels[1].x + 14, panels[1].y + 44, (w - 28) * colorValue, h - 58);
 
       for (let i = 0; i < 8; i++) {
-        const power = pulseSampler.sample(i * 0.18, t);
+        const power = Math.max(0, pulseSampler.sample(i * 0.18, t));
         p.fill(i % 2 === 0 ? GUIDE_PALETTE.red : GUIDE_PALETTE.ink);
         p.rect(panels[2].x + 16 + i * ((w - 48) / 8), panels[2].y + h - 18 - power * (h * 0.55), 12, power * (h * 0.55));
       }
