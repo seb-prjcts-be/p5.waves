@@ -125,9 +125,7 @@ function createWaveSystem() {
     shiftInterval: 4,
     shiftDuration: 1.3,
     range: [0, 1],
-    frequency: 1.1,
-    mode: 'wild',
-    unpredictability: 0.25
+    frequency: 1.1
   });
 
   typeSampler = Waves.createSampler({
@@ -261,9 +259,7 @@ function drawWaveRibbons(t) {
         seed: 900 + i * 71,
         t: t * 0.74 + i * 0.4,
         amplitude: amp,
-        frequency: 0.62 + frac * 0.3,
-        mode: preset.key === 'harsh' ? 'wild' : 'stable',
-        unpredictability: preset.key === 'harsh' ? 0.34 : 0
+        frequency: 0.62 + frac * 0.3
       });
       vertex(x, y + wave);
     }
@@ -276,9 +272,7 @@ function drawWaveRibbons(t) {
         seed: 900 + i * 71,
         t: t * 0.74 + i * 0.4,
         amplitude: amp,
-        frequency: 0.62 + frac * 0.3,
-        mode: preset.key === 'harsh' ? 'wild' : 'stable',
-        unpredictability: preset.key === 'harsh' ? 0.34 : 0
+        frequency: 0.62 + frac * 0.3
       });
       vertex(x, y + wave + band);
     }
