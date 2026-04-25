@@ -77,125 +77,17 @@
       </div>
     </div>
     <div class="ex-preview guide-example-shell">
-      <pre class="ex-code-block"><code id="code-system">const ARRAY_GROUP = [
-  'classic sine',
-  'mountain peaks',
-  'triangle sine',
-  'smooth solid sine',
-  'meta sine'
-];
+      <pre class="ex-code-block"><code id="code-system">// the engine: pool -> role -> module
+const sampler = Waves.createSampler({ group: ARRAY_GROUP, shift: true });
+const grid    = Waves.createGrid(24, 12, { group: 'harsh', threshold: 0.12 });
 
-const GROUPS = [
-  { key: 'gentle', group: 'gentle', color: '#174cff' },
-  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
-  { key: 'all', group: 'all', color: '#d7ff22' },
-  { key: 'array', group: ARRAY_GROUP, color: '#ff4fb3' }
-];
+// each module pulls from one source:
+//   ribbons   - one sampler per row, shift-driven
+//   panel     - grid.sample(t) as a binary readout
+//   title     - typeSampler offsets each letter
+//   ticker    - sampler.waveName / .targetName as labels
 
-let typeSampler;
-let groupSamplers = [];
-let gridSamplers = [];
-
-function setup() {
-  createCanvas(960, 540);
-  noStroke();
-  textFont('Oswald');
-
-  typeSampler = Waves.createSampler({
-    group: ARRAY_GROUP,
-    shift: true,
-    shiftInterval: 6,
-    shiftDuration: 1.5,
-    range: [-1, 1],
-    frequency: 0.72
-  });
-
-  groupSamplers = GROUPS.map(function(preset, i) {
-    return Waves.createSampler({
-      group: preset.group,
-      shift: true,
-      shiftInterval: 3.4 + i * 0.35,
-      shiftDuration: 1.1,
-      range: [-1, 1],
-      frequency: 0.7 + i * 0.08
-    });
-  });
-
-  gridSamplers = GROUPS.map(function(preset, i) {
-    return Waves.createGrid(24, 12, {
-      group: preset.group,
-      threshold: preset.key === 'harsh' ? 0.12 : 0,
-      speed: 0.42 + i * 0.08
-    });
-  });
-}
-
-function draw() {
-  background('#f4efe5');
-  const t = millis() / 1000;
-  const active = floor(t / 4.8) % GROUPS.length;
-
-  for (let i = 0; i &lt; GROUPS.length; i++) {
-    const y = map(i, 0, GROUPS.length - 1, height * 0.24, height * 0.78);
-    const amp = 24 + abs(groupSamplers[i].sample(i * 0.2, t)) * 42;
-
-    fill(color(GROUPS[i].color + (i === active ? 'aa' : '66')));
-    beginShape();
-    for (let x = -20; x &lt;= width + 20; x += 16) {
-      vertex(x, y + Waves.wave(x * 0.014, {
-        group: GROUPS[i].group,
-        shift: true,
-        shiftInterval: 3.6,
-        shiftDuration: 1.05,
-        t: t + i * 0.35,
-        amplitude: amp,
-        frequency: 0.76
-      }));
-    }
-    for (let x = width + 20; x &gt;= -20; x -= 16) {
-      vertex(x, y + 28);
-    }
-    endShape(CLOSE);
-  }
-
-  const cells = gridSamplers[active].sample(t);
-  const gx = width - 270;
-  const gy = 48;
-  const cw = 240 / 24;
-  const ch = 120 / 12;
-
-  fill('#080808');
-  rect(gx - 6, gy - 6, 252, 132);
-  fill('#f4efe5');
-  rect(gx, gy, 240, 120);
-
-  for (let row = 0; row &lt; 12; row++) {
-    for (let col = 0; col &lt; 24; col++) {
-      const on = cells[row * 24 + col] === 1;
-      fill(on ? GROUPS[active].color : '#ece5d7');
-      rect(gx + col * cw, gy + row * ch, cw - 1, ch - 1);
-    }
-  }
-
-  textSize(84);
-  let x = 42;
-  for (let i = 0; i &lt; 'p5.waves'.length; i++) {
-    const ch = 'p5.waves'[i];
-    const dy = typeSampler.sample(i * 0.23, t) * 8;
-    fill(i === 3 || i === 5 ? GROUPS[active].color : '#080808');
-    text(ch, x, 120 + dy);
-    x += textWidth(ch) * 0.97;
-  }
-
-  fill('#080808');
-  textSize(30);
-  text('AS A CURATION ENGINE', 42, 205);
-
-  fill('#080808');
-  rect(42, height - 60, 280, 24);
-  fill(GROUPS[active].color);
-  rect(42, height - 60, 160, 24);
-}</code></pre>
+// one t drives them all - the composition reads as one piece</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="system">Copy code</button>
         <div class="ex-links">
@@ -235,85 +127,18 @@ function draw() {
         <div>preview: <span>four curated families as live rows</span></div>
         <div>result: <span>variation with authorship</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-pools">const ARRAY_GROUP = [
-  'classic sine',
-  'mountain peaks',
-  'triangle sine',
-  'smooth solid sine',
-  'meta sine'
-];
+      <pre class="ex-code-block"><code id="code-pools">// group narrows the pool that shift/seed picks from
+const sampler = Waves.createSampler({
+  group: 'gentle',          // or 'harsh', 'all'
+  shift: true,
+  range: [-1, 1]
+});
 
-const GROUP_PRESETS = [
-  { key: 'gentle', group: 'gentle', color: '#174cff' },
-  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
-  { key: 'all', group: 'all', color: '#d7ff22' },
-  { key: 'array', group: ARRAY_GROUP, color: '#ff4fb3' }
-];
+// or pass your own curated list:
+//   group: ['classic sine', 'mountain peaks', 'meta sine']
 
-let groupSamplers = [];
-
-function setup() {
-  createCanvas(720, 420);
-  noStroke();
-  textFont('Oswald');
-
-  groupSamplers = GROUP_PRESETS.map(function(preset, i) {
-    return Waves.createSampler({
-      group: preset.group,
-      shift: true,
-      shiftInterval: 3.2 + i * 0.4,
-      shiftDuration: 1,
-      range: [-1, 1],
-      frequency: 0.65 + i * 0.08,
-      mode: preset.key === 'harsh' ? 'wild' : 'stable',
-      unpredictability: preset.key === 'harsh' ? 0.32 : 0
-    });
-  });
-}
-
-function draw() {
-  background('#f4efe5');
-  const t = millis() / 1000;
-  const active = floor(t / 4.8) % GROUP_PRESETS.length;
-  const left = 140;
-  const rowH = 72;
-  const gap = 16;
-
-  for (let i = 0; i &lt; GROUP_PRESETS.length; i++) {
-    const preset = GROUP_PRESETS[i];
-    const y = 38 + i * (rowH + gap);
-    const amp = 12 + abs(groupSamplers[i].sample(i * 0.22, t)) * 28;
-
-    stroke('#080808');
-    strokeWeight(i === active ? 3 : 1);
-    fill(i === active ? '#fffdfa' : '#f7f1e7');
-    rect(24, y, width - 48, rowH);
-    noStroke();
-
-    fill('#080808');
-    textSize(18);
-    text(preset.key.toUpperCase(), 40, y + 22);
-
-    fill(color(preset.color + 'aa'));
-    beginShape();
-    for (let x = left; x &lt;= width - 32; x += 14) {
-      const wave = Waves.wave(x * 0.016 + i * 0.3, {
-        group: preset.group,
-        shift: true,
-        shiftInterval: 3.4,
-        shiftDuration: 1,
-        t: t + i * 0.3,
-        amplitude: amp,
-        frequency: 0.82
-      });
-      vertex(x, y + rowH * 0.48 + wave);
-    }
-    for (let x = width - 32; x &gt;= left; x -= 14) {
-      vertex(x, y + rowH - 12);
-    }
-    endShape(CLOSE);
-  }
-}</code></pre>
+// each pool has its own voice
+const v = sampler.sample(i * 0.22, t);</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="pools">Copy code</button>
         <div class="ex-links">
@@ -353,123 +178,18 @@ function draw() {
         <div>preview: <span>motion, color, pulse, type</span></div>
         <div>result: <span>four roles, four behaviors</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-samplers">let motionSampler;
-let colorSampler;
-let pulseSampler;
-let typeSampler;
+      <pre class="ex-code-block"><code id="code-samplers">// one sampler per role - motion, color, pulse, type
+const motion = Waves.createSampler({ group: 'gentle', shift: true });
+const color  = Waves.createSampler({ group: 'all',    shift: true, range: [0, 1] });
+const pulse  = Waves.createSampler({ group: 'harsh',  shift: true, mode: 'wild',
+                                     unpredictability: 0.28 });
+const type   = Waves.createSampler({ group: ARRAY_GROUP, shift: true });
 
-const ARRAY_GROUP = [
-  'classic sine',
-  'mountain peaks',
-  'triangle sine',
-  'smooth solid sine',
-  'meta sine'
-];
-
-function setup() {
-  createCanvas(720, 420);
-  noStroke();
-  textFont('Oswald');
-
-  motionSampler = Waves.createSampler({
-    group: 'gentle',
-    shift: true,
-    shiftInterval: 5.5,
-    shiftDuration: 1.4,
-    range: [-1, 1],
-    frequency: 0.82
-  });
-
-  colorSampler = Waves.createSampler({
-    group: 'all',
-    shift: true,
-    shiftInterval: 6.2,
-    shiftDuration: 1.6,
-    range: [0, 1],
-    frequency: 0.56
-  });
-
-  pulseSampler = Waves.createSampler({
-    group: 'harsh',
-    shift: true,
-    shiftInterval: 4,
-    shiftDuration: 1.1,
-    range: [0, 1],
-    frequency: 1.05,
-    mode: 'wild',
-    unpredictability: 0.28
-  });
-
-  typeSampler = Waves.createSampler({
-    group: ARRAY_GROUP,
-    shift: true,
-    shiftInterval: 6.8,
-    shiftDuration: 1.5,
-    range: [-1, 1],
-    frequency: 0.7
-  });
-}
-
-function draw() {
-  background('#f4efe5');
-  const t = millis() / 1000;
-  const w = width * 0.42;
-  const h = height * 0.34;
-  const cells = [
-    [32, 32, 'motion'],
-    [width - w - 32, 32, 'color'],
-    [32, height - h - 32, 'pulse'],
-    [width - w - 32, height - h - 32, 'type']
-  ];
-
-  for (const cell of cells) {
-    const x = cell[0];
-    const y = cell[1];
-    const label = cell[2];
-    fill('#fffdfa');
-    stroke('#080808');
-    rect(x, y, w, h);
-    noStroke();
-    fill('#080808');
-    textSize(18);
-    text(label.toUpperCase(), x + 16, y + 24);
-
-    if (label === 'motion') {
-      const mx = x + w * 0.5 + motionSampler.sample(0.2, t) * w * 0.22;
-      const my = y + h * 0.62 + motionSampler.sample(0.45, t + 1) * h * 0.18;
-      fill('#174cff');
-      circle(mx, my, 42);
-    }
-
-    if (label === 'color') {
-      const v = colorSampler.sample(0.3, t);
-      const shades = ['#174cff', '#ff3b2f', '#d7ff22', '#ff4fb3', '#00c7ff'];
-      const idx = constrain(floor(v * shades.length), 0, shades.length - 1);
-      fill(shades[idx]);
-      rect(x + 16, y + 40, (w - 32) * v, h - 56);
-    }
-
-    if (label === 'pulse') {
-      for (let i = 0; i &lt; 8; i++) {
-        const power = pulseSampler.sample(i * 0.18, t);
-        fill(i % 2 === 0 ? '#ff3b2f' : '#080808');
-        rect(x + 16 + i * 22, y + h - 18 - power * 72, 14, power * 72);
-      }
-    }
-
-    if (label === 'type') {
-      let tx = x + 18;
-      textSize(42);
-      for (let i = 0; i &lt; 4; i++) {
-        const ch = 'WAVE'[i];
-        const dy = typeSampler.sample(i * 0.25, t) * 8;
-        fill(i === 1 ? '#ff4fb3' : '#080808');
-        text(ch, tx, y + h * 0.62 + dy);
-        tx += textWidth(ch) * 0.95;
-      }
-    }
-  }
-}</code></pre>
+// each layer responds at its own tempo
+const dx       = motion.sample(0, t) * 40;
+const fillIdx  = floor(color.sample(0, t) * shades.length);
+const power    = pulse.sample(i * 0.18, t);     // jagged
+const wobbleY  = type.sample(i * 0.25, t) * 8;  // typographic drift</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="samplers">Copy code</button>
         <div class="ex-links">
@@ -509,61 +229,16 @@ function draw() {
         <div>preview: <span>line -> ribbon -> band</span></div>
         <div>result: <span>wave as layout material</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-ribbons">function drawRibbon(xOffset, y, thickness, amp, group, tint) {
-  fill(color(tint));
-  beginShape();
-  for (let x = -20; x &lt;= width + 20; x += 14) {
-    vertex(x, y + Waves.wave(x * 0.015 + xOffset, {
-      group: group,
-      shift: true,
-      shiftInterval: 3.6,
-      shiftDuration: 1.05,
-      t: millis() / 1000,
-      amplitude: amp,
-      frequency: 0.78
-    }));
-  }
-  for (let x = width + 20; x &gt;= -20; x -= 14) {
-    vertex(x, y + thickness);
-  }
-  endShape(CLOSE);
+      <pre class="ex-code-block"><code id="code-ribbons">// wave forms the upper edge - close it back as a ribbon
+fill('#174cffaa');
+beginShape();
+for (let x = 0; x &lt;= width; x += 14) {
+  vertex(x, y + Waves.wave(x * 0.015, {
+    group: 'gentle', shift: true, t, amplitude: 22
+  }));
 }
-
-function setup() {
-  createCanvas(760, 420);
-  noStroke();
-}
-
-function draw() {
-  background('#f4efe5');
-
-  stroke('#080808');
-  noFill();
-  beginShape();
-  for (let x = -20; x &lt;= width + 20; x += 14) {
-    vertex(x, 90 + Waves.wave(x * 0.015, {
-      group: 'gentle',
-      shift: true,
-      shiftInterval: 3.5,
-      shiftDuration: 1,
-      t: millis() / 1000,
-      amplitude: 16,
-      frequency: 0.82
-    }));
-  }
-  endShape();
-
-  noStroke();
-  drawRibbon(0.2, 170, 26, 22, 'gentle', '#174cff88');
-  drawRibbon(0.6, 275, 54, 46, 'harsh', '#ff3b2faa');
-
-  fill('#080808');
-  textFont('Oswald');
-  textSize(18);
-  text('LINE', 24, 62);
-  text('FILLED RIBBON', 24, 140);
-  text('EDITORIAL BAND', 24, 242);
-}</code></pre>
+for (let x = width; x &gt;= 0; x -= 14) vertex(x, y + 26);  // bottom edge
+endShape(CLOSE);</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="ribbons">Copy code</button>
         <div class="ex-links">
@@ -603,57 +278,20 @@ function draw() {
         <div>preview: <span>binary field rendered as monitor panel</span></div>
         <div>result: <span>visual proof module</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-grid">const GROUP_PRESETS = [
-  { key: 'gentle', group: 'gentle', color: '#174cff' },
-  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
-  { key: 'all', group: 'all', color: '#d7ff22' }
-];
+      <pre class="ex-code-block"><code id="code-grid">// createGrid - a binary 2D field driven by two waves
+const g = Waves.createGrid(24, 12, {
+  group: 'harsh',
+  threshold: 0.12        // cells where waveRow(row) + waveCol(col) > 0.12 = on
+});
 
-let grids = [];
-
-function setup() {
-  createCanvas(720, 420);
-  noStroke();
-  textFont('Oswald');
-
-  grids = GROUP_PRESETS.map(function(preset, i) {
-    return Waves.createGrid(24, 12, {
-      group: preset.group,
-      threshold: preset.key === 'harsh' ? 0.12 : 0,
-      speed: 0.42 + i * 0.08,
-      seed: 700 + i * 20
-    });
-  });
-}
-
-function draw() {
-  background('#f4efe5');
-  const t = millis() / 1000;
-  const active = floor(t / 5) % GROUP_PRESETS.length;
-  const cells = grids[active].sample(t);
-  const x = 90;
-  const y = 56;
-  const cols = 24;
-  const rows = 12;
-  const cw = 540 / cols;
-  const ch = 270 / rows;
-
-  fill('#080808');
-  rect(x - 8, y - 8, 556, 286);
-  fill('#f4efe5');
-  rect(x, y, 540, 270);
-
-  for (let row = 0; row &lt; rows; row++) {
-    for (let col = 0; col &lt; cols; col++) {
-      const on = cells[row * cols + col] === 1;
-      fill(on ? GROUP_PRESETS[active].color : '#ece5d7');
-      rect(x + col * cw, y + row * ch, cw - 1, ch - 1);
-    }
+// per frame: read all cells in one call
+const cells = g.sample(t);
+for (let row = 0; row &lt; g.rows; row++) {
+  for (let col = 0; col &lt; g.cols; col++) {
+    const on = cells[row * g.cols + col] === 1;
+    fill(on ? '#ff3b2f' : '#ece5d7');
+    rect(col * cw, row * ch, cw, ch);
   }
-
-  fill('#080808');
-  textSize(18);
-  text('CREATEGRID / GROUP: ' + GROUP_PRESETS[active].key.toUpperCase(), 90, 360);
 }</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="grid">Copy code</button>
@@ -694,60 +332,17 @@ function draw() {
         <div>preview: <span>one word, offset per letter</span></div>
         <div>result: <span>typography that breathes</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-title">const ARRAY_GROUP = [
-  'classic sine',
-  'mountain peaks',
-  'triangle sine',
-  'smooth solid sine',
-  'meta sine'
-];
+      <pre class="ex-code-block"><code id="code-title">// one sampler offsets each letter at a different sample position
+const type = Waves.createSampler({ group: ARRAY_GROUP, shift: true });
 
-let typeSampler;
-let colorSampler;
-
-function setup() {
-  createCanvas(760, 300);
-  noStroke();
-  textFont('Oswald');
-
-  typeSampler = Waves.createSampler({
-    group: ARRAY_GROUP,
-    shift: true,
-    shiftInterval: 6.6,
-    shiftDuration: 1.5,
-    range: [-1, 1],
-    frequency: 0.72
-  });
-
-  colorSampler = Waves.createSampler({
-    group: 'all',
-    shift: true,
-    shiftInterval: 6,
-    shiftDuration: 1.4,
-    range: [0, 1],
-    frequency: 0.58
-  });
+textSize(110);
+let cursor = x;
+for (let i = 0; i &lt; word.length; i++) {
+  const wobble = type.sample(i * 0.24, t) * 6;
+  text(word[i], cursor, y + wobble);
+  cursor += textWidth(word[i]) * 0.97;
 }
-
-function drawKineticWord(word, x, y, size, t) {
-  textSize(size);
-  let cursor = x;
-  for (let i = 0; i &lt; word.length; i++) {
-    const ch = word[i];
-    const wobble = typeSampler.sample(i * 0.24, t) * size * 0.05;
-    const accent = colorSampler.sample(i * 0.18, t);
-    const colors = ['#174cff', '#ff3b2f', '#d7ff22', '#ff4fb3'];
-    const tone = colors[constrain(floor(accent * colors.length), 0, colors.length - 1)];
-    fill(i === 3 || i === 5 ? tone : '#080808');
-    text(ch, cursor, y + wobble);
-    cursor += textWidth(ch) * 0.97;
-  }
-}
-
-function draw() {
-  background('#f4efe5');
-  drawKineticWord('p5.waves', 34, 150, 110, millis() / 1000);
-}</code></pre>
+// the word stays typographic first, alive second</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="title">Copy code</button>
         <div class="ex-links">
@@ -787,69 +382,17 @@ function draw() {
         <div>preview: <span>mix bar + wave labels + markers</span></div>
         <div>result: <span>state rendered as composition</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-status">const GROUP_PRESETS = [
-  { key: 'gentle', group: 'gentle', color: '#174cff' },
-  { key: 'harsh', group: 'harsh', color: '#ff3b2f' },
-  { key: 'all', group: 'all', color: '#d7ff22' }
-];
+      <pre class="ex-code-block"><code id="code-status">// the sampler exposes its own state - render it as composition
+sampler.sample(0, t);              // pump state
+const mixBar = sampler.shifting ? sampler.mix : 0;
 
-let samplers = [];
-let pulseSampler;
+fill('#080808');                   // track
+rect(44, 92, 560, 32);
+fill(activeColor);                 // fill = morph progress
+rect(44, 92, 560 * mixBar, 32);
 
-function setup() {
-  createCanvas(760, 260);
-  noStroke();
-  textFont('Oswald');
-
-  samplers = GROUP_PRESETS.map(function(preset, i) {
-    return Waves.createSampler({
-      group: preset.group,
-      shift: true,
-      shiftInterval: 3.4 + i * 0.35,
-      shiftDuration: 1,
-      range: [-1, 1],
-      frequency: 0.7 + i * 0.08
-    });
-  });
-
-  pulseSampler = Waves.createSampler({
-    group: 'harsh',
-    shift: true,
-    shiftInterval: 4,
-    shiftDuration: 1.2,
-    range: [0, 1],
-    frequency: 1.08,
-    mode: 'wild',
-    unpredictability: 0.28
-  });
-}
-
-function draw() {
-  background('#f4efe5');
-  const t = millis() / 1000;
-  const active = floor(t / 4.8) % GROUP_PRESETS.length;
-  const sampler = samplers[active];
-  sampler.sample(0.3, t);
-  const mix = sampler.shifting ? sampler.mix : 0.55;
-
-  fill('#080808');
-  rect(44, 92, 560, 32);
-  fill(GROUP_PRESETS[active].color);
-  rect(44, 92, 560 * mix, 32);
-
-  fill(mix &gt; 0.55 ? '#080808' : '#f4efe5');
-  textSize(16);
-  text('GROUP ' + GROUP_PRESETS[active].key.toUpperCase() + ' / ' + (sampler.waveName || 'WAVE'), 56, 113);
-
-  fill('#f4efe5');
-  text('NEXT ' + (sampler.targetName || sampler.waveName || 'WAVE'), 430, 113);
-
-  for (let i = 0; i &lt; 6; i++) {
-    const on = pulseSampler.sample(i * 0.15, t) &gt; 0.42;
-    fill(on ? '#080808' : '#d8d0c2');
-    rect(628 + i * 16, 100, 9, 16);
-  }
-}</code></pre>
+text('GROUP / ' + sampler.waveName, 56, 113);
+text('NEXT '   + sampler.targetName, 430, 113);</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="status">Copy code</button>
         <div class="ex-links">
@@ -889,73 +432,15 @@ function draw() {
         <div>preview: <span>pulse-gated drifting vocabulary</span></div>
         <div>result: <span>ambient language field</span></div>
       </div>
-      <pre class="ex-code-block"><code id="code-cloud">const WORDS = ['pure sine', 'noise', 'modulo', 'quantized', 'peak valley'];
+      <pre class="ex-code-block"><code id="code-cloud">// pulse gates visibility, motion drifts position, type wobbles
+const a = pulse.sample(seed * 0.13, t);
+if (a &lt; 0.34) continue;          // below threshold = invisible this frame
 
-let motionSampler;
-let pulseSampler;
-let typeSampler;
-let particles = [];
+const dx = motion.sample(seed * 0.31, t) * 22;
+const dy = type.sample(seed * 0.19, t + 1.5) * 16;
 
-function setup() {
-  createCanvas(760, 360);
-  noStroke();
-  textFont('Oswald');
-
-  motionSampler = Waves.createSampler({
-    group: 'gentle',
-    shift: true,
-    shiftInterval: 5.5,
-    shiftDuration: 1.3,
-    range: [-1, 1],
-    frequency: 0.8
-  });
-
-  pulseSampler = Waves.createSampler({
-    group: 'harsh',
-    shift: true,
-    shiftInterval: 4,
-    shiftDuration: 1.1,
-    range: [0, 1],
-    frequency: 1.1,
-    mode: 'wild',
-    unpredictability: 0.25
-  });
-
-  typeSampler = Waves.createSampler({
-    group: 'all',
-    shift: true,
-    shiftInterval: 6.2,
-    shiftDuration: 1.4,
-    range: [-1, 1],
-    frequency: 0.68
-  });
-
-  for (let i = 0; i &lt; 24; i++) {
-    particles.push({
-      seed: i,
-      x: random(width),
-      y: random(height),
-      word: random(WORDS),
-      size: random(13, 24)
-    });
-  }
-}
-
-function draw() {
-  background('#f4efe5');
-  const t = millis() / 1000;
-
-  for (const item of particles) {
-    const vx = motionSampler.sample(item.seed * 0.31, t) * 22;
-    const vy = typeSampler.sample(item.seed * 0.19, t + 1.5) * 16;
-    const a = pulseSampler.sample(item.seed * 0.13, t);
-    if (a &lt; 0.34) continue;
-
-    fill(color('#080808' + hex(round(map(a, 0.34, 1, 40, 150)), 2)));
-    textSize(item.size);
-    text(item.word, item.x + vx, item.y + vy);
-  }
-}</code></pre>
+fill(0, map(a, 0.34, 1, 40, 150));
+text(word, x + dx, y + dy);</code></pre>
       <div class="guide-action-row">
         <button type="button" class="copy-btn" data-copy="cloud">Copy code</button>
         <div class="ex-links">
@@ -973,7 +458,7 @@ function draw() {
       <p class="section-desc">The complete composition, live. Every module above runs together here.</p>
     </div>
     <div class="guide-poster-stage">
-      <iframe class="guide-poster-frame" src="./poster.html" title="p5.waves curation engine full poster" loading="lazy"></iframe>
+      <iframe class="guide-poster-frame" src="./poster.html" title="p5.waves curation engine full poster"></iframe>
     </div>
     <div class="guide-poster-links">
       <a class="ex-full-link" href="./poster.html" target="_blank">-> open full poster</a>

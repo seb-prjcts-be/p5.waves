@@ -99,7 +99,15 @@
       button.addEventListener('click', async function() {
         const key = button.getAttribute('data-copy');
         const source = document.getElementById('code-' + key);
-        const text = source ? source.textContent : '';
+        let text = '';
+        if (source) {
+          if (source.tagName === 'CODE') {
+            text = source.textContent;
+          } else {
+            const codes = source.querySelectorAll('code');
+            text = Array.from(codes).map(function(c) { return c.textContent; }).join('\n');
+          }
+        }
         const original = button.textContent;
 
         try {

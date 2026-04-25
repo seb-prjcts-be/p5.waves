@@ -338,7 +338,7 @@ h1, h2, h3, .nav-logo, .stat-num, .cta-btn, .hero-badge {
 }
 
 .code-preview {
-  background: #111;
+  background: #1f1d1a;
   padding: 0.75rem;
   margin-top: 0.25rem;
 }
@@ -632,7 +632,7 @@ section[id] {
   width: 100%;
   margin: 0;
   padding: 1rem 1.2rem;
-  background: #111;
+  background: #1f1d1a;
   color: #ccc;
   font-family: 'Courier New', monospace;
   font-size: 0.78rem;
@@ -759,7 +759,7 @@ section[id] {
   display: inline-block;
   font-size: 0.82rem;
   font-family: 'Courier New', monospace;
-  background: #111;
+  background: #1f1d1a;
   color: #ccc;
   padding: 0.15em 0.5em;
   margin-bottom: 0.45rem;
