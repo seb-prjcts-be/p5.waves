@@ -184,6 +184,10 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 
 ---
 
+## How this was made
+
+The starting point was small: a list of wave formulas curated by Ted Davis, and a 16×16 grid sketch I built around them for Genuary 2026. The path from that sketch to this library — caching, seeding, normalisation, morphing, shifting, wild mode, samplers — was built in heavy collaboration with AI assistants. Design decisions, curation, and judgement calls are mine; implementation was a partnership. [Full story →](https://seb-prjcts-be.github.io/p5.waves/docs/about.html)
+
 ## Credits
 
 - `tw@GenerativePunk`, `gh@ffd8` ([Ted Davis](https://teddavis.org), [Oscillation Sandbox](https://github.com/ffd8/oscillation-sandbox)) - wave formula dataset

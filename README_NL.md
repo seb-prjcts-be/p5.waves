@@ -184,6 +184,10 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 
 ---
 
+## Hoe dit gemaakt is
+
+Het beginpunt was klein: een lijst golfformules gecureerd door Ted Davis, en een 16×16 grid-sketch die ik ermee bouwde voor Genuary 2026. De weg van die sketch naar deze library — caching, seeding, normalisatie, morphing, shifting, wild mode, samplers — is gebouwd in nauwe samenwerking met AI-assistenten. Ontwerpbeslissingen, curatie en oordeelsvorming zijn van mij; de implementatie was een samenwerking. [Volledig verhaal →](https://seb-prjcts-be.github.io/p5.waves/docs/about.html)
+
 ## Credits
 
 - `tw@GenerativePunk`, `gh@ffd8` ([Ted Davis](https://teddavis.org), [Oscillation Sandbox](https://github.com/ffd8/oscillation-sandbox)) - golfformule dataset
