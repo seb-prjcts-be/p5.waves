@@ -1,6 +1,7 @@
 .claude/
 .github/
 _audits/
+tools/
 CLAUDE.md
 AGENTS.md
 HISTORY.md
