@@ -395,6 +395,7 @@
       range = [toNumber(secondParam.range[0], -1), toNumber(secondParam.range[1], 1)];
     }
     const shift         = !!secondParam.shift;
+    // Guards keep cycleDur > 0 so era arithmetic never divides by zero.
     const shiftInterval = Math.max(0, toNumber(secondParam.shiftInterval, 3));
     const shiftDuration = Math.max(1e-6, toNumber(secondParam.shiftDuration, 1));
     const groupPool     = resolveGroup(secondParam.group);
@@ -519,6 +520,7 @@
 
     // ─── Shift mode ──────────────────────────────────────────
     if (opts.shift) {
+      // Guards keep cycleDur > 0 so era arithmetic never divides by zero.
       const shiftInt = Math.max(0, toNumber(opts.shiftInterval, 3));
       const shiftDur = Math.max(1e-6, toNumber(opts.shiftDuration, 1));
       const cycleDur = shiftInt + shiftDur;
