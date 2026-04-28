@@ -570,7 +570,7 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
     p.draw = function() {
       p.background(255);
       const t = p.millis() / 1000;
-      const sz = p.width / COLS;
+      const sz = p.floor(p.width / COLS);
       const rows = p.floor(p.height / sz);
       p.textSize(sz * 0.9);
       for (let row = 0; row < rows; row++) {

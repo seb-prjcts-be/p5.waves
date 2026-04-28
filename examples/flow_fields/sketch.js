@@ -25,7 +25,7 @@ function setup() {
 function draw() {
   background(255);
   let t = millis() / 1000;
-  let sz = width / COLS;
+  let sz = floor(width / COLS);
   textSize(sz * 0.9);
 
   for (let row = 0; row < ROWS; row++) {
