@@ -67,6 +67,11 @@
     'gentle', 'gentle', 'gentle', 'gentle', 'gentle'
   ];
 
+  if (CHARACTER.length !== WAVES.length) {
+    throw new Error('p5.waves: CHARACTER length (' + CHARACTER.length +
+      ') must match WAVES length (' + WAVES.length + ')');
+  }
+
   const GENTLE_INDICES = [];
   const HARSH_INDICES  = [];
   for (let i = 0; i < CHARACTER.length; i++) {
@@ -383,16 +388,15 @@
     const amplitude      = toNumber(secondParam.amplitude, 100);
     const frequency      = toNumber(secondParam.frequency, 1);
     const phase          = toNumber(secondParam.phase, 0);
-    const rawMode        = secondParam.mode;
-    const mode           = (rawMode === 'wild' || rawMode === 'Wild' || rawMode === 'WILD') ? 'wild' : 'stable';
+    const mode           = normalizeName(secondParam.mode || 'stable') === 'wild' ? 'wild' : 'stable';
     const unpredictability = toUnit(secondParam.unpredictability, 0);
     let range = null;
     if (Array.isArray(secondParam.range) && secondParam.range.length >= 2) {
       range = [toNumber(secondParam.range[0], -1), toNumber(secondParam.range[1], 1)];
     }
     const shift         = !!secondParam.shift;
-    const shiftInterval = toNumber(secondParam.shiftInterval, 3);
-    const shiftDuration = toNumber(secondParam.shiftDuration, 1);
+    const shiftInterval = Math.max(0, toNumber(secondParam.shiftInterval, 3));
+    const shiftDuration = Math.max(1e-6, toNumber(secondParam.shiftDuration, 1));
     const groupPool     = resolveGroup(secondParam.group);
 
     const internalSeed = seedFrom(seed);
@@ -515,8 +519,8 @@
 
     // ─── Shift mode ──────────────────────────────────────────
     if (opts.shift) {
-      const shiftInt = toNumber(opts.shiftInterval, 3);
-      const shiftDur = toNumber(opts.shiftDuration, 1);
+      const shiftInt = Math.max(0, toNumber(opts.shiftInterval, 3));
+      const shiftDur = Math.max(1e-6, toNumber(opts.shiftDuration, 1));
       const cycleDur = shiftInt + shiftDur;
       const hasUserWave = opts.wave !== undefined && !Array.isArray(opts.wave);
       // Runtime entropy so each session produces a different sequence
