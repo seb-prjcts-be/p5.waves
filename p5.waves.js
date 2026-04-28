@@ -1,7 +1,7 @@
 ﻿/*!
  * p5.waves
  * Wave sampling for p5.js. Always returns a number.
- * Version 3.2.6
+ * Version 3.2.7
  * Author: seb@prjcts
  * License: MIT
  */

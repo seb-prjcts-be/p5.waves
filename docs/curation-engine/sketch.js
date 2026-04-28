@@ -355,7 +355,7 @@ function drawHero(t) {
   textAlign(LEFT, TOP);
   textSize(labelSize);
   fill(PALETTE.ink);
-  text('P5.JS ADDON LIBRARY / V3.2.6', heroX, m);
+  text('P5.JS ADDON LIBRARY / V3.2.7', heroX, m);
 
   const titleSize = fitSize('p5.waves', heroW, width < 760 ? 98 : 190, 48, DISPLAY);
   drawKineticWord('p5.waves', heroX, topY, titleSize, t);
