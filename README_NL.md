@@ -1,6 +1,6 @@
 ﻿# p5.waves
 
-**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/wave_lab/)**
+**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)**
 
 34 golfvormen voor p5.js. Eén functie-aanroep, één getal terug.
 
@@ -169,7 +169,6 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 
 ## Voorbeelden
 
-- `wave_lab` - interactieve speeltuin
 - `wave_shift` - auto-wisselende golfformules
 - `wave_params` - amplitude, frequency, phase
 - `wild_mode` - wild mode

@@ -1,6 +1,6 @@
 ﻿# p5.waves
 
-**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves/examples/wave_lab/)**
+**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)**
 
 34 wave shapes for p5.js. One function call, one number back.
 
@@ -169,7 +169,6 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 
 ## Examples
 
-- `wave_lab` - interactive playground
 - `wave_shift` - auto-cycling wave formulas
 - `wave_params` - amplitude, frequency, phase
 - `wild_mode` - wild mode
