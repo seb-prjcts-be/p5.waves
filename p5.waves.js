@@ -114,10 +114,12 @@
     }
   }
 
-  let _closingWarned = false;
+  // Session-wide flag on the global (window in browser) so the warning fires
+  // once per page-load even if the IIFE is evaluated multiple times — e.g.
+  // double <script> tag, live-reload re-injection, iframe sharing the global.
   function warnClosingExperimental() {
-    if (_closingWarned) return;
-    _closingWarned = true;
+    if (global.__p5wavesClosingWarned) return;
+    global.__p5wavesClosingWarned = true;
     if (typeof console !== 'undefined' && console.info) {
       console.info("[p5.waves] 'closing' group is experimental — period values " +
         "may shift by ~0.001 in minor versions. Fine for visuals; not for CNC, " +
