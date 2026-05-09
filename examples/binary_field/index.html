@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Field | p5.waves examples</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Showcase</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/curation-engine/index.html">Curation Engine</a></li>
+      <li><a href="../../docs/waves.html">Waves</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+      <li><a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">two createSampler() calls</div>
+      <h1>Binary Field</h1>
+      <p>A 2D pattern from two samplers. Each cell asks one question: is <code>rowSampler(row) + colSampler(col) &gt; 0</code>? The library ships no grid wrapper. The nested loop is the recipe. With <code>shift: true</code> on both samplers, the field's character keeps evolving. Sometimes interference, sometimes stripes, sometimes checker. The label at the top names the current wave-pair.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code class="language-javascript">const rowS = Waves.createSampler({
+  shift: true, shiftInterval: 4, shiftDuration: 1,
+  range: [-1, 1], seed: 1
+});
+const colS = Waves.createSampler({
+  shift: true, shiftInterval: 4.5, shiftDuration: 1.2,
+  range: [-1, 1], seed: 2
+});
+
+// In draw - sum, threshold, fill:
+const t = millis() / 1000;
+const offset = t * 0.4;
+for (let row = 0; row &lt; ROWS; row++) {
+  const rv = rowS.sample(row * 5 + offset, t);
+  for (let col = 0; col &lt; COLS; col++) {
+    const cv = colS.sample(col * 2.5 - offset, t);
+    fill((rv + cv) &gt; 0 ? 15 : 230);
+    rect(col * cw, row * ch, cw, ch);
+  }
+}</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">← All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v3.3.0 &nbsp;&middot;&nbsp; p5.js v2.2.2</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="sketch.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+</body>
+</html>
