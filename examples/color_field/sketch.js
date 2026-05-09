@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// Color Field
 // Two wave samplers with shift drive hue and brightness across a 2D field.
 // Hue shifts every 4s, brightness every 5s - desynchronised for variety.

@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 // Wave Shift
 // Filled ribbons that auto-shift between random wave formulas.
 // Color flows from red to blue across the strips.

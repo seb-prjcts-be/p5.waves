@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 // Spiky Lissajous - a classic a:b Lissajous curve, but sin() is
 // replaced by a spiky p5.waves formula. The pen traces the curve over
 // one frozen-phase cycle, then lands exactly back on the start marker -

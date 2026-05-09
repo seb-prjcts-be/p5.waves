@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// Morph Wave
 // A field of horizontal lines where each row blends two wave formulas.
 // Top rows = pure waveA. Bottom rows = pure waveB. Middle = the morph.

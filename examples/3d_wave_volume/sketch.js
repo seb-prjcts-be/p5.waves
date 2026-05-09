@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// 3D Wave Volume (WEBGL)
 // 16×16 grid with 3 shift-samplers - one per axis.
 // Every axis breathes independently, creating a living 3D volume.

@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// Time Strata
 // Time is a plain number - full manual control.
 // Mouse X scrubs a time window; each layer is frozen at its own t.

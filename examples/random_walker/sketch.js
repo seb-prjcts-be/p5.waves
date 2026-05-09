@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// Not So Random Walker
 // No angles, no steps - wave output IS the velocity.
 // Five trails ride two shift-samplers as raw displacement.

@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// Flow Fields
 // A grid of ASCII characters forms a flow field.
 // Each cell's direction comes from waves() - like noise(), but with structure.

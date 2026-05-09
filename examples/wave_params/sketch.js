@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// Shape Parameters
 // mouseX = frequency, mouseY = amplitude.
 // Wave formula shifts automatically.

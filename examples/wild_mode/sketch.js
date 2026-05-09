@@ -1,3 +1,5 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 ﻿// Wild Mode
 // Grid of circles: left half stable, right half wild.
 // mouseX controls unpredictability - drag to feel the chaos build.

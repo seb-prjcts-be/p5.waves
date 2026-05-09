@@ -1,7 +1,9 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
 // Binary Field
 // Two samplers, summed per cell, thresholded into a 2D pattern.
 // Both samplers shift independently, so the field's character keeps
-// evolving — sometimes interference, sometimes stripes, sometimes checker.
+// evolving. Sometimes interference, sometimes stripes, sometimes checker.
 
 const COLS = 30;
 const ROWS = 20;
