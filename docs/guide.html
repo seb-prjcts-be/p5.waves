@@ -331,38 +331,28 @@ let sz = Waves.createSampler({ seed: 1, range: [-80, 80] });
 // Different seed = different wave = uncorrelated motion</code></pre>
 
 
-    <!-- ═══════════════════════════════════ CREATEGRID -->
-    <h2>createGrid()  - Instant 2D Patterns</h2>
-    <p>Imagine a checkerboard, but instead of black and white squares, each square has a number in it. <code>createGrid(10, 10)</code> makes a 10&times;10 grid &mdash; 100 squares. Every time you call <code>.sample(t)</code>, it fills all 100 squares with wave values at once. One wave runs across the rows, a different wave runs down the columns. Where they overlap, you get a pattern.</p>
-    <p><strong>The formula:</strong> each cell is the <em>sum</em> of the two waves &mdash; <code>cell = waveRow(row) + waveCol(col)</code>. This is why the choice of waves matters: two sines at the same frequency give interference patterns, two pulses give a checkerboard, a sine + a pulse gives striped bands. <code>threshold: 0</code> means "cells where the sum is above zero turn on".</p>
-    <p>You can use those numbers for anything &mdash; color, size, on/off. The <code>threshold</code> option turns it into a binary grid: every square is either 0 or 1, like pixels on or off.</p>
+    <!-- ═══════════════════════════════════ BINARY FIELDS -->
+    <h2>Binary Fields  - Two Waves, Threshold the Sum</h2>
+    <p>Two-dimensional patterns from one principle: take two samplers, sum their outputs per cell, and threshold. One wave runs across the rows, another down the columns. Where they line up, the cell turns on; where they don't, it turns off.</p>
+    <p><strong>The formula:</strong> <code>cell = rowSampler(row) + colSampler(col) &gt; threshold</code>. This is why the choice of waves matters: two sines at the same frequency give interference patterns, two pulses give a checkerboard, a sine + a pulse gives striped bands. The library doesn't ship a grid wrapper - the nested loop is short enough to write directly, and that gives you full control (animate via position offset, swap waves with shift mode, layer multiple grids, anything).</p>
 
-    <pre class="code-block"><code class="language-javascript">let g = Waves.createGrid(14, 14, {
-  waveRow:   'classic sine',
-  waveCol:   'triangle',
-  threshold: 0,       // above 0 = on, below 0 = off
-  speed:     1
-});
+    <pre class="code-block"><code class="language-javascript">const rowS = Waves.createSampler({ wave: 'classic sine', range: [-1, 1] });
+const colS = Waves.createSampler({ wave: 'triangle',     range: [-1, 1] });
 
 function draw() {
-  t += 0.02;  // declared as let t = 0 above setup()
-  let cells = g.sample(t);
-  // cells is a Uint8Array of 0s and 1s
-  // cells[row * g.cols + col]
+  let t = millis() / 1000;
+  for (let row = 0; row &lt; rows; row++) {
+    let rv = rowS.sample(row * 5 + t);    // x-step ~ one wave period
+    for (let col = 0; col &lt; cols; col++) {
+      let cv = colS.sample(col * 2.5 - t);
+      let on = (rv + cv) &gt; 0;             // threshold
+      fill(on ? 0 : 245);
+      rect(col * cw, row * ch, cw, ch);
+    }
+  }
 }</code></pre>
 
-    <table class="opts-table">
-      <tr><th>Option</th><th>What it does</th><th>Default</th></tr>
-      <tr><td><code>waveRow</code></td><td>Wave for the rows.</td><td>random</td></tr>
-      <tr><td><code>waveCol</code></td><td>Wave for the columns.</td><td>random</td></tr>
-      <tr><td><code>seed</code></td><td>Auto-picks two different waves for you.</td><td><code>0</code></td></tr>
-      <tr><td><code>group</code></td><td>Pool for seed-picked waves: <code>'gentle'</code>, <code>'harsh'</code>, <code>'all'</code>, or an array.</td><td><code>'all'</code></td></tr>
-      <tr><td><code>range</code></td><td>Continuous output. Returns <code>Float32Array</code>.</td><td><code>null</code></td></tr>
-      <tr><td><code>threshold</code></td><td>Binary on/off. Returns <code>Uint8Array</code>.</td><td><code>null</code></td></tr>
-      <tr><td><code>speed</code></td><td>How fast the pattern moves.</td><td><code>1</code></td></tr>
-    </table>
-
-    <div class="callout"><p><span class="note warn">heads up</span> The output array is <strong>reused</strong> between calls. If you need to keep a copy: <code>new Float32Array(g.sample(t))</code>.</p></div>
+    <p><strong>Variations.</strong> Make the samplers <code>shift: true</code> and the waves themselves cycle - the field evolves character over time. Tighten the threshold to <code>0.12</code> for sparser marks, or use <code>-0.12</code> for denser. Replace <code>fill(on ? 0 : 245)</code> with a colour mapping for an analog field. The <a href="about.html">about page</a> ships the original 16&times;16 origin grid (the sketch that started p5.waves) - the simplest possible version, with auto-advance when the field goes uniform.</p>
 
 
     <!-- ═══════════════════════════════════ WILD MODE -->
@@ -405,7 +395,6 @@ Waves.wave(x, { wave: 3 })   // index 3 -> exactly wave #3 (square)</code></pre>
       <tr><th>Always works</th><th>p5 global mode</th><th>p5 instance mode</th></tr>
       <tr><td><code>Waves.wave(y, opts)</code></td><td><code>waves(y, opts)</code></td><td><code>p.waves(y, opts)</code></td></tr>
       <tr><td><code>Waves.createSampler(opts)</code></td><td><code>createWaveSampler(opts)</code></td><td><code>p.createWaveSampler(opts)</code></td></tr>
-      <tr><td><code>Waves.createGrid(c, r, opts)</code></td><td><code>createWaveGrid(c, r, opts)</code></td><td><code>p.createWaveGrid(c, r, opts)</code></td></tr>
     </table>
     <p>Extras: <code>Waves.list()</code> returns all 34 formulas. <code>Waves.count</code> = 34. <code>Waves.data</code> = the raw formula array. <code>Waves.benchmark(config, n)</code> runs <code>n</code> wave calls and returns <code>{ iterations, ms, callsPerMs }</code>.</p>
 
@@ -440,12 +429,12 @@ fill(0, dotAlpha);</code></pre>
 // in draw:
 s.sample(x, millis() / 1000);</code></pre>
 
-    <h3>Binary grid</h3>
-    <pre class="code-block"><code class="language-javascript">let g = Waves.createGrid(20, 20, {
-  threshold: 0,
-  speed:     1
-});
-let cells = g.sample(t);</code></pre>
+    <h3>Binary field</h3>
+    <pre class="code-block"><code class="language-javascript">const rowS = Waves.createSampler({ range: [-1, 1] });
+const colS = Waves.createSampler({ seed: 1, range: [-1, 1] });
+// in draw, per cell:
+let v = rowS.sample(row * 5 + t) + colS.sample(col * 2.5 - t);
+let on = v &gt; 0;</code></pre>
 
     <h3>50 particles, each with its own wave</h3>
     <pre class="code-block"><code class="language-javascript">for (let i = 0; i &lt; 50; i++) {

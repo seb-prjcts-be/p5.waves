@@ -311,30 +311,29 @@ fill(255); circle(xs[drawnTo], ys[drawnTo], 6);</code></pre>
     </div>
   </section>
 
-  <!-- GRID -->
+  <!-- BINARY FIELD -->
   <section id="grid" class="section">
     <div class="section-header">
-      <div class="section-tag">Waves.createGrid()</div>
-      <h2>Wave <span class="accent">Grid</span></h2>
-      <p class="section-desc">One call fills a 2D grid. With <code>threshold</code>, each cell is on or off - a binary pattern that animates.</p>
+      <div class="section-tag">two samplers · sum · threshold</div>
+      <h2>Binary <span class="accent">Field</span></h2>
+      <p class="section-desc">Two samplers - one for rows, one for columns. Sum them per cell. Threshold the result. The whole 2D pattern from one nested loop.</p>
     </div>
     <div class="ex-preview">
       <div id="ex6" class="ex-canvas"></div>
-      <pre class="ex-code-block"><code class="language-javascript">// One call fills a 2D grid
-const grid = Waves.createGrid(28, 20, {
-  waveRow: 'smooth solid sine',
-  waveCol: 'ramp up sine',
-  threshold: 0,  // binary: on or off
-  speed: 1
-});
+      <pre class="ex-code-block"><code class="language-javascript">// Two samplers, one for each axis
+const rowS = Waves.createSampler({ wave: 'smooth solid sine', range: [-1, 1] });
+const colS = Waves.createSampler({ wave: 'ramp up sine',     range: [-1, 1] });
 
-// Sample once per frame
-t += 0.004;
-const cells = grid.sample(t);
-
-// Draw: 1 = black, 0 = light
-fill(cells[row * 28 + col] === 1 ? 15 : 225);
-rect(col * cw, row * ch, cw, ch);</code></pre>
+// Per frame: nested loop, sum, threshold
+let t = millis() / 1000;
+for (let row = 0; row &lt; rows; row++) {
+  let rv = rowS.sample(row * 5 + t);    // x-step ~ wave period
+  for (let col = 0; col &lt; cols; col++) {
+    let cv = colS.sample(col * 2.5 - t);
+    fill((rv + cv) &gt; 0 ? 15 : 225);     // 1 = black, 0 = light
+    rect(col * cw, row * ch, cw, ch);
+  }
+}</code></pre>
     </div>
   </section>
 
@@ -737,24 +736,26 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
     p.windowResized = function() { const w = cw('ex-spiky'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-spiky');
 
-  // ── Wave Grid ─────────────────────────────────────────────
+  // ── Binary Field ──────────────────────────────────────────
   new p5(function(p) {
-    let grid, t = 0;
+    let rowS, colS, t = 0;
     const COLS = 28, ROWS = 20;
     p.setup = function() {
       const w = cw('ex6');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex6');
       p.noStroke();
-      grid = Waves.createGrid(COLS, ROWS, { waveRow: 'smooth solid sine', waveCol: 'ramp up sine', threshold: 0, speed: 1 });
+      rowS = Waves.createSampler({ wave: 'smooth solid sine', range: [-1, 1] });
+      colS = Waves.createSampler({ wave: 'ramp up sine',     range: [-1, 1] });
     };
     p.draw = function() {
       p.background(238);
       t += 0.004;
-      const cells = grid.sample(t);
       const cw2 = p.width / COLS, ch = p.height / ROWS;
       for (let row = 0; row < ROWS; row++) {
+        const rv = rowS.sample(row * 5 + t);
         for (let col = 0; col < COLS; col++) {
-          p.fill(cells[row * COLS + col] === 1 ? 15 : 225);
+          const cv = colS.sample(col * 2.5 - t);
+          p.fill((rv + cv) > 0 ? 15 : 225);
           p.rect(col * cw2, row * ch, cw2 - 0.5, ch - 0.5);
         }
       }

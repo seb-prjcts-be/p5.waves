@@ -123,29 +123,28 @@ Same options as `Waves.wave()`.
 
 ---
 
-## createGrid()
+## Binary fields
 
-Fill a 2D grid of wave values in one call.
-
-Each cell value is the **sum** of `waveRow` evaluated at its row and `waveCol` evaluated at its column: `cell = waveRow(row) + waveCol(col)`. Two sines give interference patterns; two pulses give a checkerboard.
+2D patterns from one principle: two samplers, sum per cell, threshold the result. Each cell is `rowSampler(row) + colSampler(col) > threshold`. Two sines give interference patterns; two pulses give a checkerboard. The library doesn't ship a grid wrapper — the nested loop is short enough to write yourself, and that gives you full control over animation, layering, and cell rendering.
 
 ```js
-let g = Waves.createGrid(20, 20, { threshold: 0, speed: 1 });
-let cells = g.sample(t);  // Uint8Array of 0/1
-// cells[row * g.cols + col]
+const rowS = Waves.createSampler({ wave: 'classic sine', range: [-1, 1] });
+const colS = Waves.createSampler({ wave: 'triangle',     range: [-1, 1] });
+
+function draw() {
+  const t = millis() / 1000;
+  for (let row = 0; row < rows; row++) {
+    const rv = rowS.sample(row * 5 + t);   // x-step ~ one wave period
+    for (let col = 0; col < cols; col++) {
+      const cv = colS.sample(col * 2.5 - t);
+      fill((rv + cv) > 0 ? 0 : 245);       // threshold
+      rect(col * cw, row * ch, cw, ch);
+    }
+  }
+}
 ```
 
-| option | what it does | default |
-|---|---|---|
-| `waveRow` | Wave for rows. | random |
-| `waveCol` | Wave for columns. | random |
-| `seed` | Auto-picks two different waves. | `0` |
-| `group` | Pool for seed-picked waves: `'gentle'`, `'harsh'`, `'all'`, or an array. | `'all'` |
-| `range` | `[min, max]` -> Float32Array. | `null` |
-| `threshold` | Binary mode -> Uint8Array. Overrides range. | `null` |
-| `speed` | Time scale. | `1` |
-
-The output array is **reused** between calls. Copy it if you need to keep it.
+Make the samplers `shift: true` and the field evolves through wave pairs. Tighten the threshold for sparser marks. Replace the binary `fill()` with a colour mapping for an analog field. The `docs/about.html` origin grid (the sketch that started p5.waves) is the simplest possible reference.
 
 ---
 
@@ -155,7 +154,6 @@ The output array is **reused** between calls. Copy it if you need to keep it.
 |---|---|---|
 | `Waves.wave(y, opts)` | `waves(y, opts)` | `p.waves(y, opts)` |
 | `Waves.createSampler(opts)` | `createWaveSampler(opts)` | `p.createWaveSampler(opts)` |
-| `Waves.createGrid(c, r, opts)` | `createWaveGrid(c, r, opts)` | `p.createWaveGrid(c, r, opts)` |
 
 Also: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, n)`.
 

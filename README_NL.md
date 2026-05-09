@@ -123,29 +123,28 @@ Zelfde opties als `Waves.wave()`.
 
 ---
 
-## createGrid()
+## Binaire velden
 
-Vul een 2D-raster met golfwaarden in één aanroep.
-
-Elke celwaarde is de **som** van `waveRow` geëvalueerd op de rij en `waveCol` geëvalueerd op de kolom: `cel = waveRow(rij) + waveCol(kolom)`. Twee sines geven interferentiepatronen; twee pulsen geven een schaakbord.
+2D-patronen vanuit één principe: twee samplers, sommeer per cel, threshold het resultaat. Elke cel is `rowSampler(row) + colSampler(col) > threshold`. Twee sines geven interferentiepatronen; twee pulsen geven een schaakbord. De library biedt geen grid-wrapper — de nested loop is kort genoeg om zelf te schrijven, en dat geeft je volledige controle over animatie, layering, en cel-rendering.
 
 ```js
-let g = Waves.createGrid(20, 20, { threshold: 0, speed: 1 });
-let cells = g.sample(t);  // Uint8Array van 0/1
-// cells[row * g.cols + col]
+const rowS = Waves.createSampler({ wave: 'classic sine', range: [-1, 1] });
+const colS = Waves.createSampler({ wave: 'triangle',     range: [-1, 1] });
+
+function draw() {
+  const t = millis() / 1000;
+  for (let row = 0; row < rows; row++) {
+    const rv = rowS.sample(row * 5 + t);   // x-stap ~ één wave-periode
+    for (let col = 0; col < cols; col++) {
+      const cv = colS.sample(col * 2.5 - t);
+      fill((rv + cv) > 0 ? 0 : 245);       // threshold
+      rect(col * cw, row * ch, cw, ch);
+    }
+  }
+}
 ```
 
-| optie | wat het doet | standaard |
-|---|---|---|
-| `waveRow` | Golf voor rijen. | willekeurig |
-| `waveCol` | Golf voor kolommen. | willekeurig |
-| `seed` | Kiest automatisch twee verschillende golven. | `0` |
-| `group` | Pool voor seed-gekozen golven: `'gentle'`, `'harsh'`, `'all'`, of een array. | `'all'` |
-| `range` | `[min, max]` -> Float32Array. | `null` |
-| `threshold` | Binaire modus -> Uint8Array. Overschrijft range. | `null` |
-| `speed` | Tijdschaalfactor. | `1` |
-
-De output-array wordt **hergebruikt** tussen aanroepen. Kopieer als je het wilt bewaren.
+Zet de samplers op `shift: true` en het veld evolueert door wave-paren heen. Verstrak de threshold voor minder marks. Vervang de binaire `fill()` door een kleurmapping voor een analoog veld. De `docs/about.html` origin-grid (de sketch waarmee p5.waves begon) is het eenvoudigste referentievoorbeeld.
 
 ---
 
@@ -155,7 +154,6 @@ De output-array wordt **hergebruikt** tussen aanroepen. Kopieer als je het wilt 
 |---|---|---|
 | `Waves.wave(y, opts)` | `waves(y, opts)` | `p.waves(y, opts)` |
 | `Waves.createSampler(opts)` | `createWaveSampler(opts)` | `p.createWaveSampler(opts)` |
-| `Waves.createGrid(c, r, opts)` | `createWaveGrid(c, r, opts)` | `p.createWaveGrid(c, r, opts)` |
 
 Ook: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, n)`.
 
