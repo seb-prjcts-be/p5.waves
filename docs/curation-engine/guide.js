@@ -66,14 +66,32 @@
     });
   }
 
-  function createGroupGrids(seedOffset, cols, rows) {
+  // Hand-rolled binary field: each preset gets a row-sampler and a
+  // col-sampler from the same group. Render sites do a nested loop and
+  // threshold the sum. Shift mode keeps wave pairs evolving so any single
+  // unbalanced pair cycles out automatically.
+  function createGroupGridSamplers(seedOffset) {
     return GROUP_PRESETS.map(function(preset, i) {
-      return Waves.createGrid(cols, rows, {
-        group: preset.group,
+      return {
+        rowS: Waves.createSampler({
+          group: preset.group,
+          shift: true,
+          shiftInterval: 4 + i * 0.4,
+          shiftDuration: 1,
+          range: [-1, 1],
+          seed: seedOffset + i * 29
+        }),
+        colS: Waves.createSampler({
+          group: preset.group,
+          shift: true,
+          shiftInterval: 4.5 + i * 0.5,
+          shiftDuration: 1.2,
+          range: [-1, 1],
+          seed: seedOffset + i * 29 + 1
+        }),
         threshold: preset.key === 'harsh' ? 0.12 : 0,
-        speed: 0.36 + i * 0.08,
-        seed: seedOffset + i * 29
-      });
+        speed: 0.36 + i * 0.08
+      };
     });
   }
 
@@ -150,7 +168,7 @@
     let pulseSampler;
     let typeSampler;
     let groupSamplers = [];
-    let groupGrids = [];
+    let groupGridSamplers = [];
 
     function buildSystem() {
       colorSampler = Waves.createSampler({
@@ -186,7 +204,7 @@
       });
 
       groupSamplers = createGroupSamplers(301);
-      groupGrids = createGroupGrids(701, 20, 10);
+      groupGridSamplers = createGroupGridSamplers(701);
     }
 
     p.setup = function() {
@@ -245,8 +263,7 @@
       }
       p.blendMode(p.BLEND);
 
-      const grid = groupGrids[active];
-      const cells = grid.sample(t);
+      const gs = groupGridSamplers[active];
       const cols = 20;
       const rows = 10;
       const gx = p.width - margin - p.width * 0.28;
@@ -255,6 +272,7 @@
       const gh = p.height * 0.26;
       const cw = gw / cols;
       const ch = gh / rows;
+      const offset = t * gs.speed;
 
       p.fill(GUIDE_PALETTE.ink);
       p.rect(gx - 5, gy - 5, gw + 10, gh + 10);
@@ -262,8 +280,10 @@
       p.rect(gx, gy, gw, gh);
 
       for (let row = 0; row < rows; row++) {
+        const rv = gs.rowS.sample(row * 6 + offset, t);
         for (let col = 0; col < cols; col++) {
-          const on = cells[row * cols + col] === 1;
+          const cv = gs.colS.sample(col * 3 - offset, t);
+          const on = (rv + cv) > gs.threshold;
           p.fill(on ? GROUP_PRESETS[active].color : (row + col) % 2 === 0 ? '#efe7da' : GUIDE_PALETTE.paper);
           p.rect(gx + col * cw, gy + row * ch, Math.max(1, cw - 1), Math.max(1, ch - 1));
         }
@@ -273,7 +293,7 @@
       p.textFont('Inter');
       p.textAlign(p.LEFT, p.TOP);
       p.textSize(8);
-      p.text('createGrid / group', gx, gy + gh + 8);
+      p.text('binary field / group', gx, gy + gh + 8);
 
       p.textFont('Oswald');
       p.textAlign(p.LEFT, p.TOP);
@@ -576,7 +596,7 @@
   });
 
   registerSketch('guide-grid', function(p) {
-    let grids = [];
+    let gridSamplers = [];
 
     p.setup = function() {
       const size = canvasSize('guide-grid', 0.58, 220, 340);
@@ -585,12 +605,13 @@
       p.frameRate(30);
       p.noStroke();
       p.textFont('Oswald');
-      grids = createGroupGrids(2200, 24, 12);
+      gridSamplers = createGroupGridSamplers(2200);
     };
 
     p.draw = function() {
       const t = p.millis() / 1000;
       const active = activeGroupIndex(t);
+      const gs = gridSamplers[active];
       const cols = 24;
       const rows = 12;
       const x = 24;
@@ -599,7 +620,7 @@
       const gridH = p.height - 92;
       const cw = gridW / cols;
       const ch = gridH / rows;
-      const cells = grids[active].sample(t);
+      const offset = t * gs.speed;
 
       p.background(GUIDE_PALETTE.paper);
       p.fill(GUIDE_PALETTE.ink);
@@ -608,8 +629,10 @@
       p.rect(x, y, gridW, gridH);
 
       for (let row = 0; row < rows; row++) {
+        const rv = gs.rowS.sample(row * 5 + offset, t);
         for (let col = 0; col < cols; col++) {
-          const on = cells[row * cols + col] === 1;
+          const cv = gs.colS.sample(col * 2.6 - offset, t);
+          const on = (rv + cv) > gs.threshold;
           p.fill(on ? GROUP_PRESETS[active].color : (row + col) % 2 === 0 ? '#ece5d7' : GUIDE_PALETTE.paper);
           p.rect(x + col * cw, y + row * ch, Math.max(1, cw - 1), Math.max(1, ch - 1));
         }
@@ -618,7 +641,7 @@
       p.fill(GUIDE_PALETTE.ink);
       p.textAlign(p.LEFT, p.TOP);
       p.textSize(16);
-      p.text('CREATEGRID / ' + GROUP_PRESETS[active].key.toUpperCase(), 24, p.height - 42);
+      p.text('BINARY FIELD / ' + GROUP_PRESETS[active].key.toUpperCase(), 24, p.height - 42);
       p.textFont('Inter');
       p.textSize(8);
       p.text('proof module', 24, p.height - 20);

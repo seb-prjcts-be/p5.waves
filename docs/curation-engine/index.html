@@ -79,11 +79,12 @@
     <div class="ex-preview guide-example-shell">
       <pre class="ex-code-block"><code class="language-javascript" id="code-system">// the engine: pool -> role -> module
 const sampler = Waves.createSampler({ group: ARRAY_GROUP, shift: true });
-const grid    = Waves.createGrid(24, 12, { group: 'harsh', threshold: 0.12 });
+const rowS    = Waves.createSampler({ group: 'harsh', seed: 1 });
+const colS    = Waves.createSampler({ group: 'harsh', seed: 2 });
 
 // each module pulls from one source:
 //   ribbons   - one sampler per row, shift-driven
-//   panel     - grid.sample(t) as a binary readout
+//   panel     - rowS + colS thresholded into a binary readout
 //   title     - typeSampler offsets each letter
 //   ticker    - sampler.waveName / .targetName as labels
 
@@ -250,15 +251,15 @@ endShape(CLOSE);</code></pre>
 
   <section id="grid-module" class="section">
     <div class="section-header">
-      <div class="section-tag">04 / createGrid</div>
+      <div class="section-tag">04 / binary field</div>
       <h2>Show The System <span class="accent">Thinking</span></h2>
       <p class="section-desc">The grid module is the proof panel. It gives the sketch a second language beside the hero layer and makes the internal logic visible.</p>
     </div>
     <div class="blocks-grid guide-blocks">
       <div class="block-card">
         <code>start</code>
-        <strong>Create a binary field</strong>
-        <p>Use <code>createGrid()</code> with a chosen group so the panel already speaks in the same temperament as the rest of the sketch.</p>
+        <strong>Two samplers, summed and thresholded</strong>
+        <p>One sampler for rows, one for columns, both pulling from the same group. A nested loop sums them per cell — above the threshold lights up.</p>
       </div>
       <div class="block-card">
         <code>build</code>
@@ -277,18 +278,17 @@ endShape(CLOSE);</code></pre>
         <div>preview: <span>binary field rendered as monitor panel</span></div>
         <div>result: <span>visual proof module</span></div>
       </div>
-      <pre class="ex-code-block"><code class="language-javascript" id="code-grid">// createGrid - a binary 2D field driven by two waves
-const g = Waves.createGrid(24, 12, {
-  group: 'harsh',
-  threshold: 0.12        // cells where waveRow(row) + waveCol(col) > 0.12 = on
-});
+      <pre class="ex-code-block"><code class="language-javascript" id="code-grid">// binary field: two samplers, sum, threshold
+const rowS = Waves.createSampler({ group: 'harsh', range: [-1, 1], seed: 1 });
+const colS = Waves.createSampler({ group: 'harsh', range: [-1, 1], seed: 2 });
 
-// per frame: read all cells in one call
-const cells = g.sample(t);
-for (let row = 0; row &lt; g.rows; row++) {
-  for (let col = 0; col &lt; g.cols; col++) {
-    const on = cells[row * g.cols + col] === 1;
-    fill(on ? '#ff3b2f' : '#ece5d7');
+// per frame: cell = rowS(row*5 + t) + colS(col*2.5 - t)
+// x-step ~ one wave period so the field is visually balanced;
+// animation comes from sliding the sample positions over time.
+for (let row = 0; row &lt; rows; row++) {
+  for (let col = 0; col &lt; cols; col++) {
+    const v = rowS.sample(row * 5 + t) + colS.sample(col * 2.5 - t);
+    fill(v &gt; 0.12 ? '#ff3b2f' : '#ece5d7');
     rect(col * cw, row * ch, cw, ch);
   }
 }</code></pre>

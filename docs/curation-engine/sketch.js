@@ -39,7 +39,7 @@ const TICKER_ITEMS = [
   'p5.waves',
   'Waves.wave(y, opts)',
   'createSampler()',
-  'createGrid()',
+  'binary field',
   "group: 'gentle'",
   "group: 'harsh'",
   "group: 'all'",
@@ -84,7 +84,7 @@ let colorSampler;
 let pulseSampler;
 let typeSampler;
 let groupSamplers = [];
-let groupGrids = [];
+let groupGridSamplers = [];
 let particles = [];
 let waveNames = [];
 
@@ -149,11 +149,30 @@ function createWaveSystem() {
     unpredictability: preset.key === 'harsh' ? 0.32 : 0
   }));
 
-  groupGrids = GROUP_PRESETS.map((preset, i) => Waves.createGrid(34, 18, {
-    group: preset.group,
+  // Hand-rolled binary field: per preset, a row-sampler and a col-sampler
+  // pulled from the same group. drawGridModule sums them per cell and
+  // thresholds. Same logic the old createGrid did, but composed from
+  // primitives. Shift mode keeps wave pairs evolving so any single
+  // unbalanced pair cycles out automatically.
+  groupGridSamplers = GROUP_PRESETS.map((preset, i) => ({
+    rowS: Waves.createSampler({
+      group: preset.group,
+      shift: true,
+      shiftInterval: 4 + i * 0.4,
+      shiftDuration: 1,
+      range: [-1, 1],
+      seed: 701 + i * 29
+    }),
+    colS: Waves.createSampler({
+      group: preset.group,
+      shift: true,
+      shiftInterval: 4.5 + i * 0.5,
+      shiftDuration: 1.2,
+      range: [-1, 1],
+      seed: 702 + i * 29
+    }),
     threshold: preset.key === 'harsh' ? 0.12 : 0,
-    speed: 0.34 + i * 0.07,
-    seed: 701 + i * 29
+    speed: 0.34 + i * 0.07
   }));
 }
 
@@ -293,12 +312,12 @@ function drawGridModule(t) {
   const y = width < 760 ? height * 0.57 : m * 1.25;
   const active = activeGroupIndex(t);
   const preset = GROUP_PRESETS[active];
-  const grid = groupGrids[active];
+  const gs = groupGridSamplers[active];
   const cols = 34;
   const rows = 18;
-  const cells = grid.sample(t);
   const cw = panelW / cols;
   const ch = panelH / rows;
+  const offset = t * gs.speed;
 
   fill(PALETTE.ink);
   rect(x - 8, y - 8, panelW + 16, panelH + 16);
@@ -306,9 +325,14 @@ function drawGridModule(t) {
   rect(x, y, panelW, panelH);
 
   noStroke();
+  // x-step covers ~one full wave period; t drives the shift cycle so waves
+  // evolve over time, keeping the visual balanced even when a static pair
+  // would be biased.
   for (let row = 0; row < rows; row++) {
+    const rv = gs.rowS.sample(row * 3.5 + offset, t);
     for (let col = 0; col < cols; col++) {
-      const on = cells[row * cols + col] === 1;
+      const cv = gs.colS.sample(col * 1.85 - offset, t);
+      const on = (rv + cv) > gs.threshold;
       if (on) {
         const v = colorSampler.sample(col * 0.08 + row * 0.16, t);
         fill(preset.key === 'all' ? accentFrom(v) : preset.color);
@@ -324,7 +348,7 @@ function drawGridModule(t) {
   textAlign(LEFT, TOP);
   textSize(10);
   fill(PALETTE.paper);
-  text(`createGrid / group: ${preset.key}`, x - 4, y + panelH + 14);
+  text(`binary field / group: ${preset.key}`, x - 4, y + panelH + 14);
 }
 
 function drawParticles(t) {
