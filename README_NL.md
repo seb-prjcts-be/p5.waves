@@ -76,6 +76,21 @@ Geeft altijd één getal terug.
 
 ---
 
+## createSampler()
+
+Eenmaal instellen, vaak `.sample()` aanroepen. Handig voor lussen en deeltjes.
+
+```js
+let s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
+s.sample(y);          // op positie y
+s.sample(y, t);       // met tijd
+s.sample(y, t, mix);  // morph: blend overschrijven
+```
+
+Zelfde opties als `Waves.wave()`.
+
+---
+
 ## Wave Shift
 
 De hoofdfunctie. Eén vlag en de golf wisselt automatisch naar een willekeurige formule om de paar seconden.
@@ -104,28 +119,15 @@ Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/rand
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
 ```
 
-> **`mode` vs `group` — verwar ze niet.** `mode: 'wild'` vervormt *één* golf (frequency + phase + amplitude noise). `group: 'harsh'` kiest een *ander soort golf* (de formules met ingebakken spikes). Ze zijn orthogonaal: `{ mode: 'wild', group: 'gentle' }` = ademende sinussen, geen spikes.
-
----
-
-## createSampler()
-
-Eenmaal instellen, vaak `.sample()` aanroepen. Handig voor lussen en deeltjes.
-
-```js
-let s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
-s.sample(y);          // op positie y
-s.sample(y, t);       // met tijd
-s.sample(y, t, mix);  // morph: blend overschrijven
-```
-
-Zelfde opties als `Waves.wave()`.
+> **`mode` vs `group`, verwar ze niet.** `mode: 'wild'` vervormt *één* golf (frequency + phase + amplitude noise). `group: 'harsh'` kiest een *ander soort golf* (de formules met ingebakken spikes). Ze zijn orthogonaal: `{ mode: 'wild', group: 'gentle' }` = ademende sinussen, geen spikes.
 
 ---
 
 ## Binaire velden
 
-2D-patronen vanuit één principe: twee samplers, sommeer per cel, threshold het resultaat. Elke cel is `rowSampler(row) + colSampler(col) > threshold`. Twee sines geven interferentiepatronen; twee pulsen geven een schaakbord. De library biedt geen grid-wrapper — de nested loop is kort genoeg om zelf te schrijven, en dat geeft je volledige controle over animatie, layering, en cel-rendering.
+Combineer twee samplers en je krijgt 2D-patronen. Handig voor achtergronden, monitor-panelen, organische texturen, of fingerprint-beelden waarin elk wave-paar zijn eigen herkenbare spoor laat.
+
+De recipe: twee samplers (één voor rijen, één voor kolommen), sommeer per cel, threshold het resultaat. Elke cel wordt `(rowSampler(row) + colSampler(col)) > threshold`. True is "aan", false is "uit". Twee sines geven interferentiepatronen. Twee pulsen geven een schaakbord. Een sine plus een puls geeft strepen. De library biedt bewust geen grid-wrapper. De nested loop is kort genoeg om zelf te schrijven, en dat geeft je volledige controle over animatie, layering, en per-cel rendering.
 
 ```js
 const rowS = Waves.createSampler({ wave: 'classic sine', range: [-1, 1] });
@@ -144,7 +146,13 @@ function draw() {
 }
 ```
 
-Zet de samplers op `shift: true` en het veld evolueert door wave-paren heen. Verstrak de threshold voor minder marks. Vervang de binaire `fill()` door een kleurmapping voor een analoog veld. De `docs/about.html` origin-grid (de sketch waarmee p5.waves begon) is het eenvoudigste referentievoorbeeld.
+### Variaties
+
+- **Shift mode.** Zet `shift: true` op elke sampler en het wave-paar evolueert over tijd. Het karakter van het veld verandert elke paar seconden. Geen twee snapshots zijn hetzelfde.
+- **Threshold afstellen.** `> 0` geeft ongeveer 50/50 voor symmetrische waves. `> 0.12` maakt "aan" schaarser. `> -0.12` maakt het dichter. Asymmetrische waves (saw, triangle) scheven de balans. Daardoor krijgt elk paar een eigen, herkenbaar karakter.
+- **Analoog veld.** Vervang de binaire `fill()` door een kleurmapping op basis van de sum-waarde direct. Zelfde patroon, vloeiend gradient in plaats van aan/uit.
+
+De `docs/about.html` origin-grid (de sketch waarmee p5.waves begon) is het eenvoudigste referentievoorbeeld. Binaire velden zijn een goede kandidaat voor het [Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/). Verschillende wave-pools, threshold-waarden en shift-snelheden naast elkaar laten zien welk visueel karakter elke combinatie produceert.
 
 ---
 
@@ -163,7 +171,7 @@ Ook: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, 
 
 `classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine`
 
-Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity) — vermenigvuldig met een geheel aantal lobes om gekromde vormen zonder naad te sluiten. De [periodicity-testharness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) herverifieert deze waarden in de browser.
+Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity). Vermenigvuldig die periode met een geheel aantal lobes om gekromde vormen zonder naad te sluiten. De [periodicity-testharness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) herverifieert deze waarden in de browser.
 
 ---
 
@@ -183,7 +191,7 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 
 ## Hoe dit gemaakt is
 
-Het beginpunt was klein: een lijst golfformules gecureerd door Ted Davis, en een 16×16 grid-sketch die ik ermee bouwde voor Genuary 2026. De weg van die sketch naar deze library — caching, seeding, normalisatie, morphing, shifting, wild mode, samplers — is gebouwd in nauwe samenwerking met AI-assistenten. Ontwerpbeslissingen, curatie en oordeelsvorming zijn van mij; de implementatie was een samenwerking. [Volledig verhaal →](https://seb-prjcts-be.github.io/p5.waves/docs/about.html)
+Het beginpunt was klein: een lijst golfformules gecureerd door Ted Davis, en een 16×16 grid-sketch die ik ermee bouwde voor Genuary 2026. De weg van die sketch naar deze library (caching, seeding, normalisatie, morphing, shifting, wild mode, samplers) is gebouwd in nauwe samenwerking met AI-assistenten. Ontwerpbeslissingen, curatie en oordeelsvorming zijn van mij; de implementatie was een samenwerking. [Volledig verhaal →](https://seb-prjcts-be.github.io/p5.waves/docs/about.html)
 
 ## Credits
 

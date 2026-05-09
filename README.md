@@ -76,6 +76,21 @@ Always returns a single number.
 
 ---
 
+## createSampler()
+
+Set up once, call `.sample()` many times. Useful for loops and particles.
+
+```js
+let s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
+s.sample(y);          // at position y
+s.sample(y, t);       // with time
+s.sample(y, t, mix);  // morph: override blend
+```
+
+Same options as `Waves.wave()`.
+
+---
+
 ## Wave Shift
 
 The main feature. One flag and the wave auto-switches to a random formula every few seconds.
@@ -104,28 +119,15 @@ Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random only
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
 ```
 
-> **`mode` vs `group` — don't confuse them.** `mode: 'wild'` warps *one* wave (frequency + phase + amplitude noise). `group: 'harsh'` picks a *different kind of wave* (the ones with spikes baked in). They're orthogonal: `{ mode: 'wild', group: 'gentle' }` = breathing sines, no spikes.
-
----
-
-## createSampler()
-
-Set up once, call `.sample()` many times. Useful for loops and particles.
-
-```js
-let s = Waves.createSampler({ wave: 'triangle', range: [-80, 80] });
-s.sample(y);          // at position y
-s.sample(y, t);       // with time
-s.sample(y, t, mix);  // morph: override blend
-```
-
-Same options as `Waves.wave()`.
+> **`mode` vs `group`, don't confuse them.** `mode: 'wild'` warps *one* wave (frequency + phase + amplitude noise). `group: 'harsh'` picks a *different kind of wave* (the ones with spikes baked in). They're orthogonal: `{ mode: 'wild', group: 'gentle' }` = breathing sines, no spikes.
 
 ---
 
 ## Binary fields
 
-2D patterns from one principle: two samplers, sum per cell, threshold the result. Each cell is `rowSampler(row) + colSampler(col) > threshold`. Two sines give interference patterns; two pulses give a checkerboard. The library doesn't ship a grid wrapper — the nested loop is short enough to write yourself, and that gives you full control over animation, layering, and cell rendering.
+Combine two samplers and you get 2D patterns. Useful for backgrounds, monitor panels, organic textures, or fingerprint visuals where each wave-pair leaves its own recognisable mark.
+
+The recipe: two samplers (one for rows, one for columns), sum per cell, threshold the result. Each cell becomes `(rowSampler(row) + colSampler(col)) > threshold`. True means "on", false means "off". Two sines give interference patterns. Two pulses give a checkerboard. A sine plus a pulse gives striped bands. The library deliberately doesn't ship a grid wrapper. The nested loop is short enough to write yourself, and that gives you full control over animation, layering, and per-cell rendering.
 
 ```js
 const rowS = Waves.createSampler({ wave: 'classic sine', range: [-1, 1] });
@@ -144,7 +146,13 @@ function draw() {
 }
 ```
 
-Make the samplers `shift: true` and the field evolves through wave pairs. Tighten the threshold for sparser marks. Replace the binary `fill()` with a colour mapping for an analog field. The `docs/about.html` origin grid (the sketch that started p5.waves) is the simplest possible reference.
+### Variations
+
+- **Shift mode.** Set `shift: true` on each sampler and the wave-pair evolves over time. The field's character changes every few seconds. No two snapshots alike.
+- **Threshold tuning.** `> 0` gives roughly 50/50 for symmetric waves. `> 0.12` makes "on" sparser. `> -0.12` makes it denser. Asymmetric waves (saw, triangle) skew the balance. That skew is a feature, it gives each pair a recognisable signature.
+- **Analog field.** Replace the binary `fill()` with a colour mapping using the sum value directly. Same pattern, smooth gradient instead of on/off.
+
+The `docs/about.html` origin grid (the sketch that started p5.waves) is the simplest reference. Binary fields are a good candidate for the [Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/). Different wave pools, threshold values, and shift speeds explored side by side reveal what visual character each combination produces.
 
 ---
 
@@ -163,7 +171,7 @@ Also: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config,
 
 `classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine`
 
-Every periodic wave has a measured period listed on the [Waves page](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity) — multiply it by an integer number of lobes to close curved shapes without a seam. The [periodicity test harness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) re-verifies these values in the browser.
+Every periodic wave has a measured period listed on the [Waves page](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity). Multiply that period by an integer number of lobes to close curved shapes without a seam. The [periodicity test harness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) re-verifies these values in the browser.
 
 ---
 
@@ -183,7 +191,7 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 
 ## How this was made
 
-The starting point was small: a list of wave formulas curated by Ted Davis, and a 16×16 grid sketch I built around them for Genuary 2026. The path from that sketch to this library — caching, seeding, normalisation, morphing, shifting, wild mode, samplers — was built in heavy collaboration with AI assistants. Design decisions, curation, and judgement calls are mine; implementation was a partnership. [Full story →](https://seb-prjcts-be.github.io/p5.waves/docs/about.html)
+The starting point was small: a list of wave formulas curated by Ted Davis, and a 16×16 grid sketch I built around them for Genuary 2026. The path from that sketch to this library (caching, seeding, normalisation, morphing, shifting, wild mode, samplers) was built in heavy collaboration with AI assistants. Design decisions, curation, and judgement calls are mine; implementation was a partnership. [Full story →](https://seb-prjcts-be.github.io/p5.waves/docs/about.html)
 
 ## Credits
 
