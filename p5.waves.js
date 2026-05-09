@@ -78,6 +78,53 @@
     (CHARACTER[i] === 'harsh' ? HARSH_INDICES : GENTLE_INDICES).push(i);
   }
 
+  // ─── Periodicity (experimental, v3.3.0) ──────────────────────────────────────
+  // Parallel to WAVES. Empirically measured periods from docs/periodicity.html
+  // (STRICT mean-error < 0.002 at T, 2T, 3T). null = non-periodic or
+  // non-deterministic. Regenerate via docs/periodicity.html if formulas change.
+  // EXPERIMENTAL: values may shift by ~0.001 in minor versions. Suitable for
+  // visuals; not for sub-unit-precision work (CNC, plotters, fabrication).
+
+  const WAVE_PERIODS = [
+    62.83, 31.42, 31.42, 40,    40,    62.60, 62.83, 62.83, 31.42, 62.83,
+    62.83, 31.42, 62.82, 31.42, 62.83, 62.83, null,  null,  33.33, 50,
+    16.67, 16.67, null,  null,  null,  17.75, 31.42, null,  null,  null,
+    null,  62.83, null,  2.03
+  ];
+
+  if (WAVE_PERIODS.length !== WAVES.length) {
+    throw new Error('p5.waves: WAVE_PERIODS length (' + WAVE_PERIODS.length +
+      ') must match WAVES length (' + WAVES.length + ')');
+  }
+
+  // 'closing' pool = waves whose period divides the base evenly. Sweeping
+  // CLOSING_BASE_PERIOD × N closes every wave in the pool, including across
+  // shift transitions. Base 62.83 (≈2π/0.1) is the dominant cluster — it also
+  // covers its half (31.42).
+  const CLOSING_BASE_PERIOD = 62.83;
+  const CLOSING_RATIO_TOL   = 0.001;
+
+  const CLOSING_INDICES = [];
+  for (let i = 0; i < WAVE_PERIODS.length; i++) {
+    const p = WAVE_PERIODS[i];
+    if (p == null) continue;
+    const ratio = CLOSING_BASE_PERIOD / p;
+    if (Math.abs(ratio - Math.round(ratio)) < CLOSING_RATIO_TOL) {
+      CLOSING_INDICES.push(i);
+    }
+  }
+
+  let _closingWarned = false;
+  function warnClosingExperimental() {
+    if (_closingWarned) return;
+    _closingWarned = true;
+    if (typeof console !== 'undefined' && console.info) {
+      console.info("[p5.waves] 'closing' group is experimental — period values " +
+        "may shift by ~0.001 in minor versions. Fine for visuals; not for CNC, " +
+        "plotters, or anything that gets angry about sub-unit drift.");
+    }
+  }
+
   // ─── Caches ──────────────────────────────────────────────────────────────────
 
   const COMPILE_CACHE = new Map();
@@ -177,8 +224,9 @@
     if (typeof opt === 'string') {
       const k = normalizeName(opt);
       if (k === '' || k === 'all') return null;
-      if (k === 'gentle') return GENTLE_INDICES;
-      if (k === 'harsh')  return HARSH_INDICES;
+      if (k === 'gentle')  return GENTLE_INDICES;
+      if (k === 'harsh')   return HARSH_INDICES;
+      if (k === 'closing') { warnClosingExperimental(); return CLOSING_INDICES; }
       return null;
     }
     return null;
@@ -551,12 +599,20 @@
         nxtName = WAVES[nxtIdx].name;
       }
 
+      const isClosingPool = (groupPool === CLOSING_INDICES);
+
       return {
-        get waveIndex()  { return curIdx; },
-        get waveName()   { return curName; },
-        get targetName() { return nxtName; },
-        get mix()        { return lastMix; },
-        get shifting()   { return lastMix > 0; },
+        get waveIndex()    { return curIdx; },
+        get waveName()     { return curName; },
+        get targetName()   { return nxtName; },
+        get mix()          { return lastMix; },
+        get shifting()     { return lastMix > 0; },
+        // Experimental v3.3.0 — period of the active wave context.
+        // For group: 'closing', returns the pool's stable base period
+        // (so sweep = period × N closes through every shift transition).
+        // Otherwise returns the current wave's measured period, or null.
+        get period()       { return isClosingPool ? CLOSING_BASE_PERIOD : WAVE_PERIODS[curIdx]; },
+        get targetPeriod() { return isClosingPool ? CLOSING_BASE_PERIOD : (nxtIdx >= 0 ? WAVE_PERIODS[nxtIdx] : null); },
         sample: function (y, t) {
           const tVal     = t !== undefined ? toNumber(t, 0) : t0;
           const era      = Math.floor(tVal / cycleDur);
@@ -587,11 +643,15 @@
       };
     }
 
+    const isClosingPool = (groupPool === CLOSING_INDICES);
+
     return {
       waveIndex: isMorph ? [waveIndexA, waveIndexB] : waveIndexA,
       waveName:  isMorph
         ? WAVES[waveIndexA].name + ' -> ' + WAVES[waveIndexB].name
         : WAVES[waveIndexA].name,
+      // Experimental v3.3.0 — see shift sampler for semantics.
+      period: isClosingPool ? CLOSING_BASE_PERIOD : WAVE_PERIODS[waveIndexA],
       sample: function (y, t, mix) {
         const tVal = t !== undefined ? toNumber(t, 0) : t0;
         const val  = evalKernel(fn, y, tVal, frequency, phase, internalSeed, mode, unpredictability);
