@@ -1,7 +1,7 @@
 ﻿/*!
  * p5.waves
  * Wave sampling for p5.js. Always returns a number.
- * Version 3.2.7
+ * Version 3.3.0
  * Author: seb@prjcts
  * License: MIT
  */
@@ -706,110 +706,6 @@
     };
   }
 
-  // ─── createGrid() ────────────────────────────────────────────────────────────
-
-  const MAX_GRID_CELLS = 62500; // 250×250
-
-  function createGrid(cols, rows, options) {
-    const opts      = options || {};
-    const c         = Math.max(1, Math.floor(toNumber(cols, 10)));
-    const r         = Math.max(1, Math.floor(toNumber(rows, 10)));
-    if (c * r > MAX_GRID_CELLS) {
-      console.warn('p5.waves: createGrid(' + c + ', ' + r + ') = ' +
-        (c * r) + ' cells exceeds recommended maximum of ' + MAX_GRID_CELLS +
-        '. This may cause performance issues.');
-    }
-    const seed      = toNumber(opts.seed, 0);
-    const speed     = toNumber(opts.speed, 1);
-    const cellCount = c * r;
-    const TWO_PI    = Math.PI * 2;
-    const groupPool = resolveGroup(opts.group);
-
-    // Pick two different waves from seed (optionally constrained to group)
-    const seedHash = seedFrom(seed);
-    const rng      = mulberry32(seedHash);
-    const def0     = groupPool
-      ? groupPool[Math.floor(rng() * groupPool.length)]
-      : Math.floor(rng() * WAVES.length);
-    let   def1     = groupPool
-      ? groupPool[Math.floor(rng() * groupPool.length)]
-      : Math.floor(rng() * WAVES.length);
-    if (def1 === def0) def1 = nextDifferentInPool(def0, groupPool);
-
-    function resolveGridWave(ref, fallback) {
-      if (ref === undefined || ref === null) return fallback;
-      const r = resolveWave(ref);
-      return r >= 0 ? r : fallback;
-    }
-
-    const rowIdx  = resolveGridWave(opts.waveRow, def0);
-    const colIdx  = resolveGridWave(opts.waveCol, def1);
-    const rowFn   = compile(WAVES[rowIdx].algo);
-    const colFn   = compile(WAVES[colIdx].algo);
-    const rowSeed = seedFrom(String(seed) + 'r' + rowIdx);
-    const colSeed = seedFrom(String(seed) + 'c' + colIdx);
-
-    let range = null;
-    if (Array.isArray(opts.range) && opts.range.length >= 2) {
-      range = [toNumber(opts.range[0], -1), toNumber(opts.range[1], 1)];
-    }
-
-    const hasThreshold = opts.threshold !== undefined && opts.threshold !== null;
-    const threshold    = hasThreshold ? toNumber(opts.threshold, 0) : null;
-
-    // Precompute combined min/max for range normalisation
-    let stats = null;
-    if (range !== null && !hasThreshold) {
-      const nS = 32;
-      let mn = Infinity, mx = -Infinity;
-      for (let ri = 0; ri < nS; ri++) {
-        const ri_in = (ri / nS) * TWO_PI;
-        for (let ci = 0; ci < nS; ci++) {
-          const ci_in = (ci / nS) * TWO_PI;
-          const v = evaluate(rowFn, ri_in, 0, rowSeed) + evaluate(colFn, ci_in, 0, colSeed);
-          if (v < mn) mn = v;
-          if (v > mx) mx = v;
-        }
-      }
-      if (!Number.isFinite(mn) || !Number.isFinite(mx) || mn === mx) { mn = -1; mx = 1; }
-      stats = { min: mn, max: mx };
-    }
-
-    // Pre-allocate output buffers - reused on every .sample() call
-    const _gridBuf = hasThreshold ? new Uint8Array(cellCount) : new Float32Array(cellCount);
-
-    return {
-      cols: c,
-      rows: r,
-      sample: function (t) {
-        const time = toNumber(t, 0);
-        let idx = 0;
-
-        if (hasThreshold) {
-          for (let row = 0; row < r; row++) {
-            const ri = (row / r) * TWO_PI + time * speed;
-            for (let col = 0; col < c; col++) {
-              const ci  = (col / c) * TWO_PI + time * speed;
-              const val = evaluate(rowFn, ri, time, rowSeed) + evaluate(colFn, ci, time, colSeed);
-              _gridBuf[idx++] = val > threshold ? 1 : 0;
-            }
-          }
-          return _gridBuf;
-        }
-
-        for (let row = 0; row < r; row++) {
-          const ri = (row / r) * TWO_PI + time * speed;
-          for (let col = 0; col < c; col++) {
-            const ci  = (col / c) * TWO_PI + time * speed;
-            const val = evaluate(rowFn, ri, time, rowSeed) + evaluate(colFn, ci, time, colSeed);
-            _gridBuf[idx++] = (range && stats) ? mapToRange(val, stats, range) : val;
-          }
-        }
-        return _gridBuf;
-      }
-    };
-  }
-
   // ─── Discovery ───────────────────────────────────────────────────────────────
 
   function list() {
@@ -842,7 +738,6 @@
     list:          list,
     wave:          wave,
     createSampler: createSampler,
-    createGrid:    createGrid,
     benchmark:     benchmark
   };
 
@@ -854,9 +749,6 @@
     };
     global.p5.prototype.createWaveSampler = function (opts) {
       return createSampler(opts);
-    };
-    global.p5.prototype.createWaveGrid = function (c, r, opts) {
-      return createGrid(c, r, opts);
     };
   }
 
