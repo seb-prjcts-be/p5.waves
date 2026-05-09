@@ -79,17 +79,48 @@
   }
 
   // ─── Periodicity (experimental, v3.3.0) ──────────────────────────────────────
-  // Parallel to WAVES. Empirically measured periods from docs/periodicity.html
-  // (STRICT mean-error < 0.002 at T, 2T, 3T). null = non-periodic or
-  // non-deterministic. Regenerate via docs/periodicity.html if formulas change.
-  // EXPERIMENTAL: values may shift by ~0.001 in minor versions. Suitable for
-  // visuals; not for sub-unit-precision work (CNC, plotters, fabrication).
+  // Parallel to WAVES. Periods at 4-decimal precision: theoretical (2π/k or
+  // 1/k) where formulaically derivable, empirical from docs/periodicity.html
+  // otherwise. null = non-periodic or non-deterministic. Regenerate via
+  // docs/periodicity.html if formulas change. EXPERIMENTAL: values may shift
+  // by ~0.0001 in minor versions. Suitable for visuals; not for sub-unit-
+  // precision work (CNC, plotters, fabrication).
 
   const WAVE_PERIODS = [
-    62.83, 31.42, 31.42, 40,    40,    62.60, 62.83, 62.83, 31.42, 62.83,
-    62.83, 31.42, 62.82, 31.42, 62.83, 62.83, null,  null,  33.33, 50,
-    16.67, 16.67, null,  null,  null,  17.75, 31.42, null,  null,  null,
-    null,  62.83, null,  2.03
+    62.8319,  //  0 classic sine        2π/0.1
+    31.4159,  //  1 sine                2π/0.2 (= 10π)
+    31.4159,  //  2 sharp peaks         π/0.1 (abs halves period)
+    40.0000,  //  3 square              1/0.025
+    40.0000,  //  4 pulse               20/0.5
+    62.8319,  //  5 stepped sine        2π/0.1 (ceil(sin) — empirical 62.60 was test noise)
+    62.8319,  //  6 mountain peaks      LCM(π/0.1, 2π/0.1)
+    62.8319,  //  7 valleys             LCM(π/0.1, 2π/0.1)
+    31.4159,  //  8 zig-zag sine        2π/0.2 (mod by const preserves period)
+    62.8319,  //  9 batman              2π/0.1
+    62.8319,  // 10 offset sine         LCM(π/0.1, 2π/0.1)
+    31.4159,  // 11 steps down          π/0.1 (tan)
+    62.8319,  // 12 steps               2π/0.1 (round(sin))
+    31.4159,  // 13 squared sine        π/0.1 (sin² halves period)
+    62.8319,  // 14 bumpy sine          LCM(2π/0.1, 2π/0.5)
+    62.8319,  // 15 wobble sine         LCM(2π/0.1, 2π/0.2)
+    null,     // 16 up down noise       x*sin(x*.1) — amplitude grows
+    null,     // 17 meta sine           incommensurate frequencies
+    33.3333,  // 18 triangle            1/0.03
+    50.0000,  // 19 ramp                1/0.02
+    16.6667,  // 20 saw down            0.5/0.03
+    16.6667,  // 21 saw up              0.5/0.03
+    null,     // 22 fade out            log(x)
+    null,     // 23 grow random         non-deterministic
+    null,     // 24 noise                non-deterministic
+    17.75,    // 25 fuzzy pulse         empirical (tan(x*20) clips oddly)
+    31.4159,  // 26 up down pulse       π/0.1 (tan)
+    null,     // 27 bald patch          x² grows
+    null,     // 28 fuzzy peak sine     non-deterministic
+    null,     // 29 ramp up sine        amplitude varies
+    null,     // 30 triangle sine       amplitude varies
+    62.8319,  // 31 round linked sine   LCM(2π/0.1, 2π/1)
+    null,     // 32 half sine           amplitude varies
+    2.0268    // 33 smooth solid sine   2π/3.1 — fits 31× in base period
   ];
 
   if (WAVE_PERIODS.length !== WAVES.length) {
@@ -99,9 +130,9 @@
 
   // 'closing' pool = waves whose period divides the base evenly. Sweeping
   // CLOSING_BASE_PERIOD × N closes every wave in the pool, including across
-  // shift transitions. Base 62.83 (≈2π/0.1) is the dominant cluster — it also
-  // covers its half (31.42).
-  const CLOSING_BASE_PERIOD = 62.83;
+  // shift transitions. Base 62.8319 (= 2π/0.1) is the dominant cluster — it
+  // also covers its half (31.4159) and 1/31 (2.0268).
+  const CLOSING_BASE_PERIOD = 62.8319;
   const CLOSING_RATIO_TOL   = 0.001;
 
   const CLOSING_INDICES = [];
