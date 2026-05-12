@@ -1,6 +1,6 @@
 ﻿# p5.waves
 
-**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)**
+**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)** · **[Processing (Java) port](https://github.com/seb-prjcts-be/processing.waves)**
 
 34 wave shapes for p5.js. One function call, one number back.
 
@@ -188,6 +188,10 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 - `3d_wave_volume` - 3D WebGL
 
 ---
+
+## Processing (Java) port
+
+There's a Java port for Processing 4: [**processing.waves**](https://github.com/seb-prjcts-be/processing.waves). Same 34 waves, same API shape, for sketches that live outside the browser.
 
 ## How this was made
 
