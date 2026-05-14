@@ -749,27 +749,35 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
 
   // ── Binary Field ──────────────────────────────────────────
   new p5(function(p) {
-    let rowS, colS, t = 0;
+    let rowS, colS;
     const COLS = 28, ROWS = 20;
     p.setup = function() {
       const w = cw('ex6');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex6');
       p.noStroke();
-      rowS = Waves.createSampler({ wave: 'smooth solid sine', range: [-1, 1] });
-      colS = Waves.createSampler({ wave: 'ramp up sine',     range: [-1, 1] });
+      p.textFont('monospace');
+      rowS = Waves.createSampler({ shift: true, shiftInterval: 4,   shiftDuration: 1,   range: [-1, 1], seed: 1 });
+      colS = Waves.createSampler({ shift: true, shiftInterval: 4.5, shiftDuration: 1.2, range: [-1, 1], seed: 2 });
     };
     p.draw = function() {
       p.background(238);
-      t += 0.004;
-      const cw2 = p.width / COLS, ch = p.height / ROWS;
+      const t      = p.millis() / 1000;
+      const offset = t * 0.4;
+      const labelH = 22;
+      const cw2    = p.width / COLS;
+      const ch     = (p.height - labelH) / ROWS;
       for (let row = 0; row < ROWS; row++) {
-        const rv = rowS.sample(row * 5 + t);
+        const rv = rowS.sample(row * 5 + offset, t);
         for (let col = 0; col < COLS; col++) {
-          const cv = colS.sample(col * 2.5 - t);
+          const cv = colS.sample(col * 2.5 - offset, t);
           p.fill((rv + cv) > 0 ? 15 : 225);
-          p.rect(col * cw2, row * ch, cw2 - 0.5, ch - 0.5);
+          p.rect(col * cw2, labelH + row * ch, cw2 - 0.5, ch - 0.5);
         }
       }
+      p.fill(40);
+      p.textSize(10);
+      p.textAlign(p.LEFT, p.CENTER);
+      p.text(rowS.waveName + '  x  ' + colS.waveName, 6, labelH / 2);
     };
     p.windowResized = function() { const w = cw('ex6'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex6');
