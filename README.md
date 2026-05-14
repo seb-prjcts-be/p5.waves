@@ -182,7 +182,7 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 - `wild_mode` - wild mode
 - `flow_fields` - ASCII flow field
 - `time_strata` - manual time control
-- `color_field` - HSB color field
+- `color_field` - RGB static field (base + field per channel)
 - `morph_wave` - morph between two waves
 - `random_walker` - wave-steered walker
 - `3d_wave_volume` - 3D WebGL

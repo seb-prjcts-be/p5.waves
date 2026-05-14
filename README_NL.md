@@ -182,7 +182,7 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 - `wild_mode` - wild mode
 - `flow_fields` - ASCII stroomveld
 - `time_strata` - handmatige tijdcontrole
-- `color_field` - HSB kleurveld
+- `color_field` - RGB static field (basis + veld per kanaal)
 - `morph_wave` - morph tussen twee golven
 - `random_walker` - golf-gestuurde walker
 - `3d_wave_volume` - 3D WebGL

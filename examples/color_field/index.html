@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Field | p5.waves examples</title>
+  <title>Static Field | p5.waves examples</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="../showcase.css">
 </head>
@@ -24,31 +24,42 @@
 
   <main class="demo-page">
     <div class="demo-header">
-      <div class="demo-number">color output</div>
-      <h1>Wave Color Field</h1>
-      <p>Two wave samplers with <code>shift: true</code> drive <strong>hue and brightness</strong> across a 2D field. Every 4 seconds the formulas morph into new ones over 2 seconds - the colour landscape keeps evolving.</p>
+      <div class="demo-number">six samplers, one limiter trick</div>
+      <h1>Static Field</h1>
+      <p>A wave-driven take on <code>random(155) + 100</code>. Three slow <strong>base</strong> samplers set a per-channel floor in <code>[0, 155]</code>. Three faster <strong>field</strong> samplers add <code>0..100</code> on top, per cell. Each channel stays inside a moving 100-wide window that drifts and morphs.</p>
     </div>
     <div class="demo-layout">
       <div class="demo-code">
         <div class="code-label">Core snippet</div>
-        <pre><code class="language-javascript">const hueSampler = Waves.createSampler({
-  wave: 'meta sine', shift: true,
-  shiftInterval: 4, shiftDuration: 2,
-  range: [160, 320], seed: 0
+        <pre><code class="language-javascript">// Slow base: per-channel floor in [0, 155]
+const baseR = Waves.createSampler({
+  shift: true, group: 'gentle',
+  range: [0, 155], frequency: 0.20,
+  shiftInterval: 7, shiftDuration: 2
 });
-const briSampler = Waves.createSampler({
-  wave: 'wobble sine', shift: true,
-  shiftInterval: 5, shiftDuration: 2,
-  range: [55, 90], seed: 7
+// ...baseG, baseB with their own frequencies
+
+// Fast field: 0..100 added per cell
+const fieldR = Waves.createSampler({
+  shift: true,
+  group: ['classic sine', 'triangle', 'bumpy sine',
+          'mountain peaks', 'wobble sine'],
+  range: [0, 1], frequency: 0.08,
+  shiftInterval: 4, shiftDuration: 1.5
 });
+// ...fieldG, fieldB with their own groups
 
 // In draw:
-for (let y = 0; y &lt; height; y += 4) {
-  for (let x = 0; x &lt; width; x += 4) {
-    fill(hueSampler.sample(x*0.007 + y*0.005, t),
-         72,
-         briSampler.sample(x*0.005 - y*0.007, t*0.6));
-    rect(x, y, 4, 4);
+const r0 = floor(baseR.sample(0, t));
+const g0 = floor(baseG.sample(100, t));
+const b0 = floor(baseB.sample(200, t));
+for (let y = 0; y &lt; height; y += 8) {
+  for (let x = 0; x &lt; width; x += 8) {
+    const rp = fieldR.sample(x + y*0.35, t);
+    const gp = fieldG.sample(x*0.3 + y,  t);
+    const bp = fieldB.sample(x*0.7 - y*0.25, t);
+    fill(r0 + rp*100, g0 + gp*100, b0 + bp*100);
+    rect(x, y, 8, 8);
   }
 }</code></pre>
       </div>

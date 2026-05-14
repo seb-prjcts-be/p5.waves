@@ -206,32 +206,35 @@ for (let i = 0; i &lt; 12; i++) {
     </div>
   </section>
 
-  <!-- COLOR FIELD -->
+  <!-- STATIC FIELD -->
   <section id="color" class="section">
     <div class="section-header">
-      <div class="section-tag">wave -> hue + brightness</div>
-      <h2>Color <span class="accent">Field</span></h2>
-      <p class="section-desc">Two waves sample across x and y to control hue and brightness. The result is a flowing color landscape.</p>
+      <div class="section-tag">base + field per channel</div>
+      <h2>Static <span class="accent">Field</span></h2>
+      <p class="section-desc">A wave-driven take on <code>random(155) + 100</code>. A slow <strong>base</strong> sampler sets a floor in <code>[0, 155]</code>, a faster <strong>field</strong> sampler adds <code>0..100</code> per cell. Per channel.</p>
     </div>
     <div class="ex-preview">
       <div id="ex9" class="ex-canvas"></div>
-      <pre class="ex-code-block"><code class="language-javascript">// Two shift-samplers drive hue and brightness
-const hueS = Waves.createSampler({
-  wave: 'meta sine', shift: true,
-  shiftInterval: 4, shiftDuration: 2,
-  range: [160, 320]
+      <pre class="ex-code-block"><code class="language-javascript">// Slow base + fast field, per channel (R/G/B)
+const baseR = Waves.createSampler({
+  shift: true, group: 'gentle',
+  range: [0, 155], frequency: 0.20,
+  shiftInterval: 7, shiftDuration: 2
 });
-const briS = Waves.createSampler({
-  wave: 'wobble sine', shift: true,
-  shiftInterval: 5, shiftDuration: 2,
-  range: [55, 90]
+const fieldR = Waves.createSampler({
+  shift: true,
+  group: ['classic sine', 'triangle', 'bumpy sine',
+          'mountain peaks', 'wobble sine'],
+  range: [0, 1], frequency: 0.08,
+  shiftInterval: 4, shiftDuration: 1.5
 });
+// ...baseG/fieldG, baseB/fieldB with own settings
 
-// Sample across x and y for a 2D color field
-colorMode(HSB, 360, 100, 100);
-fill(hueS.sample(x * 0.007 + y * 0.005, t),
-     72,
-     briS.sample(x * 0.005 - y * 0.007, t));</code></pre>
+// In draw: floor + field offset (0..100), per channel
+const r0 = floor(baseR.sample(0, t));
+fill(r0 + fieldR.sample(x + y*0.35, t) * 100,
+     g0 + fieldG.sample(x*0.3 + y, t) * 100,
+     b0 + fieldB.sample(x*0.7 - y*0.25, t) * 100);</code></pre>
       <div class="ex-links">
         <a class="ex-full-link" href="../examples/color_field/" target="_blank">-> full example</a>
       </div>
@@ -613,23 +616,36 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
     p.windowResized = function() { const w = cw('ex8'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex8');
 
-  // ── Color Field ───────────────────────────────────────────
+  // ── Static Field ──────────────────────────────────────────
   new p5(function(p) {
-    let hueS, briS, t = 0;
+    let baseR, baseG, baseB, fieldR, fieldG, fieldB;
     p.setup = function() {
       const w = cw('ex9');
       p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex9');
-      p.noStroke(); p.colorMode(p.HSB, 360, 100, 100);
-      hueS = Waves.createSampler({ wave: 'meta sine', shift: true, shiftInterval: 4, shiftDuration: 2, range: [160, 320], seed: 0 });
-      briS = Waves.createSampler({ wave: 'wobble sine', shift: true, shiftInterval: 5, shiftDuration: 2, range: [55, 90], seed: 7 });
+      p.noStroke();
+      baseR = Waves.createSampler({ shift: true, group: 'gentle', range: [0, 155], frequency: 0.20, shiftInterval: 7, shiftDuration: 2 });
+      baseG = Waves.createSampler({ shift: true, group: 'gentle', range: [0, 155], frequency: 0.17, shiftInterval: 8, shiftDuration: 2 });
+      baseB = Waves.createSampler({ shift: true, group: 'gentle', range: [0, 155], frequency: 0.13, shiftInterval: 9, shiftDuration: 2 });
+      fieldR = Waves.createSampler({ shift: true, group: ['classic sine','triangle','bumpy sine','mountain peaks','wobble sine'], range: [0, 1], frequency: 0.08, shiftInterval: 4, shiftDuration: 1.5 });
+      fieldG = Waves.createSampler({ shift: true, group: ['sine','triangle','squared sine','valleys','round linked sine'],       range: [0, 1], frequency: 0.06, shiftInterval: 5, shiftDuration: 1.5 });
+      fieldB = Waves.createSampler({ shift: true, group: ['classic sine','sharp peaks','bumpy sine','half sine','smooth solid sine'], range: [0, 1], frequency: 0.07, shiftInterval: 6, shiftDuration: 1.5 });
     };
     p.draw = function() {
-      t += 0.035;
-      const blockSz = 10;
-      for (let y = 0; y < p.height; y += blockSz) {
-        for (let x = 0; x < p.width; x += blockSz) {
-          p.fill(hueS.sample(x * 0.007 + y * 0.005, t), 72, briS.sample(x * 0.005 - y * 0.007, t * 0.6));
-          p.rect(x, y, blockSz, blockSz);
+      const t = p.millis() / 1000;
+      const cell = 8;
+      const r0 = p.floor(p.constrain(baseR.sample(0,   t), 0, 155));
+      const g0 = p.floor(p.constrain(baseG.sample(100, t), 0, 155));
+      const b0 = p.floor(p.constrain(baseB.sample(200, t), 0, 155));
+      for (let y = 0; y < p.height; y += cell) {
+        for (let x = 0; x < p.width; x += cell) {
+          let rp = p.constrain(fieldR.sample(x + y * 0.35,       t), 0, 1);
+          let gp = p.constrain(fieldG.sample(x * 0.3 + y,        t), 0, 1);
+          let bp = p.constrain(fieldB.sample(x * 0.7 - y * 0.25, t), 0, 1);
+          rp = p.lerp(rp, p.random(), 0.15);
+          gp = p.lerp(gp, p.random(), 0.15);
+          bp = p.lerp(bp, p.random(), 0.15);
+          p.fill(r0 + rp * 100, g0 + gp * 100, b0 + bp * 100);
+          p.rect(x, y, cell, cell);
         }
       }
     };
