@@ -232,7 +232,7 @@ function groupCount(preset) {
 
   const fromList = waveNames.filter(w => w.character === preset.key).length;
   if (fromList > 0) return fromList;
-  return preset.key === 'harsh' ? 6 : 28;
+  return preset.key === 'harsh' ? 7 : 27;
 }
 
 function drawColorBlocks(t) {

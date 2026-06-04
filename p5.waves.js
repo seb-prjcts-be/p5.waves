@@ -56,8 +56,9 @@
     'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle',
     'gentle', 'gentle', 'gentle',
     'harsh',                                     // 11 steps down (tan)
-    'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle',
-    'gentle', 'gentle', 'gentle',
+    'gentle', 'gentle', 'gentle', 'gentle',
+    'harsh',                                     // 16 up down noise (x*sin grows unbounded)
+    'gentle', 'gentle', 'gentle', 'gentle', 'gentle', 'gentle',
     'harsh',                                     // 23 grow random (random)
     'harsh',                                     // 24 noise (noise)
     'harsh',                                     // 25 fuzzy pulse (tan hi freq)

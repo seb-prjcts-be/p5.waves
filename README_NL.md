@@ -10,7 +10,7 @@
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.3.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@latest/p5.waves.min.js"></script>
 ```
 
 ## Snel starten
@@ -114,8 +114,8 @@ sampler.mix;           // voortgang 0-1
 Standaard kan `shift` op alle 34 formules landen, inclusief tan/noise-spikes. Beperk de pool:
 
 ```js
-Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (28 golven)
-Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random (6 golven)
+Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (27 golven)
+Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded (7 golven)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
 ```
 

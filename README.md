@@ -10,7 +10,7 @@
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.3.0/p5.waves.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@latest/p5.waves.min.js"></script>
 ```
 
 ## Quick start
@@ -114,8 +114,8 @@ sampler.mix;           // morph progress 0-1
 By default `shift` can land on any of the 34 formulas, including tan/noise spikes. Narrow the pool:
 
 ```js
-Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (28 waves)
-Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random only (6 waves)
+Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (27 waves)
+Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded only (7 waves)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
 ```
 
