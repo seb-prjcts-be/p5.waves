@@ -121,6 +121,38 @@
     </div>
   </section>
 
+  <!-- SEAMLESS CLOSING -->
+  <section id="closing" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">shift: true &middot; group: 'closing'</div>
+      <h2>Seamless <span class="accent">Closing</span></h2>
+      <p class="section-desc">A ring sampled with shift normally tears its seam open the moment it lands on a new wave - every formula has its own period. The 'closing' pool fixes that: all 17 waves in it share one base period, so a sweep of ring.period times the lobe count closes through every morph. The loop keeps changing shape and never shows a seam.</p>
+    </div>
+    <div id="closing-canvas" style="max-width:500px; margin:0 auto;"></div>
+    <div class="code-preview" style="max-width:500px; margin:1.5rem auto 0;"><code class="language-javascript">// These four are plain sketch constants. You pick them.
+const LOBES  = 6;     // how many lobes around the ring
+const SEGS   = 3000;  // points drawn around the ring
+const RADIUS = 200;   // base radius in pixels
+const WOBBLE = 70;    // wave height in pixels
+
+// The sampler auto-shifts through the 'closing' pool.
+let ring = Waves.createSampler({
+  shift: true,
+  group: 'closing',
+  amplitude: 1
+});
+
+// ring.period comes straight from the library: 62.8319
+// for the closing pool. That is why the sweep keeps
+// closing even as the wave shifts. You never type it.
+let sweep = ring.period * LOBES;
+for (let i = 0; i &lt; SEGS; i++) {
+  let frac = i / SEGS;
+  let r = RADIUS + ring.sample(frac * sweep, t) * WOBBLE;
+  vertex(cos(frac * TWO_PI) * r, sin(frac * TWO_PI) * r);
+}</code></div>
+  </section>
+
   <!-- NOT SO RANDOM WALKER -->
   <section id="walker" class="section">
     <div class="section-header">

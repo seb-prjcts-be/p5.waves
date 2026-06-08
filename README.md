@@ -116,10 +116,33 @@ By default `shift` can land on any of the 34 formulas, including tan/noise spike
 ```js
 Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (27 waves)
 Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded only (7 waves)
+Waves.createSampler({ shift: true, group: 'closing' }); // 17 waves that all close on the same sweep (experimental)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
 ```
 
 > **`mode` vs `group`, don't confuse them.** `mode: 'wild'` warps *one* wave (frequency + phase + amplitude noise). `group: 'harsh'` picks a *different kind of wave* (the ones with spikes baked in). They're orthogonal: `{ mode: 'wild', group: 'gentle' }` = breathing sines, no spikes.
+
+### Stay closed while shifting (`group: 'closing'`)
+
+A ring sampled with `shift` normally tears its seam open the moment it lands on a new wave: every formula has its own period, so a fixed sweep length stops lining up. The `'closing'` pool fixes that. All 17 waves in it share one base period (`62.8319`, that is `2π/0.1`), so a sweep of `sampler.period × lobes` closes seamlessly through every transition. The shape keeps morphing and never shows a seam.
+
+```js
+const ring = Waves.createSampler({ shift: true, group: 'closing', amplitude: 30 });
+
+function draw() {
+  translate(width / 2, height / 2);
+  const sweep = ring.period * 8;          // 8 lobes, holds across every shift
+  beginShape();
+  for (let i = 0; i < 240; i++) {
+    const a = (i / 240) * TWO_PI;
+    const r = 180 + ring.sample(i / 240 * sweep, millis() / 1000);
+    vertex(r * cos(a), r * sin(a));
+  }
+  endShape(CLOSE);
+}
+```
+
+`sampler.period` and `sampler.targetPeriod` report the current and next wave's measured period (both return the stable base for a closing pool, `null` for non-periodic waves). Experimental in 3.3.0: period values may drift by ~0.001 in minor versions. Fine for visuals, not for plotters or CNC.
 
 ---
 

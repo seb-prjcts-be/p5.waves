@@ -116,10 +116,33 @@ Standaard kan `shift` op alle 34 formules landen, inclusief tan/noise-spikes. Be
 ```js
 Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (27 golven)
 Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded (7 golven)
+Waves.createSampler({ shift: true, group: 'closing' }); // 17 golven die op dezelfde sweep sluiten (experimenteel)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
 ```
 
 > **`mode` vs `group`, verwar ze niet.** `mode: 'wild'` vervormt *één* golf (frequency + phase + amplitude noise). `group: 'harsh'` kiest een *ander soort golf* (de formules met ingebakken spikes). Ze zijn orthogonaal: `{ mode: 'wild', group: 'gentle' }` = ademende sinussen, geen spikes.
+
+### Gesloten blijven tijdens het shiften (`group: 'closing'`)
+
+Een ring die je met `shift` samplet, scheurt normaal zijn naad open zodra hij op een nieuwe golf landt: elke formule heeft zijn eigen periode, dus een vaste sweep-lengte klopt niet meer. De `'closing'`-pool lost dat op. Alle 17 golven erin delen één basis-periode (`62.8319`, dat is `2π/0.1`), dus een sweep van `sampler.period × lobes` sluit naadloos dwars door elke transitie heen. De vorm blijft morphen en toont nooit een naad.
+
+```js
+const ring = Waves.createSampler({ shift: true, group: 'closing', amplitude: 30 });
+
+function draw() {
+  translate(width / 2, height / 2);
+  const sweep = ring.period * 8;          // 8 lobes, blijft kloppen door elke shift
+  beginShape();
+  for (let i = 0; i < 240; i++) {
+    const a = (i / 240) * TWO_PI;
+    const r = 180 + ring.sample(i / 240 * sweep, millis() / 1000);
+    vertex(r * cos(a), r * sin(a));
+  }
+  endShape(CLOSE);
+}
+```
+
+`sampler.period` en `sampler.targetPeriod` geven de gemeten periode van de huidige en volgende golf (beide geven de stabiele basis voor een closing-pool, `null` voor niet-periodieke golven). Experimenteel in 3.3.0: periodewaarden kunnen ~0.001 verschuiven in minor-versies. Prima voor beeld, niet voor plotters of CNC.
 
 ---
 

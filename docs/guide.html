@@ -288,9 +288,37 @@ function draw() {
 
     <pre class="code-block"><code class="language-javascript">Waves.createSampler({ shift: true, group: 'gentle' });  // sines &amp; curves only (27 waves)
 Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded only (7 waves)
+Waves.createSampler({ shift: true, group: 'closing' }); // 17 waves that all close on the same sweep
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list</code></pre>
 
     <div class="callout"><p><strong><code>mode</code> vs <code>group</code> - don't confuse them.</strong> <code>mode: 'wild'</code> warps <em>one</em> wave (frequency + phase + amplitude noise). <code>group: 'harsh'</code> picks a <em>different kind of wave</em> - one with spikes baked in. They're orthogonal: <code>{ mode: 'wild', group: 'gentle' }</code> = breathing sines, no spikes.</p></div>
+
+    <h3>Stay closed <em>while</em> shifting - <code>group: 'closing'</code></h3>
+    <p>The two best features fight each other by default. A ring sampled with <code>shift</code> tears its seam open the moment it lands on a new wave, because every formula has its own period and your fixed sweep stops lining up. The <code>'closing'</code> pool ends that fight. All 17 waves in it share one base period (<code>62.8319</code>, that's <code>2&pi;/0.1</code>), so a sweep of <code>sampler.period &times; lobes</code> closes seamlessly through every transition - the shape keeps morphing into new waves and never shows a seam.</p>
+
+    <pre class="code-block"><code class="language-javascript">let ring = Waves.createSampler({
+  shift:     true,
+  group:     'closing',     // 17 waves that all close on the same sweep
+  amplitude: 30
+});
+
+function draw() {
+  background(245);
+  translate(width / 2, height / 2);
+
+  const sweep = ring.period * 8;   // 8 lobes, holds across every shift
+  beginShape();
+  for (let i = 0; i &lt; 240; i++) {
+    const a = (i / 240) * TWO_PI;
+    const r = 180 + ring.sample(i / 240 * sweep, millis() / 1000);
+    vertex(r * cos(a), r * sin(a));
+  }
+  endShape(CLOSE);
+}</code></pre>
+
+    <p><code>sampler.period</code> and <code>sampler.targetPeriod</code> report the current and next wave's measured period - both return the stable base for a closing pool, <code>null</code> for non-periodic waves. So you read the sweep length straight off the sampler instead of hard-coding a number per wave.</p>
+
+    <div class="callout"><p><strong>Experimental in 3.3.0.</strong> Period values may drift by ~0.001 in minor versions. Perfect for visuals; not for plotters, CNC, or anything that gets angry about sub-unit drift.</p></div>
 
 
     <!-- ═══════════════════════════════════ MORPH -->

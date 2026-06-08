@@ -1,6 +1,6 @@
 ﻿/* ============================================================
    p5.waves Showcase - sketch.js
-   Sections: Hero, Gallery, Interactive, Shift, Walker, Terrain
+   Sections: Hero, Gallery, Interactive, Shift, Closing, Walker, Terrain
    ============================================================ */
 
 // ── WAVE NAMES ──────────────────────────────────────────────
@@ -467,7 +467,62 @@ reg('shift-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 5. NOT SO RANDOM WALKER - Wave output as raw velocity
+// 5. SEAMLESS CLOSING - shift through the 'closing' pool
+// ═════════════════════════════════════════════════════════════
+reg('closing-canvas', new p5(function(p) {
+  var LOBES = 6;     // base-period repeats around the ring
+  var SEGS  = 3000;  // dense enough to keep even the shortest closing wave smooth
+  var ring;
+  var closingT = 0;
+
+  p.setup = function() {
+    var container = document.getElementById('closing-canvas');
+    var w = container ? container.offsetWidth : 500;
+    p.createCanvas(w, w).parent('closing-canvas');
+    p.strokeJoin(p.ROUND);
+
+    ring = Waves.createSampler({
+      shift: true,
+      shiftInterval: 3,
+      shiftDuration: 1.4,
+      group: 'closing',
+      amplitude: 1
+    });
+  };
+
+  p.draw = function() {
+    p.background(12);
+    p.translate(p.width / 2, p.height / 2);
+
+    closingT += 0.02;
+    var sweep  = ring.period * LOBES;   // base period closes through every shift
+    var radius = p.width * 0.28;
+    var wobble = p.width * 0.10;
+
+    var col = p.lerpColor(p.color(60, 200, 255), p.color(255, 80, 120), ring.mix);
+    p.noFill();
+    p.stroke(col);
+    p.strokeWeight(1.6);
+    p.beginShape();
+    for (var i = 0; i < SEGS; i++) {
+      var frac  = i / SEGS;
+      var angle = frac * p.TWO_PI;
+      var r     = radius + ring.sample(frac * sweep, closingT) * wobble;
+      p.vertex(p.cos(angle) * r, p.sin(angle) * r);
+    }
+    p.endShape(p.CLOSE);
+  };
+
+  p.windowResized = function() {
+    var container = document.getElementById('closing-canvas');
+    var w = container ? container.offsetWidth : 500;
+    p.resizeCanvas(w, w);
+  };
+}, 'closing-canvas'));
+
+
+// ═════════════════════════════════════════════════════════════
+// 6. NOT SO RANDOM WALKER - Wave output as raw velocity
 // ═════════════════════════════════════════════════════════════
 reg('walker-canvas', new p5(function(p) {
   var palette = [
@@ -621,7 +676,7 @@ reg('walker-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 6. 3D TERRAIN - Two wave samplers + WEBGL
+// 7. 3D TERRAIN - Two wave samplers + WEBGL
 // ═════════════════════════════════════════════════════════════
 reg('terrain-canvas', new p5(function(p) {
   var TERRAIN_N = 35;
