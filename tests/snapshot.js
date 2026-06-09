@@ -52,6 +52,47 @@ for (let i = 0; i < list.length; i++) {
   result[list[i].name] = sampleFormula(list[i].name);
 }
 
+// ─── algo ↔ fn drift check ─────────────────────────────────────────────
+// The library ships precompiled fns (CSP-safe, no eval at runtime); the
+// `algo` string is display-only metadata. Here in Node we MAY eval, so
+// compile each algo string the old way and verify it matches the shipped
+// fn exactly. Waves using random()/noise() are skipped (their primitives
+// are internal to the library); the snapshot baseline above pins those.
+
+const driftIssues = [];
+{
+  const radians = function (deg) { return deg * (Math.PI / 180); };
+  const sq = function (n) { return n * n; };
+  const ARG_NAMES = [
+    'x', 't', 'random', 'noise',
+    'sin', 'cos', 'tan', 'abs', 'ceil', 'round', 'floor', 'min', 'max',
+    'log', 'sq', 'radians', 'PI'
+  ];
+  const helpers = [
+    Math.sin, Math.cos, Math.tan, Math.abs, Math.ceil, Math.round,
+    Math.floor, Math.min, Math.max, Math.log, sq, radians, Math.PI
+  ];
+  for (let i = 0; i < Waves.data.length; i++) {
+    const w = Waves.data[i];
+    if (typeof w.fn !== 'function') {
+      driftIssues.push(w.name + ': missing fn');
+      continue;
+    }
+    if (/\b(random|noise)\(/.test(w.algo)) continue;
+    const compiled = new Function(...ARG_NAMES, 'return (' + w.algo + ');');
+    for (let s = 0; s < 48; s++) {
+      const x = -120 + s * 5.1;
+      const a = w.fn(x, 0);
+      const b = compiled(x, 0, null, null, ...helpers);
+      const same = (Number.isNaN(a) && Number.isNaN(b)) || a === b;
+      if (!same) {
+        driftIssues.push(w.name + ': fn/algo mismatch at x=' + x + ' (' + a + ' vs ' + b + ')');
+        break;
+      }
+    }
+  }
+}
+
 const baselinePath = path.join(__dirname, 'snapshot.json');
 const updateMode = process.argv.indexOf('--update') !== -1;
 
@@ -113,11 +154,16 @@ console.log('  formulas:', list.length);
 console.log('  samples per formula:', N);
 console.log('  passed:', pass);
 console.log('  issues:', issues.length);
+console.log('  algo/fn drift issues:', driftIssues.length);
 console.log('');
 
-if (issues.length === 0) {
+if (issues.length === 0 && driftIssues.length === 0) {
   console.log('OK');
   process.exit(0);
+}
+
+for (let i = 0; i < driftIssues.length; i++) {
+  console.log('  DRIFT ' + driftIssues[i]);
 }
 
 for (let i = 0; i < issues.length; i++) {
