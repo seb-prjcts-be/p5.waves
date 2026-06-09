@@ -6,6 +6,8 @@
 
 **Geoptimaliseerd voor p5.js 2.x** (getest met 2.2.2). Werkt ook met p5.js 1.x.
 
+**CSP-veilig.** De library bevat geen `eval` of `new Function` en draait dus onder een strikte Content-Security-Policy zonder `'unsafe-eval'`.
+
 ## Installeren
 
 ```html
