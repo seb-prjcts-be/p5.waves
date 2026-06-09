@@ -282,6 +282,64 @@
     return pool[(i + 1) % pool.length];
   }
 
+  // ─── Shift selection: per-cycle permutation ──────────────────────────────────
+  // A naive per-era random draw clusters (coupon-collector): some waves repeat,
+  // others never appear in a session. Instead, shuffle the pool once per full
+  // cycle of L eras (Fisher-Yates seeded by base + cycle) and read it position
+  // by position. Every wave shows exactly once per L eras, still pseudo-random
+  // per session, still a pure function of era. Decks are memoised so the
+  // per-pixel stateless wave() path stays O(1) amortised.
+
+  let _allIndices = null;
+  function allIndices() {
+    if (_allIndices === null) {
+      _allIndices = [];
+      for (let i = 0; i < WAVES.length; i++) _allIndices.push(i);
+    }
+    return _allIndices;
+  }
+
+  // Deck cache: compare (cycle, pool ref, base string) directly so the hot
+  // per-pixel path never builds a composite key or hashes on a hit. Named
+  // groups ('gentle'/'harsh') resolve to a stable array reference, so the
+  // pool === check holds across calls.
+  const _deckBase  = new Array(4);
+  const _deckCycle = new Array(4);
+  const _deckPool  = new Array(4);
+  const _deckVals  = new Array(4);
+  let _deckPtr = 0, _deckFill = 0;
+
+  function shuffledDeck(seedBase, cycle, pool) {
+    for (let i = 0; i < _deckFill; i++) {
+      if (_deckCycle[i] === cycle && _deckPool[i] === pool && _deckBase[i] === seedBase) {
+        return _deckVals[i];
+      }
+    }
+    const deck = ((pool && pool.length) ? pool : allIndices()).slice();
+    const rng  = mulberry32(seedFrom(seedBase + '.' + cycle));
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j   = Math.floor(rng() * (i + 1));
+      const tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp;
+    }
+    _deckBase[_deckPtr]  = seedBase;
+    _deckCycle[_deckPtr] = cycle;
+    _deckPool[_deckPtr]  = pool;
+    _deckVals[_deckPtr]  = deck;
+    _deckPtr = (_deckPtr + 1) & 3;
+    if (_deckFill < 4) _deckFill++;
+    return deck;
+  }
+
+  // Drop-in for pickWaveIndexIn(base + '.' + era, pool) on the shift path.
+  function pickWaveIndexForEra(seedBase, era, pool) {
+    const src = (pool && pool.length) ? pool : allIndices();
+    const L = src.length;
+    if (L <= 1) return src[0];
+    const cycle = Math.floor(era / L);
+    const pos   = era - cycle * L;
+    return shuffledDeck(seedBase, cycle, pool)[pos];
+  }
+
   function findWaveByName(name) {
     const key  = normalizeName(name);
     const keyC = compact(key);
@@ -492,14 +550,15 @@
       // Runtime entropy - stateless wave() has no persistent state,
       // but the entropy is stable within a single page load via closure
       const waveShiftEntropy = _waveShiftEntropy;
+      const shiftBase = seed + '.' + waveShiftEntropy;
 
       const userIdx = waveRef !== undefined ? resolveWave(waveRef) : -1;
-      const idxA = (era === 0 && userIdx >= 0) ? userIdx : pickWaveIndexIn(seed + '.' + waveShiftEntropy + '.' + era, groupPool);
+      const idxA = (era === 0 && userIdx >= 0) ? userIdx : pickWaveIndexForEra(shiftBase, era, groupPool);
       const fnA  = compile(WAVES[idxA].algo);
       const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
 
       if (progress >= shiftInterval) {
-        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndexIn(seed + '.' + waveShiftEntropy + '.1', groupPool) : pickWaveIndexIn(seed + '.' + waveShiftEntropy + '.' + (era + 1), groupPool);
+        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndexForEra(shiftBase, 1, groupPool) : pickWaveIndexForEra(shiftBase, era + 1, groupPool);
         if (idxB === idxA) idxB = nextDifferentInPool(idxA, groupPool);
         const fnB  = compile(WAVES[idxB].algo);
         const valB = evalKernel(fnB, y, t, frequency, phase, internalSeed, mode, unpredictability);
@@ -609,6 +668,7 @@
       const hasUserWave = opts.wave !== undefined && !Array.isArray(opts.wave);
       // Runtime entropy so each session produces a different sequence
       const shiftEntropy = Math.floor(Math.random() * 100000);
+      const shiftBase = seed + '.' + shiftEntropy;
 
       let cachedEra = -Infinity;
       let curIdx = waveIndexA, nxtIdx = -1;
@@ -618,7 +678,7 @@
 
       function pickForEra(era) {
         if (era === 0 && hasUserWave) return waveIndexA;
-        return pickWaveIndexIn(seed + '.' + shiftEntropy + '.' + era, groupPool);
+        return pickWaveIndexForEra(shiftBase, era, groupPool);
       }
 
       function ensureEra(era) {
