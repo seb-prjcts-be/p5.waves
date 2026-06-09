@@ -12,6 +12,14 @@
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.4.0/p5.waves.min.js"
+        integrity="sha384-dYhDqxT6d7S8tTTYfe3pmU1F85hlMguwlIFMLNfqYDomLiaacI/cGxBLZWABvrJp"
+        crossorigin="anonymous"></script>
+```
+
+De gepinde versie + `integrity`-hash garandeert dat de browser alleen het exacte gepubliceerde bestand uitvoert. Liever automatische updates dan die garantie? Gebruik dan `@latest` (zonder `integrity` — het bestand verandert per release):
+
+```html
 <script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@latest/p5.waves.min.js"></script>
 ```
 

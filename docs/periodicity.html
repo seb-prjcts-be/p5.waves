@@ -377,18 +377,25 @@
     return n.toFixed(digits);
   }
 
+  // Escape text before inserting into innerHTML. The values are library-
+  // internal today, but this keeps the page safe if they ever carry input.
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   function appendRow(r) {
     var tr = document.createElement('tr');
     var verdictClass = 'verdict-' + (r.verdict === 'non-periodic' ? 'non' : r.verdict === 'quasi-periodic' ? 'quasi' : r.verdict === 'non-deterministic' ? 'nondet' : 'periodic');
     tr.innerHTML =
       '<td class="num">' + r.idx + '</td>' +
-      '<td>' + r.name + '</td>' +
-      '<td><code>' + r.algo + '</code></td>' +
+      '<td>' + esc(r.name) + '</td>' +
+      '<td><code>' + esc(r.algo) + '</code></td>' +
       '<td class="num">' + fmt(r.period, 4) + '</td>' +
       '<td class="num">' + fmt(r.v0, 6) + '</td>' +
       '<td class="num">' + fmt(r.vT, 6) + '</td>' +
       '<td class="num">' + fmt(r.closeErr, 8) + '</td>' +
-      '<td><span class="' + verdictClass + '">' + r.verdict + '</span></td>';
+      '<td><span class="' + verdictClass + '">' + esc(r.verdict) + '</span></td>';
     tbody.appendChild(tr);
   }
 

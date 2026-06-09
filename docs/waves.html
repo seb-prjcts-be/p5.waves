@@ -548,6 +548,13 @@ endShape(CLOSE);</div>
     'special':       'family-special'
   };
 
+  // Escape text before inserting into innerHTML. The values are library-
+  // internal today, but this keeps the page safe if they ever carry input.
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   // Build cards
   for (var i = 0; i < waveData.length; i++) {
     var w = waveData[i];
@@ -570,10 +577,10 @@ endShape(CLOSE);</div>
       '<div class="wave-card-body">' +
         '<div class="wave-card-head">' +
           '<span class="wave-card-idx">' + w.idx + '</span>' +
-          '<span class="wave-card-name">' + w.name + '</span>' +
+          '<span class="wave-card-name">' + esc(w.name) + '</span>' +
         '</div>' +
-        '<code class="wave-card-algo">' + w.algo + '</code>' +
-        '<p class="wave-card-mood">' + w.mood + '</p>' +
+        '<code class="wave-card-algo">' + esc(w.algo) + '</code>' +
+        '<p class="wave-card-mood">' + esc(w.mood) + '</p>' +
         periodHtml +
       '</div>';
 

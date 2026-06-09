@@ -240,6 +240,9 @@
   let _seedCachePtr = 0, _seedCacheFill = 0;
 
   function seedFrom(value) {
+    // NaN never matches itself in the cache scan below; coerce it to its
+    // string form so repeated NaN seeds hit the cache like any other value.
+    if (typeof value === 'number' && Number.isNaN(value)) value = 'NaN';
     // Check small ring-buffer cache first
     for (let i = 0; i < _seedCacheFill; i++) {
       if (_seedCacheKeys[i] === value) return _seedCacheVals[i];
@@ -585,7 +588,9 @@
       const valA = evalKernel(fnA, y, t, frequency, phase, internalSeed, mode, unpredictability);
 
       if (progress >= shiftInterval) {
-        let idxB = (era === 1 && userIdx >= 0) ? pickWaveIndexForEra(shiftBase, 1, groupPool) : pickWaveIndexForEra(shiftBase, era + 1, groupPool);
+        // Mirror the sampler's pickForEra: the next wave is always era+1's
+        // deck pick; only era 0 honours a user-supplied wave (via idxA above).
+        let idxB = pickWaveIndexForEra(shiftBase, era + 1, groupPool);
         if (idxB === idxA) idxB = nextDifferentInPool(idxA, groupPool);
         const fnB  = WAVES[idxB].fn;
         const valB = evalKernel(fnB, y, t, frequency, phase, internalSeed, mode, unpredictability);
@@ -842,4 +847,5 @@
 
   global.Waves = Waves;
 
-})(typeof window !== 'undefined' ? window : this);
+})(typeof globalThis !== 'undefined' ? globalThis :
+   typeof window !== 'undefined' ? window : this);
