@@ -64,7 +64,7 @@
 
     <h2>Method</h2>
     <ul>
-      <li>Each wave is sampled via <code>Waves.wave(x, { wave: idx, t: 0 })</code> - no amplitude, no range, default [-1, 1] output.</li>
+      <li>Each wave is sampled via <code>Waves.wave(x, { wave: idx, t: 0, amplitude: 1 })</code> - <code>amplitude: 1</code> forces normalized [-1, 1] output (the library default amplitude is <code>100</code>), so the thresholds below are formula-agnostic.</li>
       <li><strong>Determinism check</strong>: call <code>wave(x)</code> twice at the same x. If results differ, the wave is marked <em>non-deterministic</em> (p5's <code>random()</code> advances internal state).</li>
       <li><strong>Period search</strong>: for candidate T from 0.5 to 200 (step 0.01), compute mean absolute difference between <code>wave(x)</code> and <code>wave(x + T)</code> at 80 sample points in x &isin; [10, 110]. Smallest T where mean error &lt; 0.002 AND multiples 2T, 3T also match is the detected period.</li>
       <li><strong>Close-error</strong>: for the detected period T, report <code>|wave(10) - wave(10 + T)|</code> as a final sanity check.</li>

@@ -44,7 +44,7 @@ function draw() {
 ## Drie manieren om het te gebruiken
 
 ```js
-Waves.wave(x)                       // willekeurige golf
+Waves.wave(x)                       // standaardgolf (seed 0)
 Waves.wave(x, 'triangle')           // kies op naam
 Waves.wave(x, { wave: 'triangle', t: millis() / 1000, amplitude: 50 })
 ```
@@ -57,7 +57,7 @@ Geeft altijd één getal terug.
 
 | optie | wat het doet | standaard |
 |---|---|---|
-| `wave` | Welke vorm. Naam, index (0-33), of `['a', 'b']` om te blenden. | willekeurig |
+| `wave` | Welke vorm. Naam, index (0-33), of `['a', 'b']` om te blenden. Laat je hem weg, dan krijg je de `seed`-pick. | seed 0 |
 | `t` | Tijd. Laat de golf bewegen. Geef `millis() / 1000` mee. | `0` |
 | `amplitude` | Hoe hoog. Output: `[-amplitude, +amplitude]`. | `100` |
 
@@ -69,7 +69,7 @@ Geeft altijd één getal terug.
 | `frequency` | Hoe dicht de cycli op elkaar zitten. Hoger = samengedrukt. | `1` |
 | `seed` | Kies een golf via een getal. Zelfde seed = zelfde golf. | `0` |
 | `shift` | `true` = wissel automatisch naar willekeurige golven met vloeiende overgang. | `false` |
-| `group` | Welke pool `shift` / `seed` mag kiezen: `'gentle'`, `'harsh'`, `'all'`, of `['sine', 'triangle']`. | `'all'` |
+| `group` | Welke pool `shift` / `seed` mag kiezen: `'gentle'`, `'harsh'`, `'closing'` (experimenteel), `'all'`, of `['sine', 'triangle']`. | `'all'` |
 
 ### Geavanceerd
 
@@ -218,6 +218,8 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 - `color_field` - RGB static field (basis + veld per kanaal)
 - `morph_wave` - morph tussen twee golven
 - `random_walker` - golf-gestuurde walker
+- `spiky_lissajous` - sluitende Lissajous met een spiky golf
+- `binary_field` - twee samplers, opgeteld en gedrempeld
 - `3d_wave_volume` - 3D WebGL
 
 ---

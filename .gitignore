@@ -1,5 +1,7 @@
 .claude/
-.github/
+# Ignore local .github scratch, but keep CI workflows tracked (new ones too).
+.github/*
+!.github/workflows/
 _audits/
 tools/
 CLAUDE.md

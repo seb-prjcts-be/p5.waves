@@ -49,7 +49,7 @@
       <div id="ex0" class="ex-canvas"></div>
       <pre class="ex-code-block"><code class="language-javascript">// One number - use it for anything
 const v = Waves.wave(i * 0.3, {
-  wave: 'bounce', t: t, range: [0, 1]
+  wave: 'up down noise', t: t, range: [0, 1]
 });
 
 // Row 1: size
@@ -307,6 +307,40 @@ fill(255); circle(xs[drawnTo], ys[drawnTo], 6);</code></pre>
     </div>
   </section>
 
+  <!-- NOT SO RANDOM WALKER -->
+  <section id="walker" class="section section-dark">
+    <div class="section-header">
+      <div class="section-tag">velocity = wave output</div>
+      <h2>Not So Random <span class="accent">Walker</span></h2>
+      <p class="section-desc">No angles, no steps. The wave output <em>is</em> the velocity. Five trails ride two shift-samplers as raw displacement, so when the formulas shift the whole movement character transforms.</p>
+    </div>
+    <div class="ex-preview">
+      <div id="ex-walker" class="ex-canvas"></div>
+      <pre class="ex-code-block"><code class="language-javascript">// Wave output IS the velocity - no angle, no step.
+const xWave = Waves.createSampler({
+  shift: true, shiftInterval: 4,
+  amplitude: 2.5, frequency: 0.7, seed: 0
+});
+const yWave = Waves.createSampler({
+  shift: true, shiftInterval: 5,
+  amplitude: 2.5, frequency: 0.55, seed: 77
+});
+
+// Per walker, per frame: one sample = one step of displacement
+for (let i = 0; i &lt; WALKERS; i++) {
+  const phase = i * 6.7;
+  const vx = xWave.sample(t * 1.8 + phase, t);
+  const vy = yWave.sample(t * 2.1 + phase * 1.3, t);
+  wx[i] += vx;
+  wy[i] += vy;
+  trail.line(prevX[i], prevY[i], wx[i], wy[i]);
+}</code></pre>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/random_walker/" target="_blank">-> full example</a>
+      </div>
+    </div>
+  </section>
+
   <!-- BINARY FIELD -->
   <section id="grid" class="section">
     <div class="section-header">
@@ -396,21 +430,21 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
 
       // Row 1: wave -> size
       for (let i = 0; i < N; i++) {
-        const v1 = Waves.wave(i * 0.3, { wave: 'bounce', t: t, range: [0, 1] });
+        const v1 = Waves.wave(i * 0.3, { wave: 'up down noise', t: t, range: [0, 1] });
         p.fill(0);
         p.circle((i + 1) * gap, rowH * 0.5, v1 * gap * 0.85);
       }
 
       // Row 2: wave -> position
       for (let j = 0; j < N; j++) {
-        const v2 = Waves.wave(j * 0.3, { wave: 'bounce', t: t + 2, range: [-1, 1] });
+        const v2 = Waves.wave(j * 0.3, { wave: 'up down noise', t: t + 2, range: [-1, 1] });
         p.fill(0);
         p.circle((j + 1) * gap, rowH * 1.5 + v2 * rowH * 0.35, 8);
       }
 
       // Row 3: wave -> color (red to blue)
       for (let k = 0; k < N; k++) {
-        const v3 = Waves.wave(k * 0.3, { wave: 'bounce', t: t + 4, range: [0, 1] });
+        const v3 = Waves.wave(k * 0.3, { wave: 'up down noise', t: t + 4, range: [0, 1] });
         p.fill(255 - v3 * 255, 0, v3 * 255);
         p.circle((k + 1) * gap, rowH * 2.5, 14);
       }
@@ -746,6 +780,75 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
     };
     p.windowResized = function() { const w = cw('ex-spiky'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-spiky');
+
+  // ── Not So Random Walker ──────────────────────────────────
+  new p5(function(p) {
+    const WALKERS = 5;
+    // R, G, B, yellow, purple
+    const palette = [
+      [255, 60, 60], [60, 220, 60], [60, 100, 255], [255, 220, 40], [180, 60, 255]
+    ];
+    let xWave, yWave, trail;
+    let wx = [], wy = [], prevX = [], prevY = [];
+    let t = 0;
+    function seedWalkers() {
+      for (let i = 0; i < WALKERS; i++) {
+        const a = p.TWO_PI * i / WALKERS;
+        wx[i] = p.width / 2 + p.cos(a) * 40;
+        wy[i] = p.height / 2 + p.sin(a) * 40;
+        prevX[i] = wx[i];
+        prevY[i] = wy[i];
+      }
+    }
+    p.setup = function() {
+      const w = cw('ex-walker');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex-walker');
+      trail = p.createGraphics(p.width, p.height);
+      trail.background(15);
+      p.textFont('monospace');
+      xWave = Waves.createSampler({ shift: true, shiftInterval: 4, shiftDuration: 1.5, amplitude: 2.5, frequency: 0.7, seed: 0 });
+      yWave = Waves.createSampler({ shift: true, shiftInterval: 5, shiftDuration: 1.2, amplitude: 2.5, frequency: 0.55, seed: 77 });
+      seedWalkers();
+    };
+    p.draw = function() {
+      trail.noStroke();
+      trail.fill(15, 15, 15, 8);
+      trail.rect(0, 0, trail.width, trail.height);
+      t += 0.025;
+      for (let i = 0; i < WALKERS; i++) {
+        const phase = i * 6.7;
+        const vx = xWave.sample(t * 1.8 + phase, t);
+        const vy = yWave.sample(t * 2.1 + phase * 1.3, t);
+        prevX[i] = wx[i];
+        prevY[i] = wy[i];
+        wx[i] += vx;
+        wy[i] += vy;
+        if (wx[i] < 0) wx[i] += p.width;
+        if (wx[i] > p.width) wx[i] -= p.width;
+        if (wy[i] < 0) wy[i] += p.height;
+        if (wy[i] > p.height) wy[i] -= p.height;
+        if (p.abs(wx[i] - prevX[i]) > p.width / 2) continue;
+        if (p.abs(wy[i] - prevY[i]) > p.height / 2) continue;
+        const col = palette[i];
+        trail.stroke(col[0], col[1], col[2], 200);
+        trail.strokeWeight(2.5);
+        trail.line(prevX[i], prevY[i], wx[i], wy[i]);
+      }
+      p.image(trail, 0, 0);
+      p.noStroke();
+      p.fill(255, 255, 255, 140);
+      p.textSize(10);
+      p.textAlign(p.LEFT, p.CENTER);
+      p.text(xWave.waveName + '  ×  ' + yWave.waveName, 8, 14);
+    };
+    p.windowResized = function() {
+      const w = cw('ex-walker');
+      p.resizeCanvas(w, p.floor(w * 2 / 3));
+      trail = p.createGraphics(p.width, p.height);
+      trail.background(15);
+      seedWalkers();
+    };
+  }, 'ex-walker');
 
   // ── Binary Field ──────────────────────────────────────────
   new p5(function(p) {

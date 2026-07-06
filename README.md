@@ -44,7 +44,7 @@ function draw() {
 ## Three ways to call it
 
 ```js
-Waves.wave(x)                       // random wave
+Waves.wave(x)                       // default wave (seed 0)
 Waves.wave(x, 'triangle')           // pick by name
 Waves.wave(x, { wave: 'triangle', t: millis() / 1000, amplitude: 50 })
 ```
@@ -57,7 +57,7 @@ Always returns a single number.
 
 | option | what it does | default |
 |---|---|---|
-| `wave` | Which shape. Name, index (0-33), or `['a', 'b']` for blending. | random |
+| `wave` | Which shape. Name, index (0-33), or `['a', 'b']` for blending. Omit it and you get the `seed`-based pick. | seed 0 |
 | `t` | Time. Makes the wave move. Pass `millis() / 1000`. | `0` |
 | `amplitude` | How tall. Output: `[-amplitude, +amplitude]`. | `100` |
 
@@ -69,7 +69,7 @@ Always returns a single number.
 | `frequency` | How tight the cycles are. Higher = squished. | `1` |
 | `seed` | Pick a wave by number. Same seed = same wave. | `0` |
 | `shift` | `true` = auto-switch to random waves with smooth blend. | `false` |
-| `group` | Which pool `shift` / `seed` can pick from: `'gentle'`, `'harsh'`, `'all'`, or `['sine', 'triangle']`. | `'all'` |
+| `group` | Which pool `shift` / `seed` can pick from: `'gentle'`, `'harsh'`, `'closing'` (experimental), `'all'`, or `['sine', 'triangle']`. | `'all'` |
 
 ### Advanced
 
@@ -218,6 +218,8 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 - `color_field` - RGB static field (base + field per channel)
 - `morph_wave` - morph between two waves
 - `random_walker` - wave-steered walker
+- `spiky_lissajous` - closing Lissajous with a spiky wave
+- `binary_field` - two samplers, summed and thresholded
 - `3d_wave_volume` - 3D WebGL
 
 ---

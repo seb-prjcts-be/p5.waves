@@ -485,12 +485,12 @@ endShape(CLOSE);</div>
   <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.min.js"></script>
   <script src="../p5.waves.js"></script>
   <script>
-  // Empirically measured periods (from docs/periodicity.html).
-  // null = quasi-periodic or non-periodic - no clean close. Re-run the harness
-  // at periodicity.html to verify any of these values.
+  // Mirrors WAVE_PERIODS in p5.waves.js (the canonical source), rounded to 2
+  // decimals for display. null = quasi-periodic or non-periodic - no clean close.
+  // Keep in sync with the library; periodicity.html re-derives the same values.
   var WAVE_PERIODS = {
-    0: 62.83, 1: 31.42, 2: 31.42, 3: 40,    4: 40,    5: 62.60, 6: 62.83,
-    7: 62.83, 8: 31.42, 9: 62.83, 10: 62.83, 11: 31.42, 12: 62.82, 13: 31.42,
+    0: 62.83, 1: 31.42, 2: 31.42, 3: 40,    4: 40,    5: 62.83, 6: 62.83,
+    7: 62.83, 8: 31.42, 9: 62.83, 10: 62.83, 11: 31.42, 12: 62.83, 13: 31.42,
     14: 62.83, 15: 62.83, 16: null, 17: null, 18: 33.33, 19: 50,    20: 16.67,
     21: 16.67, 22: null, 23: null, 24: null, 25: 17.75, 26: 31.42, 27: null,
     28: null, 29: null, 30: null, 31: 62.83, 32: null, 33: 2.03
@@ -568,7 +568,7 @@ endShape(CLOSE);</div>
     var period = WAVE_PERIODS[w.idx];
     var periodHtml;
     if (period === null || period === undefined) {
-      periodHtml = '<span class="wave-card-period is-non"><strong>period</strong> — (no clean close)</span>';
+      periodHtml = '<span class="wave-card-period is-non"><strong>period</strong> (no clean close)</span>';
     } else {
       periodHtml = '<span class="wave-card-period"><strong>period</strong> ' + period + '</span>';
     }
