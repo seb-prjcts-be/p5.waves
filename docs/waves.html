@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The 34 Waves - p5.waves</title>
+  <title>The 35 Waves - p5.waves</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -209,7 +209,7 @@
   <div class="waves-wrap">
 
     <div class="section-tag" style="margin-bottom:0.6rem">Open source math · MIT</div>
-    <h1>The 34 <span class="accent">Waves</span></h1>
+    <h1>The 35 <span class="accent">Waves</span></h1>
     <p class="waves-intro">
       Every wave in this library is a short math expression. No magic, no black boxes.
       Stacking sines, cosines, tangents, absolute values, and modulo operations - that is all it takes
@@ -218,7 +218,7 @@
 
     <h2>Building Blocks</h2>
     <p>
-      Six mathematical operations. Combined in different ways, they produce 34 distinct wave characters.
+      Six mathematical operations. Combined in different ways, they produce 35 distinct wave characters.
       Each operation adds a specific quality - a mood, a rhythm, a texture.
     </p>
 
@@ -269,7 +269,7 @@
       <code>Waves.wave(x)</code> treats <code>x</code> as a generic coordinate -
       the same mental model as <code>noise(x)</code> - not an angle in degrees
       or radians. Frequencies are tuned for character, not for round numbers.
-      Ten of the 34 waves are not sine-based at all
+      Ten of the 35 waves are not sine-based at all
       (<code>square</code>, <code>triangle</code>, <code>ramp</code>,
       <code>noise</code>...) so radians would be meaningless for them.
       Use this table as your lookup instead of reaching for <code>TWO_PI</code>.
@@ -352,7 +352,7 @@ endShape(CLOSE);</div>
 
     <h2>The Families</h2>
     <p>
-      The 34 formulas group into families by character. Each family shares a mood  -
+      The 35 formulas group into families by character. Each family shares a mood  -
       a way of moving, a texture, a temperament. Within each family, individual formulas
       add their own twist.
     </p>
@@ -479,7 +479,7 @@ endShape(CLOSE);</div>
 
   <footer>
     <p>Built with <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves</a> + <a href="https://p5js.org" target="_blank">p5.js</a></p>
-    <p class="footer-sub">34 wave formulas · open math · MIT license</p>
+    <p class="footer-sub">35 wave formulas · open math · MIT license</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.min.js"></script>
@@ -493,7 +493,8 @@ endShape(CLOSE);</div>
     7: 62.83, 8: 31.42, 9: 62.83, 10: 62.83, 11: 31.42, 12: 62.83, 13: 31.42,
     14: 62.83, 15: 62.83, 16: null, 17: null, 18: 33.33, 19: 50,    20: 16.67,
     21: 16.67, 22: null, 23: null, 24: null, 25: 17.75, 26: 31.42, 27: null,
-    28: null, 29: null, 30: null, 31: 62.83, 32: null, 33: 2.03
+    28: null, 29: null, 30: null, 31: 62.83, 32: null, 33: 2.03,
+    34: 62.83
   };
 
   // Wave data with family assignments and personality descriptions
@@ -531,7 +532,8 @@ endShape(CLOSE);</div>
     { idx: 30, name: 'triangle sine',     algo: 'sin(x)*(x*.01%1-.5)',                             family: 'amplitude-mod', mood: 'Sine scaled by a triangle wave. Symmetrical breathing - growing louder, softer, louder again.' },
     { idx: 31, name: 'round linked sine', algo: 'sin(x*.1)*cos(x*1)*.5',                          family: 'layered-sine',  mood: 'Slow sine carrying a fast cosine. A vibrato so rapid it becomes texture - the wave shivers.' },
     { idx: 32, name: 'half sine',         algo: 'sin(x*.05)*(x*.1%.5)',                            family: 'amplitude-mod', mood: 'Very slow sine modulated by a fast ramp. Long breathing arc with rhythmic internal pulsing.' },
-    { idx: 33, name: 'smooth solid sine', algo: 'sin(x*3.1)*.25',                                 family: 'pure-sine',     mood: 'High-frequency sine. Tight, dense oscillation - like a vibrating string seen up close.' }
+    { idx: 33, name: 'smooth solid sine', algo: 'sin(x*3.1)*.25',                                 family: 'pure-sine',     mood: 'High-frequency sine. Tight, dense oscillation - like a vibrating string seen up close.' },
+    { idx: 34, name: 'spike sine',        algo: 'sq(sq(sin(x*.1)))*sin(x*.1)*.5',                  family: 'special',       mood: 'Sine raised to the fifth. Long calm near zero, then narrow spikes up and down - smooth but sudden, quiet with sharp teeth.' }
   ];
 
   // Family container IDs

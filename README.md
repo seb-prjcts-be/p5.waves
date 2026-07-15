@@ -2,7 +2,7 @@
 
 **[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)** · **[Processing (Java) port](https://github.com/seb-prjcts-be/processing.waves)**
 
-34 wave shapes for p5.js. One function call, one number back.
+35 wave shapes for p5.js. One function call, one number back.
 
 **Optimized for p5.js 2.x** (tested with 2.2.2). Also works with p5.js 1.x.
 
@@ -121,12 +121,12 @@ sampler.mix;           // morph progress 0-1
 
 ### Pick a pool with `group`
 
-By default `shift` can land on any of the 34 formulas, including tan/noise spikes. Narrow the pool:
+By default `shift` can land on any of the 35 formulas, including tan/noise spikes. Narrow the pool:
 
 ```js
 Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (25 waves)
 Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (10 waves)
-Waves.createSampler({ shift: true, group: 'closing' }); // 17 waves that all close on the same sweep (experimental)
+Waves.createSampler({ shift: true, group: 'closing' }); // 18 waves that all close on the same sweep (experimental)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
 ```
 
@@ -134,7 +134,7 @@ Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  //
 
 ### Stay closed while shifting (`group: 'closing'`)
 
-A ring sampled with `shift` normally tears its seam open the moment it lands on a new wave: every formula has its own period, so a fixed sweep length stops lining up. The `'closing'` pool fixes that. All 17 waves in it share one base period (`62.8319`, that is `2π/0.1`), so a sweep of `sampler.period × lobes` closes seamlessly through every transition. The shape keeps morphing and never shows a seam.
+A ring sampled with `shift` normally tears its seam open the moment it lands on a new wave: every formula has its own period, so a fixed sweep length stops lining up. The `'closing'` pool fixes that. All 18 waves in it share one base period (`62.8319`, that is `2π/0.1`), so a sweep of `sampler.period × lobes` closes seamlessly through every transition. The shape keeps morphing and never shows a seam.
 
 ```js
 const ring = Waves.createSampler({ shift: true, group: 'closing', amplitude: 30 });
@@ -196,11 +196,11 @@ The `docs/about.html` origin grid (the sketch that started p5.waves) is the simp
 | `Waves.wave(y, opts)` | `waves(y, opts)` | `p.waves(y, opts)` |
 | `Waves.createSampler(opts)` | `createWaveSampler(opts)` | `p.createWaveSampler(opts)` |
 
-Also: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, n)`.
+Also: `Waves.list()`, `Waves.count` (35), `Waves.data`, `Waves.benchmark(config, n)`.
 
 ---
 
-## All 34 waves
+## All 35 waves
 
 `classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine`
 
@@ -226,7 +226,7 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 
 ## Processing (Java) port
 
-There's a Java port for Processing 4: [**processing.waves**](https://github.com/seb-prjcts-be/processing.waves). Same 34 waves, same API shape, for sketches that live outside the browser.
+There's a Java port for Processing 4: [**processing.waves**](https://github.com/seb-prjcts-be/processing.waves). Same 35 waves, same API shape, for sketches that live outside the browser.
 
 ## How this was made
 

@@ -71,7 +71,7 @@ function draw() {
 
     <p>That's the whole API in action. <code>Waves.wave()</code> takes a position, returns a number. Use that number for y-position, size, color, rotation, opacity - anything that takes a number.</p>
 
-    <div class="callout"><p>Now change <code>'mountain peaks'</code> to <code>'batman'</code>. Or <code>'wobble sine'</code>. Or <code>'fuzzy pulse'</code>. Each one has its own personality. There are 34 to explore.</p></div>
+    <div class="callout"><p>Now change <code>'mountain peaks'</code> to <code>'batman'</code>. Or <code>'wobble sine'</code>. Or <code>'fuzzy pulse'</code>. Each one has its own personality. There are 35 to explore.</p></div>
 
 
     <!-- ═══════════════════════════════════ THREE WAYS -->
@@ -131,7 +131,7 @@ circle(x, y, dotSize);</code></pre>
       <tr><td><code>frequency</code></td><td>Squeeze the wave tighter (high) or stretch it out (low).</td><td><code>1</code></td></tr>
       <tr><td><code>seed</code></td><td>Give each object its own wave. Same seed always picks the same wave.</td><td><code>0</code></td></tr>
       <tr><td><code>shift</code></td><td><code>true</code> = auto-switch to a new random wave every few seconds. Smooth transitions. Different every page load.</td><td><code>false</code></td></tr>
-      <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (25). <code>'harsh'</code> = tan/noise/random/unbounded/erratic (10). <code>'closing'</code> = 17 waves that share one period (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
+      <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (25). <code>'harsh'</code> = tan/noise/random/unbounded/erratic (10). <code>'closing'</code> = 18 waves that share one period (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
     </table>
 
     <h3>Go deeper</h3>
@@ -147,7 +147,7 @@ circle(x, y, dotSize);</code></pre>
 
 
     <!-- ═══════════════════════════════════ WAVE LIST -->
-    <h2>All 34 Waves</h2>
+    <h2>All 35 Waves</h2>
     <p>Use the name or the number. Yes, there's one called <strong>batman</strong>. Try them all in the <a href="https://seb-prjcts-be.github.io/p5.waves_lab/" target="_blank">Wave Lab</a>.</p>
     <div class="wave-grid">
       <div class="wave-item"><span class="wi">0</span> classic sine</div>
@@ -203,7 +203,7 @@ circle(x, y, dotSize);</code></pre>
     <p>
       <em>Why <code>62.83</code> and not <code>360</code>?</em> <code>x</code> is a
       generic coordinate here, like in <code>noise(x)</code> - not an angle. Ten of
-      the 34 waves are not sine-based at all (<code>square</code>, <code>triangle</code>,
+      the 35 waves are not sine-based at all (<code>square</code>, <code>triangle</code>,
       <code>ramp</code>, <code>noise</code>...), so radians would be meaningless for them.
     </p>
 
@@ -284,21 +284,21 @@ function draw() {
     <div class="callout"><p>Shift also works directly on <code>Waves.wave()</code>  - just add <code>shift: true</code> to the options. But the sampler version is better: it caches everything and gives you the <code>.waveName</code> / <code>.shifting</code> / <code>.mix</code> getters for free.</p></div>
 
     <h3>Pick a pool with <code>group</code></h3>
-    <p>Shift can land on any of the 34 formulas - including tan spikes and noise. If you want to stay in calm territory (or the opposite), narrow the pool.</p>
+    <p>Shift can land on any of the 35 formulas - including tan spikes and noise. If you want to stay in calm territory (or the opposite), narrow the pool.</p>
 
     <pre class="code-block"><code class="language-javascript">Waves.createSampler({ shift: true, group: 'gentle' });  // sines &amp; curves only (25 waves)
 Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (10 waves)
-Waves.createSampler({ shift: true, group: 'closing' }); // 17 waves that all close on the same sweep
+Waves.createSampler({ shift: true, group: 'closing' }); // 18 waves that all close on the same sweep
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list</code></pre>
 
     <div class="callout"><p><strong><code>mode</code> vs <code>group</code> - don't confuse them.</strong> <code>mode: 'wild'</code> warps <em>one</em> wave (frequency + phase + amplitude noise). <code>group: 'harsh'</code> picks a <em>different kind of wave</em> - one with spikes baked in. They're orthogonal: <code>{ mode: 'wild', group: 'gentle' }</code> = breathing sines, no spikes.</p></div>
 
     <h3>Stay closed <em>while</em> shifting - <code>group: 'closing'</code></h3>
-    <p>The two best features fight each other by default. A ring sampled with <code>shift</code> tears its seam open the moment it lands on a new wave, because every formula has its own period and your fixed sweep stops lining up. The <code>'closing'</code> pool ends that fight. All 17 waves in it share one base period (<code>62.8319</code>, that's <code>2&pi;/0.1</code>), so a sweep of <code>sampler.period &times; lobes</code> closes seamlessly through every transition - the shape keeps morphing into new waves and never shows a seam.</p>
+    <p>The two best features fight each other by default. A ring sampled with <code>shift</code> tears its seam open the moment it lands on a new wave, because every formula has its own period and your fixed sweep stops lining up. The <code>'closing'</code> pool ends that fight. All 18 waves in it share one base period (<code>62.8319</code>, that's <code>2&pi;/0.1</code>), so a sweep of <code>sampler.period &times; lobes</code> closes seamlessly through every transition - the shape keeps morphing into new waves and never shows a seam.</p>
 
     <pre class="code-block"><code class="language-javascript">let ring = Waves.createSampler({
   shift:     true,
-  group:     'closing',     // 17 waves that all close on the same sweep
+  group:     'closing',     // 18 waves that all close on the same sweep
   amplitude: 30
 });
 
@@ -424,7 +424,7 @@ Waves.wave(x, { wave: 3 })   // index 3 -> exactly wave #3 (square)</code></pre>
       <tr><td><code>Waves.wave(y, opts)</code></td><td><code>waves(y, opts)</code></td><td><code>p.waves(y, opts)</code></td></tr>
       <tr><td><code>Waves.createSampler(opts)</code></td><td><code>createWaveSampler(opts)</code></td><td><code>p.createWaveSampler(opts)</code></td></tr>
     </table>
-    <p>Extras: <code>Waves.list()</code> returns all 34 formulas. <code>Waves.count</code> = 34. <code>Waves.data</code> = the raw formula array. <code>Waves.benchmark(config, n)</code> runs <code>n</code> wave calls and returns <code>{ iterations, ms, callsPerMs }</code>.</p>
+    <p>Extras: <code>Waves.list()</code> returns all 35 formulas. <code>Waves.count</code> = 35. <code>Waves.data</code> = the raw formula array. <code>Waves.benchmark(config, n)</code> runs <code>n</code> wave calls and returns <code>{ iterations, ms, callsPerMs }</code>.</p>
 
 
     <!-- ═══════════════════════════════════ COPY-PASTE -->

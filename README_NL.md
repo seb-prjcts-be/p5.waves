@@ -2,7 +2,7 @@
 
 **[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)**
 
-34 golfvormen voor p5.js. Eén functie-aanroep, één getal terug.
+35 golfvormen voor p5.js. Eén functie-aanroep, één getal terug.
 
 **Geoptimaliseerd voor p5.js 2.x** (getest met 2.2.2). Werkt ook met p5.js 1.x.
 
@@ -121,12 +121,12 @@ sampler.mix;           // voortgang 0-1
 
 ### Kies een pool met `group`
 
-Standaard kan `shift` op alle 34 formules landen, inclusief tan/noise-spikes. Beperk de pool:
+Standaard kan `shift` op alle 35 formules landen, inclusief tan/noise-spikes. Beperk de pool:
 
 ```js
 Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (25 golven)
 Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded/erratic (10 golven)
-Waves.createSampler({ shift: true, group: 'closing' }); // 17 golven die op dezelfde sweep sluiten (experimenteel)
+Waves.createSampler({ shift: true, group: 'closing' }); // 18 golven die op dezelfde sweep sluiten (experimenteel)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
 ```
 
@@ -134,7 +134,7 @@ Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  //
 
 ### Gesloten blijven tijdens het shiften (`group: 'closing'`)
 
-Een ring die je met `shift` samplet, scheurt normaal zijn naad open zodra hij op een nieuwe golf landt: elke formule heeft zijn eigen periode, dus een vaste sweep-lengte klopt niet meer. De `'closing'`-pool lost dat op. Alle 17 golven erin delen één basis-periode (`62.8319`, dat is `2π/0.1`), dus een sweep van `sampler.period × lobes` sluit naadloos dwars door elke transitie heen. De vorm blijft morphen en toont nooit een naad.
+Een ring die je met `shift` samplet, scheurt normaal zijn naad open zodra hij op een nieuwe golf landt: elke formule heeft zijn eigen periode, dus een vaste sweep-lengte klopt niet meer. De `'closing'`-pool lost dat op. Alle 18 golven erin delen één basis-periode (`62.8319`, dat is `2π/0.1`), dus een sweep van `sampler.period × lobes` sluit naadloos dwars door elke transitie heen. De vorm blijft morphen en toont nooit een naad.
 
 ```js
 const ring = Waves.createSampler({ shift: true, group: 'closing', amplitude: 30 });
@@ -196,11 +196,11 @@ De `docs/about.html` origin-grid (de sketch waarmee p5.waves begon) is het eenvo
 | `Waves.wave(y, opts)` | `waves(y, opts)` | `p.waves(y, opts)` |
 | `Waves.createSampler(opts)` | `createWaveSampler(opts)` | `p.createWaveSampler(opts)` |
 
-Ook: `Waves.list()`, `Waves.count` (34), `Waves.data`, `Waves.benchmark(config, n)`.
+Ook: `Waves.list()`, `Waves.count` (35), `Waves.data`, `Waves.benchmark(config, n)`.
 
 ---
 
-## Alle 34 golven
+## Alle 35 golven
 
 `classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine`
 
