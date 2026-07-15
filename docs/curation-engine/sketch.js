@@ -228,7 +228,7 @@ function activeGroupIndex(t) {
 
 function groupCount(preset) {
   if (Array.isArray(preset.group)) return preset.group.length;
-  if (preset.key === 'all') return Waves.count || waveNames.length || 34;
+  if (preset.key === 'all') return Waves.count || waveNames.length || 35;
 
   const fromList = waveNames.filter(w => w.character === preset.key).length;
   if (fromList > 0) return fromList;
@@ -398,7 +398,7 @@ function drawHero(t) {
   textSize(width < 760 ? 12 : 14);
   const bodyY = headlineY + headSize * 1.25;
   const bodyW = width < 760 ? heroW : min(heroW, 560);
-  drawWrappedText('34 wave shapes. Now pooled as gentle, harsh, all or a curated array.', heroX, bodyY, bodyW, width < 760 ? 17 : 20);
+  drawWrappedText('35 wave shapes. Now pooled as gentle, harsh, all or a curated array.', heroX, bodyY, bodyW, width < 760 ? 17 : 20);
 
   const samplerY = bodyY + (width < 760 ? 50 : 62);
   drawSamplerStrip(heroX, samplerY, bodyW, t);

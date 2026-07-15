@@ -12,7 +12,7 @@ const WAVE_NAMES = [
   'triangle', 'ramp', 'saw down', 'saw up', 'fade out',
   'grow random', 'noise', 'fuzzy pulse', 'up down pulse',
   'bald patch', 'fuzzy peak sine', 'ramp up sine', 'triangle sine',
-  'round linked sine', 'half sine', 'smooth solid sine'
+  'round linked sine', 'half sine', 'smooth solid sine', 'spike sine'
 ];
 
 // Populate wave selects on DOM ready
@@ -130,7 +130,7 @@ reg('hero-canvas', new p5(function(p) {
 
 
 // ═════════════════════════════════════════════════════════════
-// 2. GALLERY - All 34 waves with hover focus
+// 2. GALLERY - All 35 waves with hover focus
 // ═════════════════════════════════════════════════════════════
 reg('gallery-canvas', new p5(function(p) {
   var COLS = 6;
