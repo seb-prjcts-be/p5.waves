@@ -124,8 +124,8 @@ sampler.mix;           // morph progress 0-1
 By default `shift` can land on any of the 34 formulas, including tan/noise spikes. Narrow the pool:
 
 ```js
-Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (27 waves)
-Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded only (7 waves)
+Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (25 waves)
+Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (10 waves)
 Waves.createSampler({ shift: true, group: 'closing' }); // 17 waves that all close on the same sweep (experimental)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
 ```

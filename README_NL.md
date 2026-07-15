@@ -124,8 +124,8 @@ sampler.mix;           // voortgang 0-1
 Standaard kan `shift` op alle 34 formules landen, inclusief tan/noise-spikes. Beperk de pool:
 
 ```js
-Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (27 golven)
-Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded (7 golven)
+Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (25 golven)
+Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded/erratic (10 golven)
 Waves.createSampler({ shift: true, group: 'closing' }); // 17 golven die op dezelfde sweep sluiten (experimenteel)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
 ```

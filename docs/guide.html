@@ -131,7 +131,7 @@ circle(x, y, dotSize);</code></pre>
       <tr><td><code>frequency</code></td><td>Squeeze the wave tighter (high) or stretch it out (low).</td><td><code>1</code></td></tr>
       <tr><td><code>seed</code></td><td>Give each object its own wave. Same seed always picks the same wave.</td><td><code>0</code></td></tr>
       <tr><td><code>shift</code></td><td><code>true</code> = auto-switch to a new random wave every few seconds. Smooth transitions. Different every page load.</td><td><code>false</code></td></tr>
-      <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (27). <code>'harsh'</code> = tan/noise/random/unbounded (7). <code>'closing'</code> = 17 waves that share one period (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
+      <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (25). <code>'harsh'</code> = tan/noise/random/unbounded/erratic (10). <code>'closing'</code> = 17 waves that share one period (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
     </table>
 
     <h3>Go deeper</h3>
@@ -286,8 +286,8 @@ function draw() {
     <h3>Pick a pool with <code>group</code></h3>
     <p>Shift can land on any of the 34 formulas - including tan spikes and noise. If you want to stay in calm territory (or the opposite), narrow the pool.</p>
 
-    <pre class="code-block"><code class="language-javascript">Waves.createSampler({ shift: true, group: 'gentle' });  // sines &amp; curves only (27 waves)
-Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded only (7 waves)
+    <pre class="code-block"><code class="language-javascript">Waves.createSampler({ shift: true, group: 'gentle' });  // sines &amp; curves only (25 waves)
+Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (10 waves)
 Waves.createSampler({ shift: true, group: 'closing' }); // 17 waves that all close on the same sweep
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list</code></pre>
 

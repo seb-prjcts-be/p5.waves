@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghost Delay | p5.waves examples</title>
+  <link rel="stylesheet" href="../showcase.css">
+</head>
+<body>
+
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html"><span>p5</span>.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html">Showcase</a></li>
+      <li><a href="../../docs/examples.html" class="active">Examples</a></li>
+      <li><a href="../../docs/curation-engine/index.html">Curation Engine</a></li>
+      <li><a href="../../docs/waves.html">Waves</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+      <li><a href="../../docs/about.html">About</a></li>
+      <li><a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <main class="demo-page">
+    <div class="demo-header">
+      <div class="demo-number">phase portrait &middot; one wave</div>
+      <h1>Ghost Delay</h1>
+      <p>A loop is not a function: one <code>x</code> would need many <code>y</code>. So a height wave <code>y = f(x)</code> can never loop. But read a single 1D wave against a delayed copy of itself, <code>x = wave(u)</code> and <code>y = wave(u + &tau;)</code>, and the pair closes into a loop ring. The delay <code>&tau;</code> is the only extra variable, the ghost. Sweep it and the ring breathes from an ellipse into petals. Shift is on, so the closing-group wave morphs and the whole loop family transforms. The strip along the bottom is the actual wave, with the two sampling points marked.</p>
+    </div>
+    <div class="demo-layout">
+      <div class="demo-code">
+        <div class="code-label">Core snippet</div>
+        <pre><code class="language-javascript">sampler = Waves.createSampler({
+  group: 'ghost',              // built-in pool tuned for this delay embedding
+  shift: true, range: [-1, 1]  // range:[-1,1] -&gt; unit output (default is 100)
+});
+
+// The sampler reports its own period - no 2*PI/0.1 to hardcode. Every ghost
+// wave shares it, so sweeping u over one period closes the ring, even mid-morph.
+const period = sampler.period;
+const tau    = period * (0.5 + 0.35 * sin(t * 0.35));   // the ghost delay
+
+for (let i = 0; i &lt;= N; i++) {
+  const u = (i / N) * period;
+  xs[i] = sampler.sample(u, t) * rad;         // x = wave(u)
+  ys[i] = sampler.sample(u + tau, t) * rad;   // y = same wave, delayed
+}
+
+beginShape();
+for (let i = 0; i &lt;= N; i++) vertex(xs[i], ys[i]);
+endShape(CLOSE);</code></pre>
+      </div>
+      <div class="demo-canvas" id="sketch-container"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="../../docs/examples.html">&larr; All examples</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/seb-prjcts-be/p5.waves" target="_blank">p5.waves on GitHub</a>
+    </p>
+    <p class="footer-sub">p5.waves v3.4.0 &nbsp;&middot;&nbsp; p5.js v2.2.2</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.min.js"></script>
+  <script src="sketch.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+</body>
+</html>

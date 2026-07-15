@@ -307,6 +307,40 @@ fill(255); circle(xs[drawnTo], ys[drawnTo], 6);</code></pre>
     </div>
   </section>
 
+  <!-- GHOST DELAY -->
+  <section id="ghost" class="section">
+    <div class="section-header">
+      <div class="section-tag">phase portrait &middot; one wave</div>
+      <h2>Ghost <span class="accent">Delay</span></h2>
+      <p class="section-desc">A height wave <code>y = f(x)</code> can never loop - one <code>x</code> would need many <code>y</code>. But plot a single wave against a delayed copy of itself, <code>x = wave(u)</code> and <code>y = wave(u + &tau;)</code>, and the pair closes into a loop ring. Sweep the delay and it breathes from ellipse to petals.</p>
+    </div>
+    <div class="ex-preview">
+      <div id="ex-ghost" class="ex-canvas"></div>
+      <pre class="ex-code-block"><code class="language-javascript">// The delayed wave IS a p5.waves sampler - shift morphs it
+// through the 'ghost' pool, so the loop family evolves.
+const s = Waves.createSampler({
+  group: 'ghost',              // built-in pool tuned for this
+  shift: true, range: [-1, 1]  // range:[-1,1] -&gt; unit output (default is 100)
+});
+
+// The sampler reports its own period - no 2*PI/0.1 to hardcode.
+const period = s.period;
+const tau    = period * (0.5 + 0.35 * sin(t * 0.35));   // the ghost delay
+
+for (let i = 0; i &lt;= N; i++) {
+  const u = (i / N) * period;        // one period -&gt; ring closes
+  xs[i] = r * s.sample(u, t);        // x = wave(u)
+  ys[i] = r * s.sample(u + tau, t);  // y = same wave, delayed
+}
+beginShape();
+for (let i = 0; i &lt;= N; i++) vertex(xs[i], ys[i]);
+endShape(CLOSE);</code></pre>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/ghost_delay/" target="_blank">-> full example</a>
+      </div>
+    </div>
+  </section>
+
   <!-- NOT SO RANDOM WALKER -->
   <section id="walker" class="section section-dark">
     <div class="section-header">
@@ -780,6 +814,37 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
     };
     p.windowResized = function() { const w = cw('ex-spiky'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-spiky');
+
+  // ── Ghost Delay ───────────────────────────────────────────
+  new p5(function(p) {
+    const N = 620;
+    let s;
+    p.setup = function() {
+      const w = cw('ex-ghost');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex-ghost');
+      p.colorMode(p.HSB, 360, 100, 100, 100);
+      p.strokeJoin(p.ROUND);
+      p.noFill();
+      s = Waves.createSampler({ group: 'ghost', shift: true, range: [-1, 1] });
+    };
+    p.draw = function() {
+      p.background(230, 25, 8);
+      p.translate(p.width / 2, p.height / 2);
+      const t = p.millis() / 1000;
+      const period = s.period;
+      const tau = period * (0.5 + 0.35 * p.sin(t * 0.35));
+      const rad = p.min(p.width, p.height) * 0.38;
+      p.stroke((t * 12) % 360, 55, 100, 90);
+      p.strokeWeight(1.2);
+      p.beginShape();
+      for (let i = 0; i <= N; i++) {
+        const u = (i / N) * period;
+        p.vertex(s.sample(u, t) * rad, s.sample(u + tau, t) * rad);
+      }
+      p.endShape(p.CLOSE);
+    };
+    p.windowResized = function() { const w = cw('ex-ghost'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+  }, 'ex-ghost');
 
   // ── Not So Random Walker ──────────────────────────────────
   new p5(function(p) {
