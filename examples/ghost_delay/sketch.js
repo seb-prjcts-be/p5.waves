@@ -20,6 +20,8 @@ function setup() {
 
 function draw() {
   background(230, 25, 8);
+  noFill();   // re-assert every frame: the strip dots and HUD text set a fill
+              // that would otherwise leak into next frame's ring and fill it in
   const t = millis() / 1000;
   const hue = (t * 12) % 360;
   const period = sampler.period;                      // ghost waves share one period
