@@ -202,7 +202,7 @@ Also: `Waves.list()`, `Waves.count` (35), `Waves.data`, `Waves.benchmark(config,
 
 ## All 35 waves
 
-`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine`
+`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine · spike sine`
 
 Every periodic wave has a measured period listed on the [Waves page](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity). Multiply that period by an integer number of lobes to close curved shapes without a seam. The [periodicity test harness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) re-verifies these values in the browser.
 
@@ -219,6 +219,7 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 - `morph_wave` - morph between two waves
 - `random_walker` - wave-steered walker
 - `spiky_lissajous` - closing Lissajous with a spiky wave
+- `ghost_delay` - one wave against a delayed copy of itself, closing into a loop ring
 - `binary_field` - two samplers, summed and thresholded
 - `3d_wave_volume` - 3D WebGL
 
@@ -226,7 +227,7 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 
 ## Processing (Java) port
 
-There's a Java port for Processing 4: [**processing.waves**](https://github.com/seb-prjcts-be/processing.waves). Same 35 waves, same API shape, for sketches that live outside the browser.
+There's a Java port for Processing 4: [**processing.waves**](https://github.com/seb-prjcts-be/processing.waves). The same waves and API shape, for sketches that live outside the browser.
 
 ## How this was made
 

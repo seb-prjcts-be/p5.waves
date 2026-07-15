@@ -1,6 +1,6 @@
 ﻿# p5.waves
 
-**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)**
+**[Open site](https://seb-prjcts-be.github.io/p5.waves/)** · **[Wave Lab](https://seb-prjcts-be.github.io/p5.waves_lab/)** · **[Processing (Java) port](https://github.com/seb-prjcts-be/processing.waves)**
 
 35 golfvormen voor p5.js. Eén functie-aanroep, één getal terug.
 
@@ -202,7 +202,7 @@ Ook: `Waves.list()`, `Waves.count` (35), `Waves.data`, `Waves.benchmark(config, 
 
 ## Alle 35 golven
 
-`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine`
+`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine · spike sine`
 
 Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity). Vermenigvuldig die periode met een geheel aantal lobes om gekromde vormen zonder naad te sluiten. De [periodicity-testharness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) herverifieert deze waarden in de browser.
 
@@ -219,10 +219,15 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 - `morph_wave` - morph tussen twee golven
 - `random_walker` - golf-gestuurde walker
 - `spiky_lissajous` - sluitende Lissajous met een spiky golf
+- `ghost_delay` - één golf tegen een vertraagde kopie van zichzelf, sluit tot een lus-ring
 - `binary_field` - twee samplers, opgeteld en gedrempeld
 - `3d_wave_volume` - 3D WebGL
 
 ---
+
+## Processing (Java) port
+
+Er is een Java-port voor Processing 4: [**processing.waves**](https://github.com/seb-prjcts-be/processing.waves). Dezelfde golven en API-vorm, voor sketches die buiten de browser leven.
 
 ## Hoe dit gemaakt is
 
