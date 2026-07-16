@@ -12,8 +12,8 @@
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.5.0/p5.waves.min.js"
-        integrity="sha384-2/VdEkAzkK27cCSchWCF2XgUS4qOz4UMEn7aCcj49kYzA9pgaZYIA0wsSQ5PvoxU"
+<script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.6.0/p5.waves.min.js"
+        integrity="sha384-dHdUC+3z6CdPzSv5Nc0Euww+a51g/8mZsDZYSDBisghUfCsdbg4ynknr5q/f+u41"
         crossorigin="anonymous"></script>
 ```
 
