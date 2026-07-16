@@ -128,11 +128,13 @@ circle(x, y, dotSize);</code></pre>
     <table class="opts-table">
       <tr><th>Option</th><th>What it does</th><th>Default</th></tr>
       <tr><td><code>range</code></td><td>Map output to any range you want. <code>[0, 255]</code> = perfect for color values. Replaces amplitude.</td><td><code>null</code></td></tr>
-      <tr><td><code>frequency</code></td><td>Squeeze the wave tighter (high) or stretch it out (low).</td><td><code>1</code></td></tr>
+      <tr><td><code>frequency</code></td><td>Multiplies <code>x</code>. On sines that squeezes the cycles tighter (high) or stretches them out (low) &mdash; but not on every wave, see below.</td><td><code>1</code></td></tr>
       <tr><td><code>seed</code></td><td>Give each object its own wave. Same seed always picks the same wave.</td><td><code>0</code></td></tr>
       <tr><td><code>shift</code></td><td><code>true</code> = auto-switch to a new random wave every few seconds. Smooth transitions. Different every page load.</td><td><code>false</code></td></tr>
       <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (25). <code>'harsh'</code> = tan/noise/random/unbounded/erratic (10). <code>'closing'</code> = 18 waves that share one period (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
     </table>
+
+    <div class="callout"><p><strong>Frequency is a zoom, not a speed dial.</strong> It multiplies <code>x</code> and nothing else, so what you get depends on where <code>x</code> sits in the formula. <code>'classic sine'</code> is <code>sin(x*.1)</code>, so it becomes <code>sin(2x*.1)</code>: tighter cycles, same height. But <code>'fade out'</code> is <code>log(x)</code>, and <code>log(2x) = log(x) + log(2)</code> &mdash; a logarithm turns multiplying into adding, so the curve slides up and keeps its rhythm. And <code>'half sine'</code> carries <code>x</code> twice, so it tightens <em>and</em> grows a taller envelope. One dial, three outcomes.</p></div>
 
     <h3>Go deeper</h3>
     <table class="opts-table">

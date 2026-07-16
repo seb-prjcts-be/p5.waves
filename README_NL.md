@@ -66,7 +66,7 @@ Geeft altijd één getal terug.
 | optie | wat het doet | standaard |
 |---|---|---|
 | `range` | Map output naar `[min, max]`. Overschrijft amplitude. | `null` |
-| `frequency` | Hoe dicht de cycli op elkaar zitten. Hoger = samengedrukt. | `1` |
+| `frequency` | Vermenigvuldigt `x`. Bij sinussen: hoger = samengedrukt. Niet bij elke golf &mdash; zie de guide. | `1` |
 | `seed` | Kies een golf via een getal. Zelfde seed = zelfde golf. | `0` |
 | `shift` | `true` = wissel automatisch naar willekeurige golven met vloeiende overgang. | `false` |
 | `group` | Welke pool `shift` / `seed` mag kiezen: `'gentle'`, `'harsh'`, `'closing'` (experimenteel), `'all'`, of `['sine', 'triangle']`. | `'all'` |

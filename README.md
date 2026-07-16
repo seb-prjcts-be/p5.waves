@@ -66,7 +66,7 @@ Always returns a single number.
 | option | what it does | default |
 |---|---|---|
 | `range` | Map output to `[min, max]`. Overrides amplitude. | `null` |
-| `frequency` | How tight the cycles are. Higher = squished. | `1` |
+| `frequency` | Multiplies `x`. On sines: higher = squished. Not on every wave &mdash; see the guide. | `1` |
 | `seed` | Pick a wave by number. Same seed = same wave. | `0` |
 | `shift` | `true` = auto-switch to random waves with smooth blend. | `false` |
 | `group` | Which pool `shift` / `seed` can pick from: `'gentle'`, `'harsh'`, `'closing'` (experimental), `'all'`, or `['sine', 'triangle']`. | `'all'` |
