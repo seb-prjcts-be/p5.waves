@@ -9,7 +9,11 @@ let sampler;
 const N = 800;
 
 function setup() {
-  createCanvas(720, 720).parent('sketch-container'); // the div in index.html
+  const cnv = createCanvas(720, 720);
+  // The example page docks the canvas into #sketch-container. Pasted anywhere
+  // else (p5 web editor, a bare index.html) that div does not exist, and the
+  // canvas simply lands on the page - so the paste runs as-is.
+  if (document.getElementById('sketch-container')) cnv.parent('sketch-container');
   colorMode(HSB, 360, 100, 100, 100);
   strokeJoin(ROUND);
   noFill();
