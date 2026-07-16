@@ -29,26 +29,96 @@
     </div>
     <div class="demo-layout">
       <div class="demo-code">
-        <div class="code-label">Core snippet</div>
-        <pre><code class="language-javascript">sampler = Waves.createSampler({
-  group: 'ghost',              // built-in pool tuned for this delay embedding
-  shift: true, range: [-1, 1]  // range:[-1,1] -&gt; unit output (default is 100)
-});
+        <div class="code-label">index.html</div>
+        <pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/gh/seb-prjcts-be/p5.waves@v3.6.0/p5.waves.min.js"
+          integrity="sha384-dHdUC+3z6CdPzSv5Nc0Euww+a51g/8mZsDZYSDBisghUfCsdbg4ynknr5q/f+u41"
+          crossorigin="anonymous"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="sketch-container"&gt;&lt;/div&gt;
+  &lt;script src="sketch.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        <div class="code-label">sketch.js</div>
+        <pre><code class="language-javascript">// Ghost Delay - one 1D wave, read against a delayed copy of itself.
+// x = sample(u), y = sample(u + delay): one scalar wave closes into a loop ring
+// (its phase portrait). shift morphs the wave, so the loop family keeps changing.
+// The strip along the bottom is that one wave; the dots are the two read points.
 
-// The sampler reports its own period - no 2*PI/0.1 to hardcode. Every ghost
-// wave shares it, so sweeping u over one period closes the ring, even mid-morph.
-const period = sampler.period;
-const tau    = period * (0.5 + 0.35 * sin(t * 0.35));   // the ghost delay
+let sampler;
+const N = 800;
 
-for (let i = 0; i &lt;= N; i++) {
-  const u = (i / N) * period;
-  xs[i] = sampler.sample(u, t) * rad;         // x = wave(u)
-  ys[i] = sampler.sample(u + tau, t) * rad;   // y = same wave, delayed
+function setup() {
+  createCanvas(720, 720).parent('sketch-container'); // the div in index.html
+  colorMode(HSB, 360, 100, 100, 100);
+  strokeJoin(ROUND);
+  noFill();
+  // 'ghost' is a built-in pool of closing waves that stay clean under this
+  // delay. range [-1, 1] gives unit output (the default would be amplitude 100).
+  sampler = Waves.createSampler({ group: 'ghost', shift: true, range: [-1, 1] });
 }
 
-beginShape();
-for (let i = 0; i &lt;= N; i++) vertex(xs[i], ys[i]);
-endShape(CLOSE);</code></pre>
+function draw() {
+  background(230, 25, 8);
+  noFill();   // re-assert every frame: the strip dots and HUD text set a fill
+              // that would otherwise leak into next frame's ring and fill it in
+  const t = millis() / 1000;
+  const ringHue = (t * 12) % 360;   // 'hue' itself is a p5 function - do not shadow it
+  const period = sampler.period;                      // ghost waves share one period
+  const delay = period * (0.5 + 0.35 * sin(t * 0.35));  // the ghost delay, breathing
+
+  // The ring: the wave against its own delayed self.
+  const rad = min(width, height) * 0.36;
+  stroke(ringHue, 55, 100, 90);
+  strokeWeight(1.4);
+  push();
+  translate(width / 2, height / 2 - 30);
+  beginShape();
+  for (let i = 0; i &lt;= N; i++) {
+    const u = (i / N) * period;                       // one period -&gt; the ring closes
+    vertex(sampler.sample(u, t) * rad, sampler.sample(u + delay, t) * rad);
+  }
+  endShape(CLOSE);
+  pop();
+
+  drawWaveStrip(t, delay, ringHue, period);
+
+  // shift is cycling the ghost pool; name the current wave.
+  noStroke();
+  fill(0, 0, 70);
+  textFont('monospace');
+  textSize(12);
+  text(sampler.waveName, 18, 26);
+}
+
+// The raw 1D wave as a height line, with the two read points (u and u + delay)
+// marked. The whole trick is reading this one wave twice.
+function drawWaveStrip(t, delay, ringHue, period) {
+  const baseY = height - 60;
+  const w = width - 120;
+  const left = 60;
+  const amp = 24;
+
+  stroke(ringHue, 45, 100, 70);
+  strokeWeight(1.2);
+  beginShape();
+  for (let i = 0; i &lt;= N; i++) {
+    const u = (i / N) * period;
+    vertex(left + (i / N) * w, baseY - sampler.sample(u, t) * amp);
+  }
+  endShape();
+
+  noStroke();
+  fill(0, 0, 100);
+  circle(left, baseY - sampler.sample(0, t) * amp, 7);
+  fill(ringHue, 70, 100);
+  circle(left + (delay % period) / period * w, baseY - sampler.sample(delay, t) * amp, 7);
+}</code></pre>
       </div>
       <div class="demo-canvas" id="sketch-container"></div>
     </div>

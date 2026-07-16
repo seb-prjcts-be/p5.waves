@@ -168,6 +168,7 @@ footer a:hover { color: #000; }
 .demo-code {
   border: 1px solid rgba(0, 0, 0, 0.15);
   background: #faf8f3;
+  min-width: 0; /* grid item: let long code lines scroll inside pre, not widen the page */
 }
 
 .code-label {
@@ -185,6 +186,11 @@ footer a:hover { color: #000; }
   margin: 0;
   padding: 1.25rem;
   overflow-x: auto;
+}
+
+/* second file block on the same panel (e.g. index.html + sketch.js) */
+.demo-code pre + .code-label {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .demo-code code {

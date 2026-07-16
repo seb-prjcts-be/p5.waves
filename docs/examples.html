@@ -325,12 +325,12 @@ const s = Waves.createSampler({
 
 // The sampler reports its own period - no 2*PI/0.1 to hardcode.
 const period = s.period;
-const tau    = period * (0.5 + 0.35 * sin(t * 0.35));   // the ghost delay
+const delay  = period * (0.5 + 0.35 * sin(t * 0.35));   // the ghost delay
 
 for (let i = 0; i &lt;= N; i++) {
-  const u = (i / N) * period;        // one period -&gt; ring closes
-  xs[i] = r * s.sample(u, t);        // x = wave(u)
-  ys[i] = r * s.sample(u + tau, t);  // y = same wave, delayed
+  const u = (i / N) * period;          // one period -&gt; ring closes
+  xs[i] = r * s.sample(u, t);          // x = wave(u)
+  ys[i] = r * s.sample(u + delay, t);  // y = same wave, delayed
 }
 beginShape();
 for (let i = 0; i &lt;= N; i++) vertex(xs[i], ys[i]);
@@ -832,14 +832,14 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
       p.translate(p.width / 2, p.height / 2);
       const t = p.millis() / 1000;
       const period = s.period;
-      const tau = period * (0.5 + 0.35 * p.sin(t * 0.35));
+      const delay = period * (0.5 + 0.35 * p.sin(t * 0.35));
       const rad = p.min(p.width, p.height) * 0.38;
       p.stroke((t * 12) % 360, 55, 100, 90);
       p.strokeWeight(1.2);
       p.beginShape();
       for (let i = 0; i <= N; i++) {
         const u = (i / N) * period;
-        p.vertex(s.sample(u, t) * rad, s.sample(u + tau, t) * rad);
+        p.vertex(s.sample(u, t) * rad, s.sample(u + delay, t) * rad);
       }
       p.endShape(p.CLOSE);
     };
