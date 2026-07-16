@@ -131,10 +131,10 @@ circle(x, y, dotSize);</code></pre>
       <tr><td><code>frequency</code></td><td>Multiplies <code>x</code>. On sines that squeezes the cycles tighter (high) or stretches them out (low) &mdash; but not on every wave, see below.</td><td><code>1</code></td></tr>
       <tr><td><code>seed</code></td><td>Give each object its own wave. Same seed always picks the same wave.</td><td><code>0</code></td></tr>
       <tr><td><code>shift</code></td><td><code>true</code> = auto-switch to a new random wave every few seconds. Smooth transitions. Different every page load.</td><td><code>false</code></td></tr>
-      <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (25). <code>'harsh'</code> = tan/noise/random/unbounded/erratic (10). <code>'closing'</code> = 18 waves that share one period (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
+      <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (26). <code>'harsh'</code> = tan/noise/random/unbounded/erratic (9). <code>'closing'</code> = 19 waves that share one period (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
     </table>
 
-    <div class="callout"><p><strong>Frequency is a zoom, not a speed dial.</strong> It multiplies <code>x</code> and nothing else, so what you get depends on where <code>x</code> sits in the formula. <code>'classic sine'</code> is <code>sin(x*.1)</code>, so it becomes <code>sin(2x*.1)</code>: tighter cycles, same height. But <code>'fade out'</code> is <code>log(x)</code>, and <code>log(2x) = log(x) + log(2)</code> &mdash; a logarithm turns multiplying into adding, so the curve slides up and keeps its rhythm. And <code>'half sine'</code> carries <code>x</code> twice, so it tightens <em>and</em> grows a taller envelope. One dial, three outcomes.</p></div>
+    <div class="callout"><p><strong>Frequency is a zoom, not a speed dial.</strong> It multiplies <code>x</code> and nothing else, so what you get depends on where <code>x</code> sits in the formula. <code>'classic sine'</code> is <code>sin(x*.1)</code>, so it becomes <code>sin(2x*.1)</code>: tighter cycles, same height. But <code>'half sine'</code> is <code>sin(x*.05)*(x*.1%.5)</code>, which carries <code>x</code> twice &mdash; once in the wave, once in the envelope &mdash; so raising frequency tightens the rhythm <em>and</em> grows a taller envelope at the same time. And <code>'shake out'</code> is a mirrored log chirp whose rhythm lives at the start of each period, so frequency slides that burst sideways (and tightens the period) rather than speeding the whole wave up evenly. One dial, several outcomes.</p></div>
 
     <h3>Go deeper</h3>
     <table class="opts-table">
@@ -174,7 +174,7 @@ circle(x, y, dotSize);</code></pre>
       <div class="wave-item"><span class="wi">19</span> ramp</div>
       <div class="wave-item"><span class="wi">20</span> saw down</div>
       <div class="wave-item"><span class="wi">21</span> saw up</div>
-      <div class="wave-item"><span class="wi">22</span> fade out</div>
+      <div class="wave-item"><span class="wi">22</span> shake out</div>
       <div class="wave-item"><span class="wi">23</span> grow random</div>
       <div class="wave-item"><span class="wi">24</span> noise</div>
       <div class="wave-item"><span class="wi">25</span> fuzzy pulse</div>
@@ -245,7 +245,7 @@ function draw() {
     </p>
 
     <div class="callout"><p>
-      Some waves have no clean period - <code>'noise'</code>, <code>'fade out'</code>,
+      Some waves have no clean period - <code>'noise'</code>,
       <code>'meta sine'</code>, and the rest of the <em>no-close</em> group on the
       Waves page. For those, use two rings (inner + outer) and connect them with
       radial lines, or fade the stroke to zero at the endpoints instead of closing.
@@ -289,19 +289,19 @@ function draw() {
     <h3>Pick a pool with <code>group</code></h3>
     <p>Shift can land on any of the 35 formulas - including tan spikes and noise. If you want to stay in calm territory (or the opposite), narrow the pool.</p>
 
-    <pre class="code-block"><code class="language-javascript">Waves.createSampler({ shift: true, group: 'gentle' });  // sines &amp; curves only (25 waves)
-Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (10 waves)
-Waves.createSampler({ shift: true, group: 'closing' }); // 18 waves that all close on the same sweep
+    <pre class="code-block"><code class="language-javascript">Waves.createSampler({ shift: true, group: 'gentle' });  // sines &amp; curves only (26 waves)
+Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (9 waves)
+Waves.createSampler({ shift: true, group: 'closing' }); // 19 waves that all close on the same sweep
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list</code></pre>
 
     <div class="callout"><p><strong><code>mode</code> vs <code>group</code> - don't confuse them.</strong> <code>mode: 'wild'</code> warps <em>one</em> wave (frequency + phase + amplitude noise). <code>group: 'harsh'</code> picks a <em>different kind of wave</em> - one with spikes baked in. They're orthogonal: <code>{ mode: 'wild', group: 'gentle' }</code> = breathing sines, no spikes.</p></div>
 
     <h3>Stay closed <em>while</em> shifting - <code>group: 'closing'</code></h3>
-    <p>The two best features fight each other by default. A ring sampled with <code>shift</code> tears its seam open the moment it lands on a new wave, because every formula has its own period and your fixed sweep stops lining up. The <code>'closing'</code> pool ends that fight. All 18 waves in it share one base period (<code>62.8319</code>, that's <code>2&pi;/0.1</code>), so a sweep of <code>sampler.period &times; lobes</code> closes seamlessly through every transition - the shape keeps morphing into new waves and never shows a seam.</p>
+    <p>The two best features fight each other by default. A ring sampled with <code>shift</code> tears its seam open the moment it lands on a new wave, because every formula has its own period and your fixed sweep stops lining up. The <code>'closing'</code> pool ends that fight. All 19 waves in it share one base period (<code>62.8319</code>, that's <code>2&pi;/0.1</code>), so a sweep of <code>sampler.period &times; lobes</code> closes seamlessly through every transition - the shape keeps morphing into new waves and never shows a seam.</p>
 
     <pre class="code-block"><code class="language-javascript">let ring = Waves.createSampler({
   shift:     true,
-  group:     'closing',     // 18 waves that all close on the same sweep
+  group:     'closing',     // 19 waves that all close on the same sweep
   amplitude: 30
 });
 

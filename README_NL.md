@@ -124,9 +124,9 @@ sampler.mix;           // voortgang 0-1
 Standaard kan `shift` op alle 35 formules landen, inclusief tan/noise-spikes. Beperk de pool:
 
 ```js
-Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (25 golven)
-Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded/erratic (10 golven)
-Waves.createSampler({ shift: true, group: 'closing' }); // 18 golven die op dezelfde sweep sluiten (experimenteel)
+Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (26 golven)
+Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded/erratic (9 golven)
+Waves.createSampler({ shift: true, group: 'closing' }); // 19 golven die op dezelfde sweep sluiten (experimenteel)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
 ```
 
@@ -134,7 +134,7 @@ Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  //
 
 ### Gesloten blijven tijdens het shiften (`group: 'closing'`)
 
-Een ring die je met `shift` samplet, scheurt normaal zijn naad open zodra hij op een nieuwe golf landt: elke formule heeft zijn eigen periode, dus een vaste sweep-lengte klopt niet meer. De `'closing'`-pool lost dat op. Alle 18 golven erin delen één basis-periode (`62.8319`, dat is `2π/0.1`), dus een sweep van `sampler.period × lobes` sluit naadloos dwars door elke transitie heen. De vorm blijft morphen en toont nooit een naad.
+Een ring die je met `shift` samplet, scheurt normaal zijn naad open zodra hij op een nieuwe golf landt: elke formule heeft zijn eigen periode, dus een vaste sweep-lengte klopt niet meer. De `'closing'`-pool lost dat op. Alle 19 golven erin delen één basis-periode (`62.8319`, dat is `2π/0.1`), dus een sweep van `sampler.period × lobes` sluit naadloos dwars door elke transitie heen. De vorm blijft morphen en toont nooit een naad.
 
 ```js
 const ring = Waves.createSampler({ shift: true, group: 'closing', amplitude: 30 });
@@ -202,7 +202,7 @@ Ook: `Waves.list()`, `Waves.count` (35), `Waves.data`, `Waves.benchmark(config, 
 
 ## Alle 35 golven
 
-`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine · spike sine`
+`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · shake out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine · spike sine`
 
 Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity). Vermenigvuldig die periode met een geheel aantal lobes om gekromde vormen zonder naad te sluiten. De [periodicity-testharness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) herverifieert deze waarden in de browser.
 

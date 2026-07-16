@@ -1,6 +1,6 @@
 {
   "name": "p5.waves",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "description": "Wave sampling for p5.js. Always returns a number.",
   "main": "p5.waves.js",
   "scripts": {

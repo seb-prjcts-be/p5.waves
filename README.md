@@ -124,9 +124,9 @@ sampler.mix;           // morph progress 0-1
 By default `shift` can land on any of the 35 formulas, including tan/noise spikes. Narrow the pool:
 
 ```js
-Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (25 waves)
-Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (10 waves)
-Waves.createSampler({ shift: true, group: 'closing' }); // 18 waves that all close on the same sweep (experimental)
+Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (26 waves)
+Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (9 waves)
+Waves.createSampler({ shift: true, group: 'closing' }); // 19 waves that all close on the same sweep (experimental)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
 ```
 
@@ -134,7 +134,7 @@ Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  //
 
 ### Stay closed while shifting (`group: 'closing'`)
 
-A ring sampled with `shift` normally tears its seam open the moment it lands on a new wave: every formula has its own period, so a fixed sweep length stops lining up. The `'closing'` pool fixes that. All 18 waves in it share one base period (`62.8319`, that is `2π/0.1`), so a sweep of `sampler.period × lobes` closes seamlessly through every transition. The shape keeps morphing and never shows a seam.
+A ring sampled with `shift` normally tears its seam open the moment it lands on a new wave: every formula has its own period, so a fixed sweep length stops lining up. The `'closing'` pool fixes that. All 19 waves in it share one base period (`62.8319`, that is `2π/0.1`), so a sweep of `sampler.period × lobes` closes seamlessly through every transition. The shape keeps morphing and never shows a seam.
 
 ```js
 const ring = Waves.createSampler({ shift: true, group: 'closing', amplitude: 30 });
@@ -202,7 +202,7 @@ Also: `Waves.list()`, `Waves.count` (35), `Waves.data`, `Waves.benchmark(config,
 
 ## All 35 waves
 
-`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · fade out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine · spike sine`
+`classic sine · sine · sharp peaks · square · pulse · stepped sine · mountain peaks · valleys · zig-zag sine · batman · offset sine · steps down · steps · squared sine · bumpy sine · wobble sine · up down noise · meta sine · triangle · ramp · saw down · saw up · shake out · grow random · noise · fuzzy pulse · up down pulse · bald patch · fuzzy peak sine · ramp up sine · triangle sine · round linked sine · half sine · smooth solid sine · spike sine`
 
 Every periodic wave has a measured period listed on the [Waves page](https://seb-prjcts-be.github.io/p5.waves/docs/waves.html#periodicity). Multiply that period by an integer number of lobes to close curved shapes without a seam. The [periodicity test harness](https://seb-prjcts-be.github.io/p5.waves/docs/periodicity.html) re-verifies these values in the browser.
 

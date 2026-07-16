@@ -336,11 +336,11 @@ endShape(CLOSE);</div>
       </tr>
       <tr>
         <td class="num"><strong>62.83</strong></td>
-        <td>0 classic sine, 5 stepped sine, 6 mountain peaks, 7 valleys, 9 batman, 10 offset sine, 12 steps, 14 bumpy sine, 15 wobble sine, 31 round linked sine</td>
+        <td>0 classic sine, 5 stepped sine, 6 mountain peaks, 7 valleys, 9 batman, 10 offset sine, 12 steps, 14 bumpy sine, 15 wobble sine, 22 shake out, 31 round linked sine</td>
       </tr>
       <tr>
         <td class="num"><strong>—</strong></td>
-        <td><em>no clean close:</em> 16 up down noise, 17 meta sine, 22 fade out, 23 grow random, 24 noise, 27 bald patch, 28 fuzzy peak sine, 29 ramp up sine, 30 triangle sine, 32 half sine</td>
+        <td><em>no clean close:</em> 16 up down noise, 17 meta sine, 23 grow random, 24 noise, 27 bald patch, 28 fuzzy peak sine, 29 ramp up sine, 30 triangle sine, 32 half sine</td>
       </tr>
     </table>
 
@@ -469,7 +469,7 @@ endShape(CLOSE);</div>
       <div class="family-tag">Special</div>
       <h3>Unique character</h3>
       <p class="family-desc">
-        Formulas that don't fit neatly into a family - logarithmic decay, squared sine,
+        Formulas that don't fit neatly into a family - a mirrored log chirp, squared sine,
         conditional switching. Each has a personality all its own.
       </p>
       <div class="wave-cards" id="family-special"></div>
@@ -492,7 +492,7 @@ endShape(CLOSE);</div>
     0: 62.83, 1: 31.42, 2: 31.42, 3: 40,    4: 40,    5: 62.83, 6: 62.83,
     7: 62.83, 8: 31.42, 9: 62.83, 10: 62.83, 11: 31.42, 12: 62.83, 13: 31.42,
     14: 62.83, 15: 62.83, 16: null, 17: null, 18: 33.33, 19: 50,    20: 16.67,
-    21: 16.67, 22: null, 23: null, 24: null, 25: 17.75, 26: 31.42, 27: null,
+    21: 16.67, 22: 62.83, 23: null, 24: null, 25: 17.75, 26: 31.42, 27: null,
     28: null, 29: null, 30: null, 31: 62.83, 32: null, 33: 2.03,
     34: 62.83
   };
@@ -521,7 +521,7 @@ endShape(CLOSE);</div>
     { idx: 19, name: 'ramp',              algo: '-1*(x*.02%1)/1 + 0.5',                            family: 'sawtooth',      mood: 'Steady descent that resets. A countdown, a winding clock, a saw blade moving in one direction.' },
     { idx: 20, name: 'saw down',          algo: 'x*.03 % .5',                                      family: 'sawtooth',      mood: 'Linear climb with a sudden drop. Effort, effort, effort - then release. Asymmetric and relentless.' },
     { idx: 21, name: 'saw up',            algo: '-x*.03 % .5',                                     family: 'sawtooth',      mood: 'The mirror of saw down. A slide that resets upward - falling, catching, falling again.' },
-    { idx: 22, name: 'fade out',          algo: 'log(x)*.1',                                       family: 'special',       mood: 'Logarithmic rise - fast at first, then ever slower. Diminishing returns. The sound of things winding down.' },
+    { idx: 22, name: 'shake out',         algo: 'sin(log(sq(min(abs(x)%62.8319,62.8319-abs(x)%62.8319))+1)*3)*.5', family: 'special',       mood: 'A shudder that stretches out into long, calm swells, then gathers itself and shakes again. A log chirp mirrored into a palindrome - frantic, settling, returning.' },
     { idx: 23, name: 'grow random',       algo: 'random(x*.003)',                                  family: 'chaos',         mood: 'Random values scaled by position. Quiet at the origin, louder as you move away - a noise floor that rises.' },
     { idx: 24, name: 'noise',             algo: 'noise(x*.1) - .5',                                family: 'chaos',         mood: 'Perlin noise. Organic randomness - coherent, cloud-like, the texture of natural terrain and weather.' },
     { idx: 25, name: 'fuzzy pulse',       algo: 'tan(x*20)*.05',                                   family: 'chaos',         mood: 'Dense tangent spikes. A wall of vertical lines - the most aggressive formula. Static, interference, overload.' },
