@@ -49,11 +49,12 @@ jobs:
             if (!m) { console.error("no Version header in p5.waves.js"); process.exit(1); }
             const p = "_site/docs/p5.waves.manifest.json";
             const man = JSON.parse(fs.readFileSync(p, "utf8"));
-            if (man.version === m[1]) { console.log("manifest already at v" + m[1]); process.exit(0); }
             man.version = m[1];
             man.commit = (process.env.GITHUB_SHA || "unknown").slice(0, 7);
-            fs.writeFileSync(p, JSON.stringify(man, null, 2) + "\n");
-            console.log("manifest version synced: v" + m[1]);
+            const next = JSON.stringify(man, null, 2) + "\n";
+            if (fs.readFileSync(p, "utf8") === next) { console.log("manifest already matches source and deploy commit"); process.exit(0); }
+            fs.writeFileSync(p, next);
+            console.log("manifest synced: v" + m[1] + " " + man.commit);
           '
 
       - name: Upload artifact

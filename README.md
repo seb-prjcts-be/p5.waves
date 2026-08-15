@@ -69,7 +69,7 @@ Always returns a single number.
 | `frequency` | Multiplies `x`. On sines: higher = squished. Not on every wave &mdash; see the guide. | `1` |
 | `seed` | Pick a wave by number. Same seed = same wave. | `0` |
 | `shift` | `true` = auto-switch to random waves with smooth blend. | `false` |
-| `group` | Which pool `shift` / `seed` can pick from: `'gentle'`, `'harsh'`, `'closing'` (experimental), `'all'`, or `['sine', 'triangle']`. | `'all'` |
+| `group` | Which pool `shift` / `seed` can pick from: `'gentle'`, `'harsh'`, `'closing'` (experimental), `'ghost'` (experimental, 6 curated closing waves), `'all'`, or `['sine', 'triangle']`. | `'all'` |
 
 ### Advanced
 
@@ -127,6 +127,7 @@ By default `shift` can land on any of the 35 formulas, including tan/noise spike
 Waves.createSampler({ shift: true, group: 'gentle' });  // sines & curves only (26 waves)
 Waves.createSampler({ shift: true, group: 'harsh' });   // tan/noise/random/unbounded/erratic only (9 waves)
 Waves.createSampler({ shift: true, group: 'closing' }); // 19 waves that all close on the same sweep (experimental)
+Waves.createSampler({ shift: true, group: 'ghost' });   // 6 curated closing waves for Ghost Delay (experimental)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // your own list
 ```
 

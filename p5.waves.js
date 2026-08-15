@@ -8,7 +8,7 @@
 (function (global) {
   'use strict';
 
-  // ─── Wave definitions (34 entries, unique names) ─────────────────────────────
+  // ─── Wave definitions (35 entries, unique names) ─────────────────────────────
   // Each wave carries a real, precompiled `fn` — the library never calls
   // new Function / eval, so it runs under a strict Content-Security-Policy
   // (no 'unsafe-eval'). The `algo` string is display-only metadata; it must

@@ -69,7 +69,7 @@ Geeft altijd één getal terug.
 | `frequency` | Vermenigvuldigt `x`. Bij sinussen: hoger = samengedrukt. Niet bij elke golf &mdash; zie de guide. | `1` |
 | `seed` | Kies een golf via een getal. Zelfde seed = zelfde golf. | `0` |
 | `shift` | `true` = wissel automatisch naar willekeurige golven met vloeiende overgang. | `false` |
-| `group` | Welke pool `shift` / `seed` mag kiezen: `'gentle'`, `'harsh'`, `'closing'` (experimenteel), `'all'`, of `['sine', 'triangle']`. | `'all'` |
+| `group` | Welke pool `shift` / `seed` mag kiezen: `'gentle'`, `'harsh'`, `'closing'` (experimenteel), `'ghost'` (experimenteel, 6 gecureerde closing-golven), `'all'`, of `['sine', 'triangle']`. | `'all'` |
 
 ### Geavanceerd
 
@@ -127,6 +127,7 @@ Standaard kan `shift` op alle 35 formules landen, inclusief tan/noise-spikes. Be
 Waves.createSampler({ shift: true, group: 'gentle' });  // alleen sinussen & curves (26 golven)
 Waves.createSampler({ shift: true, group: 'harsh' });   // alleen tan/noise/random/unbounded/erratic (9 golven)
 Waves.createSampler({ shift: true, group: 'closing' }); // 19 golven die op dezelfde sweep sluiten (experimenteel)
+Waves.createSampler({ shift: true, group: 'ghost' });   // 6 gecureerde closing-golven voor Ghost Delay (experimenteel)
 Waves.createSampler({ shift: true, group: ['sine', 'triangle', 'batman'] });  // eigen lijst
 ```
 
