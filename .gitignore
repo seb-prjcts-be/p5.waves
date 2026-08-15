@@ -1,15 +1,4 @@
-.claude/
 # Ignore local .github scratch, but keep CI workflows tracked (new ones too).
 .github/*
 !.github/workflows/
-_audits/
 tools/
-CLAUDE.md
-AGENTS.md
-HISTORY.md
-knowledge_base.md
-strategy.md
-P5JS_WEBSITE_PROCEDURES.md
-
-# Dashboard-metadata (lokaal, niet in git)
-/info.json

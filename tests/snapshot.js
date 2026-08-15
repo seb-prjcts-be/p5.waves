@@ -5,7 +5,7 @@
 // caused by formula edits, normalisation changes, or accidental
 // behaviour shifts in shared helpers.
 //
-// Vanilla Node, no dependencies. Approved per CLAUDE.md §10.5.
+// Vanilla Node, no dependencies. This test intentionally stays dependency-free.
 //
 // Usage:
 //   node tests/snapshot.js              compare to baseline
