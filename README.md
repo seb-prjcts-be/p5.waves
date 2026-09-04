@@ -221,6 +221,7 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 - `random_walker` - wave-steered walker
 - `spiky_lissajous` - closing Lissajous with a spiky wave
 - `ghost_delay` - one wave against a delayed copy of itself, closing into a loop ring
+- `spirograph` - a roulette (epitrochoid / hypotrochoid) from one closing wave, read twice
 - `binary_field` - two samplers, summed and thresholded
 - `3d_wave_volume` - 3D WebGL
 
@@ -237,5 +238,6 @@ The starting point was small: a list of wave formulas curated by Ted Davis, and 
 ## Credits
 
 - `tw@GenerativePunk`, `gh@ffd8` ([Ted Davis](https://teddavis.org), [Oscillation Sandbox](https://github.com/ffd8/oscillation-sandbox)) - wave formula dataset
+- Stephen Kokoska, *Fifty Famous Curves, Lots of Calculus Questions, and a Few Answers* (Bloomsburg University) - curve lineage behind the Famous Curves section and the per-wave questions on the Waves page, and the `spirograph` example
 
 Developed by Sebastien Vanblaere.

@@ -185,6 +185,42 @@
     .period-code .st { color: #a6e22e; }
     .period-code .cm { color: #777; font-style: italic; }
     .period-code .nb { color: #9ad7ff; }
+
+    /* famous curves lineage */
+    .lineage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .lineage-card {
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      overflow: hidden;
+    }
+    .lineage-canvas {
+      height: 110px;
+      background: #111;
+      overflow: hidden;
+    }
+    .lineage-canvas canvas {
+      display: block !important;
+      width: 100% !important;
+      height: 110px !important;
+    }
+    .lineage-card h3 { margin: 0.9rem 1.2rem 0.4rem; }
+    .lineage-card p  { margin: 0 1.2rem 1rem; font-size: 0.88rem; line-height: 1.6; }
+
+    /* the question at the foot of each card */
+    .wave-card-ask {
+      margin: 0.55rem 0 0;
+      padding-top: 0.45rem;
+      border-top: 1px dashed #ddd;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #000;
+    }
+    .wave-card-ask::before { content: "? "; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -350,11 +386,53 @@ endShape(CLOSE);</div>
       <li><strong>—</strong> - wave is quasi-periodic (incommensurate rhythms) or non-periodic (growing amplitudes, Perlin noise, random branches). Close with a soft blend back to the starting value instead of <code>CLOSE</code>.</li>
     </ul>
 
+    <h2 id="famous-curves">Famous Curves</h2>
+    <p>
+      Mathematics keeps a hall of fame of plane curves - cardioid, astroid, lemniscate,
+      the Witch of Agnesi. Two of those classics were already hiding in this set. Neither
+      was put there on purpose. The lineage comes from Stephen Kokoska's
+      <em>Fifty Famous Curves, Lots of Calculus Questions, and a Few Answers</em>
+      (Bloomsburg University); the
+      <a href="https://mathshistory.st-andrews.ac.uk/Curves/" target="_blank">MacTutor Famous Curves Index</a>
+      has the full gallery. For the rolling curves of that list (cardioid, nephroid,
+      epitrochoid) see the <a href="examples.html#spirograph">Spirograph</a> example.
+    </p>
+
+    <div class="lineage-grid">
+      <div class="lineage-card">
+        <div class="lineage-canvas" id="lin-spiral"></div>
+        <h3>shake out is a logarithmic spiral</h3>
+        <p>
+          The equiangular spiral (no. 18 in Kokoska's list) is the shape of a nautilus shell:
+          any line you draw from its centre crosses the spiral at distances that grow by the
+          same factor every time. <code>shake out</code> is that spiral read as a wave.
+          Its zero crossings sit at <code>1.36, 2.67, 4.71, 8.06, 13.67, 23.12</code> -
+          each one about <code>1.69&times;</code> further out than the last, settling on
+          <code>e^(&pi;/6)</code>, straight from the <code>&times;3</code> inside the log.
+          The dots mark them. Same math as the shell; the shell just wraps it around a point.
+        </p>
+      </div>
+      <div class="lineage-card">
+        <div class="lineage-canvas" id="lin-lame"></div>
+        <h3>sine, spike sine and square are one family</h3>
+        <p>
+          Lam&eacute; curves (no. 29, the superellipse) turn a circle into a rounded square
+          with one exponent. Do the same to a sine: <code>sign(sin x) &middot; |sin x|^p</code>.
+          At <code>p = 1</code> it is <code>classic sine</code>. At <code>p = 5</code> it is
+          exactly <code>spike sine</code>. As <code>p</code> drops toward zero it flattens
+          into <code>square</code>. The strip sweeps <code>p</code> back and forth. Note the
+          difference with <code>mix</code>: a morph crossfades two outputs, a family
+          parameter deforms one shape. The library ships three stops on this road.
+        </p>
+      </div>
+    </div>
+
     <h2>The Families</h2>
     <p>
       The 35 formulas group into families by character. Each family shares a mood  -
       a way of moving, a texture, a temperament. Within each family, individual formulas
-      add their own twist.
+      add their own twist. Each card ends with a question and no answer - Kokoska's
+      list does the same for its curves. The formula is right there; try it.
     </p>
 
     <!-- FAMILY: Pure Sine -->
@@ -536,6 +614,46 @@ endShape(CLOSE);</div>
     { idx: 34, name: 'spike sine',        algo: 'sq(sq(sin(x*.1)))*sin(x*.1)*.5',                  family: 'special',       mood: 'Sine raised to the fifth. Long calm near zero, then narrow spikes up and down - smooth but sudden, quiet with sharp teeth.' }
   ];
 
+  // One open question per wave, no answer given. Same habit as Kokoska's
+  // "Fifty Famous Curves": the formula is open, the reader does the looking.
+  var waveAsk = {
+    0:  'Where is it steepest, and where does it pause?',
+    1:  'Twice the frequency of classic sine. What happens to the period?',
+    2:  'abs folds the valleys up. Where did the smoothness go?',
+    3:  'Where exactly does it jump? Change the .5 and see what moves.',
+    4:  'How much of each cycle is the spike? Count it in the formula.',
+    5:  'ceil of a sine has only two values. Which two, and why not three?',
+    6:  'abs(cos) and sin have different periods. Why does the sum still close at 62.83?',
+    7:  'Flip one sign and mountains become canyons. Which sign?',
+    8:  'Modulo .12 chops the sine. How many teeth per swing?',
+    9:  'Where are the ears? Find them in the formula.',
+    10: 'Which half of the cycle is flat, and why?',
+    11: 'Why does tan give steps that only go one way?',
+    12: 'round(sin) can be -1, 0 or 1. Where is it 0?',
+    13: 'Squaring halves the period. Can you see why?',
+    14: 'Slow sine plus fast sine. How many ripples fit on one swell?',
+    15: 'Multiply instead of add. Where does the wave go silent?',
+    16: 'x times sin grows forever. What keeps it on the screen?',
+    17: 'Its period is null. What makes two rhythms never line up?',
+    18: 'No trig at all. Where does abs make the corner?',
+    19: 'A countdown that resets. What does the -1 do?',
+    20: 'Climb, drop, repeat. Which way does it lean?',
+    21: 'Same as saw down with a minus. What flipped, the slope or the drop?',
+    22: 'The gaps between the shakes grow by a fixed factor. Which one? (See Famous Curves above.)',
+    23: 'Random, but scaled by x. Why is it quiet near zero?',
+    24: 'noise is smooth. What makes it different from random?',
+    25: 'tan repeats every pi/20, about 0.157. Why does the table say 17.75?',
+    26: 'tan goes to infinity. Why can you still see a line?',
+    27: 'x squared, wrapped by .5. Why do the segments get shorter?',
+    28: 'Structure above zero, static below. Where is the border?',
+    29: 'A sine inside a sawtooth envelope. What resets, the sine or the envelope?',
+    30: 'Same sine, triangle envelope. Why does it breathe symmetrically?',
+    31: 'Fast cosine inside slow sine. Which one is the envelope?',
+    32: 'Two x\'s in one formula. What happens to the envelope when you raise frequency?',
+    33: 'Period 2.03 fits 31 times in 62.83. Check it.',
+    34: 'Sine to the fifth. What does the fifth power do to small values?'
+  };
+
   // Family container IDs
   var familyMap = {
     'pure-sine':     'family-pure-sine',
@@ -584,6 +702,7 @@ endShape(CLOSE);</div>
         '<code class="wave-card-algo">' + esc(w.algo) + '</code>' +
         '<p class="wave-card-mood">' + esc(w.mood) + '</p>' +
         periodHtml +
+        (waveAsk[w.idx] ? '<p class="wave-card-ask">' + esc(waveAsk[w.idx]) + '</p>' : '') +
       '</div>';
 
     container.appendChild(card);
@@ -620,6 +739,82 @@ endShape(CLOSE);</div>
       });
     })(waveData[j]);
   }
+
+  // ── Famous Curves strips ──────────────────────────────────────────
+  // shake out over one period, zero crossings dotted. Read the dot spacing:
+  // each gap is about 1.69x the previous one - a geometric progression, the
+  // signature of the logarithmic (equiangular) spiral.
+  new p5(function(p) {
+    var P = 62.8319;
+    var zeros = [];
+    p.setup = function() {
+      var parent = document.getElementById('lin-spiral');
+      p.createCanvas(parent.offsetWidth, 110).parent(parent);
+      p.frameRate(30);
+      var fn = null;
+      for (var i = 0; i < Waves.data.length; i++) {
+        if (Waves.data[i].name === 'shake out') { fn = Waves.data[i].fn; break; }
+      }
+      if (!fn) return;
+      var prev = fn(0.001);                       // raw formula, frozen in time
+      for (var x = 0.001; x < P; x += 0.002) {
+        var v = fn(x);
+        if ((v < 0) !== (prev < 0)) zeros.push(x);
+        prev = v;
+      }
+    };
+    p.draw = function() {
+      p.background(17);
+      var midY = p.height / 2;
+      p.stroke(200);
+      p.strokeWeight(1.5);
+      p.noFill();
+      p.beginShape();
+      for (var px = 0; px <= p.width; px += 2) {
+        p.vertex(px, midY - Waves.wave(px / p.width * P, { wave: 'shake out', amplitude: 34 }));
+      }
+      p.endShape();
+      p.noStroke();
+      p.fill(255, 59, 47);
+      for (var i = 0; i < zeros.length; i++) p.circle(zeros[i] / P * p.width, midY, 5);
+    };
+  });
+
+  // One Lame-style family: sign(sin x) * |sin x|^p. p sweeps 0.15 -> 5 -> 0.15.
+  // p = 1 is classic sine, p = 5 is spike sine, p -> 0 is square.
+  new p5(function(p) {
+    p.setup = function() {
+      var parent = document.getElementById('lin-lame');
+      p.createCanvas(parent.offsetWidth, 110).parent(parent);
+      p.frameRate(30);
+      p.textFont('monospace');
+    };
+    p.draw = function() {
+      p.background(17);
+      var t = p.millis() / 1000;
+      var u = (p.sin(t * 0.45) + 1) / 2;                       // 0..1, back and forth
+      var pw = p.exp(p.lerp(p.log(0.15), p.log(5), u));        // log-uniform sweep
+      var midY = p.height / 2;
+      p.stroke(200);
+      p.strokeWeight(1.5);
+      p.noFill();
+      p.beginShape();
+      for (var px = 0; px <= p.width; px += 2) {
+        var sn = p.sin(px * 0.8 * 0.1);                         // same x scale as the cards
+        var v = Math.sign(sn) * Math.pow(Math.abs(sn), pw);
+        p.vertex(px, midY - v * 34);
+      }
+      p.endShape();
+      var label = 'p = ' + pw.toFixed(2);
+      if (Math.abs(pw - 1) < 0.08) label += '   = classic sine';
+      else if (pw > 4.5)           label += '   = spike sine';
+      else if (pw < 0.2)           label += '   ~ square';
+      p.noStroke();
+      p.fill(160);
+      p.textSize(11);
+      p.text(label, 10, 16);
+    };
+  });
   </script>
 </body>
 </html>

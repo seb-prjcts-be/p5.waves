@@ -338,6 +338,8 @@ function draw() {
 
     <p><code>mix: 0</code> = pure first wave. <code>mix: 1</code> = pure second wave. Anything in between = a blend of both. Animate it for smooth shape transformations.</p>
 
+    <p><strong>A morph can change more than shape.</strong> Blend <code>classic sine</code> into <code>bumpy sine</code> and count the bumps per cycle: two, two, two... then at <code>mix &asymp; 0.48</code> suddenly ten. The ripples are not born gradually. They appear at one moment, when the fast sine finally out-bends the slow one. Mathematicians know this from the Cassini ovals, where a single number turns two loops into a figure-eight and then into one loop. If you want that moment in a sketch, animate <code>mix</code> slowly and watch for it.</p>
+
 
     <!-- ═══════════════════════════════════ CREATESAMPLER -->
     <h2>createSampler()  - For Loops and Particles</h2>
