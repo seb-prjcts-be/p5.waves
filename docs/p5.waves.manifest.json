@@ -52,6 +52,7 @@
     "ghost_delay",
     "morph_wave",
     "random_walker",
+    "spirograph",
     "spiky_lissajous",
     "time_strata",
     "wave_params",

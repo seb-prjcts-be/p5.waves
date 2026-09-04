@@ -1,0 +1,88 @@
+// By Sebastien Vanblaere and Claude Code, please show us your work by including #p5waves.
+
+// Spirograph - a roulette (epitrochoid / hypotrochoid) drawn from ONE closing wave.
+// The classic recipe is "big circle plus a small rotating vector":
+//   x = R*cos(a) + c*cos(k*a),  y = R*sin(a) + c*sin(k*a)
+// p5.waves has no cos/sin pair, only one scalar wave. But the Ghost Delay trick
+// hands you the pair for free: read the wave at k*u (the sin-like part) and at
+// k*u + period/4 (the cos-like part). Swap the pure sine for any closing wave
+// and the spirograph inherits its character - batman ears, mountain ridges.
+// k must be a whole number to close in one turn; k = p/q closes after q turns.
+//
+// Curve lineage: epicycloid, epitrochoid, hypocycloid, hypotrochoid - nos. 16,
+// 17, 24, 25 in Stephen Kokoska's "Fifty Famous Curves" (Bloomsburg University).
+
+let sampler;
+const N = 900;
+
+// k = p / q. Positive k rolls outside (epi-), negative k rolls inside (hypo-).
+const MODES = [
+  { p: 3,  q: 1, label: 'k = 3' },
+  { p: 5,  q: 1, label: 'k = 5' },
+  { p: -4, q: 1, label: 'k = -4  (rolls the other way)' },
+  { p: 5,  q: 2, label: 'k = 5/2  (closes after two turns)' }
+];
+let modeIdx = 0;
+
+function setup() {
+  const cnv = createCanvas(720, 720);
+  // The example page docks the canvas into #sketch-container. Pasted anywhere
+  // else (p5 web editor, a bare index.html) that div does not exist, and the
+  // canvas simply lands on the page - so the paste runs as-is.
+  if (document.getElementById('sketch-container')) cnv.parent('sketch-container');
+  colorMode(HSB, 360, 100, 100, 100);
+  strokeJoin(ROUND);
+  noFill();
+  // 'ghost' waves all share one period and stay clean under the delay pairing.
+  // range [-1, 1] gives unit output (the default would be amplitude 100).
+  sampler = Waves.createSampler({ group: 'ghost', shift: true, range: [-1, 1] });
+}
+
+function draw() {
+  background(230, 25, 8);
+  noFill();
+  const t = millis() / 1000;
+  const period = sampler.period;          // ghost waves share one base period
+  const mode = MODES[modeIdx];
+  const k = mode.p / mode.q;
+  const R = min(width, height) * 0.22;    // the fixed ring
+  const c = R * 0.4;                      // reach of the rolling pen
+  const ringHue = (t * 10) % 360;
+
+  translate(width / 2, height / 2);
+
+  // The fixed ring, faint - the "big circle" of every spirograph.
+  stroke(0, 0, 40, 40);
+  strokeWeight(1);
+  circle(0, 0, R * 2);
+
+  // The roulette: big ring + small vector read off ONE wave at two positions.
+  stroke(ringHue, 55, 100, 90);
+  strokeWeight(1.4);
+  beginShape();
+  for (let i = 0; i <= N; i++) {
+    const u = (i / N) * period * mode.q;              // q turns of the big ring
+    const a = TWO_PI * u / period;                    // big-ring angle
+    const x = R * cos(a) + c * sampler.sample(k * u + period / 4, t);  // cos-like read
+    const y = R * sin(a) + c * sampler.sample(k * u, t);               // sin-like read
+    vertex(x, y);
+  }
+  endShape(CLOSE);
+
+  // HUD: which wave is rolling, and which k.
+  noStroke();
+  fill(0, 0, 70);
+  textFont('monospace');
+  textSize(12);
+  text(sampler.waveName + '   /   ' + mode.label, -width / 2 + 18, -height / 2 + 46);
+  fill(0, 0, 45);
+  textSize(10);
+  text('click to change k   /   shift is morphing the wave through the ghost pool',
+       -width / 2 + 18, -height / 2 + 64);
+}
+
+function mousePressed() {
+  if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+    modeIdx = (modeIdx + 1) % MODES.length;
+  }
+}

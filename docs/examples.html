@@ -341,6 +341,36 @@ endShape(CLOSE);</code></pre>
     </div>
   </section>
 
+  <!-- SPIROGRAPH -->
+  <section id="spirograph" class="section">
+    <div class="section-header">
+      <div class="section-tag">roulette &middot; one closing wave</div>
+      <h2>Spiro<span class="accent">graph</span></h2>
+      <p class="section-desc">Every spirograph is a big circle plus a small rotating vector. Cardioid, nephroid, astroid, epitrochoid: one formula, different <code>k</code>. p5.waves has no cos/sin pair, but reading one closing wave at <code>k&middot;u</code> and at <code>k&middot;u + period/4</code> gives you the pair anyway. Swap the sine for batman and the spirograph grows ears. Whole-number <code>k</code> closes in one turn, <code>k = p/q</code> after <code>q</code> turns.</p>
+    </div>
+    <div class="ex-preview">
+      <div id="ex-spirograph" class="ex-canvas"></div>
+      <pre class="ex-code-block"><code class="language-javascript">// One closing wave, read twice = a rotating vector with character.
+const s = Waves.createSampler({ group: 'ghost', shift: true, range: [-1, 1] });
+const period = s.period;             // shared by every ghost wave
+const k = 5;                         // whole number -&gt; closes in one turn
+const R = 180, c = R * 0.45;         // fixed ring, pen reach
+
+beginShape();
+for (let i = 0; i &lt;= N; i++) {
+  const u = (i / N) * period;        // one turn of the big ring
+  const a = TWO_PI * u / period;
+  const x = R * cos(a) + c * s.sample(k * u + period / 4, t);  // cos-like read
+  const y = R * sin(a) + c * s.sample(k * u, t);               // sin-like read
+  vertex(x, y);
+}
+endShape(CLOSE);</code></pre>
+      <div class="ex-links">
+        <a class="ex-full-link" href="../examples/spirograph/" target="_blank">-> full example</a>
+      </div>
+    </div>
+  </section>
+
   <!-- NOT SO RANDOM WALKER -->
   <section id="walker" class="section section-dark">
     <div class="section-header">
@@ -845,6 +875,56 @@ const dy = sY.sample(xi * 0.9 + zi * 0.6, t);</code></pre>
     };
     p.windowResized = function() { const w = cw('ex-ghost'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
   }, 'ex-ghost');
+
+  // ── Spirograph ────────────────────────────────────────────
+  new p5(function(p) {
+    const N = 720;
+    const MODES = [[3, 1], [5, 1], [-4, 1], [5, 2]];   // [p, q] -> k = p / q
+    let s, idx = 0;
+    p.setup = function() {
+      const w = cw('ex-spirograph');
+      p.createCanvas(w, p.floor(w * 2 / 3)).parent('ex-spirograph');
+      p.colorMode(p.HSB, 360, 100, 100, 100);
+      p.strokeJoin(p.ROUND);
+      p.noFill();
+      s = Waves.createSampler({ group: 'ghost', shift: true, range: [-1, 1] });
+    };
+    p.draw = function() {
+      p.background(230, 25, 8);
+      p.noFill();   // the HUD text sets a fill; keep the ring open
+      p.translate(p.width / 2, p.height / 2);
+      const t = p.millis() / 1000;
+      const period = s.period;
+      const k = MODES[idx][0] / MODES[idx][1];
+      const q = MODES[idx][1];
+      const R = p.min(p.width, p.height) * 0.3;
+      const c = R * 0.45;
+      p.stroke(0, 0, 40, 40);
+      p.strokeWeight(1);
+      p.circle(0, 0, R * 2);
+      p.stroke((t * 10) % 360, 55, 100, 90);
+      p.strokeWeight(1.2);
+      p.beginShape();
+      for (let i = 0; i <= N; i++) {
+        const u = (i / N) * period * q;
+        const a = p.TWO_PI * u / period;
+        p.vertex(R * p.cos(a) + c * s.sample(k * u + period / 4, t),
+                 R * p.sin(a) + c * s.sample(k * u, t));
+      }
+      p.endShape(p.CLOSE);
+      p.noStroke();
+      p.fill(0, 0, 70);
+      p.textFont('monospace');
+      p.textSize(11);
+      p.text(s.waveName + '  /  k = ' + MODES[idx][0] + (q > 1 ? '/' + q : '') + '  (click)', -p.width / 2 + 14, -p.height / 2 + 20);
+    };
+    p.mousePressed = function() {
+      if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+        idx = (idx + 1) % MODES.length;
+      }
+    };
+    p.windowResized = function() { const w = cw('ex-spirograph'); p.resizeCanvas(w, p.floor(w * 2 / 3)); };
+  }, 'ex-spirograph');
 
   // ── Not So Random Walker ──────────────────────────────────
   new p5(function(p) {

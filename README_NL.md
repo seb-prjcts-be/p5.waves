@@ -221,6 +221,7 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 - `random_walker` - golf-gestuurde walker
 - `spiky_lissajous` - sluitende Lissajous met een spiky golf
 - `ghost_delay` - één golf tegen een vertraagde kopie van zichzelf, sluit tot een lus-ring
+- `spirograph` - een rolkromme (epi-/hypotrochoïde) uit één closing-golf, twee keer gelezen
 - `binary_field` - twee samplers, opgeteld en gedrempeld
 - `3d_wave_volume` - 3D WebGL
 
@@ -237,5 +238,6 @@ Het beginpunt was klein: een lijst golfformules gecureerd door Ted Davis, en een
 ## Credits
 
 - `tw@GenerativePunk`, `gh@ffd8` ([Ted Davis](https://teddavis.org), [Oscillation Sandbox](https://github.com/ffd8/oscillation-sandbox)) - golfformule dataset
+- Stephen Kokoska, *Fifty Famous Curves, Lots of Calculus Questions, and a Few Answers* (Bloomsburg University) - de krommen-afkomst achter de sectie Famous Curves en de vragen per golf op de Waves-pagina, en het `spirograph`-voorbeeld
 
 Ontwikkeld door Sebastien Vanblaere.
