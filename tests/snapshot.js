@@ -1,6 +1,6 @@
 // Snapshot test for p5.waves formulas.
 //
-// Samples each of the 34 wave functions at fixed positions and
+// Samples each of the 35 wave functions at fixed positions and
 // compares the result to a stored baseline. Detects regressions
 // caused by formula edits, normalisation changes, or accidental
 // behaviour shifts in shared helpers.

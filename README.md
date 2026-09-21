@@ -57,7 +57,7 @@ Always returns a single number.
 
 | option | what it does | default |
 |---|---|---|
-| `wave` | Which shape. Name, index (0-33), or `['a', 'b']` for blending. Omit it and you get the `seed`-based pick. | seed 0 |
+| `wave` | Which shape. Name, index (0-34), or `['a', 'b']` for blending. Omit it and you get the `seed`-based pick. | seed 0 |
 | `t` | Time. Makes the wave move. Pass `millis() / 1000`. | `0` |
 | `amplitude` | How tall. Output: `[-amplitude, +amplitude]`. | `100` |
 

@@ -57,7 +57,7 @@ Geeft altijd één getal terug.
 
 | optie | wat het doet | standaard |
 |---|---|---|
-| `wave` | Welke vorm. Naam, index (0-33), of `['a', 'b']` om te blenden. Laat je hem weg, dan krijg je de `seed`-pick. | seed 0 |
+| `wave` | Welke vorm. Naam, index (0-34), of `['a', 'b']` om te blenden. Laat je hem weg, dan krijg je de `seed`-pick. | seed 0 |
 | `t` | Tijd. Laat de golf bewegen. Geef `millis() / 1000` mee. | `0` |
 | `amplitude` | Hoe hoog. Output: `[-amplitude, +amplitude]`. | `100` |
 

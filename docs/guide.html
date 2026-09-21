@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,7 +6,8 @@
   <title>Guide - p5.waves</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=guide-tables-1">
+  <link rel="icon" href="data:,">
 </head>
 <body>
 
@@ -117,14 +118,17 @@ circle(x, y, dotSize);</code></pre>
     <p>You don't need all of these. Start with the top three. Add more when you're curious.</p>
 
     <h3>Start here</h3>
+    <div class="guide-table-scroll" role="region" aria-label="Basic options" tabindex="0">
     <table class="opts-table">
       <tr><th>Option</th><th>What it does</th><th>Default</th></tr>
       <tr><td><code>wave</code></td><td>Which shape. Pick a name like <code>'sine'</code>, a number like <code>9</code>, or blend two: <code>['sine', 'triangle']</code>. Omit it and you get the <code>seed</code>-based pick.</td><td>seed 0</td></tr>
       <tr><td><code>t</code></td><td>Time. Makes it move. Pass <code>millis() / 1000</code>. No time = frozen wave.</td><td><code>0</code></td></tr>
       <tr><td><code>amplitude</code></td><td>How big. Output swings from <code>-amplitude</code> to <code>+amplitude</code>.</td><td><code>100</code></td></tr>
     </table>
+    </div>
 
     <h3>Level up</h3>
+    <div class="guide-table-scroll" role="region" aria-label="Additional options" tabindex="0">
     <table class="opts-table">
       <tr><th>Option</th><th>What it does</th><th>Default</th></tr>
       <tr><td><code>range</code></td><td>Map output to any range you want. <code>[0, 255]</code> = perfect for color values. Replaces amplitude.</td><td><code>null</code></td></tr>
@@ -133,10 +137,12 @@ circle(x, y, dotSize);</code></pre>
       <tr><td><code>shift</code></td><td><code>true</code> = auto-switch to a new random wave every few seconds. Smooth transitions. Different every page load.</td><td><code>false</code></td></tr>
       <tr><td><code>group</code></td><td>Which pool <code>shift</code> / <code>seed</code> can pick from. <code>'gentle'</code> = sines &amp; curves (26). <code>'harsh'</code> = tan/noise/random/unbounded/erratic (9). <code>'closing'</code> = 19 waves that share one period (experimental). <code>'ghost'</code> = 6 curated closing waves for Ghost Delay (experimental). <code>'all'</code> = everything. Or pass your own list: <code>['sine', 'triangle']</code>.</td><td><code>'all'</code></td></tr>
     </table>
+    </div>
 
     <div class="callout"><p><strong>Frequency is a zoom, not a speed dial.</strong> It multiplies <code>x</code> and nothing else, so what you get depends on where <code>x</code> sits in the formula. <code>'classic sine'</code> is <code>sin(x*.1)</code>, so it becomes <code>sin(2x*.1)</code>: tighter cycles, same height. But <code>'half sine'</code> is <code>sin(x*.05)*(x*.1%.5)</code>, which carries <code>x</code> twice &mdash; once in the wave, once in the envelope &mdash; so raising frequency tightens the rhythm <em>and</em> grows a taller envelope at the same time. And <code>'shake out'</code> is a mirrored log chirp whose rhythm lives at the start of each period, so frequency slides that burst sideways (and tightens the period) rather than speeding the whole wave up evenly. One dial, several outcomes.</p></div>
 
     <h3>Go deeper</h3>
+    <div class="guide-table-scroll" role="region" aria-label="Advanced options" tabindex="0">
     <table class="opts-table">
       <tr><th>Option</th><th>What it does</th><th>Default</th></tr>
       <tr><td><code>phase</code></td><td>Nudge the wave sideways.</td><td><code>0</code></td></tr>
@@ -146,6 +152,7 @@ circle(x, y, dotSize);</code></pre>
       <tr><td><code>shiftInterval</code></td><td>How long to hold each wave before switching (in units of <code>t</code>).</td><td><code>3</code></td></tr>
       <tr><td><code>shiftDuration</code></td><td>How long the smooth transition takes (in units of <code>t</code>).</td><td><code>1</code></td></tr>
     </table>
+    </div>
 
 
     <!-- ═══════════════════════════════════ WAVE LIST -->
@@ -454,11 +461,13 @@ Waves.wave(x, { wave: 3 })   // index 3 -> exactly wave #3 (square)</code></pre>
     <!-- ═══════════════════════════════════ API ACCESS -->
     <h2>Shorthand Names</h2>
     <p><code>Waves.*</code> always works. But in a regular p5 sketch, shorter names are available too.</p>
+    <div class="guide-table-scroll" role="region" aria-label="Shorthand names" tabindex="0">
     <table class="opts-table">
       <tr><th>Always works</th><th>p5 global mode</th><th>p5 instance mode</th></tr>
       <tr><td><code>Waves.wave(y, opts)</code></td><td><code>waves(y, opts)</code></td><td><code>p.waves(y, opts)</code></td></tr>
       <tr><td><code>Waves.createSampler(opts)</code></td><td><code>createWaveSampler(opts)</code></td><td><code>p.createWaveSampler(opts)</code></td></tr>
     </table>
+    </div>
     <p>Extras: <code>Waves.list()</code> returns all 35 formulas. <code>Waves.count</code> = 35. <code>Waves.data</code> = the raw formula array. <code>Waves.benchmark(config, n)</code> runs <code>n</code> wave calls and returns <code>{ iterations, ms, callsPerMs }</code>.</p>
 
 
