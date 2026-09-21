@@ -387,6 +387,37 @@ function draw() {
     <p><strong>Variations.</strong> Make the samplers <code>shift: true</code> and the waves themselves cycle - the field evolves character over time. Tighten the threshold to <code>0.12</code> for sparser marks, or use <code>-0.12</code> for denser. Replace <code>fill(on ? 0 : 245)</code> with a colour mapping for an analog field. The <a href="about.html">about page</a> ships the original 16&times;16 origin grid (the sketch that started p5.waves) - the simplest possible version, with auto-advance when the field goes uniform.</p>
 
 
+    <!-- ═══════════════════════════════════ ADDED WAVES -->
+    <h2 id="added-waves">Added Waves - Add Their Outputs</h2>
+    <p><code>Waves.wave(...) + Waves.wave(...)</code>. Each call returns a number. Add them to combine a broad wave with smaller ripples. Each wave keeps its own scale, strength and speed.</p>
+    <pre class="code-block"><code class="language-javascript">function setup() {
+  createCanvas(600, 240);
+  noFill();
+}
+
+function draw() {
+  background(245);
+  const t = millis() / 1000;
+
+  beginShape();
+  for (let x = 0; x &lt;= width; x += 2) {
+    const broad = Waves.wave(x - t * 18, {
+      wave: 'classic sine',
+      frequency: 0.2,
+      amplitude: 60
+    });
+    const detail = Waves.wave(x + t * 10, {
+      wave: 'bumpy sine',
+      frequency: 0.8,
+      amplitude: 15
+    });
+    vertex(x, height / 2 + broad + detail);
+  }
+  endShape();
+}</code></pre>
+    <p><code>frequency</code> sets each wave's scale; <code>amplitude</code> sets its strength. The position offsets <code>-t * 18</code> and <code>+t * 10</code> move the waves in opposite directions at different speeds. The sum stays within &plusmn;75 here: the individual amplitudes add up too.</p>
+    <p>Add a third wave the same way. <a href="../examples/added_waves/">Added Waves</a> uses three samplers and repeats their sum across many lines to form a moving fabric. The <code>+</code> is ordinary JavaScript; no extra library function is needed.</p>
+
     <!-- ═══════════════════════════════════ WILD MODE -->
     <h2>Wild Mode - Controlled Chaos</h2>
     <p>Turn on <code>mode: 'wild'</code> and the wave gets wobbly. Frequency, phase, and amplitude all start drifting. It stays recognizable - just... unhinged.</p>
