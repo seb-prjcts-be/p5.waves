@@ -17,6 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="docs/style.css">
+  <link rel="stylesheet" href="examples/added_waves/style.css">
   <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
   <script src="p5.waves.js"></script>
 </head>
@@ -249,6 +250,19 @@ wy += yS.sample(t * 2.1 + phase, t);</code></div>
     </div>
   </section>
 
+  <!-- ADDED WAVES -->
+  <section id="added-waves" class="section">
+    <div class="section-header">
+      <div class="section-tag">Waves.wave(...) + Waves.wave(...)</div>
+      <h2>Added <span class="accent">Waves</span></h2>
+      <p class="section-desc">Three waves added together. Each wave has its own scale, strength and speed.</p>
+    </div>
+    <div data-added-waves></div>
+    <div class="added-waves-links">
+      <a class="ex-full-link" href="examples/added_waves/">Full example &amp; code &#8594;</a>
+    </div>
+  </section>
+
   <!-- 100 GRID -->
   <section id="grid100" class="section section-dark">
     <div class="section-header">
@@ -298,5 +312,6 @@ function draw() {
 
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
   <script src="docs/sketch.js"></script>
+  <script src="examples/added_waves/sketch.js"></script>
 </body>
 </html>

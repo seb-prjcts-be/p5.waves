@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Added Waves | p5.waves examples</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../docs/style.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav id="navbar">
+    <a class="nav-logo" href="../../index.html">p5.waves</a>
+    <ul class="nav-links">
+      <li><a href="../../index.html#added-waves">Showcase</a></li>
+      <li><a href="../../docs/examples.html">Examples</a></li>
+      <li><a href="../../docs/guide.html">Guide</a></li>
+    </ul>
+  </nav>
+  <main class="section">
+    <div class="section-header">
+      <div class="section-tag">Waves.wave(...) + Waves.wave(...)</div>
+      <h1>Added Waves</h1>
+      <p>Three waves added together. Each wave has its own scale, strength and speed.</p>
+    </div>
+    <div data-added-waves></div>
+    <div class="added-waves-links">
+      <a href="../../index.html#added-waves">Back to showcase</a> ·
+      <a href="sketch.js" download>Download sketch.js</a>
+    </div>
+    <div class="section-header" style="margin-top:3rem">
+      <p>Move your pointer over the canvas. Pause freezes the waves. On touchscreens, vertical swipes still scroll the page.</p>
+    </div>
+    <div style="max-width:960px;margin:0 auto">
+      <p>Load p5.js and p5.waves, add <code>&lt;div data-added-waves&gt;&lt;/div&gt;</code>, then load <code>sketch.js</code>. The same sketch runs here, in the gallery and in the showcase.</p>
+      <details style="margin-top:1.5rem">
+        <summary>Full sketch.js</summary>
+        <pre class="code-block"><code id="source-code">Loading source…</code></pre>
+      </details>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.2.2/lib/p5.js"></script>
+  <script src="../../p5.waves.js"></script>
+  <script src="sketch.js"></script>
+  <script>
+    fetch('sketch.js').then(function(response) {
+      if (!response.ok) throw new Error('Source unavailable');
+      return response.text();
+    }).then(function(source) {
+      document.getElementById('source-code').textContent = source;
+    }).catch(function() {
+      document.getElementById('source-code').textContent = 'Use the Download sketch.js link to read the source.';
+    });
+  </script>
+</body>
+</html>

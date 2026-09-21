@@ -211,6 +211,8 @@ Elke periodieke golf heeft een gemeten periode op de [Waves-pagina](https://seb-
 
 ## Voorbeelden
 
+- `added_waves` - drie golven opgeteld, elk met een eigen schaal, sterkte en snelheid
+
 - `wave_shift` - auto-wisselende golfformules
 - `wave_params` - amplitude, frequency, phase
 - `wild_mode` - wild mode

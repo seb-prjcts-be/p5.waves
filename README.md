@@ -211,6 +211,8 @@ Every periodic wave has a measured period listed on the [Waves page](https://seb
 
 ## Examples
 
+- `added_waves` - three waves added together, each with its own scale, strength and speed
+
 - `wave_shift` - auto-cycling wave formulas
 - `wave_params` - amplitude, frequency, phase
 - `wild_mode` - wild mode
